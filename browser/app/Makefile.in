@@ -83,5 +83,5 @@ endif
 	mv '$(dist_dest)/Contents/Resources/org.mozilla.dmgInstallHelper' '$(dist_dest)/Contents/Library/LaunchServices'
 	$(MKDIR) -p '$(dist_dest)/Contents/Frameworks'
 	mv '$(dist_dest)/Contents/Resources/ChannelPrefs.framework' '$(dist_dest)/Contents/Frameworks'
-	printf APPLMOZB > '$(dist_dest)/Contents/PkgInfo'
+	printf APPLTORB > '$(dist_dest)/Contents/PkgInfo'
 endif
