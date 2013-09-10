@@ -55,3 +55,6 @@ toolkit.jar:
   skin/classic/global/illustrations/error-malformed-url.svg (../../shared/illustrations/error-malformed-url.svg)
 # used by moz-message-bar (type="warning") in about:neterror
   skin/classic/global/icons/warning.svg                     (../../shared/icons/warning.svg)
+
+# For testing purposes
+  skin/classic/global/icons/torbrowser.png                 (../../shared/icons/torbrowser.png)
