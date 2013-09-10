@@ -133,6 +133,18 @@ locales = [
     reference = "browser/branding/official/locales/en-US/**"
     l10n = "{l}browser/branding/official/**"
 
+[[paths]]
+    reference = "browser/branding/tb-alpha/locales/en-US/**"
+    l10n = "{l}browser/branding/tb-alpha/**"
+
+[[paths]]
+    reference = "browser/branding/tb-nightly/locales/en-US/**"
+    l10n = "{l}browser/branding/tb-nightly/**"
+
+[[paths]]
+    reference = "browser/branding/tb-release/locales/en-US/**"
+    l10n = "{l}browser/branding/tb-release/**"
+
 # This file was removed in bug 1948916. In order to keep this file in
 # repositories, we need to preserve this entry until esr115 and esr128 become
 # unsupported.
