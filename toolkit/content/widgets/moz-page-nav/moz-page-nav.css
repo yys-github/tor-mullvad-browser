@@ -51,7 +51,10 @@ nav {
     display: inline-block;
     height: var(--page-nav-heading-logo-size);
     width: var(--page-nav-heading-logo-size);
-    background: image-set(url("chrome://branding/content/about-logo.png"), url("chrome://branding/content/about-logo@2x.png") 2x) no-repeat center;
+    /* For Tor Browser, we want to use the "small" variant that does not include
+     * the "alpha" or "moon" bitmap, which does not render well at small
+     * resolutions (less than 48px). tor-browser#44998 and tor-browser#42088. */
+    background: url("chrome://branding/content/about-logo-small.svg") no-repeat center;
     background-size: auto;
     background-size: var(--page-nav-heading-logo-size);
     /* heading logo should be centered above button icons */
