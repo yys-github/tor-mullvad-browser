@@ -15,6 +15,12 @@ l10n:
         - security/manager/locales/en-US
         - toolkit/locales/en-US
         - tools/lint/l10n.yml
+        - browser/branding/tb-alpha/locales/en-US
+        - browser/branding/tb-nightly/locales/en-US
+        - browser/branding/tb-release/locales/en-US
+        - mobile/android/branding/tb-alpha/locales/en-US
+        - mobile/android/branding/tb-nightly/locales/en-US
+        - mobile/android/branding/tb-release/locales/en-US
     # files not relevant to this linter
     exclude:
         - toolkit/locales/en-US/chrome/global/intl.css

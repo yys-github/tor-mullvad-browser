@@ -100,7 +100,7 @@ if CONFIG["MOZ_WIDGET_TOOLKIT"] == "cocoa":
         ],
         extra_files=extra_files,
         moves=moves,
-        pkginfo="APPLMOZB",
+        pkginfo="APPLTORB",
     )
 
 if CONFIG["MOZ_MACBUNDLE_NAME"]:
