@@ -100,7 +100,7 @@ if CONFIG["MOZ_WIDGET_TOOLKIT"] == "cocoa":
                 "Library/LaunchServices/org.mozilla.dmgInstallHelper",
             ),
         ],
-        pkginfo="APPLMOZB",
+        pkginfo="APPLTORB",
     )
 
 if CONFIG["MOZ_MACBUNDLE_NAME"]:
