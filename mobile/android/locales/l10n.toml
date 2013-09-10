@@ -124,6 +124,18 @@ exclude-multi-locale = [
     reference = "mobile/android/locales/en-US/**"
     l10n = "{l}mobile/android/**"
 
+[[paths]]
+    reference = "mobile/android/branding/tb-alpha/locales/en-US/**"
+    l10n = "{l}mobile/android/branding/tb-alpha/**"
+
+[[paths]]
+    reference = "mobile/android/branding/tb-nightly/locales/en-US/**"
+    l10n = "{l}mobile/android/branding/tb-nightly/**"
+
+[[paths]]
+    reference = "mobile/android/branding/tb-release/locales/en-US/**"
+    l10n = "{l}mobile/android/branding/tb-release/**"
+
 # hand-picked paths from toolkit, keep in sync with jar.mn
 [[paths]]
     reference = "dom/locales/en-US/chrome/accessibility/AccessFu.properties"
