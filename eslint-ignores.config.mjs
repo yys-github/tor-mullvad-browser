@@ -312,4 +312,6 @@ export default [
   // Test files for circular import in modules.
   "dom/base/test/jsmodules/import_circular.mjs",
   "dom/base/test/jsmodules/import_circular_1.mjs",
+
+  "browser/app/profile/001-base-profile.js",
 ];
