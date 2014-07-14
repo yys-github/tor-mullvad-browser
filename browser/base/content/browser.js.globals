@@ -241,5 +241,6 @@
   "gTrustPanelHandler",
   "SecurityLevelButton",
   "TorUIUtils",
-  "NewIdentityButton"
+  "NewIdentityButton",
+  "TorDomainIsolator"
 ]
