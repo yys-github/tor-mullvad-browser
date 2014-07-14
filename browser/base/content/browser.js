@@ -95,6 +95,7 @@ ChromeUtils.defineESModuleGetters(this, {
   ToolbarContextMenu: "resource:///modules/ToolbarContextMenu.sys.mjs",
   ToolbarDropHandler: "resource:///modules/ToolbarDropHandler.sys.mjs",
   ToolbarIconColor: "moz-src:///browser/themes/ToolbarIconColor.sys.mjs",
+  TorDomainIsolator: "resource://gre/modules/TorDomainIsolator.sys.mjs",
   TorUIUtils: "resource:///modules/TorUIUtils.sys.mjs",
   TranslationsParent: "resource://gre/actors/TranslationsParent.sys.mjs",
   UITour: "moz-src:///browser/components/uitour/UITour.sys.mjs",
