@@ -274,5 +274,6 @@
   "PBMExitStatus",
   "SecurityLevelButton",
   "NewIdentityButton",
-  "TorUIUtils"
+  "TorUIUtils",
+  "TorDomainIsolator"
 ]
