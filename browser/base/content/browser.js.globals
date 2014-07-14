@@ -241,5 +241,6 @@
   "Referrals",
   "SecurityLevelButton",
   "TorUIUtils",
-  "NewIdentityButton"
+  "NewIdentityButton",
+  "TorDomainIsolator"
 ]
