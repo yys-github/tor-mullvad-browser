@@ -255,5 +255,6 @@
   "ToolbarDropHandler",
   "SecurityLevelButton",
   "NewIdentityButton",
-  "TorUIUtils"
+  "TorUIUtils",
+  "TorDomainIsolator"
 ]
