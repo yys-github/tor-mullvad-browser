@@ -239,5 +239,6 @@
   "ContentSharingUtils",
   "SecurityLevelButton",
   "TorUIUtils",
-  "NewIdentityButton"
+  "NewIdentityButton",
+  "TorDomainIsolator"
 ]
