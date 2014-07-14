@@ -257,5 +257,6 @@
   "ProfilesDatastoreService",
   "SecurityLevelButton",
   "NewIdentityButton",
-  "TorUIUtils"
+  "TorUIUtils",
+  "TorDomainIsolator"
 ]
