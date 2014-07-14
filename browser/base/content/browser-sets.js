@@ -253,6 +253,9 @@ document.addEventListener(
           case "cmd_newIdentity":
             NewIdentityButton.onCommand(event);
             break;
+          case "cmd_newCircuit":
+            TorDomainIsolator.newCircuitForBrowser(gBrowser.selectedBrowser);
+            break;
         }
       });
 
