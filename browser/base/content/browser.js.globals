@@ -260,5 +260,6 @@
   "ActionsProviderContextualSearch",
   "SecurityLevelButton",
   "NewIdentityButton",
-  "TorUIUtils"
+  "TorUIUtils",
+  "TorDomainIsolator"
 ]
