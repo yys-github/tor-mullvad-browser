@@ -118,6 +118,7 @@
 #endif
 
     <command id="cmd_newIdentity" />
+    <command id="cmd_newCircuit" />
   </commandset>
 #include ../../components/places/content/placesCommands.inc.xhtml
   <commandset id="splitViewCommands">
@@ -416,4 +417,5 @@
          internal="true"/>
 #endif
     <key id="new-identity-key" modifiers="accel shift" key="U" command="cmd_newIdentity"/>
+    <key id="new-circuit-key" modifiers="accel shift" key="L" command="cmd_newCircuit"/>
   </keyset>
