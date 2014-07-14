@@ -405,4 +405,5 @@
          internal="true"/>
 #endif
     <key id="new-identity-key" modifiers="accel shift" key="U" command="cmd_newIdentity"/>
+    <key id="new-circuit-key" modifiers="accel shift" key="L" oncommand="TorDomainIsolator.newCircuitForBrowser(gBrowser.selectedBrowser)"/>
   </keyset>
