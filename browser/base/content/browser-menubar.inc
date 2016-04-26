@@ -420,6 +420,7 @@
 <!-- Note: Items under here are cloned to the AppMenu Help submenu. The cloned items
      have their strings defined by appmenu-data-l10n-id. -->
                 <menuitem id="menu_openHelp"
+                          hidden="true"
                           data-l10n-id="menu-get-help"
                           appmenu-data-l10n-id="appmenu-get-help"
 #ifdef XP_MACOSX
@@ -433,12 +434,15 @@
                           hidden="true"
                           appmenu-data-l10n-id="menu-report-broken-site"/>
                 <menuitem id="feedbackPage"
+                          hidden="true"
                           data-l10n-id="menu-help-share-ideas"
                           appmenu-data-l10n-id="appmenu-help-share-ideas"/>
                 <menuitem id="helpSafeMode"
+                          hidden="true"
                           data-l10n-id="menu-help-enter-troubleshoot-mode2"
                           appmenu-data-l10n-id="appmenu-help-enter-troubleshoot-mode2"/>
                 <menuitem id="troubleShooting"
+                          hidden="true"
                           data-l10n-id="menu-help-more-troubleshooting-info"
                           appmenu-data-l10n-id="appmenu-help-more-troubleshooting-info"/>
                 <menuitem id="help_reportSiteIssue"
@@ -456,6 +460,7 @@
                           appmenu-data-l10n-id="appmenu-help-not-deceptive"
                           hidden="true"/>
                 <menuitem id="helpSwitchDevice"
+                          hidden="true"
                           data-l10n-id="menu-help-switch-device"
                           appmenu-data-l10n-id="appmenu-help-switch-device"/>
                 <menuseparator id="aboutSeparator"/>
