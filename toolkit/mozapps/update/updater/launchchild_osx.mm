@@ -375,6 +375,7 @@ bool ObtainUpdaterArguments(int* aArgc, char*** aArgv,
 
 @end
 
+#ifndef BASE_BROWSER_UPDATE
 bool ServeElevatedUpdate(int aArgc, const char** aArgv,
                          const char* aMARChannelID) {
   MacAutoreleasePool pool;
@@ -393,6 +394,7 @@ bool ServeElevatedUpdate(int aArgc, const char** aArgv,
   [updater release];
   return didSucceed;
 }
+#endif
 
 bool IsOwnedByGroupAdmin(const char* aAppBundle) {
   MacAutoreleasePool pool;
