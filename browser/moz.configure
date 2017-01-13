@@ -134,6 +134,7 @@ set_config("NSIS_INSTALLER_DEFINES", nsis_installer_defines)
     milestone.is_nightly,
     disable_smart_cards,
     target,
+    base_browser_update,
     "--enable-default-browser-agent",
     notification_server_flag,
     push_notification_helper_flag,
@@ -169,6 +170,7 @@ def package_manifest_defines(
     is_nightly,
     no_smart_cards,
     target,
+    base_browser_update,
     default_browser_agent,
     notification_server,
     push_notification_helper,
@@ -214,6 +216,8 @@ def package_manifest_defines(
         defines.append(f"-DMOZ_PKCS11_PROCESS_NAME={pkcs11_process_name or ''}")
     if target.os == "Android" or target.kernel in ("WINNT", "Darwin"):
         defines.append("-DMOZ_SHARED_MOZGLUE=1")
+    if base_browser_update:
+        defines.append("-DBASE_BROWSER_UPDATE")
     if default_browser_agent:
         defines.append("-DMOZ_DEFAULT_BROWSER_AGENT=1")
     if notification_server:
