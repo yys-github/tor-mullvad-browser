@@ -76,7 +76,7 @@ if CONFIG["MOZ_WIDGET_TOOLKIT"] == "cocoa":
         (f"{branding}/document.icns", "Resources/document.icns"),
         (f"{branding}/Assets.car", "Resources/Assets.car"),
     ]
-    if CONFIG["MOZ_UPDATER"]:
+    if CONFIG["MOZ_UPDATER"] and not CONFIG["BASE_BROWSER_UPDATE"]:
         extra_files.append((
             f"!/{FINAL_TARGET}/org.mozilla.updater",
             "Library/LaunchServices/org.mozilla.updater",

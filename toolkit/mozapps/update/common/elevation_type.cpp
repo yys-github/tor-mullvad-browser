@@ -29,7 +29,9 @@ const char* BoolResultToString(BoolResult boolResult) {
 // _usually_ be unelevated and the second invocation should always be
 // elevated. `gInvocation` can be used for that purpose.
 BoolResult isProcessElevated(const NS_tchar* cmd) {
-#ifdef XP_WIN
+#ifdef BASE_BROWSER_UPDATE
+  return BoolResult::False;
+#elif defined(XP_WIN)
   auto isAdmin = mozilla::UserHasAdminPrivileges();
   if (isAdmin.isErr()) {
     fprintf(stderr,
