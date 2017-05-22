@@ -77,7 +77,7 @@
 #endif
 
 ; GMP clearkey plugin
-@BINPATH@/@DLL_PREFIX@clearkey@DLL_SUFFIX@
+;@BINPATH@/@DLL_PREFIX@clearkey@DLL_SUFFIX@
 
 #ifdef MOZ_APPSERVICES_IN_TREE
 [appservices destdir="appservices/lib/@ANDROID_CPU_ARCH@"]
