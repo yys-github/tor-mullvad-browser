@@ -332,3 +332,16 @@ def l10n_chrome_roots(branding_directory):
 
 
 set_config("MOZ_L10N_CHROME_ROOTS", l10n_chrome_roots)
+
+
+project_flag(
+    "MOZ_ANDROID_NETWORK_STATE",
+    help="Include permission for accessing WiFi/network state on Android",
+    default=False,
+)
+
+project_flag(
+    "MOZ_ANDROID_LOCATION",
+    help="Include permission for accessing fine and course-grain Location on Android",
+    default=False,
+)
