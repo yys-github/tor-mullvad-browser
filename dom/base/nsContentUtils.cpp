@@ -11329,6 +11329,25 @@ bool nsContentUtils::ComputeIsSecureContext(nsIChannel* aChannel) {
   return principal->GetIsOriginPotentiallyTrustworthy();
 }
 
+/* static */ bool nsContentUtils::DocumentHasOnionURI(Document* aDocument) {
+  if (!aDocument) {
+    return false;
+  }
+
+  nsIURI* uri = aDocument->GetDocumentURI();
+  if (!uri) {
+    return false;
+  }
+
+  nsAutoCString host;
+  if (NS_SUCCEEDED(uri->GetHost(host))) {
+    bool hasOnionURI = StringEndsWith(host, ".onion"_ns);
+    return hasOnionURI;
+  }
+
+  return false;
+}
+
 /* https://html.spec.whatwg.org/#concept-try-upgrade */
 void nsContentUtils::TryToUpgradeElement(Element* aElement) {
   // 1. "Let definition be the result of looking up a custom element definition
