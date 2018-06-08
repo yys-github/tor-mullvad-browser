@@ -3132,7 +3132,8 @@ nsresult NS_ShouldSecureUpgrade(
   // If the target is already considered potentially trustworthy (loopback, a
   // host on `dom.securecontext.allowlist`, or a .onion address), then it is
   // not served over https and we shouldn't upgrade it.
-  if (nsMixedContentBlocker::IsPotentiallyTrustworthyOrigin(aURI)) {
+  if (nsMixedContentBlocker::IsPotentiallyTrustworthyOrigin(aURI) ||
+      nsMixedContentBlocker::IsPotentiallyTrustworthyOnion(aURI)) {
     aShouldUpgrade = false;
     return NS_OK;
   }

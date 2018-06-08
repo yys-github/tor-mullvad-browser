@@ -46,6 +46,7 @@
 #include "mozilla/dom/WindowGlobalParent.h"
 #include "mozilla/gfx/2D.h"
 #include "mozilla/gfx/CrossProcessPaint.h"
+#include "mozilla/dom/nsMixedContentBlocker.h"
 #include "mozilla/ipc/Endpoint.h"
 #include "nsAtom.h"
 #include "nsContentUtils.h"
@@ -468,7 +469,9 @@ void WindowGlobalChild::OnNewDocument(Document* aDocument) {
   nsCOMPtr<nsIURI> innerDocURI =
       NS_GetInnermostURI(aDocument->GetDocumentURI());
   if (innerDocURI) {
-    txn.SetIsSecure(innerDocURI->SchemeIs("https"));
+    txn.SetIsSecure(
+        innerDocURI->SchemeIs("https") ||
+        nsMixedContentBlocker::IsPotentiallyTrustworthyOnion(innerDocURI));
   }
 
   MOZ_DIAGNOSTIC_ASSERT(mDocumentPrincipal->GetIsLocalIpAddress() ==
