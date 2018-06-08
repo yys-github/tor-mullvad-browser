@@ -109,6 +109,11 @@
   display: none;
 }
 
+/* Hide verifier information. tor-browser#45249. */
+#identity-popup-securityView-extended-info[noverifier] description[when-verifier] {
+  display: none !important;
+}
+
 /* Make sure hidden elements don't accidentally become visible from one of the
    above selectors (see Bug 1194258) */
 #identity-popup [hidden] {
