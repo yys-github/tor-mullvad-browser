@@ -177,6 +177,12 @@ var gIdentityHandler = {
     return error === "httpErrorPage" || error === "serverError";
   },
 
+  get _uriIsOnionHost() {
+    return this._uriHasHost
+      ? this._uri.host.toLowerCase().endsWith(".onion")
+      : false;
+  },
+
   get _isAboutNetErrorPage() {
     let { documentURI } = gBrowser.selectedBrowser;
     return documentURI?.scheme == "about" && documentURI.filePath == "neterror";
@@ -799,7 +805,15 @@ var gIdentityHandler = {
       host = uri.specIgnoringRef;
     }
 
-    return host;
+    // For tor browser we want to shorten onion addresses for the site identity
+    // panel (gIdentityHandler) to match the circuit display and the onion
+    // authorization panel.
+    // See tor-browser#42091 and tor-browser#41600.
+    // This will also shorten addresses for other consumers of this method,
+    // which includes the permissions panel (gPermissionPanel) and the
+    // protections panel (gProtectionsHandler), although the latter is hidden in
+    // tor browser.
+    return TorUIUtils.shortenOnionAddress(host);
   },
 
   /**
@@ -810,9 +824,9 @@ var gIdentityHandler = {
   get pointerlockFsWarningClassName() {
     // Note that the fullscreen warning does not handle _isSecureInternalUI.
     if (this._uriHasHost && this._isSecureConnection) {
-      return "verifiedDomain";
+      return this._uriIsOnionHost ? "onionVerifiedDomain" : "verifiedDomain";
     }
-    return "unknownIdentity";
+    return this._uriIsOnionHost ? "onionUnknownIdentity" : "unknownIdentity";
   },
 
   /**
@@ -869,11 +883,17 @@ var gIdentityHandler = {
         "identity.extension.label",
         [extensionName]
       );
-    } else if (this._uriHasHost && this._isSecureConnection) {
+    } else if (this._uriHasHost && this._isSecureConnection && this._secInfo) {
       // This is a secure connection.
-      this._identityBox.className = "verifiedDomain";
+      // _isSecureConnection implicitly includes onion services, which may not have an SSL certificate
+      const uriIsOnionHost = this._uriIsOnionHost;
+      this._identityBox.className = uriIsOnionHost
+        ? "onionVerifiedDomain"
+        : "verifiedDomain";
       if (this._isMixedActiveContentBlocked) {
-        this._identityBox.classList.add("mixedActiveBlocked");
+        this._identityBox.classList.add(
+          uriIsOnionHost ? "onionMixedActiveBlocked" : "mixedActiveBlocked"
+        );
       }
       if (!this._isCertUserOverridden) {
         // It's a normal cert, verifier is the CA Org.
@@ -884,10 +904,15 @@ var gIdentityHandler = {
       }
     } else if (this._isBrokenConnection) {
       // This is a secure connection, but something is wrong.
-      this._identityBox.className = "unknownIdentity";
+      const uriIsOnionHost = this._uriIsOnionHost;
+      this._identityBox.className = uriIsOnionHost
+        ? "onionUnknownIdentity"
+        : "unknownIdentity";
 
       if (this._isMixedActiveContentLoaded) {
-        this._identityBox.classList.add("mixedActiveContent");
+        this._identityBox.classList.add(
+          uriIsOnionHost ? "onionMixedActiveContent" : "mixedActiveContent"
+        );
         if (
           UrlbarPrefs.getScotchBonnetPref("trimHttps") &&
           warnTextOnInsecure
@@ -898,10 +923,14 @@ var gIdentityHandler = {
         }
       } else if (this._isMixedActiveContentBlocked) {
         this._identityBox.classList.add(
-          "mixedDisplayContentLoadedActiveBlocked"
+          uriIsOnionHost
+            ? "onionMixedDisplayContentLoadedActiveBlocked"
+            : "mixedDisplayContentLoadedActiveBlocked"
         );
       } else if (this._isMixedPassiveContentLoaded) {
-        this._identityBox.classList.add("mixedDisplayContent");
+        this._identityBox.classList.add(
+          uriIsOnionHost ? "onionMixedDisplayContent" : "mixedDisplayContent"
+        );
       } else {
         this._identityBox.classList.add("weakCipher");
       }
@@ -922,6 +951,8 @@ var gIdentityHandler = {
       // Network errors, blocked pages, and pages associated
       // with another page get a more neutral icon
       this._identityBox.className = "unknownIdentity";
+    } else if (this._uriIsOnionHost) {
+      this._identityBox.className = "onionUnknownIdentity";
     } else if (this._isPotentiallyTrustworthy) {
       // This is a local resource (and shouldn't be marked insecure).
       this._identityBox.className = "localResource";
@@ -937,7 +968,10 @@ var gIdentityHandler = {
     }
 
     if (this._isCertUserOverridden) {
-      this._identityBox.classList.add("certUserOverridden");
+      const uriIsOnionHost = this._uriIsOnionHost;
+      this._identityBox.classList.add(
+        uriIsOnionHost ? "onionCertUserOverridden" : "certUserOverridden"
+      );
       // Cert is trusted because of a security exception, verifier is a special string.
       tooltip = gNavigatorBundle.getString(
         "identity.identified.verified_by_you"
@@ -1158,7 +1192,11 @@ var gIdentityHandler = {
       this._updateAttribute(element, "ciphers", ciphers);
       this._updateAttribute(element, "mixedcontent", mixedcontent);
       this._updateAttribute(element, "isbroken", this._isBrokenConnection);
-      element.toggleAttribute("customroot", this._hasCustomRoot());
+      // tor-browser#45343: hide the custom root warning for Onion sites.
+      element.toggleAttribute(
+        "customroot",
+        this._hasCustomRoot() && !this._uriIsOnionHost
+      );
       this._updateAttribute(element, "httpsonlystatus", httpsOnlyStatus);
     }
 
@@ -1169,14 +1207,17 @@ var gIdentityHandler = {
     let owner = "";
 
     // Fill in the CA name if we have a valid TLS certificate.
-    if (this._isSecureConnection || this._isCertUserOverridden) {
+    if (
+      this._secInfo &&
+      (this._isSecureConnection || this._isCertUserOverridden)
+    ) {
       // Remove "Verified by " from the verifier string. tor-browser#45249.
       verifier = this.getIdentityData().caOrg;
     }
 
     // Fill in organization information if we have a valid EV certificate or
     // QWAC.
-    if (this._isEV || this._qwac) {
+    if (this._secInfo && (this._isEV || this._qwac)) {
       let iData = this.getIdentityData(this._qwac || this._secInfo.serverCert);
       owner = iData.subjectOrg;
       // Remove "Verified by " from the verifier string. tor-browser#45249.
@@ -1198,6 +1239,14 @@ var gIdentityHandler = {
         // Country only
         supplemental += iData.country;
       }
+    }
+
+    // tor-browser#45343: hide the custom root warning for Onion sites, but also
+    // empty the verifier, since it might be a lie.
+    if (this._uriIsOnionHost && this._hasCustomRoot()) {
+      owner = "";
+      supplemental = "";
+      verifier = "";
     }
 
     // Push the appropriate strings out to the UI.
@@ -1231,6 +1280,12 @@ var gIdentityHandler = {
     this._identityPopupContentOwner.textContent = owner;
     this._identityPopupContentSupp.textContent = supplemental;
     this._identityPopupContentVerif.textContent = verifier;
+
+    // Hide "Verified by" section if this is empty for an onion host.
+    // tor-browser#45249.
+    document
+      .getElementById("identity-popup-securityView-extended-info")
+      .toggleAttribute("noverifier", this._uriIsOnionHost && verifier === "");
   },
 
   setURI(uri) {
