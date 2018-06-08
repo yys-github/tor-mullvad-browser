@@ -45,6 +45,8 @@
 #include "nsIURIMutator.h"
 #include "nsURLHelper.h"
 
+#include "mozilla/dom/nsMixedContentBlocker.h"
+
 using namespace mozilla::ipc;
 using namespace mozilla::dom::ipc;
 
@@ -235,7 +237,9 @@ void WindowGlobalChild::OnNewDocument(Document* aDocument) {
   nsCOMPtr<nsIURI> innerDocURI =
       NS_GetInnermostURI(aDocument->GetDocumentURI());
   if (innerDocURI) {
-    txn.SetIsSecure(innerDocURI->SchemeIs("https"));
+    txn.SetIsSecure(
+        innerDocURI->SchemeIs("https") ||
+        nsMixedContentBlocker::IsPotentiallyTrustworthyOnion(innerDocURI));
   }
 
   MOZ_DIAGNOSTIC_ASSERT(mDocumentPrincipal->GetIsLocalIpAddress() ==
