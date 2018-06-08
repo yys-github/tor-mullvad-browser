@@ -323,6 +323,7 @@ void HttpBaseChannel::AddClassificationFlags(uint32_t aClassificationFlags,
 
 static bool isSecureOrTrustworthyURL(nsIURI* aURI) {
   return aURI->SchemeIs("https") ||
+         nsMixedContentBlocker::IsPotentiallyTrustworthyOnion(aURI) ||
          (StaticPrefs::network_http_encoding_trustworthy_is_https() &&
           nsMixedContentBlocker::IsPotentiallyTrustworthyLoopbackURL(aURI));
 }
@@ -347,7 +348,6 @@ nsresult HttpBaseChannel::Init(nsIURI* aURI, uint32_t aCaps,
   // Construct connection info object
   nsAutoCString host;
   int32_t port = -1;
-  bool isHTTPS = isSecureOrTrustworthyURL(mURI);
 
   nsresult rv = mURI->GetAsciiHost(host);
   if (NS_FAILED(rv)) return rv;
@@ -401,7 +401,7 @@ nsresult HttpBaseChannel::Init(nsIURI* aURI, uint32_t aCaps,
                       : EmptyCString();
 
   rv = gHttpHandler->AddStandardRequestHeaders(
-      &mRequestHead, aURI, isHTTPS, contentPolicyType,
+      &mRequestHead, aURI, isSecureOrTrustworthyURL(mURI), contentPolicyType,
       nsContentUtils::ShouldResistFingerprinting(this,
                                                  RFPTarget::HttpUserAgent),
       languageOverride);
