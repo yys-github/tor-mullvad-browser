@@ -153,8 +153,6 @@ def package_manifest_defines(
         defines.append("-DMOZ_DEFAULT_BROWSER_AGENT=1")
     if notification_server:
         defines.append("-DMOZ_NOTIFICATION_SERVER=1")
-    if makensis:
-        defines.append("-DHAVE_MAKENSISU=1")
     if llvm_symbolizer:
         defines.append(f"-DLLVM_SYMBOLIZER={basename(llvm_symbolizer)}")
     if clang_rt_asan_lib_path:
