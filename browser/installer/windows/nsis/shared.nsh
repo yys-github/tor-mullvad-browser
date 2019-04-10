@@ -1412,7 +1412,6 @@ FunctionEnd
   Push "default-browser-agent.exe"
   Push "nmhproxy.exe"
   Push "notification-helper.exe"
-  Push "pingsender.exe"
   Push "updater.exe"
   Push "mozwer.dll"
   Push "${FileMainEXE}"
