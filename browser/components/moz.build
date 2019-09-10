@@ -52,7 +52,6 @@ DIRS += [
     "preferences",
     "privatebrowsing",
     "prompts",
-    "protections",
     "protocolhandler",
     "reportbrokensite",
     "resistfingerprinting",
