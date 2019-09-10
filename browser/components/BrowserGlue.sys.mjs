@@ -21,8 +21,6 @@ ChromeUtils.defineESModuleGetters(lazy, {
   BrowserUtils: "resource://gre/modules/BrowserUtils.sys.mjs",
   BrowserUsageTelemetry: "resource:///modules/BrowserUsageTelemetry.sys.mjs",
   BrowserWindowTracker: "resource:///modules/BrowserWindowTracker.sys.mjs",
-  ContentBlockingPrefs:
-    "moz-src:///browser/components/protections/ContentBlockingPrefs.sys.mjs",
   DAPIncrementality: "resource://gre/modules/DAPIncrementality.sys.mjs",
   DAPTelemetrySender: "resource://gre/modules/DAPTelemetrySender.sys.mjs",
   DAPVisitCounter: "resource://gre/modules/DAPVisitCounter.sys.mjs",
@@ -383,8 +381,6 @@ BrowserGlue.prototype = {
       this._gmpInstallManager.uninit();
       delete this._gmpInstallManager;
     }
-
-    lazy.ContentBlockingPrefs.uninit();
   },
 
   // runs on startup, before the first command line handler is invoked
