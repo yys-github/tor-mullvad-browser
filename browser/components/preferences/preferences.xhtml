@@ -47,6 +47,7 @@
   />
 
   <link rel="stylesheet" href="chrome://browser/content/securitylevel/securityLevelPreferences.css" />
+  <link rel="stylesheet" href="chrome://browser/content/torpreferences/torPreferences.css" />
 
   <link rel="localization" href="branding/brand.ftl"/>
   <link rel="localization" href="browser/browser.ftl"/>
@@ -105,6 +106,7 @@
   <script type="module" src="chrome://global/content/elements/moz-input-color.mjs"></script>
   <script type="module" src="chrome://browser/content/preferences/widgets/sync-device-name.mjs"></script>
   <script type="module" src="chrome://browser/content/preferences/widgets/sync-engines-list.mjs"></script>
+  <script src="chrome://browser/content/torpreferences/bridgemoji/BridgeEmoji.js"/>
 </head>
 
 <html:body xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -223,6 +225,8 @@
                       class="category hidden-category"
                       value="paneTranslations"/>
 
+#include ../torpreferences/content/connectionCategory.inc.xhtml
+
       </richlistbox>
 
       <spacer flex="1"/>
@@ -273,6 +277,7 @@
 #include sync.inc.xhtml
 #include experimental.inc.xhtml
 #include moreFromMozilla.inc.xhtml
+#include ../torpreferences/content/connectionPane.inc.xhtml
         </vbox>
       </vbox>
     </vbox>
