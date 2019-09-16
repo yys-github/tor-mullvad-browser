@@ -1,0 +1,275 @@
+<html:template id="tor-bridges-display-template">
+  <html:div id="tor-bridges-none" hidden="hidden">
+    <html:img id="tor-bridges-none-icon" alt="" />
+    <html:p data-l10n-id="tor-bridges-none-added"></html:p>
+  </html:div>
+  <html:fieldset id="tor-bridges-current" hidden="hidden">
+    <html:legend>
+      <html:h4
+        id="tor-bridges-current-heading-non-search"
+        class="tor-bridges-current-heading tor-focusable-heading tor-small-heading"
+        tabindex="-1"
+        data-l10n-id="tor-bridges-your-bridges"
+      ></html:h4>
+    </html:legend>
+    <html:p
+      id="tor-bridges-user-label"
+      class="tor-bridges-source-label"
+      data-l10n-id="tor-bridges-source-user"
+    ></html:p>
+    <html:p
+      id="tor-bridges-built-in-label"
+      class="tor-bridges-source-label"
+      data-l10n-id="tor-bridges-source-built-in"
+    ></html:p>
+    <html:p
+      id="tor-bridges-requested-label"
+      class="tor-bridges-source-label"
+      data-l10n-id="tor-bridges-source-requested"
+    ></html:p>
+    <html:p id="tor-bridges-lox-label" class="tor-bridges-source-label">
+      <html:img id="tor-bridges-lox-label-icon" alt="" />
+      <html:span data-l10n-id="tor-bridges-source-lox"></html:span>
+    </html:p>
+    <html:button
+      id="tor-bridges-all-options-button"
+      class="tor-bridges-options-button"
+      aria-haspopup="menu"
+      aria-expanded="false"
+      aria-controls="tor-bridges-all-options-menu"
+      data-l10n-id="tor-bridges-options-button"
+    ></html:button>
+    <html:panel-list
+      id="tor-bridges-all-options-menu"
+      data-hidden-from-search="true"
+    >
+      <html:panel-item
+        id="tor-bridges-options-qr-all-menu-item"
+        data-l10n-attrs="accesskey"
+        data-l10n-id="tor-bridges-menu-item-qr-all-bridge-addresses"
+      ></html:panel-item>
+      <html:panel-item
+        id="tor-bridges-options-copy-all-menu-item"
+        data-l10n-attrs="accesskey"
+        data-l10n-id="tor-bridges-menu-item-copy-all-bridge-addresses"
+      ></html:panel-item>
+      <html:panel-item
+        id="tor-bridges-options-edit-all-menu-item"
+        data-l10n-attrs="accesskey"
+        data-l10n-id="tor-bridges-menu-item-edit-all-bridges"
+      ></html:panel-item>
+      <html:panel-item
+        id="tor-bridges-options-remove-all-menu-item"
+        data-l10n-attrs="accesskey"
+        data-l10n-id="tor-bridges-menu-item-remove-all-bridges"
+      ></html:panel-item>
+    </html:panel-list>
+    <html:div id="tor-bridges-built-in-display" hidden="hidden">
+      <html:p id="tor-bridges-built-in-type-name"></html:p>
+      <html:p id="tor-bridges-built-in-connected" class="bridge-status-badge">
+        <html:div class="bridge-status-icon"></html:div>
+        <html:span
+          data-l10n-id="tor-bridges-built-in-status-connected"
+        ></html:span>
+      </html:p>
+      <html:p id="tor-bridges-built-in-description"></html:p>
+    </html:div>
+    <html:div
+      id="tor-bridges-grid-display"
+      class="tor-bridges-grid"
+      role="grid"
+      aria-labelledby="tor-bridges-current-heading-non-search"
+      hidden="hidden"
+    ></html:div>
+    <html:template id="tor-bridges-grid-row-template">
+      <html:div class="tor-bridges-grid-row" role="row">
+        <!-- TODO: lox status cell for new bridges? -->
+        <html:span
+          class="tor-bridges-type-cell tor-bridges-grid-cell"
+          role="gridcell"
+        ></html:span>
+        <html:span class="tor-bridges-emojis-block" role="none"></html:span>
+        <html:span class="tor-bridges-grid-end-block" role="none">
+          <html:span
+            class="tor-bridges-address-cell tor-bridges-grid-cell"
+            role="gridcell"
+          >
+            <html:span class="tor-bridges-address-cell-text"></html:span>
+          </html:span>
+          <html:span
+            class="tor-bridges-status-cell tor-bridges-grid-cell"
+            role="gridcell"
+          >
+            <html:div class="bridge-status-badge">
+              <html:div class="bridge-status-icon"></html:div>
+              <html:span class="tor-bridges-status-cell-text"></html:span>
+            </html:div>
+          </html:span>
+          <html:span
+            class="tor-bridges-options-cell tor-bridges-grid-cell"
+            role="gridcell"
+          >
+            <html:button
+              class="tor-bridges-options-cell-button tor-bridges-options-button tor-bridges-grid-focus"
+              aria-haspopup="menu"
+              aria-expanded="false"
+              data-l10n-id="tor-bridges-individual-bridge-options-button"
+            ></html:button>
+            <html:panel-list
+              class="tor-bridges-individual-options-menu"
+              data-hidden-from-search="true"
+            >
+              <html:panel-item
+                class="tor-bridges-options-qr-one-menu-item"
+                data-l10n-attrs="accesskey"
+                data-l10n-id="tor-bridges-menu-item-qr-address"
+              ></html:panel-item>
+              <html:panel-item
+                class="tor-bridges-options-copy-one-menu-item"
+                data-l10n-attrs="accesskey"
+                data-l10n-id="tor-bridges-menu-item-copy-address"
+              ></html:panel-item>
+              <html:panel-item
+                class="tor-bridges-options-remove-one-menu-item"
+                data-l10n-attrs="accesskey"
+                data-l10n-id="tor-bridges-menu-item-remove-bridge"
+              ></html:panel-item>
+            </html:panel-list>
+          </html:span>
+        </html:span>
+      </html:div>
+    </html:template>
+    <html:div
+      id="tor-bridges-share"
+      class="tor-bridges-details-box"
+      hidden="hidden"
+    >
+      <html:h5
+        class="tor-bridges-share-heading tor-small-heading"
+        data-l10n-id="tor-bridges-share-heading"
+      ></html:h5>
+      <html:p
+        id="tor-bridges-share-description"
+        data-l10n-id="tor-bridges-share-description"
+      ></html:p>
+      <html:button
+        id="tor-bridges-copy-addresses-button"
+        data-l10n-id="tor-bridges-copy-addresses-button"
+      ></html:button>
+      <html:button
+        id="tor-bridges-qr-addresses-button"
+        data-l10n-id="tor-bridges-qr-addresses-button"
+      ></html:button>
+    </html:div>
+    <html:div id="tor-bridges-lox-status" hidden="hidden">
+      <html:div data-l10n-id="tor-bridges-lox-description"></html:div>
+      <html:div
+        id="tor-bridges-lox-details"
+        class="tor-bridges-details-box tor-bridges-lox-box"
+        hidden="hidden"
+      >
+        <html:img alt="" class="tor-bridges-lox-image-inner" />
+        <html:img alt="" class="tor-bridges-lox-image-outer" />
+        <html:h5
+          class="tor-bridges-lox-next-unlock-counter tor-small-heading tor-bridges-lox-intro tor-focusable-heading"
+          tabindex="-1"
+        ></html:h5>
+        <html:ul class="tor-bridges-lox-list">
+          <html:li
+            id="tor-bridges-lox-next-unlock-gain-bridges"
+            class="tor-bridges-lox-list-item tor-bridges-lox-list-item-bridge"
+            data-l10n-id="tor-bridges-lox-unlock-two-bridges"
+            hidden="hidden"
+          ></html:li>
+          <html:li
+            id="tor-bridges-lox-next-unlock-first-invites"
+            class="tor-bridges-lox-list-item tor-bridges-lox-list-item-invite"
+            data-l10n-id="tor-bridges-lox-unlock-first-invites"
+            hidden="hidden"
+          ></html:li>
+          <html:li
+            id="tor-bridges-lox-next-unlock-more-invites"
+            class="tor-bridges-lox-list-item tor-bridges-lox-list-item-invite"
+            data-l10n-id="tor-bridges-lox-unlock-more-invites"
+            hidden="hidden"
+          ></html:li>
+        </html:ul>
+        <html:div
+          id="tor-bridges-lox-remaining-invites"
+          hidden="hidden"
+        ></html:div>
+        <html:button
+          id="tor-bridges-lox-show-invites-button"
+          class="tor-bridges-lox-button"
+          data-l10n-id="tor-bridges-lox-show-invites-button"
+          hidden="hidden"
+        ></html:button>
+      </html:div>
+      <html:div
+        id="tor-bridges-lox-unlock-alert"
+        role="alert"
+        class="tor-bridges-details-box tor-bridges-lox-box"
+        hidden="hidden"
+      >
+        <html:img alt="" class="tor-bridges-lox-image-inner" />
+        <html:img alt="" class="tor-bridges-lox-image-outer" />
+        <html:div
+          id="tor-bridge-unlock-alert-title"
+          class="tor-small-heading tor-bridges-lox-intro"
+        ></html:div>
+        <html:ul class="tor-bridges-lox-list">
+          <html:li
+            id="tor-bridges-lox-unlock-alert-gain-bridges"
+            class="tor-bridges-lox-list-item tor-bridges-lox-list-item-bridge"
+            data-l10n-id="tor-bridges-lox-gained-two-bridges"
+            hidden="hidden"
+          ></html:li>
+          <html:li
+            id="tor-bridges-lox-unlock-alert-new-bridges"
+            class="tor-bridges-lox-list-item tor-bridges-lox-list-item-bridge"
+            data-l10n-id="tor-bridges-lox-new-bridges"
+            hidden="hidden"
+          ></html:li>
+          <html:li
+            id="tor-bridges-lox-unlock-alert-invites"
+            class="tor-bridges-lox-list-item tor-bridges-lox-list-item-invite"
+            hidden="hidden"
+          ></html:li>
+        </html:ul>
+        <html:button
+          id="tor-bridges-lox-unlock-alert-button"
+          class="tor-bridges-lox-button"
+          data-l10n-id="tor-bridges-lox-got-it-button"
+        ></html:button>
+      </html:div>
+    </html:div>
+  </html:fieldset>
+</html:template>
+
+<hbox
+  id="torPreferencesCategory"
+  class="subcategory"
+  data-category="paneConnection"
+  hidden="true"
+  data-srd-groupid="connectionStatus"
+>
+  <html:h1 data-l10n-id="tor-connection-settings-heading"></html:h1>
+</hbox>
+<html:setting-group
+  groupid="connectionStatus"
+  data-category="paneConnection"
+  hidden="hidden"
+  data-srd-migrated=""
+/>
+<html:setting-group
+  groupid="torBridges"
+  data-category="paneConnection"
+  hidden="hidden"
+  data-srd-migrated=""
+/>
+<html:setting-group
+  groupid="torAdvanced"
+  data-category="paneConnection"
+  hidden="hidden"
+  data-srd-migrated=""
+/>
