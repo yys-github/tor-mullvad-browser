@@ -12,6 +12,7 @@
 /* import-globals-from findInPage.js */
 /* import-globals-from /browser/base/content/utilityOverlay.js */
 /* import-globals-from /toolkit/content/preferencesBindings.js */
+/* import-globals-from ../torpreferences/content/connectionPane.js */
 
 /** @import MozButton from "chrome://global/content/elements/moz-button.mjs" */
 /** @import {SettingConfig, SettingEmitChange} from "chrome://global/content/preferences/Setting.mjs" */
@@ -115,6 +116,7 @@ ChromeUtils.defineESModuleGetters(this, {
     "resource:///modules/SelectionChangedMenulist.sys.mjs",
   ShortcutUtils: "resource://gre/modules/ShortcutUtils.sys.mjs",
   SiteDataManager: "resource:///modules/SiteDataManager.sys.mjs",
+  TorConnect: "resource://gre/modules/TorConnect.sys.mjs",
   TransientPrefs: "resource:///modules/TransientPrefs.sys.mjs",
   UIState: "resource://services-sync/UIState.sys.mjs",
   UpdateUtils: "resource://gre/modules/UpdateUtils.sys.mjs",
@@ -265,6 +267,16 @@ const CONFIG_PANES = Object.freeze({
     module: "chrome://browser/content/preferences/config/downloads.mjs",
     visible: () =>
       Services.prefs.getBoolPref("browser.settings-redesign.enabled", false),
+  },
+  connection: {
+    l10nId: "tor-connection-settings-pane",
+    iconSrc: "chrome://browser/content/torconnect/tor-connect.svg",
+    groupIds: ["connectionStatus"],
+    module: "chrome://browser/content/torpreferences/config/connection.mjs",
+    visible: () => {
+      return TorConnect.enabled;
+    },
+    replaces: "connection",
   },
   connectionSecurity: {
     parent: "privacy",
@@ -561,6 +573,13 @@ function init_all() {
     register_module("paneSync", gSyncPane);
   }
   register_module("paneSearchResults", gSearchResultsPane);
+  if (gConnectionPane.enabled) {
+    document.getElementById("category-connection").hidden = false;
+    register_module("paneConnection", gConnectionPane);
+  } else {
+    // Remove the pane from the DOM so it doesn't get incorrectly included in search results.
+    document.getElementById("template-paneConnection").remove();
+  }
   for (let [id, config] of Object.entries(CONFIG_PANES)) {
     // Skip over configs we do not want, including all its children.
     // See tor-browser#44711.

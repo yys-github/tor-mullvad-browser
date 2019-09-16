@@ -44,6 +44,7 @@
   />
 
   <link rel="stylesheet" href="chrome://browser/content/securitylevel/securityLevelPreferences.css" />
+  <link rel="stylesheet" href="chrome://browser/content/torpreferences/torPreferences.css" />
 
   <link rel="localization" href="branding/brand.ftl"/>
   <link rel="localization" href="browser/browser.ftl"/>
@@ -106,6 +107,8 @@
   <script type="module" src="chrome://browser/content/preferences/widgets/update-information.mjs"></script>
   <script type="module" src="chrome://browser/content/preferences/widgets/update-state.mjs"></script>
   <script type="module" src="chrome://browser/content/ipprotection/bandwidth-usage.mjs"></script>
+  <script type="module" src="chrome://browser/content/torpreferences/widgets/tor-connection-status.mjs"></script>
+  <script src="chrome://browser/content/torpreferences/bridgemoji/BridgeEmoji.js"/>
 </head>
 
 <html:body xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -146,6 +149,11 @@
         view="panePrivacy"
         iconsrc="chrome://browser/skin/preferences/category-privacy-security.svg"
         data-l10n-id="pane-privacy-title3">
+      </html:moz-page-nav-button>
+      <html:moz-page-nav-button id="category-connection"
+        view="paneConnection"
+        iconsrc="chrome://browser/content/torconnect/tor-connect.svg"
+        data-l10n-id="tor-connection-settings-nav-button">
       </html:moz-page-nav-button>
       <html:moz-page-nav-button id="category-passwords-autofill"
         view="panePasswordsAutofill"
@@ -261,6 +269,7 @@
 #include privacy.inc.xhtml
 #include sync.inc.xhtml
 #include moreFromMozilla.inc.xhtml
+#include ../torpreferences/content/connectionPane.inc.xhtml
         </vbox>
       </vbox>
     </vbox>
