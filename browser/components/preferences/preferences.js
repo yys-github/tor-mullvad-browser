@@ -115,6 +115,7 @@ ChromeUtils.defineESModuleGetters(this, {
     "resource:///modules/SelectionChangedMenulist.sys.mjs",
   ShortcutUtils: "resource://gre/modules/ShortcutUtils.sys.mjs",
   SiteDataManager: "resource:///modules/SiteDataManager.sys.mjs",
+  TorConnect: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
   TransientPrefs: "resource:///modules/TransientPrefs.sys.mjs",
   UIState: "resource://services-sync/UIState.sys.mjs",
   UpdateUtils: "resource://gre/modules/UpdateUtils.sys.mjs",
@@ -265,6 +266,16 @@ const CONFIG_PANES = Object.freeze({
     module: "chrome://browser/content/preferences/config/downloads.mjs",
     visible: () =>
       Services.prefs.getBoolPref("browser.settings-redesign.enabled", false),
+  },
+  connection: {
+    l10nId: "tor-connection-settings-pane",
+    iconSrc: "chrome://browser/content/torconnect/tor-connect.svg",
+    groupIds: ["connectionStatus", "torBridges", "torAdvanced"],
+    module: "chrome://browser/content/torpreferences/config/connection.mjs",
+    visible: () => {
+      return TorConnect.enabled;
+    },
+    replaces: "connection",
   },
   connectionSecurity: {
     parent: "privacy",
@@ -569,6 +580,23 @@ function init_all() {
     register_module("paneSync", gSyncPane);
   }
   register_module("paneSearchResults", gSearchResultsPane);
+  if (!redesignEnabled) {
+    if (TorConnect.enabled) {
+      register_module("paneConnection", {
+        init() {
+          ChromeUtils.importESModule(
+            "chrome://browser/content/torpreferences/config/connection.mjs",
+            { global: "current" }
+          );
+          initSettingGroup("connectionStatus");
+          initSettingGroup("torBridges");
+          initSettingGroup("torAdvanced");
+        },
+      });
+    } else {
+      document.getElementById("category-connection").remove();
+    }
+  }
   for (let [id, config] of Object.entries(CONFIG_PANES)) {
     // Skip over configs we do not want, including all its children.
     // See tor-browser#44711.
