@@ -74,6 +74,7 @@ DIRS += [
     "urlbar",
     "webrtc",
     "torcircuit",
+    "torpreferences",
 ]
 
 DIRS += ["build"]
