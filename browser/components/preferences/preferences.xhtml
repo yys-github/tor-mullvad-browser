@@ -47,6 +47,7 @@
   />
 
   <link rel="stylesheet" href="chrome://browser/content/securitylevel/securityLevelPreferences.css" />
+  <link rel="stylesheet" href="chrome://browser/content/torpreferences/torPreferences.css" />
 
   <link rel="localization" href="branding/brand.ftl"/>
   <link rel="localization" href="browser/browser.ftl"/>
@@ -109,6 +110,7 @@
   <script type="module" src="chrome://browser/content/preferences/widgets/update-information.mjs"></script>
   <script type="module" src="chrome://browser/content/preferences/widgets/update-state.mjs"></script>
   <script type="module" src="chrome://browser/content/ipprotection/bandwidth-usage.mjs"></script>
+  <script src="chrome://browser/content/torpreferences/bridgemoji/BridgeEmoji.js"/>
 </head>
 
 <html:body xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul"
@@ -230,6 +232,8 @@
       <!-- Hide the translations sub-pane. tor-browser#44710. -->
       <html:moz-page-nav-button hidden="true" class="hidden-category" view="paneTranslations"/>
 
+#include ../torpreferences/content/connectionCategory.inc.xhtml
+
       <!-- Footer links -->
       <html:moz-page-nav-button id="addonsButton"
         slot="secondary-nav"
@@ -275,6 +279,7 @@
 #include containers.inc.xhtml
 #include sync.inc.xhtml
 #include moreFromMozilla.inc.xhtml
+#include ../torpreferences/content/connectionPane.inc.xhtml
         </vbox>
       </vbox>
     </vbox>
