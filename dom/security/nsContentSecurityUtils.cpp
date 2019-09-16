@@ -1389,6 +1389,7 @@ static nsLiteralCString sImgSrcDataBlobAllowList[] = {
     "chrome://devtools/content/webconsole/index.html"_ns,
     "chrome://global/content/alerts/alert.xhtml"_ns,
     "chrome://global/content/print.html"_ns,
+    "chrome://browser/content/torpreferences/requestBridgeDialog.xhtml"_ns,
 };
 // img-src https:
 static nsLiteralCString sImgSrcHttpsAllowList[] = {
