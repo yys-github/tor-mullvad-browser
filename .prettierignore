@@ -1711,6 +1711,8 @@ xpcom/idl-parser/xpidl/fixtures/xpctest.d.json
 
 browser/app/profile/001-base-profile.js
 browser/app/profile/000-tor-browser.js
+# We do not use the preprocessor here, so we can lint it.
+!browser/components/torpreferences/content/connectionPane.inc.xhtml
 mobile/android/app/000-tor-browser-android.js
 toolkit/content/pt_config.json
 toolkit/content/moat_countries_dev_build.json
