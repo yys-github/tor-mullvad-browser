@@ -362,7 +362,8 @@ class TelemetryHandler {
    * can be tracked.
    */
   async init() {
-    if (this._initialized) {
+    // eslint-disable-next-line no-constant-condition
+    if (this._initialized || true) {
       return;
     }
 
@@ -1203,7 +1204,7 @@ class TelemetryHandler {
    *   Returns a provider or undefined if no provider was found for the url.
    */
   _getProviderInfoForURL(url) {
-    return this._searchProviderInfo.find(info =>
+    return this._searchProviderInfo?.find(info =>
       info.searchPageRegexp.test(url)
     );
   }
