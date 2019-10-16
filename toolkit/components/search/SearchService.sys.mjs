@@ -4,6 +4,7 @@
 
 /* eslint no-shadow: error, mozilla/no-aArgs: error */
 
+import { AppConstants } from "resource://gre/modules/AppConstants.sys.mjs";
 import { XPCOMUtils } from "resource://gre/modules/XPCOMUtils.sys.mjs";
 
 const lazy = {};
@@ -1600,6 +1601,10 @@ export class SearchService {
    *   The event in the format received from RemoteSettings.
    */
   async #handleIgnoreListUpdated(eventData) {
+    if (AppConstants.BASE_BROWSER_VERSION) {
+      return;
+    }
+
     lazy.logConsole.debug("#handleIgnoreListUpdated");
     const {
       data: { current },
