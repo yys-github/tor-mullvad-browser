@@ -380,7 +380,8 @@ class TelemetryHandler {
    * can be tracked.
    */
   async init() {
-    if (this._initialized) {
+    // eslint-disable-next-line no-constant-condition
+    if (this._initialized || true) {
       return;
     }
 
