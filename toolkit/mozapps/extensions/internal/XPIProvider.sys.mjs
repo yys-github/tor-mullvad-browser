@@ -508,7 +508,9 @@ class XPIState {
     // by XPIDatabaseReconcile.updatePath (called from XPIDatabaseReconcile.updateExistingAddon
     // when the oldAddon.path and newAddon.path are mismatching, as part of the
     // XPIDatabaseReconcile.processFileChanges logic).
-    if (this.file && (isRelocatedLocation || !("rootURI" in this))) {
+    //
+    // On Tor Browser we do it anyway whenever this.file is defined (tor-browser#27604)
+    if (this.file) {
       this.rootURI = getURIForResourceInFile(this.file, "").spec;
       if (isRelocatedLocation) {
         logger.warn(
@@ -526,7 +528,10 @@ class XPIState {
       saved.currentModifiedTime != this.lastModifiedTime
     ) {
       this.lastModifiedTime = saved.currentModifiedTime;
-    } else if (saved.currentModifiedTime === null) {
+    } else if (
+      saved.currentModifiedTime === null &&
+      (!this.file || !this.file.exists())
+    ) {
       this.missing = true;
     }
   }
@@ -1652,6 +1657,7 @@ var XPIStates = {
 
       if (shouldRestoreLocationData && oldState[loc.name]) {
         loc.restore(oldState[loc.name]);
+        changed = changed || loc.path != oldState[loc.name].path;
       }
       changed = changed || loc.changed;
 
