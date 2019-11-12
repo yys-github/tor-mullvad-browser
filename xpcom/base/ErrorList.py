@@ -90,6 +90,7 @@ modules["ERRORRESULT"] = Mod(43)
 modules["WIN32"] = Mod(44)
 modules["WDBA"] = Mod(45)
 modules["DOM_QM"] = Mod(46)
+modules["TOR"] = Mod(47)
 
 # NS_ERROR_MODULE_GENERAL should be used by modules that do not
 # care if return code values overlap. Callers of methods that
@@ -1244,6 +1245,29 @@ with modules["WDBA"]:
 # =======================================================================
 with modules["DOM_QM"]:
     errors["NS_ERROR_DOM_QM_CLIENT_INIT_ORIGIN_UNINITIALIZED"] = FAILURE(1)
+
+
+# =======================================================================
+# 47: Tor-specific error codes.
+# =======================================================================
+with modules["TOR"]:
+    # Tor onion service descriptor can not be found.
+    errors["NS_ERROR_TOR_ONION_SVC_NOT_FOUND"] = FAILURE(1)
+    # Tor onion service descriptor is invalid.
+    errors["NS_ERROR_TOR_ONION_SVC_IS_INVALID"] = FAILURE(2)
+    # Tor onion service introduction failed.
+    errors["NS_ERROR_TOR_ONION_SVC_INTRO_FAILED"] = FAILURE(3)
+    # Tor onion service rendezvous failed.
+    errors["NS_ERROR_TOR_ONION_SVC_REND_FAILED"] = FAILURE(4)
+    # Tor onion service missing client authorization.
+    errors["NS_ERROR_TOR_ONION_SVC_MISSING_CLIENT_AUTH"] = FAILURE(5)
+    # Tor onion service wrong client authorization.
+    errors["NS_ERROR_TOR_ONION_SVC_BAD_CLIENT_AUTH"] = FAILURE(6)
+    # Tor onion service bad address.
+    errors["NS_ERROR_TOR_ONION_SVC_BAD_ADDRESS"] = FAILURE(7)
+    # Tor onion service introduction timed out.
+    errors["NS_ERROR_TOR_ONION_SVC_INTRO_TIMEDOUT"] = FAILURE(8)
+
 
 # =======================================================================
 # 51: NS_ERROR_MODULE_GENERAL
