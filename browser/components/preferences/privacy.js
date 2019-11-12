@@ -60,6 +60,12 @@ ChromeUtils.defineLazyGetter(lazy, "gParentalControlsService", () =>
     : null
 );
 
+XPCOMUtils.defineLazyScriptGetter(
+  this,
+  ["OnionServicesAuthPreferences"],
+  "chrome://browser/content/onionservices/authPreferences.js"
+);
+
 // TODO: module import via ChromeUtils.defineModuleGetter
 XPCOMUtils.defineLazyScriptGetter(
   this,
@@ -668,6 +674,7 @@ var gPrivacyPane = {
     this.networkCookieBehaviorReadPrefs();
     this._initTrackingProtectionExtensionControl();
     this._ensureTrackingProtectionExceptionListMigration();
+    OnionServicesAuthPreferences.init();
     this._initSecurityLevel();
 
     Preferences.get("privacy.trackingprotection.enabled").on(
