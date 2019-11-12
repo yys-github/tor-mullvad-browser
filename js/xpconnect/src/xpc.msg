@@ -261,6 +261,16 @@ XPC_MSG_DEF(NS_ERROR_EMAILTRACKING_URI                , "The URI is email tracki
 XPC_MSG_DEF(NS_ERROR_HARMFULADDON_URI                 , "The URI is not available for add-ons")
 XPC_MSG_DEF(NS_ERROR_SAVE_LINK_AS_TIMEOUT             , "Save Link As failed to see the headers early enough to choose a filename")
 
+/* Codes related to Tor */
+XPC_MSG_DEF(NS_ERROR_TOR_ONION_SVC_NOT_FOUND          , "Tor onion service descriptor cannot be found")
+XPC_MSG_DEF(NS_ERROR_TOR_ONION_SVC_IS_INVALID         , "Tor onion service descriptor is invalid")
+XPC_MSG_DEF(NS_ERROR_TOR_ONION_SVC_INTRO_FAILED       , "Tor onion service introduction failed")
+XPC_MSG_DEF(NS_ERROR_TOR_ONION_SVC_REND_FAILED        , "Tor onion service rendezvous failed")
+XPC_MSG_DEF(NS_ERROR_TOR_ONION_SVC_MISSING_CLIENT_AUTH, "Tor onion service missing client authorization")
+XPC_MSG_DEF(NS_ERROR_TOR_ONION_SVC_BAD_CLIENT_AUTH    , "Tor onion service wrong client authorization")
+XPC_MSG_DEF(NS_ERROR_TOR_ONION_SVC_BAD_ADDRESS        , "Tor onion service bad address")
+XPC_MSG_DEF(NS_ERROR_TOR_ONION_SVC_INTRO_TIMEDOUT     , "Tor onion service introduction timed out")
+
 /* Profile manager error codes */
 XPC_MSG_DEF(NS_ERROR_DATABASE_CHANGED                 , "Flushing the profiles to disk would have overwritten changes made elsewhere.")
 
