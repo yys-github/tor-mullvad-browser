@@ -1,0 +1,67 @@
+/* Copyright (c) 2020, The Tor Project, Inc. */
+
+#tor-clientauth-notification-desc {
+  font-weight: var(--font-weight-bold);
+}
+
+#tor-clientauth-notification-key {
+  box-sizing: border-box;
+  width: 100%;
+  margin-top: var(--space-large);
+  padding: var(--space-small);
+}
+
+/* Start of rules adapted from
+ * browser/components/newtab/css/activity-stream-mac.css (linux and windows
+ * use the same rules).
+ */
+#tor-clientauth-notification-key.invalid {
+  border: var(--border-width) solid var(--outline-color-error);
+}
+
+#tor-clientauth-warning {
+  display: inline-block;
+  animation: fade-up-tt 450ms;
+  /* FIXME: This warning block does not follow upstream's styling. */
+  background: var(--button-background-color-destructive);
+  color: var(--button-text-color-destructive);
+  border-radius: var(--border-radius-xsmall);
+  inset-inline-start: var(--space-xsmall);
+  padding: var(--space-xsmall) var(--space-medium);
+  position: relative;
+  inset-block-start: var(--space-small);
+  z-index: 1;
+}
+
+#tor-clientauth-warning[hidden] {
+  display: none;
+}
+
+#tor-clientauth-warning::before {
+  background: var(--button-background-color-destructive);
+  inset-block-end: calc(-1 * var(--space-small));
+  inset-block-start: calc(-1 * var(--space-small));
+  content: ".";
+  height: var(--size-item-small);
+  inset-inline-start: var(--space-medium);
+  position: absolute;
+  text-indent: -999px;
+  transform: rotate(45deg);
+  white-space: nowrap;
+  width: var(--size-item-small);
+  z-index: -1;
+}
+
+@keyframes fade-up-tt {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* End of rules adapted from
+ * browser/components/newtab/css/activity-stream-mac.css
+ */

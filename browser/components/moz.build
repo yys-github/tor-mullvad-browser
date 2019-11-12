@@ -51,6 +51,7 @@ DIRS += [
     "newidentity",
     # Exclude newtab component. tor-browser#43886.
     "nova",
+    "onionservices",
     "originattributes",
     "pagedata",
     "permissions",

@@ -359,6 +359,9 @@ var gBrowserInit = {
     gTorConnectUrlbarButton.init();
     gTorConnectTitlebarStatus.init();
 
+    // Init the OnionAuthPrompt
+    OnionAuthPrompt.init();
+
     gTorCircuitPanel.init();
 
     // Certain kinds of automigration rely on this notification to complete
@@ -1247,6 +1250,8 @@ var gBrowserInit = {
 
     gTorConnectUrlbarButton.uninit();
     gTorConnectTitlebarStatus.uninit();
+
+    OnionAuthPrompt.uninit();
 
     gTorCircuitPanel.uninit();
 
