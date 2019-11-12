@@ -135,6 +135,7 @@ export default [
       "browser/components/torcircuit/content/torCircuitPanel.js",
       "browser/components/torconnect/content/torConnectTitlebarStatus.js",
       "browser/components/torconnect/content/torConnectUrlbarButton.js",
+      "browser/components/onionservices/content/authPrompt.js",
     ],
     languageOptions: {
       globals: mozilla.environments["browser-window"].globals,
