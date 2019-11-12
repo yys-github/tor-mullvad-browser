@@ -621,6 +621,7 @@ var gPrivacyPane = {
     initSettingGroup("browsingProtection");
     initSettingGroup("cookiesAndSiteData");
     initSettingGroup("cookiesAndSiteData2");
+    initSettingGroup("onionSiteAuthentication");
     initSettingGroup("certificates");
     initSettingGroup("ipprotection");
     initSettingGroup("history");
