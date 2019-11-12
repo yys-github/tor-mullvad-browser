@@ -249,5 +249,6 @@
   "TorConnectTopics",
   "TorConnectParent",
   "gTorConnectUrlbarButton",
-  "gTorConnectTitlebarStatus"
+  "gTorConnectTitlebarStatus",
+  "OnionAuthPrompt"
 ]
