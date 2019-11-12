@@ -268,6 +268,11 @@ XPCOMUtils.defineLazyScriptGetter(
 );
 XPCOMUtils.defineLazyScriptGetter(
   this,
+  ["OnionAuthPrompt"],
+  "chrome://browser/content/onionservices/authPrompt.js"
+);
+XPCOMUtils.defineLazyScriptGetter(
+  this,
   "gEditItemOverlay",
   "chrome://browser/content/places/editBookmark.js"
 );
