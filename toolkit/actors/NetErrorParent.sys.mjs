@@ -281,6 +281,17 @@ export class NetErrorParent extends EscapablePageParent {
         win.openPreferences("privacy-doh");
         break;
       }
+      case "OpenTorBrowserManual": {
+        let browser = this.browsingContext.top.embedderElement;
+        if (browser) {
+          let url = "about:manual";
+          if (message.data.fragment) {
+            url += `#${message.data.fragment}`;
+          }
+          browser.documentGlobal.switchToTabHavingURI(url, true);
+        }
+        break;
+      }
       case "ShouldShowTorConnect":
         return lazy.TorConnect.shouldShowTorConnect;
     }
