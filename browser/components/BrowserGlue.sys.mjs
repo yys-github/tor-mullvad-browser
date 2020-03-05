@@ -810,6 +810,19 @@ let JSWINDOWACTORS = {
     enablePreference: "browser.ml.linkPreview.enabled",
   },
 
+  OnionLocation: {
+    parent: {
+      esModuleURI: "resource:///modules/OnionLocationParent.sys.mjs",
+    },
+    child: {
+      esModuleURI: "resource:///modules/OnionLocationChild.sys.mjs",
+      events: {
+        pageshow: { mozSystemGroup: true },
+      },
+    },
+    messageManagerGroups: ["browsers"],
+  },
+
   PageInfo: {
     child: {
       esModuleURI: "resource:///actors/PageInfoChild.sys.mjs",
