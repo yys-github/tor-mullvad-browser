@@ -480,6 +480,19 @@ let JSWINDOWACTORS = {
   // LinkPreviewParent.sys.mjs and LinkPreviewChild.sys.mjs are missing.
   // tor-browser#44045.
 
+  OnionLocation: {
+    parent: {
+      esModuleURI: "resource:///modules/OnionLocationParent.sys.mjs",
+    },
+    child: {
+      esModuleURI: "resource:///modules/OnionLocationChild.sys.mjs",
+      events: {
+        pageshow: { mozSystemGroup: true },
+      },
+    },
+    messageManagerGroups: ["browsers"],
+  },
+
   PageInfo: {
     child: {
       esModuleURI: "resource:///actors/PageInfoChild.sys.mjs",
