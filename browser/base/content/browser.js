@@ -53,6 +53,7 @@ ChromeUtils.defineESModuleGetters(this, {
   NewTabUtils: "resource://gre/modules/NewTabUtils.sys.mjs",
   NimbusFeatures: "resource://nimbus/ExperimentAPI.sys.mjs",
   nsContextMenu: "chrome://browser/content/nsContextMenu.sys.mjs",
+  OnionLocationParent: "resource:///modules/OnionLocationParent.sys.mjs",
   OpenSearchManager:
     "moz-src:///browser/components/search/OpenSearchManager.sys.mjs",
   PageActions: "resource:///modules/PageActions.sys.mjs",
@@ -2358,6 +2359,7 @@ var XULBrowserWindow = {
     CFRPageActions.updatePageActions(gBrowser.selectedBrowser);
 
     AboutReaderParent.updateReaderButton(gBrowser.selectedBrowser);
+    OnionLocationParent.updateOnionLocationBadge(gBrowser.selectedBrowser);
     TranslationsParent.onLocationChange(gBrowser.selectedBrowser);
 
     PictureInPicture.updateUrlbarToggle(gBrowser.selectedBrowser);
@@ -2949,6 +2951,16 @@ var CombinedStopReload = {
 
 var TabsProgressListener = {
   onStateChange(aBrowser, aWebProgress, aRequest, aStateFlags, aStatus) {
+    // Clear OnionLocation UI
+    if (
+      aStateFlags & Ci.nsIWebProgressListener.STATE_START &&
+      aStateFlags & Ci.nsIWebProgressListener.STATE_IS_NETWORK &&
+      aRequest &&
+      aWebProgress.isTopLevel
+    ) {
+      OnionLocationParent.onStateChange(aBrowser);
+    }
+
     // Collect telemetry data about tab load times.
     if (
       aWebProgress.isTopLevel &&
