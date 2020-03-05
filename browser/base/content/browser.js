@@ -52,6 +52,8 @@ ChromeUtils.defineESModuleGetters(this, {
   NewTabUtils: "resource://gre/modules/NewTabUtils.sys.mjs",
   NimbusFeatures: "resource://nimbus/ExperimentAPI.sys.mjs",
   nsContextMenu: "chrome://browser/content/nsContextMenu.sys.mjs",
+  OnionLocationParent:
+    "moz-src:///browser/components/onionservices/OnionLocationParent.sys.mjs",
   OpenSearchManager:
     "moz-src:///browser/components/search/OpenSearchManager.sys.mjs",
   PageActions: "resource:///modules/PageActions.sys.mjs",
@@ -2439,6 +2441,8 @@ var XULBrowserWindow = {
       aFlags
     );
 
+    OnionLocationParent.updateOnionLocationBadge(gBrowser.selectedBrowser);
+
     if (!gMultiProcessBrowser) {
       // Bug 1108553 - Cannot rotate images with e10s
       gGestureSupport.restoreRotationState();
@@ -2950,6 +2954,16 @@ var CombinedStopReload = {
 
 var TabsProgressListener = {
   onStateChange(aBrowser, aWebProgress, aRequest, aStateFlags, aStatus) {
+    // Clear OnionLocation UI
+    if (
+      aStateFlags & Ci.nsIWebProgressListener.STATE_START &&
+      aStateFlags & Ci.nsIWebProgressListener.STATE_IS_NETWORK &&
+      aRequest &&
+      aWebProgress.isTopLevel
+    ) {
+      OnionLocationParent.onStateChange(aBrowser);
+    }
+
     // Collect telemetry data about tab load times.
     if (
       aWebProgress.isTopLevel &&
