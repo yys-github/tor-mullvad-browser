@@ -35,6 +35,7 @@
 @import url("chrome://browser/skin/formautofill-notification.css");
 @import url("chrome://global/skin/tor-common.css");
 @import url("chrome://browser/skin/tor-urlbar-button.css");
+@import url("chrome://browser/skin/onionlocation.css");
 
 :root,
 body {
