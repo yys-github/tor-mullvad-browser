@@ -235,6 +235,9 @@ var gBrowserInit = {
     // Init the OnionAuthPrompt
     OnionAuthPrompt.init();
 
+    // Init the Onion Location pill
+    OnionLocationParent.init(document);
+
     gTorCircuitPanel.init();
 
     // Certain kinds of automigration rely on this notification to complete
