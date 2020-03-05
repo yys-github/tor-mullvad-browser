@@ -3642,6 +3642,7 @@ class Document : public nsINode,
   void ReleaseCapture() const;
   void MozSetImageElement(const nsAString& aImageElementId, Element* aElement);
   nsIURI* GetDocumentURIObject() const;
+  nsIURI* GetOnionLocationURI() const { return mOnionLocationURI; }
   // Not const because all the fullscreen goop is not const
   const char* GetFullscreenError(CallerType);
   bool FullscreenEnabled(CallerType aCallerType) {
@@ -4890,6 +4891,7 @@ class Document : public nsINode,
   nsCOMPtr<nsIURI> mChromeXHRDocURI;
   nsCOMPtr<nsIURI> mDocumentBaseURI;
   nsCOMPtr<nsIURI> mChromeXHRDocBaseURI;
+  nsCOMPtr<nsIURI> mOnionLocationURI;
 
   // A lazily-constructed URL data for style system to resolve URL values.
   RefPtr<URLExtraData> mCachedURLData;
