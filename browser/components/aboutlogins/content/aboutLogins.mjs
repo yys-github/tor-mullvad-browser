@@ -138,6 +138,7 @@ window.addEventListener("AboutLoginsChromeToContent", event => {
       gElements.loginList.setSortDirection(event.detail.value.selectedSort);
       document.documentElement.classList.add("initialized");
       gElements.loginList.classList.add("initialized");
+      gElements.loginList.canCreateLogins = event.detail.value.canCreateLogins;
       break;
     }
     case "ShowLoginItemError": {
