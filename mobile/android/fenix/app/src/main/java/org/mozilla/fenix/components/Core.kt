@@ -65,14 +65,14 @@ import mozilla.components.feature.recentlyclosed.RecentlyClosedTabsStorage
 import mozilla.components.feature.search.SearchApplicationName
 import mozilla.components.feature.search.SearchDeviceType
 import mozilla.components.feature.search.SearchUpdateChannel
-import mozilla.components.feature.search.middleware.AdsTelemetryMiddleware
+// import mozilla.components.feature.search.middleware.AdsTelemetryMiddleware
 import mozilla.components.feature.search.middleware.SearchExtraParams
 import mozilla.components.feature.search.middleware.SearchMiddleware
 import mozilla.components.feature.search.region.RegionMiddleware
 import mozilla.components.feature.search.storage.SearchEngineSelectorConfig
-import mozilla.components.feature.search.telemetry.SerpTelemetryRepository
-import mozilla.components.feature.search.telemetry.ads.AdsTelemetry
-import mozilla.components.feature.search.telemetry.incontent.InContentTelemetry
+// import mozilla.components.feature.search.telemetry.SerpTelemetryRepository
+// import mozilla.components.feature.search.telemetry.ads.AdsTelemetry
+// import mozilla.components.feature.search.telemetry.incontent.InContentTelemetry
 import mozilla.components.feature.session.HistoryDelegate
 import mozilla.components.feature.session.middleware.LastAccessMiddleware
 import mozilla.components.feature.session.middleware.undo.UndoMiddleware
@@ -199,7 +199,7 @@ class Core(
             cookieBannerHandlingDetectOnlyMode = context.settings().shouldEnableCookieBannerDetectOnly,
             cookieBannerHandlingGlobalRules = context.settings().shouldEnableCookieBannerGlobalRules,
             cookieBannerHandlingGlobalRulesSubFrames = context.settings().shouldEnableCookieBannerGlobalRulesSubFrame,
-            emailTrackerBlockingPrivateBrowsing = true,
+            emailTrackerBlockingPrivateBrowsing = false,
             userCharacteristicPingCurrentVersion = FxNimbus.features.userCharacteristics.value().currentVersion,
             getDesktopMode = {
                 store.state.desktopMode
@@ -379,7 +379,7 @@ class Core(
                     ),
                 ),
                 ReaderViewMiddleware(),
-                TelemetryMiddleware(context, context.settings(), metrics, crashReporter),
+                // TelemetryMiddleware(context, context.settings(), metrics, crashReporter),
                 ThumbnailsMiddleware(thumbnailStorage),
                 UndoMiddleware(context.getUndoDelay()),
                 RegionMiddleware(context, locationService),
@@ -392,7 +392,7 @@ class Core(
                 ),
                 RecordingDevicesMiddleware(context, context.components.notificationsDelegate),
                 PromptMiddleware(),
-                AdsTelemetryMiddleware(adsTelemetry),
+                // AdsTelemetryMiddleware(adsTelemetry),
                 LastMediaAccessMiddleware(),
                 HistoryMetadataMiddleware(historyMetadataService),
                 ProtectionsDashboardMiddleware(protectionsStorage),
@@ -444,6 +444,7 @@ class Core(
             // Install the "icons" WebExtension to automatically load icons for every visited website.
             icons.install(engine, this)
 
+/*
             CoroutineScope(Dispatchers.Main).launch {
                 val readJson = { context.assets.readJSONObject("search/search_telemetry_v2.json") }
                 val providerList = withContext(Dispatchers.IO) {
@@ -464,6 +465,7 @@ class Core(
                 // Install the "cookies" WebExtension and tracks user interaction with SERPs.
                 searchTelemetry.install(engine, this@apply, providerList)
             }
+*/
 
             WebNotificationFeature(
                 context,
@@ -540,13 +542,13 @@ class Core(
         context.components.analytics.metrics
     }
 
-    val adsTelemetry by lazyMonitored {
-        AdsTelemetry()
-    }
+    // val adsTelemetry by lazyMonitored {
+    //     AdsTelemetry()
+    // }
 
-    val searchTelemetry by lazyMonitored {
-        InContentTelemetry()
-    }
+    // val searchTelemetry by lazyMonitored {
+    //     InContentTelemetry()
+    // }
 
     /**
      * Shortcut component for managing shortcuts on the device home screen.
