@@ -165,7 +165,7 @@ import org.mozilla.fenix.components.Components
 import org.mozilla.fenix.components.FenixAutocompletePrompt
 import org.mozilla.fenix.components.FenixSuggestStrongPasswordPrompt
 import org.mozilla.fenix.components.FindInPageIntegration
-import org.mozilla.fenix.components.accounts.FxaWebChannelIntegration
+// import org.mozilla.fenix.components.accounts.FxaWebChannelIntegration
 import org.mozilla.fenix.components.appstate.AppAction
 import org.mozilla.fenix.components.appstate.AppAction.MessagingAction
 import org.mozilla.fenix.components.appstate.AppAction.MessagingAction.MicrosurveyAction
@@ -317,7 +317,7 @@ abstract class BaseBrowserFragment :
     private val sitePermissionsFeature = ViewBoundFeatureWrapper<SitePermissionsFeature>()
     private val fullScreenFeature = ViewBoundFeatureWrapper<FullScreenFeature>()
     private val swipeRefreshFeature = ViewBoundFeatureWrapper<SwipeRefreshFeature>()
-    private val webchannelIntegration = ViewBoundFeatureWrapper<FxaWebChannelIntegration>()
+    // private val webchannelIntegration = ViewBoundFeatureWrapper<FxaWebChannelIntegration>()
     private val sitePermissionWifiIntegration =
         ViewBoundFeatureWrapper<SitePermissionsWifiIntegration>()
     private val secureWindowFeature = ViewBoundFeatureWrapper<SecureWindowFeature>()
@@ -1263,6 +1263,7 @@ abstract class BaseBrowserFragment :
             )
         }
 
+/*
         webchannelIntegration.set(
             feature = FxaWebChannelIntegration(
                 customTabSessionId = customTabSessionId,
@@ -1275,6 +1276,7 @@ abstract class BaseBrowserFragment :
             owner = this,
             view = view,
         )
+*/
 
         initializeEngineView(
             topToolbarHeight = context.settings().getTopToolbarHeight(
