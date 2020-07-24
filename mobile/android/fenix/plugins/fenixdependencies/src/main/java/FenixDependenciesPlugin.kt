@@ -52,7 +52,8 @@ object FenixDependencies {
     const val protobuf_javalite = "com.google.protobuf:protobuf-javalite:${FenixVersions.protobuf}"
     const val protobuf_compiler = "com.google.protobuf:protoc:${FenixVersions.protobuf}"
 
-    const val adjust = "com.adjust.sdk:adjust-android:${FenixVersions.adjust}"
+// Disable features and functionality
+//    const val adjust = "com.adjust.sdk:adjust-android:${FenixVersions.adjust}"
     const val installreferrer = "com.android.installreferrer:installreferrer:${FenixVersions.installreferrer}"
 
     const val mockk = "io.mockk:mockk:${FenixVersions.mockk}"

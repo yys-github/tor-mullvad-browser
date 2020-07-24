@@ -532,10 +532,11 @@ internal class ReleaseMetricController(
 
     private fun isInitialized(type: MetricServiceType): Boolean = initialized.contains(type)
 
-    private fun isTelemetryEnabled(type: MetricServiceType): Boolean = when (type) {
-        MetricServiceType.Data -> isDataTelemetryEnabled()
-        MetricServiceType.Marketing -> isMarketingDataTelemetryEnabled()
-    }
+    private fun isTelemetryEnabled(type: MetricServiceType): Boolean =
+        !BuildConfig.DATA_COLLECTION_DISABLED && when (type) {
+            MetricServiceType.Data -> isDataTelemetryEnabled()
+            MetricServiceType.Marketing -> isMarketingDataTelemetryEnabled()
+        }
 
     companion object {
         /**
