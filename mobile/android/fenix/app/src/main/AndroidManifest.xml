@@ -7,7 +7,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <!-- Allows for storing and retrieving screenshots -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
@@ -15,8 +14,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
 
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- This is needed because the android.permission.CAMERA above automatically
@@ -32,6 +29,9 @@
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+
+    <!-- tor-browser#43729: Disable access to the advertising ID -->
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" />
 
     <!-- Needed to prompt the user to give permission to install a downloaded apk -->
     <uses-permission-sdk-23 android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
@@ -508,6 +508,7 @@
             android:exported="true"
             android:configChanges="keyboard|keyboardHidden|mcc|mnc|orientation|screenSize|layoutDirection|smallestScreenSize|screenLayout"
             android:launchMode="singleTask"
+            android:taskAffinity=""
             android:resizeableActivity="true"
             android:supportsPictureInPicture="true"
             android:windowSoftInputMode="adjustResize">
@@ -520,7 +521,6 @@
                 <data android:host="home"/>
                 <data android:host="home_collections"/>
                 <data android:host="install_search_widget"/>
-                <data android:host="make_default_browser"/>
                 <data android:host="open"/>
                 <data android:host="settings"/>
                 <data android:host="settings_accessibility"/>
@@ -560,52 +560,6 @@
             android:exported="true"
             android:excludeFromRecents="true" >
 
-            <!--
-              Respond to `Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)`
-            -->
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.APP_BROWSER"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="mozilla.components.pwa.category.SHORTCUT" />
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-            </intent-filter>
-
-            <!--Exposed specific deep links for third-party apps to open wallpaper settings.-->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="${deepLinkScheme}"
-                    android:host="settings_wallpapers"/>
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:mimeType="text/html" />
-                <data android:mimeType="text/plain" />
-                <data android:mimeType="application/xhtml+xml" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
 
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
@@ -623,11 +577,6 @@
                 <action android:name="mozilla.components.feature.pwa.VIEW_PWA" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:scheme="https" />
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.ASSIST" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
 
             <intent-filter>
@@ -767,6 +716,7 @@
 
         <service
             android:name=".push.FirebasePushService"
+            android:enabled="false"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -801,13 +751,19 @@
 
         <meta-data
             android:name="firebase_messaging_auto_init_enabled"
-            android:value="true" />
+            android:value="false" />
         <meta-data
             android:name="firebase_analytics_collection_enabled"
             android:value="false" />
         <meta-data
             android:name="firebase_analytics_collection_deactivated"
             android:value="true" />
+        <meta-data
+            android:name="google_analytics_adid_collection_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="google_analytics_default_allow_ad_personalization_signals"
+            android:value="false" />
         <!-- Removes the default Workmanager  initialization so that we can use on-demand initializer. -->
         <provider
             android:name="androidx.startup.InitializationProvider"
