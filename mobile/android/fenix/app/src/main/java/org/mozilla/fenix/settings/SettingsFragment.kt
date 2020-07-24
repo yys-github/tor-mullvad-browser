@@ -287,12 +287,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             requirePreference<Preference>(R.string.pref_key_tabs)
         tabSettingsPreference.summary = settings.getTabTimeoutString()
 
-        val autofillPreference = requirePreference<Preference>(R.string.pref_key_credit_cards)
-        autofillPreference.title = if (settings.addressFeature) {
-            getString(R.string.preferences_autofill)
-        } else {
-            getString(R.string.preferences_credit_cards_2)
-        }
+//        val autofillPreference = requirePreference<Preference>(R.string.pref_key_credit_cards)
+//        autofillPreference.title = if (settings.addressFeature) {
+//            getString(R.string.preferences_autofill)
+//        } else {
+//            getString(R.string.preferences_credit_cards_2)
+//        }
 
         val openLinksInAppsSettingsPreference =
             requirePreference<Preference>(R.string.pref_key_open_links_in_apps)
@@ -357,10 +357,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 SettingsFragmentDirections.actionSettingsFragmentToSavedLoginsAuthFragment()
             }
 
-            resources.getString(R.string.pref_key_credit_cards) -> {
-                SettingsMetrics.autofill.record()
-                SettingsFragmentDirections.actionSettingsFragmentToAutofillSettingFragment()
-            }
+//            resources.getString(R.string.pref_key_credit_cards) -> {
+//                SettingsMetrics.autofill.record()
+//                SettingsFragmentDirections.actionSettingsFragmentToAutofillSettingFragment()
+//            }
 
             resources.getString(R.string.pref_key_accessibility) -> {
                 SettingsFragmentDirections.actionSettingsFragmentToAccessibilityFragment()
@@ -770,8 +770,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     @VisibleForTesting
     internal fun setLinkSharingPreference() {
-        with(requirePreference<Preference>(R.string.pref_key_link_sharing)) {
-            isVisible = FxNimbus.features.sentFromFirefox.value().enabled
+        if (requireContext().settings().isTelemetryEnabled) {
+            with(requirePreference<Preference>(R.string.pref_key_link_sharing)) {
+                isVisible = FxNimbus.features.sentFromFirefox.value().enabled
+            }
         }
     }
 

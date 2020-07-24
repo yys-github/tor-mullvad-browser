@@ -8,6 +8,10 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
+    androidResources {
+        ignoreAssetsPattern '!<dir>extensions'
+    }
+
     namespace = 'mozilla.components.feature.accounts'
 }
 
