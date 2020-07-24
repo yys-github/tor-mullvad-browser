@@ -4,7 +4,6 @@
 
 package org.mozilla.fenix.components.metrics
 
-import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException
 import com.google.android.gms.common.GooglePlayServicesRepairableException
 import io.mockk.every
@@ -13,6 +12,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Ignore
 import org.junit.Test
 import java.io.IOException
 
@@ -34,21 +34,18 @@ class MetricsUtilsTest {
 
     @Test
     fun `getAdvertisingID() returns null if the API returns null info`() {
-        val mockInfo: AdvertisingIdClient.Info = mockk()
-        every { mockInfo.id } returns null
-
-        assertNull(MetricsUtils.getAdvertisingID { mockInfo.id })
+        assertNull(MetricsUtils.getAdvertisingID { null })
     }
 
+    @Ignore("tor-browser#40014: the Google Advertising ID is neutered, so getAdvertisingID() always returns null")
     @Test
     fun `getAdvertisingID() returns a valid string if the API returns a valid ID`() {
         val testId = "test-value-id"
-        val mockInfo: AdvertisingIdClient.Info = mockk()
-        every { mockInfo.id } returns testId
 
-        assertEquals(testId, MetricsUtils.getAdvertisingID({ mockInfo.id }))
+        assertEquals(testId, MetricsUtils.getAdvertisingID({ testId }))
     }
 
+    @Ignore("tor-browser#40014: getHashedIdentifier() derives from getAdvertisingID(), which always returns null")
     @Test
     fun `getHashedIdentifier() returns a hashed identifier`() = runTest {
         val testId = "test-value-id"

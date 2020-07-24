@@ -44,20 +44,21 @@ interface TabManagementFeatureHelper {
  */
 data object DefaultTabManagementFeatureHelper : TabManagementFeatureHelper {
 
+    // Disable all tab group features since they only work in non-private tabs
     override val openingAnimationEnabled: Boolean
-        get() = Config.channel.isDebug || FxNimbus.features.tabManagementEnhancements.value().openingAnimationEnabled
+        get() = false
 
     override val tabGroupsEnabled: Boolean
-        get() = Config.channel.isDebug || FxNimbus.features.tabGroups.value().enabled
+        get() = false
 
     override val tabGroupsDragAndDropEnabled: Boolean
-        get() = Config.channel.isDebug || FxNimbus.features.tabGroupsDragAndDrop.value().enabled
+        get() = false
 
     override val shareTabGroupEnabled: Boolean
         get() = false
 
     override val tabGroupsOnboardingEnabled: Boolean
-        get() = Config.channel.isDebug || FxNimbus.features.tabGroupsOnboarding.value().enabled
+        get() = false
 }
 
 val LocalTabManagementFeatureHelper = staticCompositionLocalOf<TabManagementFeatureHelper> {

@@ -26,7 +26,7 @@ internal const val EMAIL = "CUSTOM_CONTEXT_MENU_EMAIL"
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 internal const val CALL = "CUSTOM_CONTEXT_MENU_CALL"
 
-private val customActions = arrayOf(CALL, EMAIL, SEARCH, SEARCH_PRIVATELY, SHARE)
+private val customActions = arrayOf(SEARCH_PRIVATELY)
 
 /**
  * Adds normal and private search buttons to text selection context menus.
