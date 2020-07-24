@@ -122,7 +122,7 @@ class Analytics(
                 appName = context.getString(R.string.app_name),
                 organizationName = "Mozilla",
             ),
-            enabled = true,
+            enabled = !isDataColectionDisabled(),
             nonFatalCrashIntent = pendingIntent,
             useLegacyReporting = !context.settings().crashReportAlwaysSend &&
                 !context.settings().useNewCrashReporterDialog,
@@ -164,6 +164,7 @@ class Analytics(
     }
 }
 
+fun isDataColectionDisabled() = BuildConfig.DATA_COLLECTION_DISABLED
 private fun isSentryEnabled() = !BuildConfig.SENTRY_TOKEN.isNullOrEmpty()
 
 private fun getSentryProjectUrl(): String? {
