@@ -32,7 +32,7 @@ interface AIFeatureBlock {
 }
 
 private class InMemoryAIFeatureBlock(initialBlocked: Boolean) : AIFeatureBlock {
-    private val _isBlocked = MutableStateFlow(initialBlocked)
+    private val _isBlocked = MutableStateFlow(true)
     override val isBlocked: Flow<Boolean> = _isBlocked
 
     override suspend fun block() {
@@ -40,6 +40,6 @@ private class InMemoryAIFeatureBlock(initialBlocked: Boolean) : AIFeatureBlock {
     }
 
     override suspend fun unblock() {
-        _isBlocked.value = false
+        _isBlocked.value = true
     }
 }
