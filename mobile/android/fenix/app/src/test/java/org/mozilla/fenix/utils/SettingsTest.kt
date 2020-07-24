@@ -27,6 +27,7 @@ import org.junit.runner.RunWith
 import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.components.toolbar.ToolbarPosition
 import org.mozilla.fenix.components.toolbar.navbar.shouldAddNavigationBar
+import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.helpers.FenixRobolectricTestRunner
 import org.mozilla.fenix.settings.PhoneFeature
 import org.mozilla.fenix.settings.deletebrowsingdata.DeleteBrowsingDataOnQuitType
@@ -163,7 +164,11 @@ class SettingsTest {
     fun isTelemetryEnabled() {
         // When just created
         // Then
-        assertTrue(settings.isTelemetryEnabled)
+        if (BuildConfig.DATA_COLLECTION_DISABLED) {
+            assertFalse(settings.isTelemetryEnabled)
+        } else {
+            assertTrue(settings.isTelemetryEnabled)
+        }
     }
 
     @Test
@@ -455,7 +460,7 @@ class SettingsTest {
         settings.incrementVisitedInstallableCount()
 
         // Then
-        assertTrue(settings.shouldShowPwaCfr)
+        assertFalse(settings.shouldShowPwaCfr)
     }
 
     @Test
