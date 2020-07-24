@@ -265,7 +265,7 @@ class Components(private val context: Context) {
                     controller = nimbus.messaging,
                     settings = settings,
                 ),
-                MetricsMiddleware(metrics = analytics.metrics),
+                // MetricsMiddleware(metrics = analytics.metrics),
                 CrashReportingAppMiddleware(
                     CrashMiddleware(
                         cache = SettingsCrashReportCache(settings),
