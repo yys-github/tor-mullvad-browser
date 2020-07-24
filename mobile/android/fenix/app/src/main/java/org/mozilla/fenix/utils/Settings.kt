@@ -340,7 +340,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
 
     var isTelemetryEnabled by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_telemetry),
-        default = true,
+        default = BuildConfig.DATA_COLLECTION_DISABLED == false
     )
 
     var isMarketingTelemetryEnabled by booleanPreference(
@@ -404,7 +404,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
 
     val shouldShowSyncedTabsSuggestions by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_search_synced_tabs),
-        default = true,
+        default = false,
     )
 
     val shouldShowClipboardSuggestions by booleanPreference(
@@ -639,7 +639,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
 
     var shouldUseTrackingProtection by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_tracking_protection),
-        default = true,
+        default = false
     )
 
     var shouldEnableGlobalPrivacyControl by booleanPreference(
@@ -650,17 +650,17 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     var shouldUseCookieBannerPrivateMode by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_cookie_banner_private_mode),
         featureFlag = true,
-        default = { shouldUseCookieBannerPrivateModeDefaultValue },
+        default = { false /* shouldUseCookieBannerPrivateModeDefaultValue */ },
     )
 
     val shouldUseCookieBannerPrivateModeDefaultValue: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_VALUE_PBM] == 1
+        get() = false // cookieBannersSection[CookieBannersSection.FEATURE_SETTING_VALUE_PBM] == 1
 
     val shouldUseCookieBanner: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_VALUE] == 1
+        get() = false // cookieBannersSection[CookieBannersSection.FEATURE_SETTING_VALUE] == 1
 
     val shouldShowCookieBannerUI: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_UI] == 1
+        get() = false // cookieBannersSection[CookieBannersSection.FEATURE_UI] == 1
 
     val shouldEnableCookieBannerDetectOnly: Boolean
         get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_DETECT_ONLY] == 1
@@ -791,7 +791,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     )
 
     val enabledTotalCookieProtection: Boolean
-        get() = mr2022Sections[Mr2022Section.TCP_FEATURE] == true
+        get() = /*mr2022Sections[Mr2022Section.TCP_FEATURE] ==*/ false
 
     /**
      * Indicates if the total cookie protection CRF should be shown.
@@ -1597,7 +1597,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      */
     var shouldAutofillCreditCardDetails by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_credit_cards_save_and_autofill_cards),
-        default = true,
+        default = BuildConfig.DATA_COLLECTION_DISABLED == false,
     )
 
     /**
@@ -1961,7 +1961,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      */
     var enableFxSuggest by lazyFeatureFlagPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_fxsuggest),
-        default = { FxNimbus.features.fxSuggest.value().enabled },
+        default = { false }, // { FxNimbus.features.fxSuggest.value().enabled },
         featureFlag = FeatureFlags.fxSuggest,
     )
 
