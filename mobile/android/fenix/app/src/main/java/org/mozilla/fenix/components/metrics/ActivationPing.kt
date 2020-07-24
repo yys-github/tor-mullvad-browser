@@ -9,7 +9,6 @@ import android.content.SharedPreferences
 import android.util.Base64
 import androidx.annotation.VisibleForTesting
 import androidx.core.content.edit
-import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -59,16 +58,14 @@ class ActivationPing(
      * Fills the metrics and triggers the 'activation' ping.
      * This is a separate function to simplify unit-testing.
      */
+    @Suppress("SENSELESS_COMPARISON")
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal fun triggerPing() {
         // Generate the activation_id.
         Activation.activationId.generateAndSet()
 
         CoroutineScope(backgroundDispatcher).launch {
-            val hashedId = getHashedIdentifier(
-                retrieveAdvertisingIdInfo = { AdvertisingIdClient.getAdvertisingIdInfo(context).id },
-                encodeToString = Base64::encodeToString,
-            )
+            val hashedId = null
             if (hashedId != null) {
                 Logger.info("ActivationPing - generating ping with the hashed id")
                 // We have a valid, hashed Google Advertising ID.
