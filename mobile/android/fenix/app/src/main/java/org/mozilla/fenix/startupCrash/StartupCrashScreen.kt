@@ -53,15 +53,13 @@ internal fun StartupCrashScreen(store: StartupCrashStore) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            ScreenImg()
-
-            Spacer(modifier = Modifier.height(16.dp))
 
             ScreenText()
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            when (state.uiState) {
+            // tb#44769 Force state.uiState to be UiState.Finished because we don't want to report crashes
+            when (UiState.Finished) {
                 UiState.Idle -> {
                     ReportButtons(store)
                 }
@@ -152,16 +150,6 @@ private fun ScreenText() {
                 stringResource(R.string.firefox),
             ),
             style = FirefoxTheme.typography.headline5,
-        )
-
-        Text(
-            text = stringResource(
-                R.string.startup_crash_body,
-                stringResource(R.string.firefox),
-            ),
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            style = FirefoxTheme.typography.body2,
-            textAlign = TextAlign.Center,
         )
     }
 }

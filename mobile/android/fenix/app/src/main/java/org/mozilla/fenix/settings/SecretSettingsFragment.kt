@@ -357,12 +357,6 @@ class SecretSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFra
             onPreferenceChangeListener = SharedPreferenceUpdater()
         }
 
-        requirePreference<SwitchPreferenceCompat>(R.string.pref_key_enable_ip_protection).apply {
-            isVisible = Config.channel.isNightlyOrDebug
-            isChecked = settings.isIPProtectionEnabled
-            onPreferenceChangeListener = SharedPreferenceUpdater()
-        }
-
         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_enable_import_passwords).apply {
             isVisible = Config.channel.isDebug
             isChecked = settings.importPasswordsFeatureFlagEnabled

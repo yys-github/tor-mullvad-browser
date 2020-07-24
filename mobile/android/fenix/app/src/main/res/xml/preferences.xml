@@ -58,11 +58,6 @@
             android:title="@string/preferences_customize" />
 
         <androidx.preference.Preference
-            android:key="@string/pref_key_passwords"
-            app:iconSpaceReserved="false"
-            android:title="@string/preferences_passwords_logins_and_passwords_2" />
-
-        <androidx.preference.Preference
             android:key="@string/pref_key_email_masks"
             android:title="@string/preferences_email_masks"
             app:iconSpaceReserved="false"
@@ -106,11 +101,6 @@
             app:iconSpaceReserved="false"
             app:isPreferenceVisible="false"
             android:title="@string/preferences_import_bookmarks" />
-
-        <org.mozilla.fenix.settings.DefaultBrowserPreference
-            android:key="@string/pref_key_make_default_browser"
-            app:iconSpaceReserved="false"
-            android:title="@string/preferences_set_as_default_browser" />
     </androidx.preference.PreferenceCategory>
 
     <androidx.preference.PreferenceCategory
@@ -122,12 +112,6 @@
             android:key="@string/pref_key_private_browsing"
             app:iconSpaceReserved="false"
             android:title="@string/preferences_private_browsing_options" />
-
-        <org.mozilla.fenix.settings.IPProtectionPreference
-            android:key="@string/pref_key_ip_protection_settings"
-            app:iconSpaceReserved="false"
-            app:isPreferenceVisible="false"
-            app:allowDividerAbove="false"/>
 
         <androidx.preference.Preference
             android:key="@string/pref_key_https_only_settings"
@@ -199,16 +183,6 @@
             android:title="@string/preferences_customize_extension_collection" />
 
         <androidx.preference.Preference
-            android:key="@string/pref_key_link_sharing"
-            app:iconSpaceReserved="false"
-            android:title="@string/preferences_link_sharing" />
-
-        <androidx.preference.Preference
-            android:key="@string/pref_key_open_links_in_apps"
-            android:title="@string/preferences_open_links_in_apps"
-            app:iconSpaceReserved="false" />
-
-        <androidx.preference.Preference
             android:key="@string/pref_key_downloads"
             app:iconSpaceReserved="false"
             app:isPreferenceVisible="false"
@@ -225,11 +199,6 @@
             android:title="@string/preference_leakcanary"
             app:iconSpaceReserved="false"
             app:isPreferenceVisible="@bool/IS_DEBUG" />
-
-        <androidx.preference.Preference
-            android:key="@string/pref_key_remote_improvements"
-            android:title="@string/preferences_remote_improvements"
-            app:iconSpaceReserved="false" />
 
         <androidx.preference.SwitchPreferenceCompat
             android:key="@string/pref_key_remote_debugging"

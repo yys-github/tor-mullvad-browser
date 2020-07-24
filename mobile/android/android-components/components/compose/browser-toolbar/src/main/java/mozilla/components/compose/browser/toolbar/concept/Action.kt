@@ -189,3 +189,5 @@ sealed class Action {
         val onClick: BrowserToolbarInteraction,
     ) : Action()
 }
+
+class NoopAction : Action()

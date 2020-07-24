@@ -25,7 +25,7 @@ import mozilla.components.concept.engine.translate.TranslationSupport
  * See [TranslationsState.translationError] for session level errors.
  */
 data class TranslationsBrowserState(
-    val isTranslationsEnabled: Boolean = true,
+    val isTranslationsEnabled: Boolean = false,
     val isEngineSupported: Boolean? = null,
     val offerTranslation: Boolean? = null,
     val supportedLanguages: TranslationSupport? = null,

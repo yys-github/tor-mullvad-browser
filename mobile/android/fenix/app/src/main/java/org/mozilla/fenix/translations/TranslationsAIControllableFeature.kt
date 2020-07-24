@@ -28,8 +28,8 @@ class TranslationsAIControllableFeature(
         }
 
     override suspend fun set(enabled: Boolean) {
-        settings.setEnabled(enabled)
-        browserStore.dispatch(TranslationsAction.SetTranslationsEnabledAction(enabled))
+        settings.setEnabled(false)
+        browserStore.dispatch(TranslationsAction.SetTranslationsEnabledAction(false))
     }
 
     companion object : AIFeatureMetadata {

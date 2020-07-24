@@ -44,19 +44,6 @@ class SearchEngineFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
             rootKey,
         )
 
-        requirePreference<SwitchPreferenceCompat>(R.string.pref_key_show_sponsored_suggestions).apply {
-            isVisible = context.components.settings.enableFxSuggest
-        }
-        requirePreference<SwitchPreferenceCompat>(R.string.pref_key_show_nonsponsored_suggestions).apply {
-            isVisible = context.components.settings.enableFxSuggest
-        }
-        requirePreference<CheckBoxPreference>(R.string.pref_key_search_optimization_cards).apply {
-            isVisible = context.components.settings.enableFxSuggest &&
-                    context.components.settings.isSearchOptimizationEnabled
-        }
-        requirePreference<Preference>(R.string.pref_key_learn_about_fx_suggest).apply {
-            isVisible = context.components.settings.enableFxSuggest
-        }
         requirePreference<Preference>(R.string.pref_key_search_widget_installed_2).apply {
             isVisible = canShowAddSearchWidgetPrompt(AppWidgetManager.getInstance(requireContext()))
         }
@@ -88,32 +75,9 @@ class SearchEngineFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
                 isChecked = context.components.settings.searchWidgetInstalled
             }
 
-        val trendingSearchSuggestionsPreference =
-            requirePreference<CheckBoxPreference>(R.string.pref_key_show_trending_search_suggestions).apply {
-                isChecked = context.components.settings.trendingSearchSuggestionsEnabled
-                isEnabled = getSelectedSearchEngine(requireContext())?.trendingUrl != null &&
-                    context.components.settings.shouldShowSearchSuggestions
-            }
-
-        val recentSearchSuggestionsPreference =
-            requirePreference<SwitchPreferenceCompat>(R.string.pref_key_show_recent_search_suggestions).apply {
-                isChecked = context.components.settings.shouldShowRecentSearchSuggestions
-            }
-
         val autocompleteURLsPreference =
             requirePreference<SwitchPreferenceCompat>(R.string.pref_key_enable_autocomplete_urls).apply {
                 isChecked = context.components.settings.shouldAutocompleteInAwesomebar
-            }
-
-        val searchSuggestionsInPrivatePreference =
-            requirePreference<CheckBoxPreference>(R.string.pref_key_show_search_suggestions_in_private).apply {
-                isChecked = context.components.settings.shouldShowSearchSuggestionsInPrivate
-                isEnabled = context.components.settings.shouldShowSearchSuggestions
-            }
-
-        val showHistorySuggestions =
-            requirePreference<SwitchPreferenceCompat>(R.string.pref_key_search_browsing_history).apply {
-                isChecked = context.components.settings.shouldShowHistorySuggestions
             }
 
         val showBookmarkSuggestions =
@@ -121,36 +85,9 @@ class SearchEngineFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
                 isChecked = context.components.settings.shouldShowBookmarkSuggestions
             }
 
-        val showSyncedTabsSuggestions =
-            requirePreference<SwitchPreferenceCompat>(R.string.pref_key_search_synced_tabs).apply {
-                isChecked = context.components.settings.shouldShowSyncedTabsSuggestions
-            }
-
         val showClipboardSuggestions =
             requirePreference<SwitchPreferenceCompat>(R.string.pref_key_show_clipboard_suggestions).apply {
                 isChecked = context.components.settings.shouldShowClipboardSuggestions
-            }
-
-        val showSponsoredSuggestionsPreference =
-            requirePreference<SwitchPreferenceCompat>(R.string.pref_key_show_sponsored_suggestions).apply {
-                isChecked = context.components.settings.showSponsoredSuggestions
-                summary = getString(
-                    R.string.preferences_show_sponsored_suggestions_summary,
-                    getString(R.string.app_name),
-                )
-            }
-
-        val showNonSponsoredSuggestionsPreference =
-            requirePreference<SwitchPreferenceCompat>(R.string.pref_key_show_nonsponsored_suggestions).apply {
-                isChecked = context.components.settings.showNonSponsoredSuggestions
-                title = getString(
-                    R.string.preferences_show_nonsponsored_suggestions,
-                    getString(R.string.app_name),
-                )
-            }
-        val showSuggestionCardsPreference =
-            requirePreference<CheckBoxPreference>(R.string.pref_key_search_optimization_cards).apply {
-                isChecked = context.components.settings.shouldShowSearchOptimizationCards
             }
 
         searchWidgetPreference.onPreferenceChangeListener = object : SharedPreferenceUpdater() {
@@ -161,29 +98,9 @@ class SearchEngineFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
             }
         }
         searchSuggestionsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
-        showHistorySuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
         showBookmarkSuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
-        showSyncedTabsSuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
         showClipboardSuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
-        searchSuggestionsInPrivatePreference.onPreferenceChangeListener = SharedPreferenceUpdater()
-        trendingSearchSuggestionsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
-        recentSearchSuggestionsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
         autocompleteURLsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
-
-        searchSuggestionsPreference.setOnPreferenceClickListener {
-            searchSuggestionsInPrivatePreference.isEnabled = searchSuggestionsPreference.isChecked
-            trendingSearchSuggestionsPreference.isEnabled =
-                getSelectedSearchEngine(requireContext())?.trendingUrl != null && searchSuggestionsPreference.isChecked
-            true
-        }
-
-        showSponsoredSuggestionsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
-        showNonSponsoredSuggestionsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
-        showSuggestionCardsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
-        showNonSponsoredSuggestionsPreference.setOnPreferenceClickListener {
-            showSuggestionCardsPreference.isEnabled = showNonSponsoredSuggestionsPreference.isChecked
-            true
-        }
     }
 
     /**

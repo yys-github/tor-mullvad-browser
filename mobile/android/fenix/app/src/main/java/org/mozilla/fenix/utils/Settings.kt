@@ -283,10 +283,7 @@ class Settings(
     /**
      * Indicates whether or not the privacy report should be shown in the tab manager.
      */
-    var showPrivacyReportInTabManager by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_privacy_report_tab_manager),
-        default = true,
-    )
+    var showPrivacyReportInTabManager = false
 
     private val homescreenSections: Map<HomeScreenSection, Boolean>
         get() = FxNimbus.features.homescreen.value().sectionsEnabled
@@ -617,7 +614,7 @@ class Settings(
 
     var isTelemetryEnabled by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_telemetry),
-        default = true,
+        default = BuildConfig.DATA_COLLECTION_DISABLED == false
     )
 
     var isMarketingTelemetryEnabled by booleanPreference(
@@ -769,7 +766,7 @@ class Settings(
      */
     var isRolloutsEnabled by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_rollouts),
-        default = { appContext.components.nimbus.sdk.rolloutParticipation },
+        default = false,
     )
 
     /**
@@ -833,7 +830,7 @@ class Settings(
 
     val shouldShowSyncedTabsSuggestions by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_search_synced_tabs),
-        default = true,
+        default = false,
     )
 
     val shouldShowClipboardSuggestions by booleanPreference(
@@ -949,18 +946,12 @@ class Settings(
     /**
      * Indicates if the request blocking feature for Local Network / Local Device Access blocking is enabled.
      */
-    var isLnaBlockingEnabled by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_enable_lna_blocking_enabled),
-        default = { FxNimbus.features.lnaBlocking.value().blocking || Config.channel.isNightlyOrDebug },
-    )
+    var isLnaBlockingEnabled: Boolean = true
 
     /**
      * Indicates if the Local Network / Local Device Access tracker blocking feature is enabled.
      */
-    var isLnaTrackerBlockingEnabled by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_enable_lna_tracker_blocking_enabled),
-        default = { FxNimbus.features.lnaBlocking.value().blockTrackers },
-    )
+    var isLnaTrackerBlockingEnabled: Boolean = true
 
     /**
      * Indicates if the overall Local Network / Local Device Access feature is enabled.
@@ -969,10 +960,7 @@ class Settings(
      * allowing requests that originate from remote origins targeting either localhost addresses or
      * local network addresses.
      */
-    var isLnaFeatureEnabled by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_enable_lna_feature_enabled),
-        default = { FxNimbus.features.lnaBlocking.value().enabled || Config.channel.isNightlyOrDebug },
-    )
+    val isLnaFeatureEnabled: Boolean = true
 
     /**
      * Indicates whether isolated content processes are enabled or not.
@@ -1027,7 +1015,7 @@ class Settings(
      */
     var showFirstTimeTranslation: Boolean by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_first_time_translation),
-        default = true,
+        default = false,
     )
 
     /**
@@ -1035,7 +1023,7 @@ class Settings(
      */
     var offerTranslation: Boolean by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_translations_offer),
-        default = true,
+        default = false,
     )
 
     /**
@@ -1182,7 +1170,7 @@ class Settings(
 
     var shouldUseTrackingProtection by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_tracking_protection),
-        default = true,
+        default = false
     )
 
     var shouldEnableGlobalPrivacyControl by booleanPreference(
@@ -1192,17 +1180,17 @@ class Settings(
 
     var shouldUseCookieBannerPrivateMode by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_cookie_banner_private_mode),
-        default = { shouldUseCookieBannerPrivateModeDefaultValue },
+        default = { false /* shouldUseCookieBannerPrivateModeDefaultValue */ },
     )
 
     val shouldUseCookieBannerPrivateModeDefaultValue: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_VALUE_PBM] == 1
+        get() = false // cookieBannersSection[CookieBannersSection.FEATURE_SETTING_VALUE_PBM] == 1
 
     val shouldUseCookieBanner: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_VALUE] == 1
+        get() = false // cookieBannersSection[CookieBannersSection.FEATURE_SETTING_VALUE] == 1
 
     val shouldShowCookieBannerUI: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_UI] == 1
+        get() = false // cookieBannersSection[CookieBannersSection.FEATURE_UI] == 1
 
     val shouldEnableCookieBannerDetectOnly: Boolean
         get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_DETECT_ONLY] == 1
@@ -1650,7 +1638,7 @@ class Settings(
      */
     internal var trendingSearchSuggestionsEnabled by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_trending_search_suggestions),
-        default = true,
+        default = false,
     )
 
     /**
@@ -1658,7 +1646,7 @@ class Settings(
      */
     internal var shouldShowRecentSearchSuggestions by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_recent_search_suggestions),
-        default = true,
+        default = false,
     )
 
     var showSearchSuggestionsInPrivateOnboardingFinished by booleanPreference(
@@ -1837,7 +1825,7 @@ class Settings(
 
     var shouldShowVoiceSearch by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_voice_search),
-        default = true,
+        default = false,
     )
 
     /**
@@ -1857,15 +1845,9 @@ class Settings(
         default = true,
     )
 
-    var shouldPromptToSaveLogins by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_save_logins),
-        default = true,
-    )
+    var shouldPromptToSaveLogins = false
 
-    var shouldAutofillLogins by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_autofill_logins),
-        default = true,
-    )
+    var shouldAutofillLogins = false
 
     /**
      * In Bug 1853113, we changed the type of [searchWidgetInstalled] from int to boolean without
@@ -2056,30 +2038,11 @@ class Settings(
         default = true,
     )
 
-    var isSearchOptimizationEnabled by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_search_optimization_feature),
-        default = { FxNimbus.features.searchOptimizationOption.value().enabled },
-    )
-
-    var shouldShowSearchOptimizationCards by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_search_optimization_cards),
-        default = { isSearchOptimizationEnabled },
-    )
-
-    var shouldShowSearchOptimizationStockCard by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_search_optimization_stocks),
-        default = { FxNimbus.features.searchOptimizationOption.value().showStocksCard },
-    )
-
-    var shouldShowSearchOptimizationFlightCard by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_search_optimization_flights),
-        default = { FxNimbus.features.searchOptimizationOption.value().showFlightsCard },
-    )
-
-    var shouldShowSearchOptimizationSportCard by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_search_optimization_sports),
-        default = { FxNimbus.features.searchOptimizationOption.value().showSportsCard },
-    )
+    var isSearchOptimizationEnabled = false
+    var shouldShowSearchOptimizationCards = false
+    var shouldShowSearchOptimizationStockCard = false
+    var shouldShowSearchOptimizationFlightCard = false
+    var shouldShowSearchOptimizationSportCard = false
 
     var isTabStripEnabled by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_tab_strip_show),
@@ -2167,7 +2130,7 @@ class Settings(
      */
     var shouldAutofillCreditCardDetails by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_credit_cards_save_and_autofill_cards),
-        default = true,
+        default = BuildConfig.DATA_COLLECTION_DISABLED == false,
     )
 
     /**
@@ -2285,7 +2248,10 @@ class Settings(
 
     var shouldUseMinimalBottomToolbarWhenEnteringText by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_use_minimal_bottom_toolbar_while_entering_text),
-        default = { FxNimbus.features.minimalAddressbar.value().atBottomWhileEnteringText },
+        // tb-43918
+        // Setting to off for esr140 since we've done no work for it, but it appears moz has enabled
+        // by default in 144 so we'll likely be switching this to true and porting to it for esr-next
+        default = { false },
     )
 
     /**
@@ -2482,7 +2448,7 @@ class Settings(
      */
     var enableUnifiedTrustPanel by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_unified_trust_panel),
-        default = true,
+        default = false,
     )
 
     /**
@@ -2616,7 +2582,7 @@ class Settings(
     @Suppress("DEPRECATION")
     var enableFxSuggest by lazyFeatureFlagBooleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_fxsuggest),
-        defaultValue = { FxNimbus.features.fxSuggest.value().enabled },
+        defaultValue = { false }, // { FxNimbus.features.fxSuggest.value().enabled },
         featureFlag = FeatureFlags.FX_SUGGEST,
     )
 
@@ -2631,7 +2597,7 @@ class Settings(
      */
     var isFirstTimeEngagingWithSignup: Boolean by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_first_time_engage_with_signup),
-        default = true,
+        default = false,
     )
 
     /**
@@ -2682,7 +2648,7 @@ class Settings(
      */
     var isEmailMaskSuggestionEnabled by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_email_mask_suggestion),
-        default = true,
+        default = false,
     )
 
     /**
@@ -2690,7 +2656,7 @@ class Settings(
      */
     var shouldShowEmailMaskCfr by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_should_show_email_mask_cfr),
-        default = true,
+        default = false,
     )
 
     /**
@@ -2735,7 +2701,7 @@ class Settings(
 
     var aiControlsFeatureFlagEnabled by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_ai_controls),
-        default = true,
+        default = false,
     )
 
     /**
@@ -2750,19 +2716,15 @@ class Settings(
      * Persists IPProtection state set through Secret Settings.
      *
      * `true` makes the IPProtection UI elements visible across the app, while `false` hides them.
+     *  TOR Note: This is "Mozilla VPN" and should always be disabled for the tor browser
      */
-    var isIPProtectionEnabled by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_enable_ip_protection),
-        default = false,
-    )
+    var isIPProtectionEnabled = false
 
     /**
      * Indicates if the user has already toggled the VPN on.
+     * TOR Note: This is "Mozilla VPN" and should always be disabled for the tor browser
      */
-    var hasAlreadyUsedVpn by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_has_used_ip_protection),
-        default = false,
-    )
+    var hasAlreadyUsedVpn = false
 
     /**
      * Indicates if the IPProtection onboarding bottom sheet has been already shown to the user.
@@ -2770,19 +2732,17 @@ class Settings(
      * `true` makes the IPProtection bottom sheet appear, while `false` ensures the user does not see
      * the bottom sheet again. This is only shown to the user once and
      * if they dismiss it in anyway (e.g. tap on "Not now" or "Get started") then they will never see it again.
+     * TOR Note: This is "Mozilla VPN" and should always be disabled for the tor browser
      */
-    var hasShownIPProtectionPrompt by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_has_shown_ip_protection_prompt),
-        default = false,
-    )
+    var hasShownIPProtectionPrompt = false
 
     /**
      * Indicates if the IPProtection feature is available for the user.
      *
      * The flag is backed by a Nimbus `ip-protection` feature, with an option to override it through secret settings.
+     * TOR Note: This is "Mozilla VPN" and should always be disabled for the tor browser
      */
-    val isIPProtectionAvailable: Boolean
-        get() = FxNimbus.features.ipProtection.value().enabled || isIPProtectionEnabled
+    val isIPProtectionAvailable: Boolean = false
 
     /**
      * Tracks how many times the summarize menu item has been shown.
@@ -3206,7 +3166,7 @@ class Settings(
      */
     var googleLensIntegrationUserEnabled by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_google_lens_integration_user_enabled),
-        default = true,
+        default = false,
     )
 
     /**

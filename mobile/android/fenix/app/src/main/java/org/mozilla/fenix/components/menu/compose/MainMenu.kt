@@ -263,7 +263,7 @@ fun MainMenu(
             )
         }
 
-        if (showIPProtection) {
+        if (false) {
             MenuGroup {
                 IPProtectionMenuItem(
                     state = ipProtectionMenuState,
@@ -330,11 +330,6 @@ fun MainMenu(
             )
 
             if (accessPoint == MenuAccessPoint.Home) {
-                MenuItem(
-                    label = stringResource(id = R.string.browser_menu_change_wallpaper),
-                    beforeIconPainter = painterResource(id = iconsR.drawable.mozac_ic_wallpaper_24),
-                    onClick = onWallpaperButtonClick,
-                )
             }
 
             MenuItem(
@@ -761,7 +756,7 @@ private fun MenuDialogPreview(
                 showBanner = true,
                 isDownloadHighlighted = true,
                 webExtensionMenuCount = 1,
-                showIPProtection = true,
+                showIPProtection = false,
                 ipProtectionMenuState = IPProtectionMenuState(),
                 onMoreMenuClick = {},
                 onCustomizeReaderViewMenuClick = {},

@@ -180,7 +180,7 @@ import org.mozilla.fenix.components.FenixAutocompletePrompt
 import org.mozilla.fenix.components.FenixEmailMaskPrompt
 import org.mozilla.fenix.components.FenixSuggestStrongPasswordPrompt
 import org.mozilla.fenix.components.FindInPageIntegration
-import org.mozilla.fenix.components.accounts.FxaWebChannelIntegration
+// import org.mozilla.fenix.components.accounts.FxaWebChannelIntegration
 import org.mozilla.fenix.components.appstate.AppAction
 import org.mozilla.fenix.components.appstate.AppAction.MessagingAction
 import org.mozilla.fenix.components.appstate.AppAction.MessagingAction.MicrosurveyAction
@@ -315,7 +315,7 @@ abstract class BaseBrowserFragment :
     protected val hideToolbarFeature = ViewBoundFeatureWrapper<WebAppHideToolbarFeature>()
 
     private val swipeRefreshFeature = ViewBoundFeatureWrapper<SwipeRefreshFeature>()
-    private val webchannelIntegration = ViewBoundFeatureWrapper<FxaWebChannelIntegration>()
+    // private val webchannelIntegration = ViewBoundFeatureWrapper<FxaWebChannelIntegration>()
     private val sitePermissionWifiIntegration =
         ViewBoundFeatureWrapper<SitePermissionsWifiIntegration>()
     private val secureWindowFeature = ViewBoundFeatureWrapper<SecureWindowFeature>()
@@ -432,33 +432,6 @@ abstract class BaseBrowserFragment :
         val profilerStartTime = requireComponents.core.engine.profiler?.getProfilerTime()
 
         initializeUI(view)
-
-        appLinksFeature.set(
-            feature = AppLinksFeature(
-                context = requireContext(),
-                store = requireComponents.core.store,
-                fragmentManager = parentFragmentManager,
-                sessionId = customTabSessionId,
-                dialog = appLinksPromptDialog(),
-                launchInApp = { requireComponents.settings.shouldOpenLinksInApp(customTabSessionId != null) },
-                loadUrlUseCase = requireComponents.useCases.sessionUseCases.loadUrl,
-                shouldPrompt = { requireComponents.settings.shouldPromptOpenLinksInApp() },
-                alwaysOpenCheckboxAction = {
-                    requireComponents.settings.openLinksInExternalApp =
-                        requireContext().getString(R.string.pref_key_open_links_in_apps_always)
-                },
-                failedToLaunchAction = { fallbackUrl ->
-                    fallbackUrl?.let {
-                        val appLinksUseCases = requireComponents.useCases.appLinksUseCases
-                        val getRedirect = appLinksUseCases.appLinkRedirect
-                        val redirect = getRedirect.invoke(fallbackUrl)
-                        appLinksUseCases.openAppLink.invoke(redirect.appIntent)
-                    }
-                },
-            ),
-            owner = this,
-            view = binding.root,
-        )
 
         if (customTabSessionId == null) {
             // We currently only need this observer to navigate to home
@@ -1355,6 +1328,7 @@ abstract class BaseBrowserFragment :
             )
         }
 
+/*
         webchannelIntegration.set(
             feature = FxaWebChannelIntegration(
                 customTabSessionId = customTabSessionId,
@@ -1367,6 +1341,7 @@ abstract class BaseBrowserFragment :
             owner = this,
             view = view,
         )
+*/
 
         initializeEngineView(
             topToolbarHeight = getTopToolbarHeight(
