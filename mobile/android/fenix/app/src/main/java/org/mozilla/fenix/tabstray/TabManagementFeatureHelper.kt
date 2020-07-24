@@ -39,14 +39,15 @@ interface TabManagementFeatureHelper {
 /** The default implementation of [TabManagementFeatureHelper]. */
 data object DefaultTabManagementFeatureHelper : TabManagementFeatureHelper {
 
+    // Disable all tab group features since they only work in non-private tabs
     override val openingAnimationEnabled: Boolean
-        get() = Config.channel.isDebug || FxNimbus.features.tabManagementEnhancements.value().openingAnimationEnabled
+        get() = false
 
     override val tabGroupsEnabled: Boolean
-        get() = Config.channel.isDebug || FxNimbus.features.tabGroups.value().enabled
+        get() = false
 
     override val tabGroupsDragAndDropEnabled: Boolean
-        get() = Config.channel.isDebug || FxNimbus.features.tabGroupsDragAndDrop.value().enabled
+        get() = false
 
     override val tabGroupsLiveReorderEnabled: Boolean
         get() = FxNimbus.features.tabGroupsLiveReorder.value().enabled
@@ -55,10 +56,10 @@ data object DefaultTabManagementFeatureHelper : TabManagementFeatureHelper {
         get() = Config.channel.isDebug || FxNimbus.features.tabGroupsUngroup.value().enabled
 
     override val tabGroupsOnboardingEnabled: Boolean
-        get() = Config.channel.isDebug || FxNimbus.features.tabGroupsOnboarding.value().enabled
+        get() = false
 
     override val tabGroupsStripEnabled: Boolean
-        get() = FxNimbus.features.tabGroupsStrip.value().enabled
+        get() = false
 
     // Opt in via Secret Settings. Defaulting this on adds a browser menu row that pushes Print out
     // of the main menu's visible area, which the Print UI tests rely on.

@@ -257,7 +257,7 @@ fun MainMenu(
             )
         }
 
-        if (showIPProtection) {
+        if (false) {
             MenuGroup {
                 IPProtectionMenuItem(
                     state = ipProtectionMenuState,
@@ -319,14 +319,6 @@ fun MainMenu(
                 accountState = accountState,
                 onClick = onMozillaAccountButtonClick,
             )
-
-            if (accessPoint == MenuAccessPoint.Home) {
-                MenuItem(
-                    label = stringResource(id = R.string.browser_menu_customize_homepage),
-                    beforeIconPainter = painterResource(id = iconsR.drawable.mozac_ic_home_24),
-                    onClick = onCustomizeHomepageButtonClick,
-                )
-            }
 
             MenuItem(
                 label = stringResource(id = R.string.browser_menu_settings),
@@ -736,7 +728,7 @@ private fun MenuDialogPreview(@PreviewParameter(PreviewThemeProvider::class) the
                 showBanner = true,
                 isDownloadHighlighted = true,
                 webExtensionMenuCount = 1,
-                showIPProtection = true,
+                showIPProtection = false,
                 ipProtectionMenuState = IPProtectionMenuState(),
                 onMoreMenuClick = {},
                 onCustomizeReaderViewMenuClick = {},

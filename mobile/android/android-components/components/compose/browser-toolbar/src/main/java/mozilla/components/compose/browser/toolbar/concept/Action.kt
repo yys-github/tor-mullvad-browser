@@ -169,3 +169,5 @@ sealed class Action {
         val onAnimationFinished: BrowserToolbarEvent? = null,
     ) : Action()
 }
+
+class NoopAction : Action()
