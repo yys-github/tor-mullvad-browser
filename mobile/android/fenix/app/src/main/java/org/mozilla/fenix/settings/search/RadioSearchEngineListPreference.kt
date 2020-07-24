@@ -43,8 +43,8 @@ class RadioSearchEngineListPreference @JvmOverloads constructor(
     private val itemResId: Int
         get() = R.layout.search_engine_radio_button
 
-    private val isForPrivateBrowsing: Boolean
-        get() = key == context.getString(R.string.pref_key_private_search_engine_list)
+    // tb-45227: set this to false in order to disable special pbm handling
+    private val isForPrivateBrowsing: Boolean = false
 
     init {
         layoutResource = R.layout.preference_search_engine_chooser

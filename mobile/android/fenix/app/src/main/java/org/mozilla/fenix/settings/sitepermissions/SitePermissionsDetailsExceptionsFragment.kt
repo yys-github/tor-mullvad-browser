@@ -79,8 +79,6 @@ class SitePermissionsDetailsExceptionsFragment : PreferenceFragmentCompat(), Sys
 
     @VisibleForTesting
     internal fun bindCategoryPhoneFeatures() {
-        val settings = provideSettings()
-
         initPhoneFeature(CAMERA)
         initPhoneFeature(LOCATION)
         initPhoneFeature(MICROPHONE)
@@ -89,8 +87,10 @@ class SitePermissionsDetailsExceptionsFragment : PreferenceFragmentCompat(), Sys
         initPhoneFeature(CROSS_ORIGIN_STORAGE_ACCESS)
         initPhoneFeature(MEDIA_KEY_SYSTEM_ACCESS)
         initAutoplayFeature()
-        initPhoneFeature(LOCAL_DEVICE_ACCESS, visible = settings.isLnaFeatureEnabled)
-        initPhoneFeature(LOCAL_NETWORK_ACCESS, visible = settings.isLnaFeatureEnabled)
+        // tor-browser#44155: Don't show local network / device toggles.
+        //  We want it always in the same state: blocked.
+        initPhoneFeature(LOCAL_DEVICE_ACCESS, visible = false)
+        initPhoneFeature(LOCAL_NETWORK_ACCESS, visible = false)
         bindClearPermissionsButton()
     }
 
