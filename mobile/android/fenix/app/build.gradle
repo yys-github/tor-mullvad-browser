@@ -86,6 +86,8 @@ android {
 
         buildConfigField "String[]", "SUPPORTED_LOCALE_ARRAY", getSupportedLocales()
         buildConfigField "boolean", "IS_BENCHMARK_BUILD", "false"
+
+        buildConfigField "boolean", "DATA_COLLECTION_DISABLED", "true"
     }
 
     def releaseTemplate = {
@@ -334,8 +336,8 @@ androidComponents {
 // -------------------------------------------------------------------------------------------------
 
 android.defaultConfig.with {
-    buildConfigField 'boolean', 'CRASH_REPORTING', 'true'
-    buildConfigField 'boolean', 'TELEMETRY', 'true'
+    buildConfigField 'boolean', 'CRASH_REPORTING', 'false'
+    buildConfigField 'boolean', 'TELEMETRY', 'false'
 
     // Reading the sentry token from a local file (if it exists). In a release task on taskcluster it will be available.
     buildConfigField 'String', 'SENTRY_TOKEN', 'null'
@@ -551,7 +553,6 @@ dependencies {
     implementation project(':components:lib-push-firebase')
     implementation project(':components:lib-state')
     implementation project(':components:lib-accelerometer-sensormanager')
-    implementation project(':components:lib-integrity-googleplay')
     implementation project(':components:lib-llm-mlpa')
     implementation project(':components:lib-shake')
     implementation project(':components:lib-ai-controls')
@@ -614,7 +615,6 @@ dependencies {
     implementation libs.mozilla.glean
     implementation libs.play.review
     implementation libs.play.review.ktx
-    implementation libs.play.services.ads.id
     implementation libs.protobuf.javalite
     implementation libs.sentry
     implementation libs.androidx.documentfile
