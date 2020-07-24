@@ -27,9 +27,7 @@ class RemoteSettingsService(
     isLargeScreenSize: Boolean = false,
 ) {
     val remoteSettingsService: RemoteSettingsService by lazy {
-        val appContext = generateAppContext(context, channel, isLargeScreenSize)
-        val databasePath = context.getDir("remote-settings", Context.MODE_PRIVATE).absolutePath
-        RemoteSettingsService(databasePath, RemoteSettingsConfig2(server = server, appContext = appContext))
+        RemoteSettingsService() /* no-op */
     }
 }
 
