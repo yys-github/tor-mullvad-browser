@@ -52,21 +52,9 @@ internal val allShortcutOptions: List<ShortcutOption> = listOf(
         setOf(ShortcutAvailability.SIMPLE),
     ),
     ShortcutOption(
-        ShortcutType.SHARE,
-        iconsR.drawable.mozac_ic_share_android_24,
-        R.string.toolbar_customize_shortcut_share,
-        setOf(ShortcutAvailability.SIMPLE),
-    ),
-    ShortcutOption(
         ShortcutType.BOOKMARK,
         iconsR.drawable.mozac_ic_bookmark_24,
         R.string.toolbar_customize_shortcut_add_bookmark,
-        setOf(ShortcutAvailability.SIMPLE, ShortcutAvailability.EXPANDED),
-    ),
-    ShortcutOption(
-        ShortcutType.TRANSLATE,
-        iconsR.drawable.mozac_ic_translate_24,
-        R.string.toolbar_customize_shortcut_translate,
         setOf(ShortcutAvailability.SIMPLE, ShortcutAvailability.EXPANDED),
     ),
     ShortcutOption(

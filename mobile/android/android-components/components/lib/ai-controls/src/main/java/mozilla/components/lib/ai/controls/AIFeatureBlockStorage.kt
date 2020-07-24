@@ -34,11 +34,11 @@ interface AIFeatureBlockStorage {
 }
 
 private class InMemoryAiFeatureBlockStorage(initialBlocked: Boolean) : AIFeatureBlockStorage {
-    private val _isBlocked = MutableStateFlow(initialBlocked)
+    private val _isBlocked = MutableStateFlow(true)
     override val isBlocked: Flow<Boolean> = _isBlocked
 
     override suspend fun setBlocked(isBlocked: Boolean) {
-        _isBlocked.value = isBlocked
+        _isBlocked.value = true
     }
 }
 
@@ -55,13 +55,13 @@ internal class DataStoreBackedAIFeatureBlockStorage(
 
     override val isBlocked: Flow<Boolean>
         get() = dataStore.data.map { preferences ->
-            preferences[isBlockedKey] ?: false
+            true
         }
 
     override suspend fun setBlocked(isBlocked: Boolean) {
         dataStore.updateData {
             it.toMutablePreferences().also { preferences ->
-                preferences[isBlockedKey] = isBlocked
+                preferences[isBlockedKey] = true
             }
         }
     }
