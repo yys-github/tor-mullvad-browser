@@ -185,6 +185,11 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
     @OptIn(DelicateCoroutinesApi::class) // GlobalScope usage
     @VisibleForTesting
     protected open fun initializeGlean() {
+        if (!settings().isTelemetryEnabled) {
+            logger.debug("Preventing Glean from initializing, since telemetry is disabled")
+            return
+        }
+
         val settings = settings()
         // We delay the Glean initialization until, we have user consent (After onboarding).
         // If onboarding is disabled (when in local builds), continue to initialize Glean.
@@ -1047,8 +1052,6 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
 
     @OptIn(DelicateCoroutinesApi::class)
     open fun downloadWallpapers() {
-        GlobalScope.launch {
-            components.useCases.wallpaperUseCases.initialize()
-        }
+        // IN TOR BROWSER: we don't download wallpapers.
     }
 }
