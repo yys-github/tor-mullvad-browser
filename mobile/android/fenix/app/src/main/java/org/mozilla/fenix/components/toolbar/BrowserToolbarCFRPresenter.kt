@@ -245,8 +245,8 @@ class BrowserToolbarCFRPresenter(
         context.isTablet() &&
             settings.shouldShowTabletNavigationCFR -> ToolbarCFR.TABLET_NAVIGATION
 
-        shoppingExperienceFeature.isEnabled &&
-            settings.shouldShowReviewQualityCheckCFR -> whichShoppingCFR()
+        // shoppingExperienceFeature.isEnabled &&
+        //     settings.shouldShowReviewQualityCheckCFR -> whichShoppingCFR()
 
         else -> ToolbarCFR.NONE
     }
