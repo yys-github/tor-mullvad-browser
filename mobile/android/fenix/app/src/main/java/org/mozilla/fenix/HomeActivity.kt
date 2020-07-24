@@ -468,27 +468,11 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
                 settings.shouldShowOnboarding(fenixOnboarding.userHasBeenOnboarded())
             }
 
-        SplashScreenManager(
-            splashScreenOperation = createSplashScreenOperation(shouldShowOnboarding),
-            scope = lifecycleScope,
-            splashScreenTimeout = FxNimbus.features.splashScreen.value().maximumDurationMs.toLong(),
-            storage = DefaultSplashScreenStorage(components.settings),
-            showSplashScreen = { installSplashScreen().setKeepOnScreenCondition(it) },
-            onSplashScreenFinished = { result ->
-                // Before the splashscreen ends the application has a different theme not supporting edge to edge.
-                EdgeToEdgeFragmentLifecycleCallbacks.register(supportFragmentManager, window)
-
-                if (result.sendTelemetry) {
-                    SplashScreen.firstLaunchExtended.record(
-                        SplashScreen.FirstLaunchExtendedExtra(dataFetched = result.wasDataFetched),
-                    )
-                }
-
-                if (savedInstanceState == null && shouldShowOnboarding) {
-                    navHost.navController.navigate(NavGraphDirections.actionGlobalOnboarding())
-                }
-            },
-        ).showSplashScreen()
+        // tor-browser#43730: Do not delay splash screen
+        // Fix edgeToEdge display issue presented in 150 android rebase. Taken from deleted splash screen code
+        // https://gitlab.torproject.org/tpo/applications/tor-browser/-/work_items/44880
+        EdgeToEdgeFragmentLifecycleCallbacks.register(supportFragmentManager, window)
+        // to fetch or apply Nimbus experiments.
 
         lifecycleScope.launch {
             val debugSettingsRepository = DefaultDebugSettingsRepository(

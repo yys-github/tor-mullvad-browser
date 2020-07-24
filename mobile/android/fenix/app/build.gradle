@@ -86,6 +86,8 @@ android {
 
         buildConfigField "String[]", "SUPPORTED_LOCALE_ARRAY", getSupportedLocales()
         buildConfigField "boolean", "IS_BENCHMARK_BUILD", "false"
+
+        buildConfigField "boolean", "DATA_COLLECTION_DISABLED", "true"
     }
 
     def releaseTemplate = {
@@ -343,6 +345,8 @@ android.defaultConfig.with {
         def token = new File("${rootDir}/.sentry_token").text.trim()
         buildConfigField 'String', 'SENTRY_TOKEN', '"' + token + '"'
     } catch (FileNotFoundException ignored) {}
+    buildConfigField 'boolean', 'CRASH_REPORTING', 'false'
+    buildConfigField 'boolean', 'TELEMETRY', 'false'
 
     // Setting buildDate with every build ID changes the generated BuildConfig and slows down the
     // build, so debug builds (overridden below) use a fixed string instead.
@@ -614,7 +618,6 @@ dependencies {
     implementation libs.mozilla.glean
     implementation libs.play.review
     implementation libs.play.review.ktx
-    implementation libs.play.services.ads.id
     implementation libs.protobuf.javalite
     implementation libs.sentry
     implementation libs.androidx.documentfile
