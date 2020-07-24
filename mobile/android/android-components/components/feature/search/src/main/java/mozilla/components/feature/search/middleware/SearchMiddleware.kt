@@ -79,10 +79,7 @@ class SearchMiddleware(
     )
     private val client: RemoteSettingsClient? =
         searchEngineSelectorConfig?.service?.remoteSettingsService?.makeClient(SEARCH_CONFIG_ICONS_COLLECTION_NAME)
-    private val searchEngineSelectorRepository: SearchEngineRepository? =
-        searchEngineSelectorConfig?.let {
-                SearchEngineSelectorRepository(it, defaultSearchEngineIcon, client)
-        }
+    private val searchEngineSelectorRepository: SearchEngineRepository? = null // needs to always be null so that the regionBundle isn't populated with empty RemoteSettings and instead defaults to what we need
 
     override fun invoke(
         context: MiddlewareContext<BrowserState, BrowserAction>,
