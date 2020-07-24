@@ -202,9 +202,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
             }
         }
 
-        findPreference<Preference>(getPreferenceKey(R.string.pref_key_translation))?.isVisible =
-            FxNimbus.features.translations.value().globalSettingsEnabled &&
-                components.core.store.state.translationEngine.isEngineSupported == true
+        findPreference<Preference>(getPreferenceKey(R.string.pref_key_translation))?.isVisible = false
 
         findPreference<Preference>(getPreferenceKey(R.string.pref_key_page_summaries))?.isVisible =
             components.settings.shakeToSummarizeFeatureFlagEnabled
@@ -331,14 +329,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         val tabSettingsPreference = requirePreference<Preference>(R.string.pref_key_tabs)
         tabSettingsPreference.summary = settings.getTabTimeoutString()
 
-        val autofillPreference = requirePreference<Preference>(R.string.pref_key_credit_cards)
-        autofillPreference.title =
-            if (settings.addressFeature) {
-                getString(R.string.preferences_autofill)
-            } else {
-                getString(R.string.preferences_credit_cards_2)
-            }
-
         val openLinksInAppsSettingsPreference = requirePreference<Preference>(R.string.pref_key_open_links_in_apps)
         openLinksInAppsSettingsPreference.summary = settings.getOpenLinksInAppsString()
 
@@ -403,11 +393,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
 
                 resources.getString(R.string.pref_key_email_masks) -> {
                     SettingsFragmentDirections.actionSettingsFragmentToEmailMasksSettingsFragment()
-                }
-
-                resources.getString(R.string.pref_key_credit_cards) -> {
-                    SettingsMetrics.autofill.record()
-                    SettingsFragmentDirections.actionSettingsFragmentToAutofillSettingFragment()
                 }
 
                 resources.getString(R.string.pref_key_accessibility) -> {
@@ -609,8 +594,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         val debuggingKey = getPreferenceKey(R.string.pref_key_remote_debugging)
         val preferenceLeakCanary = findPreference<Preference>(leakKey)
         val preferenceRemoteDebugging = findPreference<Preference>(debuggingKey)
-        val preferenceMakeDefaultBrowser =
-            requirePreference<DefaultBrowserPreference>(R.string.pref_key_make_default_browser)
 
         if (!Config.channel.isReleased) {
             preferenceLeakCanary?.setOnPreferenceChangeListener { _, newValue ->
@@ -625,11 +608,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
             settings.preferences.edit { putBoolean(preference.key, newValue) }
             requireComponents.core.engine.settings.remoteDebuggingEnabled = newValue
             true
-        }
-
-        preferenceMakeDefaultBrowser.apply {
-            updateSwitch()
-            onPreferenceClickListener = getClickListenerForMakeDefaultBrowser()
         }
 
         val preferenceStartProfiler = findPreference<Preference>(getPreferenceKey(R.string.pref_key_start_profiler))
@@ -670,29 +648,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         setupTrackingProtectionPreference(settings)
         setupDnsOverHttpsPreference(settings)
         setupEmailMaskPreference(settings, requireComponents)
-    }
-
-    private val setToDefaultPromptRequestLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            with(requireContext()) {
-                maybeNavigateToSystemSetToDefaultAction(result.resultCode, components.settings, dateTimeProvider) {
-                    navigateToDefaultBrowserAppsSettings(BuildManufacturerChecker())
-                }
-            }
-        }
-
-    /**
-     * For >=Q -> Use new RoleManager API to show in-app browser switching dialog. For <Q && >=N -> Navigate user to
-     * Android Default Apps Settings. For <N -> Open sumo page to show user how to change default app.
-     */
-    private fun getClickListenerForMakeDefaultBrowser(): Preference.OnPreferenceClickListener {
-        return Preference.OnPreferenceClickListener {
-            maybeRequestDefaultBrowserPrompt(
-                WeakReference((requireActivity() as? HomeActivity)),
-                setToDefaultPromptRequestLauncher,
-            )
-            true
-        }
     }
 
     private fun navigateFromSettings(directions: NavDirections) {
@@ -876,8 +831,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
 
     @VisibleForTesting
     internal fun setLinkSharingPreference() {
-        with(requirePreference<Preference>(R.string.pref_key_link_sharing)) {
-            isVisible = FxNimbus.features.sentFromFirefox.value().enabled
+        if (requireContext().components.settings.isTelemetryEnabled) {
+            with(requirePreference<Preference>(R.string.pref_key_link_sharing)) {
+                isVisible = FxNimbus.features.sentFromFirefox.value().enabled
+            }
         }
     }
 
