@@ -19,7 +19,8 @@ object FenixVersions {
 
 @Suppress("unused")
 object FenixDependencies {
-    const val adjust = "com.adjust.sdk:adjust-android:${FenixVersions.adjust}"
+// Disable features and functionality
+//    const val adjust = "com.adjust.sdk:adjust-android:${FenixVersions.adjust}"
     const val installreferrer = "com.android.installreferrer:installreferrer:${FenixVersions.installreferrer}"
 }
 
