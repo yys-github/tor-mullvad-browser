@@ -223,6 +223,7 @@ MOZ_SRC_FILES += [
     "FaviconUtils.sys.mjs",
     "InputPickerPanelCommon.sys.mjs",
     "RegionLocaleMap.sys.mjs",
+    "TorStrings.sys.mjs",
 ]
 
 if CONFIG["MOZ_ASAN_REPORTER"]:
