@@ -44,12 +44,13 @@ class PwaOnboardingObserver(
                     it.content.webAppManifest
                 }
                 .collect {
+                    @SuppressWarnings("CollapsibleIfStatements")
                     if (
                         webAppUseCases.isInstallable() &&
                         !settings.userKnowsAboutPwas &&
                         settings.lastKnownMode == BrowsingMode.Normal
                     ) {
-                        settings.incrementVisitedInstallableCount()
+                        // settings.incrementVisitedInstallableCount()
                         if (settings.shouldShowPwaCfr) {
                             navigateToPwaOnboarding()
                             settings.lastCfrShownTimeInMillis = System.currentTimeMillis()
