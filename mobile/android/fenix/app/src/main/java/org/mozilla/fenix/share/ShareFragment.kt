@@ -65,7 +65,6 @@ class ShareFragment : AppCompatDialogFragment() {
 
     private lateinit var shareInteractor: ShareInteractor
     private lateinit var shareCloseView: ShareCloseView
-    private lateinit var shareToAccountDevicesView: ShareToAccountDevicesView
     private lateinit var shareToAppsView: ShareToAppsView
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -135,9 +134,6 @@ class ShareFragment : AppCompatDialogFragment() {
         )
 
         binding.shareWrapper.setOnClickListener { shareInteractor.onShareClosed() }
-        shareToAccountDevicesView =
-            ShareToAccountDevicesView(binding.devicesShareLayout, shareInteractor)
-
         if (args.showPage) {
             // Show the previous fragment underneath the share background scrim
             // by making it translucent.
@@ -180,7 +176,6 @@ class ShareFragment : AppCompatDialogFragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.uiState.collect { state ->
-                shareToAccountDevicesView.setShareTargets(state.devices)
                 shareToAppsView.setShareTargets(state.otherApps)
                 shareToAppsView.setRecentShareTargets(state.recentApps)
             }

@@ -99,6 +99,7 @@ class SiteSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
                     PhoneFeature.LOCAL_NETWORK_ACCESS,
                 ),
             )
+            .filter { it != PhoneFeature.LOCATION }
             .forEach(::initPhoneFeature)
     }
 

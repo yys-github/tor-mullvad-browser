@@ -592,7 +592,7 @@ class Settings(
 
     var isTelemetryEnabled by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_telemetry),
-        default = true,
+        default = BuildConfig.DATA_COLLECTION_DISABLED == false
     )
 
     var isMarketingTelemetryEnabled by booleanPreference(
@@ -808,7 +808,7 @@ class Settings(
 
     val shouldShowSyncedTabsSuggestions by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_search_synced_tabs),
-        default = true,
+        default = false,
     )
 
     val shouldShowClipboardSuggestions by booleanPreference(
@@ -982,7 +982,7 @@ class Settings(
      */
     var showFirstTimeTranslation: Boolean by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_first_time_translation),
-        default = true,
+        default = false,
     )
 
     /**
@@ -990,7 +990,7 @@ class Settings(
      */
     var offerTranslation: Boolean by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_translations_offer),
-        default = true,
+        default = false,
     )
 
     /**
@@ -1128,7 +1128,7 @@ class Settings(
 
     var shouldUseTrackingProtection by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_tracking_protection),
-        default = true,
+        default = false
     )
 
     var shouldEnableGlobalPrivacyControl by booleanPreference(
@@ -1138,17 +1138,17 @@ class Settings(
 
     var shouldUseCookieBannerPrivateMode by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_cookie_banner_private_mode),
-        default = { shouldUseCookieBannerPrivateModeDefaultValue },
+        default = { false /* shouldUseCookieBannerPrivateModeDefaultValue */ },
     )
 
     val shouldUseCookieBannerPrivateModeDefaultValue: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_VALUE_PBM] == 1
+        get() = false // cookieBannersSection[CookieBannersSection.FEATURE_SETTING_VALUE_PBM] == 1
 
     val shouldUseCookieBanner: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_VALUE] == 1
+        get() = false // cookieBannersSection[CookieBannersSection.FEATURE_SETTING_VALUE] == 1
 
     val shouldShowCookieBannerUI: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_UI] == 1
+        get() = false // cookieBannersSection[CookieBannersSection.FEATURE_UI] == 1
 
     val shouldEnableCookieBannerDetectOnly: Boolean
         get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_DETECT_ONLY] == 1
@@ -1548,7 +1548,7 @@ class Settings(
      */
     internal var trendingSearchSuggestionsEnabled by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_trending_search_suggestions),
-        default = true,
+        default = false,
     )
 
     /**
@@ -1556,7 +1556,7 @@ class Settings(
      */
     internal var shouldShowRecentSearchSuggestions by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_recent_search_suggestions),
-        default = true,
+        default = false,
     )
 
     var showSearchSuggestionsInPrivateOnboardingFinished by booleanPreference(
@@ -2064,7 +2064,7 @@ class Settings(
      */
     var shouldAutofillCreditCardDetails by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_credit_cards_save_and_autofill_cards),
-        default = true,
+        default = BuildConfig.DATA_COLLECTION_DISABLED == false,
     )
 
     /**
@@ -2183,7 +2183,10 @@ class Settings(
 
     var shouldUseMinimalBottomToolbarWhenEnteringText by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_use_minimal_bottom_toolbar_while_entering_text),
-        default = { FxNimbus.features.minimalAddressbar.value().atBottomWhileEnteringText },
+        // tb-43918
+        // Setting to off for esr140 since we've done no work for it, but it appears moz has enabled
+        // by default in 144 so we'll likely be switching this to true and porting to it for esr-next
+        default = { false },
     )
 
     /**
@@ -2389,7 +2392,7 @@ class Settings(
      */
     var enableUnifiedTrustPanel by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_unified_trust_panel),
-        default = { FxNimbus.features.unifiedTrustPanel.value().enabled },
+        default = { false },
     )
 
     /**
@@ -2454,7 +2457,7 @@ class Settings(
      */
     var enableFxSuggest by lazyFeatureFlagBooleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_fxsuggest),
-        defaultValue = { FxNimbus.features.fxSuggest.value().enabled },
+        defaultValue = { false }, // { FxNimbus.features.fxSuggest.value().enabled },
         featureFlag = FeatureFlags.FX_SUGGEST,
     )
 
