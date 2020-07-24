@@ -294,7 +294,7 @@ class MenuDialogFragment : BottomSheetDialogFragment() {
                         .collectAsState(initial = false)
 
                     val isTranslationsEnabled =
-                        TranslationsEnabledSettings.dataStore(requireContext()).isEnabled.collectAsState(true)
+                        TranslationsEnabledSettings.dataStore(requireContext()).isEnabled.collectAsState(false)
 
                     MenuDialogBottomSheet(
                         modifier = Modifier.padding(top = 16.dp, bottom = 16.dp).width(32.dp),
