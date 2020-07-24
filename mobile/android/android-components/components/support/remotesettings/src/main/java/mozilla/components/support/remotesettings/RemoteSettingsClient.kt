@@ -67,23 +67,8 @@ class RemoteSettingsClient(
      */
     @Suppress("TooGenericExceptionCaught")
     suspend fun fetch(): RemoteSettingsResult = withContext(Dispatchers.IO) {
-        try {
-            val serverRecords = RemoteSettings(config).use {
-                it.getRecords()
-            }
-            RemoteSettingsResult.Success(serverRecords)
-        } catch (e: RemoteSettingsException) {
-            Logger.error(e.message.toString())
-            RemoteSettingsResult.NetworkFailure(e)
-        } catch (e: NullPointerException) {
-            Logger.error(e.message.toString())
-            RemoteSettingsResult.NetworkFailure(e)
-        } catch (e: UniffiInternalException) {
-            Logger.error(e.toString())
-            RustComponentsErrorTelemetry.submitErrorPing("remote-settings-internal-error", e.toString())
-            reportRustError("remote-settings-internal-error", e.toString())
-            RemoteSettingsResult.NetworkFailure(e)
-        }
+        RemoteSettingsResult.NetworkFailure(Exception("tb-43113: no remote fetching"))
+
     }
 
     /**
@@ -131,7 +116,8 @@ class RemoteSettingsClient(
 suspend fun RemoteSettingsClient.readOrFetch(): RemoteSettingsResult {
     val readResult = read()
     return if (readResult is RemoteSettingsResult.DiskFailure) {
-        fetch()
+        //fetch()
+        RemoteSettingsResult.NetworkFailure(Exception("tb-43113: no remote fetching"))
     } else {
         readResult
     }
