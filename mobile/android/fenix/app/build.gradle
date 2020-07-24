@@ -93,6 +93,8 @@ android {
         ]
 
         buildConfigField "String[]", "SUPPORTED_LOCALE_ARRAY", getSupportedLocales()
+
+        buildConfigField "boolean", "DATA_COLLECTION_DISABLED", "true"
     }
 
     def releaseTemplate = {
@@ -306,6 +308,8 @@ android.applicationVariants.configureEach { variant ->
 // -------------------------------------------------------------------------------------------------
 
     def isDebug = variant.buildType.resValues['bool/IS_DEBUG']?.value ?: false
+    def isDataCollectionDisabled = variant.buildType.buildConfigFields['DATA_COLLECTION_DISABLED']?.value ?: true
+    def isDebugOrDCD = isDebug || isDataCollectionDisabled
     def useReleaseVersioning = variant.buildType.buildConfigFields['USE_RELEASE_VERSIONING']?.value ?: false
 
     project.logger.debug("----------------------------------------------")
@@ -313,7 +317,7 @@ android.applicationVariants.configureEach { variant ->
     project.logger.debug("Application ID:    " + [variant.applicationId, variant.buildType.applicationIdSuffix].findAll().join())
     project.logger.debug("Build type:        " + variant.buildType.name)
     project.logger.debug("Flavor:            " + variant.flavorName)
-    project.logger.debug("Telemetry enabled: " + !isDebug)
+    project.logger.debug("Telemetry enabled: " + !isDebugOrDCD)
 
     if (useReleaseVersioning) {
         // The Google Play Store does not allow multiple APKs for the same app that all have the
@@ -354,7 +358,7 @@ android.applicationVariants.configureEach { variant ->
 // -------------------------------------------------------------------------------------------------
 
     buildConfigField 'String', 'SENTRY_TOKEN', 'null'
-    if (!isDebug) {
+    if (!isDebugOrDCD) {
         buildConfigField 'boolean', 'CRASH_REPORTING', 'true'
         // Reading sentry token from local file (if it exists). In a release task on taskcluster it will be available.
         try {
@@ -365,7 +369,7 @@ android.applicationVariants.configureEach { variant ->
         buildConfigField 'boolean', 'CRASH_REPORTING', 'false'
     }
 
-    if (!isDebug) {
+    if (!isDebugOrDCD) {
         buildConfigField 'boolean', 'TELEMETRY', 'true'
     } else {
         buildConfigField 'boolean', 'TELEMETRY', 'false'
@@ -701,11 +705,7 @@ dependencies {
     implementation libs.protobuf.javalite
     implementation libs.google.material
 
-    implementation(libs.adjust)
     implementation(libs.installreferrer)
-
-    // Required for the Google Advertising ID
-    implementation libs.play.services.ads.id
 
     // Required for in-app reviews
     implementation libs.play.review

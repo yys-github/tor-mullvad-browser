@@ -283,12 +283,12 @@ open class DefaultToolbarMenu(
         onItemTapped.invoke(ToolbarMenu.Item.RequestDesktop(checked))
     }
 
-    private val openInRegularTabItem = BrowserMenuImageText(
-        label = context.getString(R.string.browser_menu_open_in_regular_tab),
-        imageResource = R.drawable.ic_open_in_regular_tab,
-    ) {
-        onItemTapped.invoke(ToolbarMenu.Item.OpenInRegularTab)
-    }
+    // private val openInRegularTabItem = BrowserMenuImageText(
+    //     label = context.getString(R.string.browser_menu_open_in_regular_tab),
+    //     imageResource = R.drawable.ic_open_in_regular_tab,
+    // ) {
+    //     onItemTapped.invoke(ToolbarMenu.Item.OpenInRegularTab)
+    // }
 
     private val customizeReaderView = BrowserMenuImageText(
         label = context.getString(R.string.browser_menu_customize_reader_view),
@@ -445,7 +445,7 @@ open class DefaultToolbarMenu(
                 findInPageItem,
                 translationsItem.apply { visible = ::shouldShowTranslations },
                 desktopSiteItem.apply { visible = { store.state.selectedTab?.content?.isPdf == false } },
-                openInRegularTabItem.apply { visible = ::shouldShowOpenInRegularTab },
+                // openInRegularTabItem.apply { visible = ::shouldShowOpenInRegularTab },
                 customizeReaderView.apply { visible = ::shouldShowReaderViewCustomization },
                 openInApp.apply { visible = ::shouldShowOpenInApp },
                 reportBrokenSite.apply { visible = ::shouldShowWebCompatReporter },
