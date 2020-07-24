@@ -670,7 +670,7 @@ class Settings(
 
     var isTelemetryEnabled by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_telemetry),
-        default = true,
+        default = BuildConfig.DATA_COLLECTION_DISABLED == false
     )
 
     var isMarketingTelemetryEnabled by booleanPreference(
@@ -886,7 +886,7 @@ class Settings(
 
     val shouldShowSyncedTabsSuggestions by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_search_synced_tabs),
-        default = true,
+        default = false,
     )
 
     val shouldShowClipboardSuggestions by booleanPreference(
@@ -1094,7 +1094,7 @@ class Settings(
      */
     var showFirstTimeTranslation: Boolean by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_first_time_translation),
-        default = true,
+        default = false,
     )
 
     /**
@@ -1102,7 +1102,7 @@ class Settings(
      */
     var offerTranslation: Boolean by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_translations_offer),
-        default = true,
+        default = false,
     )
 
     /**
@@ -1240,7 +1240,7 @@ class Settings(
 
     var shouldUseTrackingProtection by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_tracking_protection),
-        default = true,
+        default = false
     )
 
     var shouldEnableGlobalPrivacyControl by booleanPreference(
@@ -1677,7 +1677,7 @@ class Settings(
      */
     internal var trendingSearchSuggestionsEnabled by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_trending_search_suggestions),
-        default = true,
+        default = false,
     )
 
     /**
@@ -1685,7 +1685,7 @@ class Settings(
      */
     internal var shouldShowRecentSearchSuggestions by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_recent_search_suggestions),
-        default = true,
+        default = false,
     )
 
     var showSearchSuggestionsInPrivateOnboardingFinished by booleanPreference(
@@ -1830,7 +1830,7 @@ class Settings(
 
     var shouldShowVoiceSearch by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_voice_search),
-        default = true,
+        default = false,
     )
 
     /**
@@ -2194,7 +2194,7 @@ class Settings(
      */
     var shouldAutofillCreditCardDetails by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_credit_cards_save_and_autofill_cards),
-        default = true,
+        default = BuildConfig.DATA_COLLECTION_DISABLED == false,
     )
 
     /**
@@ -2335,7 +2335,10 @@ class Settings(
 
     var shouldUseMinimalBottomToolbarWhenEnteringText by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_use_minimal_bottom_toolbar_while_entering_text),
-        default = { FxNimbus.features.minimalAddressbar.value().atBottomWhileEnteringText },
+        // tor-browser#43918
+        // Setting to off for esr140 since we've done no work for it, but it appears moz has enabled
+        // by default in 144 so we'll likely be switching this to true and porting to it for esr-next
+        default = { false },
     )
 
     /**
@@ -2561,7 +2564,7 @@ class Settings(
     @Suppress("DEPRECATION")
     var enableFxSuggest by lazyFeatureFlagBooleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_fxsuggest),
-        defaultValue = { FxNimbus.features.fxSuggest.value().enabled },
+        defaultValue = { false }, // { FxNimbus.features.fxSuggest.value().enabled },
         featureFlag = FeatureFlags.FX_SUGGEST,
     )
 
@@ -2576,7 +2579,7 @@ class Settings(
      */
     var isFirstTimeEngagingWithSignup: Boolean by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_first_time_engage_with_signup),
-        default = true,
+        default = false,
     )
 
     /**
@@ -2682,7 +2685,7 @@ class Settings(
 
     var aiControlsFeatureFlagEnabled by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_ai_controls),
-        default = true,
+        default = false,
     )
 
     /**

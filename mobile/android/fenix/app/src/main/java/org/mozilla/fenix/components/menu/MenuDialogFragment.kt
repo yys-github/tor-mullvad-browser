@@ -292,7 +292,7 @@ class MenuDialogFragment : BottomSheetDialogFragment() {
                 }.collectAsState(initial = false)
 
                 val isTranslationsEnabled = TranslationsEnabledSettings.dataStore(requireContext())
-                    .isEnabled.collectAsState(true)
+                    .isEnabled.collectAsState(false)
 
                 MenuDialogBottomSheet(
                     modifier = Modifier

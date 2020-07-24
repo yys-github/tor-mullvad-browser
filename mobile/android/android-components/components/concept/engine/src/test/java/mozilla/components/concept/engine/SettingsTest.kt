@@ -174,7 +174,7 @@ class SettingsTest {
             queryParameterStrippingPrivateBrowsing = true,
             queryParameterStrippingAllowList = "AllowList",
             queryParameterStrippingStripList = "StripList",
-            emailTrackerBlockingPrivateBrowsing = true,
+            emailTrackerBlockingPrivateBrowsing = false,
         )
 
         assertFalse(defaultSettings.domStorageEnabled)
