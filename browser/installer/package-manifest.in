@@ -234,6 +234,10 @@
 ; Base Browser
 @RESPATH@/components/SecurityLevel.manifest
 
+; Tor Browser localization files
+@RESPATH@/chrome/torbutton.manifest
+@RESPATH@/chrome/torbutton/*
+
 ; [DevTools Startup Files]
 @RESPATH@/browser/chrome/devtools-startup@JAREXT@
 @RESPATH@/browser/chrome/devtools-startup.manifest
