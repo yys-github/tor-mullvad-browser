@@ -21,6 +21,6 @@ data class TranslationsSettingsState(
     val showAutomaticTranslations: Boolean,
     val showNeverTranslate: Boolean,
     val showDownloads: Boolean,
-    val translationsEnabled: Boolean,
+    val translationsEnabled: Boolean = false,
     val switchItems: List<TranslationSwitchItem>,
 )
