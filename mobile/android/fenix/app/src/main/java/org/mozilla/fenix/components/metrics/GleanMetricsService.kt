@@ -8,6 +8,7 @@ import android.content.Context
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.utils.RunWhenReadyQueue
 import mozilla.telemetry.glean.Glean
+import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.GleanMetrics.Pings
 import org.mozilla.fenix.ext.components
 
@@ -34,6 +35,9 @@ private class EventWrapper<T : Enum<T>>(
     }
 
     fun track(event: Event) {
+        if (BuildConfig.DATA_COLLECTION_DISABLED) {
+            return
+        }
         val extras =
             if (keyMapper != null) {
                 event.extras?.mapKeys { (key) ->
@@ -67,6 +71,12 @@ class GleanMetricsService(
     private val activationPing = ActivationPing(context)
 
     override fun start() {
+        if (BuildConfig.DATA_COLLECTION_DISABLED) {
+            Logger.debug("Data collection is disabled, not initializing Glean.")
+            initialized = true
+            return
+        }
+
         logger.debug("Enabling Glean.")
         // Initialization of Glean already happened in FenixApplication.
         Glean.setCollectionEnabled(true)
@@ -93,10 +103,12 @@ class GleanMetricsService(
     }
 
     override fun track(event: Event) {
-        event.wrapper?.track(event)
+        if (!BuildConfig.DATA_COLLECTION_DISABLED) {
+            event.wrapper?.track(event)
+        }
     }
 
     override fun shouldTrack(event: Event): Boolean {
-        return event.wrapper != null
+        return !BuildConfig.DATA_COLLECTION_DISABLED && event.wrapper != null
     }
 }

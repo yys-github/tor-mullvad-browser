@@ -24,11 +24,11 @@ interface TranslationsEnabledSettings {
         /** An in-memory version for tests, previews, etc. */
         fun inMemory(isEnabledInitial: Boolean = false) =
             object : TranslationsEnabledSettings {
-                private val _isEnabled = MutableStateFlow(isEnabledInitial)
+                private val _isEnabled = MutableStateFlow(false)
                 override val isEnabled: Flow<Boolean> = _isEnabled
 
                 override suspend fun setEnabled(isEnabled: Boolean) {
-                    _isEnabled.value = isEnabled
+                    _isEnabled.value = false
                 }
             }
 
@@ -44,13 +44,13 @@ internal class DataStoreBackedTranslationsEnabledSettings(private val dataStore:
 
     override val isEnabled: Flow<Boolean> =
         dataStore.data.map { preferences ->
-            preferences[isEnabledKey] ?: true
+            false
         }
 
     override suspend fun setEnabled(isEnabled: Boolean) {
         dataStore.updateData {
             it.toMutablePreferences().also { preferences ->
-                preferences[isEnabledKey] = isEnabled
+                preferences[isEnabledKey] = false
             }
         }
     }
