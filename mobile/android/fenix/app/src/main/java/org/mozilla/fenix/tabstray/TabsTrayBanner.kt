@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -47,6 +48,7 @@ import mozilla.components.ui.tabcounter.TabCounter
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.Banner
 import org.mozilla.fenix.compose.BottomSheetHandle
+import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.tabstray.ext.getMenuItems
 import org.mozilla.fenix.theme.FirefoxTheme
 import kotlin.math.max
@@ -264,6 +266,7 @@ private fun TabPageBanner(
     counts: TabPageBannerCounts,
     callbacks: TabPageBannerCallbacks,
 ) {
+    val shouldDisableNormalMode = LocalContext.current.settings().shouldDisableNormalMode
     val selectedColor = FirefoxTheme.colors.iconActive
     val inactiveColor = FirefoxTheme.colors.iconPrimaryInactive
     var showMenu by remember { mutableStateOf(false) }
@@ -287,7 +290,7 @@ private fun TabPageBanner(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             TabRow(
-                selectedTabIndex = Page.pageToPosition(page = config.selectedPage, enhancementsEnabled = false),
+                selectedTabIndex = if (shouldDisableNormalMode) 0 else Page.pageToPosition(page = config.selectedPage, enhancementsEnabled = false),
                 modifier = Modifier
                     .fillMaxWidth(MAX_WIDTH_TAB_ROW_PERCENT)
                     .fillMaxHeight(),
@@ -295,19 +298,21 @@ private fun TabPageBanner(
                 contentColor = selectedColor,
                 divider = {},
             ) {
-                Tab(
-                    selected = config.selectedPage == Page.NormalTabs,
-                    onClick = { callbacks.onTabPageIndicatorClicked(Page.NormalTabs) },
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .testTag(TabsTrayTestTag.NORMAL_TABS_PAGE_BUTTON),
-                    selectedContentColor = selectedColor,
-                    unselectedContentColor = inactiveColor,
-                ) {
-                    TabCounter(
-                        tabCount = counts.normalTabCount,
-                        contentColor = LocalContentColor.current,
-                    )
+                if (!shouldDisableNormalMode) {
+                    Tab(
+                        selected = config.selectedPage == Page.NormalTabs,
+                        onClick = { callbacks.onTabPageIndicatorClicked(Page.NormalTabs) },
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .testTag(TabsTrayTestTag.NORMAL_TABS_PAGE_BUTTON),
+                        selectedContentColor = selectedColor,
+                        unselectedContentColor = inactiveColor,
+                    ) {
+                        TabCounter(
+                            tabCount = counts.normalTabCount,
+                            contentColor = LocalContentColor.current,
+                        )
+                    }
                 }
 
                 Tab(
