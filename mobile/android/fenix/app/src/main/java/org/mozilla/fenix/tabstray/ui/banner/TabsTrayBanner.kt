@@ -325,18 +325,6 @@ private fun TabPageBannerTabs(
         Icon(painterResource(iconsR.drawable.mozac_ic_private_mode_24), null)
     }
 
-    BannerTab(
-        selected = selectedPage == Page.NormalTabs,
-        testTag = TabsTrayTestTag.NORMAL_TABS_PAGE_BUTTON,
-        contentDescription = normalTabDescription,
-        onClick = { onTabPageIndicatorClicked(Page.NormalTabs) },
-    ) {
-        TabCounter(
-            tabCount = normalTabCount,
-            showTabCount = hasTabDataLoaded,
-        )
-    }
-
     if (shouldShowTabGroupsPage) {
         BannerTab(
             selected = selectedPage == Page.TabGroups,
