@@ -521,7 +521,7 @@ class Settings(
 
     var openLinksInAPrivateTab by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_open_links_in_a_private_tab),
-        default = false,
+        default = true,
     )
 
     val shouldSecureModeBeOverridden
@@ -809,9 +809,14 @@ class Settings(
         default = 1f,
     )
 
+    val shouldDisableNormalMode by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_disable_normal_mode),
+        true
+    )
+
     val shouldShowHistorySuggestions by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_search_browsing_history),
-        default = true,
+        default = !shouldDisableNormalMode,
     )
 
     val shouldShowBookmarkSuggestions by booleanPreference(
@@ -1360,11 +1365,11 @@ class Settings(
             return touchExplorationIsEnabled || switchServiceIsEnabled
         }
 
-    var lastKnownMode: BrowsingMode = BrowsingMode.Normal
+    var lastKnownMode: BrowsingMode = BrowsingMode.Private
         get() {
             val lastKnownModeWasPrivate = preferences.getBoolean(
                 appContext.getPreferenceKey(R.string.pref_key_last_known_mode_private),
-                false,
+                shouldDisableNormalMode,
             )
 
             return if (lastKnownModeWasPrivate) {

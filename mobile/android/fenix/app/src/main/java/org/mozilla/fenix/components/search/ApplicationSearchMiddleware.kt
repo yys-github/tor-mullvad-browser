@@ -18,6 +18,7 @@ import mozilla.components.browser.state.state.BrowserState
 import mozilla.components.feature.search.ext.createApplicationSearchEngine
 import mozilla.components.lib.state.Middleware
 import mozilla.components.lib.state.Store
+import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.R
 import mozilla.components.ui.icons.R as iconsR
 
@@ -34,7 +35,7 @@ const val TABS_SEARCH_ENGINE_ID = "tabs_search_engine_id"
  * @param scope [CoroutineScope] used to launch coroutines.
  */
 class ApplicationSearchMiddleware(
-    context: Context,
+    private val context: Context,
     private val stringProvider: (Int) -> String = { context.getString(it) },
     private val bitmapProvider: (Int) -> Bitmap = { getDrawable(context, it)?.toBitmap()!! },
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
@@ -54,7 +55,7 @@ class ApplicationSearchMiddleware(
     private fun loadSearchEngines(
         store: Store<BrowserState, BrowserAction>,
     ) = scope.launch {
-        val searchEngines = listOf(
+        val searchEngines = listOfNotNull(
             createApplicationSearchEngine(
                 id = BOOKMARKS_SEARCH_ENGINE_ID,
                 name = stringProvider(R.string.library_bookmarks),
@@ -72,7 +73,7 @@ class ApplicationSearchMiddleware(
                 name = stringProvider(R.string.library_history),
                 url = "",
                 icon = bitmapProvider(iconsR.drawable.mozac_ic_history_24),
-            ),
+            ).takeIf { !context.settings().shouldDisableNormalMode },
         )
 
         store.dispatch(SearchAction.ApplicationSearchEnginesLoaded(searchEngines))

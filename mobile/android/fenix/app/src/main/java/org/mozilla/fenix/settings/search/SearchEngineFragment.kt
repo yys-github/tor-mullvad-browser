@@ -49,6 +49,10 @@ class SearchEngineFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
             isVisible = canShowAddSearchWidgetPrompt(AppWidgetManager.getInstance(requireContext()))
         }
 
+        findPreference<CheckBoxPreference>(getString(R.string.pref_key_show_search_suggestions_in_private))?.apply {
+            isVisible = !context.settings().shouldDisableNormalMode
+        }
+
         view?.hideKeyboard()
     }
 
