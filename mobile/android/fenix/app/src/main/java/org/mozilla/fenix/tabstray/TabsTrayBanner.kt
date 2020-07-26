@@ -46,6 +46,7 @@ import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.Banner
 import org.mozilla.fenix.compose.BottomSheetHandle
 import org.mozilla.fenix.compose.TabCounter
+import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.tabstray.ext.getMenuItems
 import org.mozilla.fenix.theme.FirefoxTheme
 import kotlin.math.max
@@ -197,6 +198,7 @@ private fun TabPageBanner(
     onTabPageIndicatorClicked: (Page) -> Unit,
     onDismissClick: () -> Unit,
 ) {
+    val shouldDisableNormalMode = LocalContext.current.settings().shouldDisableNormalMode
     val selectedColor = FirefoxTheme.colors.iconActive
     val inactiveColor = FirefoxTheme.colors.iconPrimaryInactive
     var showMenu by remember { mutableStateOf(false) }
@@ -220,27 +222,29 @@ private fun TabPageBanner(
             horizontalArrangement = Arrangement.spacedBy(16.dp),
         ) {
             TabRow(
-                selectedTabIndex = selectedPage.ordinal,
+                selectedTabIndex = if (shouldDisableNormalMode) 0 else selectedPage.ordinal,
                 modifier = Modifier.fillMaxWidth(MAX_WIDTH_TAB_ROW_PERCENT),
                 backgroundColor = Color.Transparent,
                 contentColor = selectedColor,
                 divider = {},
             ) {
-                Tab(
-                    selected = selectedPage == Page.NormalTabs,
-                    onClick = { onTabPageIndicatorClicked(Page.NormalTabs) },
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .testTag(TabsTrayTestTag.normalTabsPageButton),
-                    selectedContentColor = selectedColor,
-                    unselectedContentColor = inactiveColor,
-                ) {
-                    val tabCounterAlpha = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
-                    TabCounter(
-                        tabCount = normalTabCount,
-                        textColor = tabCounterAlpha,
-                        iconColor = tabCounterAlpha,
-                    )
+                if (!shouldDisableNormalMode) {
+                    Tab(
+                        selected = selectedPage == Page.NormalTabs,
+                        onClick = { onTabPageIndicatorClicked(Page.NormalTabs) },
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .testTag(TabsTrayTestTag.normalTabsPageButton),
+                        selectedContentColor = selectedColor,
+                        unselectedContentColor = inactiveColor,
+                    ) {
+                        val tabCounterAlpha = LocalContentColor.current.copy(alpha = LocalContentAlpha.current)
+                        TabCounter(
+                            tabCount = normalTabCount,
+                            textColor = tabCounterAlpha,
+                            iconColor = tabCounterAlpha,
+                        )
+                    }
                 }
 
                 Tab(
