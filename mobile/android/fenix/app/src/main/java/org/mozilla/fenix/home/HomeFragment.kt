@@ -41,6 +41,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getColor
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -1005,6 +1006,8 @@ class HomeFragment : Fragment() {
             sessionControlInteractor.onPrivateModeButtonClicked(newMode)
             Homepage.privateModeIconTapped.record(mozilla.telemetry.glean.private.NoExtras())
         }
+
+        binding.privateBrowsingButton.isGone = view.context.settings().shouldDisableNormalMode
 
         consumeFrom(requireComponents.core.store) {
             tabCounterView?.update(it)
