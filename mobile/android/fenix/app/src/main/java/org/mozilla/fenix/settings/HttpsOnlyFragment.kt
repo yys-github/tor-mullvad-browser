@@ -15,6 +15,7 @@ import android.view.ViewGroup
 import androidx.core.text.HtmlCompat
 import androidx.core.text.getSpans
 import androidx.core.view.children
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import org.mozilla.fenix.BrowserDirection
 import org.mozilla.fenix.HomeActivity
@@ -60,6 +61,8 @@ class HttpsOnlyFragment : Fragment(), SystemInsetsPaddedFragment {
         binding.httpsOnlyAllTabs.setOnCheckedChangeListener { _, _ ->
             updateEngineHttpsOnlyMode()
         }
+
+        binding.httpsOnlyModes.isGone = requireContext().settings().shouldDisableNormalMode
 
         return binding.root
     }
