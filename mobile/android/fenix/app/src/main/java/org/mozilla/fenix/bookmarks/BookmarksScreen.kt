@@ -1173,10 +1173,6 @@ private fun BookmarkListOverflowMenu(
                 onClick = { store.dispatch(BookmarksListMenuAction.SelectAll) },
             ),
             MenuItem.TextItem(
-                text = Text.Resource(R.string.bookmark_menu_open_in_new_tab_button),
-                onClick = { store.dispatch(BookmarksListMenuAction.MultiSelect.OpenInNormalTabsClicked) },
-            ),
-            MenuItem.TextItem(
                 text = Text.Resource(R.string.bookmark_menu_open_in_private_tab_button),
                 onClick = { store.dispatch(BookmarksListMenuAction.MultiSelect.OpenInPrivateTabsClicked) },
             ),
@@ -1208,10 +1204,6 @@ private fun FolderListOverflowMenu(
             MenuItem.TextItem(
                 text = Text.Resource(R.string.bookmark_menu_select_all_bookmarks),
                 onClick = { store.dispatch(BookmarksListMenuAction.SelectAll) },
-            ),
-            MenuItem.TextItem(
-                text = Text.Resource(R.string.bookmark_menu_open_in_new_tab_button),
-                onClick = { store.dispatch(BookmarksListMenuAction.MultiSelect.OpenInNormalTabsClicked) },
             ),
             MenuItem.TextItem(
                 text = Text.Resource(R.string.bookmark_menu_open_in_private_tab_button),
@@ -1256,10 +1248,6 @@ private fun BookmarkListItemMenu(
                 onClick = { dispatcher.invoke(BookmarksListMenuAction.Bookmark.ShareClicked(bookmark)) },
             ),
             MenuItem.TextItem(
-                text = Text.Resource(R.string.bookmark_menu_open_in_new_tab_button),
-                onClick = { dispatcher.invoke(BookmarksListMenuAction.Bookmark.OpenInNormalTabClicked(bookmark)) },
-            ),
-            MenuItem.TextItem(
                 text = Text.Resource(R.string.bookmark_menu_open_in_private_tab_button),
                 onClick = { dispatcher.invoke(BookmarksListMenuAction.Bookmark.OpenInPrivateTabClicked(bookmark)) },
             ),
@@ -1296,10 +1284,6 @@ private fun BookmarkListFolderMenu(
             MenuItem.TextItem(
                 text = Text.Resource(R.string.bookmark_menu_move_button),
                 onClick = { dispatcher.invoke(BookmarksListMenuAction.Folder.MoveClicked(folder)) },
-            ),
-            MenuItem.TextItem(
-                text = Text.Resource(R.string.bookmark_menu_open_all_in_tabs_button),
-                onClick = { dispatcher.invoke(BookmarksListMenuAction.Folder.OpenAllInNormalTabClicked(folder)) },
             ),
             MenuItem.TextItem(
                 text = Text.Resource(R.string.bookmark_menu_open_all_in_private_tabs_button),
