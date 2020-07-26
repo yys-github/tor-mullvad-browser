@@ -14,6 +14,7 @@ import mozilla.components.concept.storage.BookmarkNodeType
 import mozilla.components.concept.storage.BookmarksStorage
 import mozilla.components.support.ktx.android.content.getColorFromAttr
 import org.mozilla.fenix.R
+import org.mozilla.fenix.ext.settings
 
 class BookmarkItemMenu(
     private val context: Context,
@@ -36,6 +37,8 @@ class BookmarkItemMenu(
 
     @VisibleForTesting
     internal suspend fun menuItems(itemType: BookmarkNodeType, itemId: String): List<TextMenuCandidate> {
+        val shouldDisableNormalMode = context.settings().shouldDisableNormalMode
+
         val editMenuOption =
             TextMenuCandidate(text = context.getString(R.string.bookmark_menu_edit_button)) {
                 onItemTapped?.invoke(Item.Edit)
@@ -86,12 +89,16 @@ class BookmarkItemMenu(
             if (itemType == BookmarkNodeType.ITEM) {
                 add(copyMenuOption)
                 add(shareMenuOption)
-                add(openInNewTabMenuOption)
+                if (!shouldDisableNormalMode) {
+                    add(openInNewTabMenuOption)
+                }
                 add(openInPrivateTabMenuOption)
             }
 
             if (itemType == BookmarkNodeType.FOLDER && checkAtLeastOneChild(itemId)) {
-                add(openAllInNewTabsMenuOption)
+                if (!shouldDisableNormalMode) {
+                    add(openAllInNewTabsMenuOption)
+                }
                 add(openAllInPrivateTabsMenuOption)
             }
 
