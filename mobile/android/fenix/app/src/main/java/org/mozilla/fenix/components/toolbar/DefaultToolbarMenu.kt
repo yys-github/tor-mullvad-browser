@@ -434,7 +434,7 @@ open class DefaultToolbarMenu(
                 newTabItem,
                 BrowserMenuDivider(),
                 bookmarksItem,
-                historyItem,
+                if (context.settings().shouldDisableNormalMode) null else historyItem,
                 downloadsItem,
                 passwordsItem,
                 extensionsItem,
