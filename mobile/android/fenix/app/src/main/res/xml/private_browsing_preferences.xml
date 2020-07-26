@@ -5,6 +5,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <Preference
+        android:defaultValue="false"
         android:key="@string/pref_key_add_private_browsing_shortcut"
         android:title="@string/preferences_add_private_browsing_shortcut" />
     <SwitchPreferenceCompat

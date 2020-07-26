@@ -67,12 +67,6 @@ class ApplicationSearchMiddleware(
                 url = "",
                 icon = bitmapProvider(iconsR.drawable.mozac_ic_tab_tray_24),
             ),
-            createApplicationSearchEngine(
-                id = HISTORY_SEARCH_ENGINE_ID,
-                name = stringProvider(R.string.library_history),
-                url = "",
-                icon = bitmapProvider(iconsR.drawable.mozac_ic_history_24),
-            ),
         )
 
         store.dispatch(SearchAction.ApplicationSearchEnginesLoaded(searchEngines))
