@@ -265,9 +265,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
             getString(R.string.delete_browsing_data_quit_off)
         }
 
-        val tabSettingsPreference =
-            requirePreference<Preference>(R.string.pref_key_tabs)
-        tabSettingsPreference.summary = context?.settings()?.getTabTimeoutString()
+        if (!settings.shouldDisableNormalMode) {
+            val tabSettingsPreference =
+                requirePreference<Preference>(R.string.pref_key_tabs)
+            tabSettingsPreference.summary = context?.settings()?.getTabTimeoutString()
+        }
 
 //        val autofillPreference = requirePreference<Preference>(R.string.pref_key_credit_cards)
 //        autofillPreference.title = if (settings.addressFeature) {
@@ -279,6 +281,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val openLinksInAppsSettingsPreference =
             requirePreference<Preference>(R.string.pref_key_open_links_in_apps)
         openLinksInAppsSettingsPreference.summary = context?.settings()?.getOpenLinksInAppsString()
+
+        // Hide "Delete browsing data on quit" when in Private Browsing-only mode
+        deleteBrowsingDataPreference.isVisible =
+            !deleteBrowsingDataPreference.context.settings().shouldDisableNormalMode
 
         setupPreferences()
 
