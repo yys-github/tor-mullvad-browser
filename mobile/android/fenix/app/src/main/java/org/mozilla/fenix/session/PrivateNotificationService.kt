@@ -38,18 +38,27 @@ class PrivateNotificationService : AbstractPrivateNotificationService() {
     override val notificationsDelegate: NotificationsDelegate by lazy { components.notificationsDelegate }
 
     override fun NotificationCompat.Builder.buildNotification() {
-        setSmallIcon(iconsR.drawable.mozac_ic_private_mode_fill_24)
+        setSmallIcon(R.drawable.ic_tor_browser_close_tabs_notification)
 
         val contentTitle = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            applicationContext.getString(R.string.notification_erase_title_android_14)
+            applicationContext.getString(
+                R.string.notification_close_tor_browser_tabs,
+                applicationContext.getString(R.string.app_name),
+            )
         } else {
             applicationContext.getString(R.string.app_name_private_4, getString(R.string.app_name))
         }
 
         val contentText = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            applicationContext.getString(R.string.notification_erase_text_android_14)
+            applicationContext.getString(
+                R.string.notification_close_tor_browser_tabs_long,
+                applicationContext.getString(R.string.app_name),
+            )
         } else {
-            applicationContext.getString(R.string.notification_pbm_delete_text_2)
+            applicationContext.getString(
+                R.string.notification_close_tor_browser_tabs,
+                applicationContext.getString(R.string.app_name),
+            )
         }
 
         setContentTitle(contentTitle)
@@ -57,7 +66,7 @@ class PrivateNotificationService : AbstractPrivateNotificationService() {
 
         color = ContextCompat.getColor(
             this@PrivateNotificationService,
-            R.color.pbm_notification_color,
+            R.color.tor_browser_close_tabs_notification_background,
         )
     }
 
