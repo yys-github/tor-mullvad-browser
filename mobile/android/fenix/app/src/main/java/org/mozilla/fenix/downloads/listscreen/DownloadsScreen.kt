@@ -572,13 +572,6 @@ private fun EmptyState(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
-            painter = painterResource(R.drawable.illustration_fox_box_inside_light),
-            contentDescription = null,
-        )
-
-        Spacer(modifier = Modifier.height(FirefoxTheme.layout.space.static200))
-
         Text(
             text = stringResource(id = R.string.download_empty_message_2),
             color = MaterialTheme.colorScheme.onSurface,
