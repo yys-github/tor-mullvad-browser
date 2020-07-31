@@ -41,7 +41,7 @@ class ContextTest {
 
     private lateinit var mockContext: Context
     private val selectedLocale = Locale("ro", "RO")
-    private val appName = "Firefox Preview"
+    private val appName = "Tor Browser Dev"
 
     private val mockId: Int = 11
 
@@ -67,7 +67,7 @@ class ContextTest {
 
         val result = mockContext.getStringWithArgSafe(mockId, appName)
 
-        assertEquals("Incearca noul Firefox Preview", result)
+        assertEquals("Incearca noul Tor Browser Dev", result)
     }
 
     @Test
@@ -80,7 +80,7 @@ class ContextTest {
 
         val result = mockContext.getStringWithArgSafe(mockId, appName)
 
-        assertEquals("Try the new Firefox Preview", result)
+        assertEquals("Try the new Tor Browser Dev", result)
     }
 
     @Test
