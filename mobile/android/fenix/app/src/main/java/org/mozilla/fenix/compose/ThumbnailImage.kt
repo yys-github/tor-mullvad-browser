@@ -199,7 +199,7 @@ private fun FallbackContent(
             )
         } else if (tabUrl == ABOUT_HOME_URL) {
             Image(
-                painter = painterResource(id = R.drawable.ic_firefox),
+                painter = painterResource(id = R.drawable.tor_browser_app_icon),
                 contentDescription = null,
                 modifier = Modifier
                     .size(FallbackIconSize)
