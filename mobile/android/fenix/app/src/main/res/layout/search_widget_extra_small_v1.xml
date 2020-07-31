@@ -18,6 +18,6 @@
         android:layout_gravity="center"
         android:contentDescription="@string/search_widget_content_description_2"
         android:scaleType="centerInside"
-        tools:src="@drawable/ic_firefox" />
+        tools:src="@mipmap/ic_launcher_foreground"/>
 
 </FrameLayout>
