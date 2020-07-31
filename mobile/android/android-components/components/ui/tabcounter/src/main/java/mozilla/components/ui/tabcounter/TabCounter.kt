@@ -102,18 +102,6 @@ fun TabCounter(
                 contentColor = contentColor,
             )
         }
-
-        if (showPrivacyBadge) {
-            Image(
-                painter = painterResource(id = iconsR.drawable.mozac_ic_private_mode_circle_fill_stroke_20),
-                contentDescription = null,
-                modifier = Modifier
-                    .testTag(TabCounterTestTags.PRIVACY_BADGE)
-                    .align(Alignment.TopEnd)
-                    .padding(0.dp)
-                    .offset(x = 8.dp, y = (-8).dp),
-            )
-        }
     }
 }
 

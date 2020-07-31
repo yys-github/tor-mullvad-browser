@@ -481,7 +481,7 @@ private fun TabStripIcon(
             )
         } else if (url == ABOUT_HOME_URL) {
             Favicon(
-                imageResource = R.drawable.ic_firefox,
+                imageResource = R.drawable.tor_browser_app_icon,
                 size = tabStripIconSize,
             )
         } else {
