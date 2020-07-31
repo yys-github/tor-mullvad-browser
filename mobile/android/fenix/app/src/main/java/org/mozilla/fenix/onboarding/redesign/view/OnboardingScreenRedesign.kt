@@ -689,7 +689,7 @@ private fun touPageUIData() = OnboardingPageUiData(
         lineThreeText = stringResource(id = R.string.nova_onboarding_tou_body_line_3),
         lineThreeLinkText = stringResource(id = R.string.nova_onboarding_tou_body_line_3_link_text),
     ),
-    imageRes = R.drawable.nova_onboarding_tou,
+    imageRes = R.mipmap.ic_launcher_foreground,
     primaryButtonLabel = stringResource(
         id = R.string.nova_onboarding_continue_button,
     ),

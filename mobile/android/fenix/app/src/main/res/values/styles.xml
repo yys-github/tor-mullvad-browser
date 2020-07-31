@@ -4,8 +4,8 @@
    - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="SplashScreenThemeBase" parent="Theme.SplashScreen">
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
-        <item name="windowSplashScreenBackground">@color/fx_mobile_splashscreen_background</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <item name="windowSplashScreenBackground">@color/tor_homepage_gradient_end</item>
         <item name="postSplashScreenTheme">@style/NormalTheme</item>
         <item name="windowSplashScreenAnimationDuration">12000</item>
         <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="27">default</item>
@@ -543,6 +543,12 @@
         <item name="android:textColor">?attr/textPrimary</item>
         <item name="android:textFontWeight" tools:ignore="NewApi">@integer/font_weight_medium</item>
         <item name="android:fontWeight">@integer/font_weight_medium</item>
+    </style>
+
+    <style name="Header24TextStyle" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="android:textColor">?textPrimary</item>
+        <item name="android:textSize">24sp</item>
+        <item name="fontFamily">@font/metropolis_semibold</item>
     </style>
 
     <style name="Header20TextStyle" parent="TextAppearance.MaterialComponents.Body1" tools:ignore="UnusedResources">
