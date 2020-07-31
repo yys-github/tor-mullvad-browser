@@ -173,7 +173,7 @@ class SearchWidgetProvider : AppWidgetProvider() {
         // gradient color available for android:fillColor only on SDK 24+
         setImageViewResource(
             R.id.button_search_widget_new_tab_icon,
-            repository.selectedAppIcon.iconForegroundId,
+            R.drawable.R.mipmap.ic_launcher,
         )
 
         val appName = context.getString(R.string.app_name)
