@@ -76,8 +76,6 @@ ChromeUtils.defineESModuleGetters(lazy, {
   PluginManager: "resource:///actors/PluginParent.sys.mjs",
   PrivateBrowsingUtils: "resource://gre/modules/PrivateBrowsingUtils.sys.mjs",
   ProcessHangMonitor: "resource:///modules/ProcessHangMonitor.sys.mjs",
-  PublicSuffixList:
-    "resource://gre/modules/netwerk-dns/PublicSuffixList.sys.mjs",
   QuickSuggest: "resource:///modules/QuickSuggest.sys.mjs",
   RFPHelper: "resource://gre/modules/RFPHelper.sys.mjs",
   RemoteSecuritySettings:
@@ -3363,10 +3361,6 @@ BrowserGlue.prototype = {
         lazy.RemoteSettings.init();
         this._addBreachesSyncHandler();
       }.bind(this),
-
-      function PublicSuffixListInit() {
-        lazy.PublicSuffixList.init();
-      },
 
       function RemoteSecuritySettingsInit() {
         lazy.RemoteSecuritySettings.init();
