@@ -6,10 +6,6 @@ package org.mozilla.fenix.components.metrics
 
 import android.app.Application
 import androidx.annotation.VisibleForTesting
-import com.adjust.sdk.AdjustConfig
-import com.adjust.sdk.AdjustEvent
-import com.adjust.sdk.Constants.ADJUST_PREINSTALL_SYSTEM_PROPERTY_PATH
-import com.adjust.sdk.LogLevel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -51,165 +47,16 @@ class AdjustMetricsService(
     private var initialized = false
 
     override fun start() {
-        logger.info("Started")
-
-        CoroutineScope(dispatcher).launch {
-            val settings = application.components.settings
-
-            // Start Adjust to report attribution the first time the user accepts marketing.
-            // Once attribution is known there is nothing to report, so leave Adjust dormant.
-            if (!alreadyKnown(settings)) {
-                ensureInitialized(settings)
-            }
-        }
+        /* noop */
     }
 
     override fun stop() {
-        logger.info("Stopped")
-
-        // Persist the forget-me synchronously (durable), then init Adjust to flush it.
-        // No attribution listener: opting out must not record attribution.
-        adjustSdk.gdprForgetMe(application.applicationContext)
-        CoroutineScope(dispatcher).launch {
-            ensureInitialized(application.components.settings, shouldRegisterAttributionListener = false)
-        }
+        /* noop */
     }
 
     @Suppress("TooGenericExceptionCaught")
     override fun track(event: Event) {
-        logger.info("Track")
-
-        CoroutineScope(dispatcher).launch {
-            try {
-                val tokenName = when (event) {
-                    is Event.GrowthData -> event.tokenName
-                    is Event.FirstWeekPostInstall -> event.tokenName
-                }
-
-                if (
-                    (event is Event.GrowthData || event is Event.FirstWeekPostInstall) &&
-                    storage.shouldTrack(event)
-                ) {
-                    ensureInitialized(application.components.settings)
-                    adjustSdk.trackEvent(AdjustEvent(tokenName))
-                    storage.updateSentState(event)
-                    sendGleanEventAndPing(event)
-                    logger.info("Update sent state $event")
-                }
-            } catch (e: Exception) {
-                crashReporter.submitCaughtException(e)
-                logger.info("Track threw an exception for $event")
-            }
-        }
-    }
-
-    // Initializes Adjust once per process (initMutex guards concurrent callers). Pass
-    // shouldRegisterAttributionListener = false on opt-out so init never records attribution.
-    private suspend fun ensureInitialized(settings: Settings, shouldRegisterAttributionListener: Boolean = true) {
-        if (initialized) {
-            return
-        }
-
-        initMutex.withLock {
-            if (initialized) {
-                return
-            }
-
-            val token = adjustToken
-            if (token.isNullOrBlank()) {
-                logger.info("No adjust token defined")
-
-                if (Config.channel.isReleased) {
-                    throw IllegalStateException("No adjust token defined for release build")
-                }
-
-                return
-            }
-
-            val config = buildAdjustConfig(token, settings, shouldRegisterAttributionListener)
-
-            // All configuration have to be done before this.
-            adjustSdk.initSdk(config)
-            adjustSdk.enable()
-            initialized = true
-            logger.info("Adjust SDK enabled")
-        }
-    }
-
-    private suspend fun buildAdjustConfig(
-        token: String,
-        settings: Settings,
-        shouldRegisterAttributionListener: Boolean,
-    ): AdjustConfig {
-        System.setProperty(ADJUST_PREINSTALL_SYSTEM_PROPERTY_PATH, "/preload/etc/adjust.preinstall")
-
-        val config = AdjustConfig(
-            application,
-            token,
-            AdjustConfig.ENVIRONMENT_PRODUCTION,
-            true,
-        )
-        config.enablePreinstallTracking()
-
-        val distributionIdManager = application.components.distributionIdManager
-
-        // If we skipped the marketing consent screen, enable COPPA compliance to prevent
-        // personal identifiers from being shared with Adjust.
-        when (distributionIdManager.getDistributionAdjustStartupStrategy()) {
-            DistributionAdjustStartupStrategy.IMMEDIATE_WITH_COPPA ->
-                config.enableCoppaCompliance()
-
-            DistributionAdjustStartupStrategy.IMMEDIATE_WITH_PLAY_STORE_KIDS ->
-                config.enablePlayStoreKidsCompliance()
-
-            else -> {}
-        }
-
-        if (shouldRegisterAttributionListener && !alreadyKnown(settings)) {
-            setAttributionChangedListener(config, settings)
-        }
-
-        config.setLogLevel(LogLevel.SUPPRESS)
-
-        config.disableFbIdReading()
-        applyThirdPartySharingSettings(
-            distribution = distributionIdManager.getDistribution(),
-            isUserMetaAttributed = settings.isUserMetaAttributed,
-            isUserTikTokAttributed = settings.isUserTikTokAttributed,
-            isUserRedditAttributed = settings.isUserRedditAttributed,
-            isUserXTwitterAttributed = settings.isUserXTwitterAttributed,
-            controller = thirdPartySharingController,
-        )
-
-        return config
-    }
-
-    private fun setAttributionChangedListener(config: AdjustConfig, settings: Settings) {
-        val timerId = AdjustAttribution.adjustAttributionTime.start()
-
-        config.setOnAttributionChangedListener {
-            AdjustAttribution.adjustAttributionTime.stopAndAccumulate(timerId)
-
-            if (!it.network.isNullOrEmpty()) {
-                settings.adjustNetwork = it.network
-                AdjustAttribution.network.set(it.network)
-            }
-            if (!it.adgroup.isNullOrEmpty()) {
-                settings.adjustAdGroup = it.adgroup
-                AdjustAttribution.adgroup.set(it.adgroup)
-            }
-            if (!it.creative.isNullOrEmpty()) {
-                settings.adjustCreative = it.creative
-                AdjustAttribution.creative.set(it.creative)
-            }
-            if (!it.campaign.isNullOrEmpty()) {
-                settings.adjustCampaignId = it.campaign
-                AdjustAttribution.campaign.set(it.campaign)
-            }
-
-            triggerPing()
-            logger.info("Trigger ping")
-        }
+        /* noop */
     }
 
     override fun shouldTrack(event: Event): Boolean =
@@ -235,28 +82,7 @@ class AdjustMetricsService(
             event: Event,
             conversionEventRecorder: ConversionEventRecorder = GleanConversionEventRecorder(),
         ) {
-            when (event) {
-                is Event.GrowthData.ConversionEvent1 ->
-                    conversionEventRecorder.recordConversionEvent(CONVERSION_EVENT_1)
-                is Event.GrowthData.ConversionEvent2 ->
-                    conversionEventRecorder.recordConversionEvent(CONVERSION_EVENT_2)
-                is Event.GrowthData.ConversionEvent3 ->
-                    conversionEventRecorder.recordConversionEvent(CONVERSION_EVENT_3)
-                is Event.GrowthData.ConversionEvent4 ->
-                    conversionEventRecorder.recordConversionEvent(CONVERSION_EVENT_4)
-                is Event.GrowthData.ConversionEvent5 ->
-                    conversionEventRecorder.recordConversionEvent(CONVERSION_EVENT_5)
-                is Event.GrowthData.ConversionEvent6 ->
-                    conversionEventRecorder.recordConversionEvent(CONVERSION_EVENT_6)
-                is Event.GrowthData.ConversionEvent7 ->
-                    conversionEventRecorder.recordConversionEvent(CONVERSION_EVENT_7)
-                is Event.FirstWeekPostInstall.ConversionEvent8 ->
-                    conversionEventRecorder.recordConversionEvent(CONVERSION_EVENT_8)
-                is Event.FirstWeekPostInstall.ConversionEvent9 ->
-                    conversionEventRecorder.recordConversionEvent(CONVERSION_EVENT_9)
-                is Event.FirstWeekPostInstall.ConversionEvent10 ->
-                    conversionEventRecorder.recordConversionEvent(CONVERSION_EVENT_10)
-            }
+            /* noop */
         }
 
         /**
@@ -271,51 +97,17 @@ class AdjustMetricsService(
             isUserXTwitterAttributed: Boolean,
             controller: ThirdPartySharingController = AdjustThirdPartySharingController(),
         ) {
-            when (distribution) {
-                DistributionIdManager.Distribution.DEFAULT -> {
-                    controller.disableAllThirdPartySharing()
-                    // Listed in priority order. Multiple flags can be true at once, so the order
-                    // is load-bearing. Insert new partners at the position matching their priority.
-                    when {
-                        isUserMetaAttributed ->
-                            controller.enableThirdPartySharingForPartner(META_PARTNER_ID)
-                        isUserTikTokAttributed ->
-                            controller.enableThirdPartySharingForPartner(TIKTOK_PARTNER_ID)
-                        isUserRedditAttributed ->
-                            controller.enableThirdPartySharingForPartner(REDDIT_PARTNER_ID)
-                        isUserXTwitterAttributed ->
-                            controller.enableThirdPartySharingForPartner(X_TWITTER_PARTNER_ID)
-                        else ->
-                            controller.enableThirdPartySharingForPartner(GOOGLE_PARTNER_ID)
-                    }
-                }
-
-                DistributionIdManager.Distribution.AURA_001 -> {
-                    controller.enableThirdPartySharingForPartner(AURA_PARTNER_ID)
-                }
-
-                DistributionIdManager.Distribution.VIVO_001,
-                DistributionIdManager.Distribution.DT_001,
-                DistributionIdManager.Distribution.DT_002,
-                DistributionIdManager.Distribution.DT_003,
-                DistributionIdManager.Distribution.XIAOMI_001,
-                    -> {
-                    controller.disableAllThirdPartySharing()
-                }
-                // Do not add an else branch here. All distributions should be handled deliberately.
-            }
+            /* noop */
         }
 
         @VisibleForTesting
         internal fun alreadyKnown(settings: Settings): Boolean {
-            return settings.adjustCampaignId.isNotEmpty() || settings.adjustNetwork.isNotEmpty() ||
-                settings.adjustCreative.isNotEmpty() || settings.adjustAdGroup.isNotEmpty()
+            /* noop */
+            return false
         }
 
         private fun triggerPing() {
-            CoroutineScope(Dispatchers.IO).launch {
-                Pings.adjustAttribution.submit()
-            }
+            /* noop */
         }
     }
 }
