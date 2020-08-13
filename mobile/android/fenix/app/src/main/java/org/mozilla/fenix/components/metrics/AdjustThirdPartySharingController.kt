@@ -4,9 +4,6 @@
 
 package org.mozilla.fenix.components.metrics
 
-import com.adjust.sdk.Adjust
-import com.adjust.sdk.AdjustThirdPartySharing
-
 /**
  * Controls third-party data sharing settings for distribution and attribution partners.
  */
@@ -36,26 +33,15 @@ interface ThirdPartySharingController {
 class AdjustThirdPartySharingController : ThirdPartySharingController {
 
     override fun disableMetaThirdPartySharing() {
-        Adjust.trackThirdPartySharing(
-            AdjustThirdPartySharing(true).apply {
-                addPartnerSharingSetting(META_PARTNER_ID, "all", false)
-            },
-        )
+        /* noop */
     }
 
     override fun enableThirdPartySharingForPartner(partnerId: String) {
-        Adjust.trackThirdPartySharing(
-            AdjustThirdPartySharing(true).apply {
-                addPartnerSharingSetting("all", "all", false)
-                addPartnerSharingSetting(partnerId, "all", true)
-            },
-        )
+        /* noop */
     }
 
     override fun disableAllThirdPartySharing() {
-        Adjust.trackThirdPartySharing(
-            AdjustThirdPartySharing(false),
-        )
+        /* noop */
     }
 
     companion object {
