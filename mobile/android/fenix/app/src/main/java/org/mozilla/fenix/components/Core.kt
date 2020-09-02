@@ -78,7 +78,6 @@ import mozilla.components.feature.sitepermissions.OnDiskSitePermissionsStorage
 import mozilla.components.feature.summarize.settings.SummarizationSettings
 import mozilla.components.feature.top.sites.DefaultTopSitesStorage
 import mozilla.components.feature.top.sites.PinnedSiteStorage
-import mozilla.components.feature.webcompat.WebCompatFeature
 import mozilla.components.feature.webnotifications.WebNotificationFeature
 import mozilla.components.lib.ai.controls.AIFeatureBlockStorage
 import mozilla.components.lib.ai.controls.dataStore
@@ -263,7 +262,7 @@ class Core(
                 runtime = geckoRuntime,
             )
             .also {
-                WebCompatFeature.install(it)
+                // WebCompatFeature.install(it)
                 TorBrowserFeatures.install(context, it)
             }
     }
