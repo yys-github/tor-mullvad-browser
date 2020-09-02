@@ -60,7 +60,7 @@ import mozilla.components.feature.summarize.settings.SummarizationSettings
 import mozilla.components.feature.syncedtabs.commands.GlobalSyncedTabsCommandsProvider
 import mozilla.components.feature.top.sites.TopSitesFrecencyConfig
 import mozilla.components.feature.top.sites.TopSitesProviderConfig
-import mozilla.components.feature.webcompat.reporter.WebCompatReporterFeature
+// import mozilla.components.feature.webcompat.reporter.WebCompatReporterFeature
 import mozilla.components.lib.crash.CrashReporter
 import mozilla.components.service.fxa.manager.SyncEnginesStorage
 import mozilla.components.service.sync.autofill.GlobalAutofillDependencyProvider
@@ -900,7 +900,7 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
                     // TODO: Bug 1953359 - remove the code below in the next release.
                     if (Config.channel.isNightlyOrDebug || Config.channel.isBeta) {
                         logger.debug("Attempting to uninstall the WebCompat Reporter extension")
-                        WebCompatReporterFeature.uninstall(components.core.engine)
+                        // WebCompatReporterFeature.uninstall(components.core.engine)
                     }
                 },
                 onUpdatePermissionRequest = components.addonUpdater::onUpdatePermissionRequest,
