@@ -641,9 +641,9 @@ dependencies {
     implementation project(':components:feature-share')
     implementation project(':components:feature-accounts-push')
     implementation project(':components:feature-webauthn')
-    implementation project(':components:feature-webcompat')
+    // implementation project(':components:feature-webcompat')
     implementation project(':components:feature-webnotifications')
-    implementation project(':components:feature-webcompat-reporter')
+    // implementation project(':components:feature-webcompat-reporter')
 
     implementation project(':components:service-pocket')
     implementation project(':components:service-mars')
