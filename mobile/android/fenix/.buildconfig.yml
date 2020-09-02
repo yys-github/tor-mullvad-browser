@@ -58,8 +58,8 @@ projects:
     - feature-toolbar
     - feature-top-sites
     - feature-webauthn
-    - feature-webcompat
-    - feature-webcompat-reporter
+#   - feature-webcompat
+#   - feature-webcompat-reporter
     - feature-webnotifications
     - lib-crash
     - lib-crash-sentry
