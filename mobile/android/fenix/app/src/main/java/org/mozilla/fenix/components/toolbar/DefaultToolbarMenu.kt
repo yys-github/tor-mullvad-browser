@@ -418,13 +418,13 @@ open class DefaultToolbarMenu(
         }
     }
 
-    private val reportBrokenSite = BrowserMenuImageText(
-        label = context.getString(R.string.browser_menu_webcompat_reporter),
-        imageResource = R.drawable.mozac_ic_lightbulb_24,
-        iconTintColorResource = primaryTextColor(),
-    ) {
-        onItemTapped.invoke(ToolbarMenu.Item.ReportBrokenSite)
-    }
+    // private val reportBrokenSite = BrowserMenuImageText(
+    //     label = context.getString(R.string.browser_menu_webcompat_reporter),
+    //     imageResource = R.drawable.mozac_ic_lightbulb_24,
+    //     iconTintColorResource = primaryTextColor(),
+    // ) {
+    //     onItemTapped.invoke(ToolbarMenu.Item.ReportBrokenSite)
+    // }
 
     @VisibleForTesting(otherwise = PRIVATE)
     val coreMenuItems by lazy {
@@ -446,7 +446,7 @@ open class DefaultToolbarMenu(
                 // openInRegularTabItem.apply { visible = ::shouldShowOpenInRegularTab },
                 customizeReaderView.apply { visible = ::shouldShowReaderViewCustomization },
                 openInApp.apply { visible = ::shouldShowOpenInApp },
-                reportBrokenSite.apply { visible = ::shouldShowWebCompatReporter },
+                // reportBrokenSite.apply { visible = ::shouldShowWebCompatReporter },
                 BrowserMenuDivider(),
                 addToHomeScreenItem.apply { visible = ::canAddToHomescreen },
                 addAppToHomeScreenItem.apply { visible = ::canAddAppToHomescreen },
