@@ -1145,7 +1145,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
 
     val shouldShowSearchSuggestions by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_search_suggestions),
-        default = true,
+        default = false,
     )
 
     val shouldAutocompleteInAwesomebar by booleanPreference(
@@ -1160,7 +1160,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
 
     var shouldShowSearchSuggestionsInPrivate by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_search_suggestions_in_private),
-        default = false,
+        default = shouldDisableNormalMode,
     )
 
     /**
