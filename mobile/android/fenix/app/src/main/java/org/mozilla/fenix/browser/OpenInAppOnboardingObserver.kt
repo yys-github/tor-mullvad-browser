@@ -65,7 +65,7 @@ class OpenInAppOnboardingObserver(
                         currentUrl = tab.content.url
                     } else {
                         // Loading state has changed
-                        maybeShowOpenInAppBanner(tab.content.url, tab.content.loading)
+//                      maybeShowOpenInAppBanner(tab.content.url, tab.content.loading)
                     }
                 }
         }
