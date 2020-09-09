@@ -123,14 +123,14 @@ class HomeMenuView(
                     HomeFragmentDirections.actionGlobalSettingsFragment(),
                 )
             }
-            HomeMenu.Item.CustomizeHome -> {
-                HomeScreen.customizeHomeClicked.record(NoExtras())
-
-                navController.nav(
-                    R.id.homeFragment,
-                    HomeFragmentDirections.actionGlobalHomeSettingsFragment(),
-                )
-            }
+//            HomeMenu.Item.CustomizeHome -> {
+//                HomeScreen.customizeHomeClicked.record(NoExtras())
+//
+//                navController.nav(
+//                    R.id.homeFragment,
+//                    HomeFragmentDirections.actionGlobalHomeSettingsFragment(),
+//                )
+//            }
             is HomeMenu.Item.SyncAccount -> {
                 navController.nav(
                     R.id.homeFragment,
@@ -187,10 +187,7 @@ class HomeMenuView(
             HomeMenu.Item.Help -> {
                 HomeMenuMetrics.helpTapped.record(NoExtras())
                 homeActivity.openToBrowserAndLoad(
-                    searchTermOrURL = SupportUtils.getSumoURLForTopic(
-                        context = context,
-                        topic = SupportUtils.SumoTopic.HELP,
-                    ),
+                    searchTermOrURL = SupportUtils.getTorHelpPageUrl(),
                     newTab = true,
                     from = BrowserDirection.FromHome,
                 )
@@ -200,7 +197,7 @@ class HomeMenuView(
                 Events.whatsNewTapped.record(Events.WhatsNewTappedExtra(source = "HOME"))
 
                 homeActivity.openToBrowserAndLoad(
-                    searchTermOrURL = SupportUtils.WHATS_NEW_URL,
+                    searchTermOrURL = SupportUtils.getTorWhatsNewUrl(),
                     newTab = true,
                     from = BrowserDirection.FromHome,
                 )

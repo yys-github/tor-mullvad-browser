@@ -129,7 +129,7 @@ class AwesomeBarView(
                 components.core.icons,
                 engineForSpeculativeConnects,
                 showEditSuggestion = false,
-                suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+//              suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
             )
 
         defaultCombinedHistoryProvider =
@@ -141,7 +141,7 @@ class AwesomeBarView(
                 engine = engineForSpeculativeConnects,
                 maxNumberOfSuggestions = METADATA_SUGGESTION_LIMIT,
                 showEditSuggestion = false,
-                suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+//              suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
             )
 
         val searchBitmap = getDrawable(activity, R.drawable.ic_search)!!.apply {
@@ -328,12 +328,12 @@ class AwesomeBarView(
             }
         }
 
-        if (activity.browsingModeManager.mode == BrowsingMode.Normal && state.showAllSessionSuggestions) {
+        if (/* activity.browsingModeManager.mode == BrowsingMode.Normal && */ state.showAllSessionSuggestions) {
             // Unlike other providers, we don't exclude sponsored suggestions for open tabs.
             providersToAdd.add(getLocalTabsProvider())
         }
 
-        if (activity.browsingModeManager.mode == BrowsingMode.Normal && state.showSessionSuggestionsForCurrentEngine) {
+        if (/* activity.browsingModeManager.mode == BrowsingMode.Normal && */ state.showSessionSuggestionsForCurrentEngine) {
             getFilterForCurrentEngineResults(state)?.let {
                 providersToAdd.add(getLocalTabsProvider(it))
             }
@@ -347,7 +347,7 @@ class AwesomeBarView(
                         loadUrlUseCase = loadUrlUseCase,
                         includeSponsoredSuggestions = state.showSponsoredSuggestions,
                         includeNonSponsoredSuggestions = state.showNonSponsoredSuggestions,
-                        suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+                        // suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
                         contextId = activity.settings().contileContextId,
                         scorer = FxSuggestionExperimentScorer(),
                     )
@@ -357,7 +357,7 @@ class AwesomeBarView(
                         loadUrlUseCase = loadUrlUseCase,
                         includeSponsoredSuggestions = state.showSponsoredSuggestions,
                         includeNonSponsoredSuggestions = state.showNonSponsoredSuggestions,
-                        suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+                        // suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
                         contextId = activity.settings().contileContextId,
                     )
                 },
@@ -391,7 +391,7 @@ class AwesomeBarView(
                     engine = engineForSpeculativeConnects,
                     maxNumberOfSuggestions = METADATA_SUGGESTION_LIMIT,
                     showEditSuggestion = false,
-                    suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+//                  suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
                     resultsUriFilter = filter::shouldIncludeUri,
                 )
             } else {
@@ -406,7 +406,7 @@ class AwesomeBarView(
                     engine = engineForSpeculativeConnects,
                     maxNumberOfSuggestions = METADATA_SUGGESTION_LIMIT,
                     showEditSuggestion = false,
-                    suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+//                  suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
                     resultsUriFilter = filter::shouldIncludeUri,
                 )
             } else {
@@ -510,7 +510,7 @@ class AwesomeBarView(
                 getDrawable(activity, R.drawable.ic_search_results_device_mobile),
                 getDrawable(activity, R.drawable.ic_search_results_device_tablet),
             ),
-            suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+//          suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
             resultsUrlFilter = filter?.let { it::shouldIncludeUrl },
         )
     }
@@ -533,7 +533,7 @@ class AwesomeBarView(
             components.core.icons,
             getDrawable(activity, R.drawable.ic_search_results_tab),
             excludeSelectedSession = !fromHomeFragment,
-            suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+//          suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
             resultsUriFilter = filter?.let { it::shouldIncludeUri },
         )
     }
@@ -556,7 +556,7 @@ class AwesomeBarView(
             indicatorIcon = getDrawable(activity, R.drawable.ic_search_results_bookmarks),
             engine = engineForSpeculativeConnects,
             showEditSuggestion = false,
-            suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
+//          suggestionsHeader = activity.getString(R.string.firefox_suggest_header),
             resultsUriFilter = filter?.let { it::shouldIncludeUri },
         )
     }
