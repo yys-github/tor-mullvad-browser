@@ -12,10 +12,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="@dimen/tracking_protection_item_height"
-        app:layout_constraintBottom_toTopOf="@id/trackingProtectionSwitch"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <org.mozilla.fenix.trackingprotection.SwitchWithDescription
+    <!-- Removed as part of Bug_42115: Enhanced Tracking Protection can still be enabled-->
+    <!-- <org.mozilla.fenix.trackingprotection.SwitchWithDescription
         android:id="@+id/trackingProtectionSwitch"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,8 +30,10 @@
         app:switchIconOff="@drawable/mozac_ic_shield_slash_24"
         app:switchIconOn="@drawable/mozac_ic_shield_24"
         app:switchTitle="@string/preference_enhanced_tracking_protection" />
+    -->
 
-    <TextView
+    <!-- Removed as part of Bug_42115: Enhanced Tracking Protection can still be enabled-->
+    <!--<TextView
         android:id="@+id/trackingProtectionDetails"
         style="@style/QuickSettingsText.Icon"
         android:layout_width="0dp"
@@ -43,5 +46,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+    -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
