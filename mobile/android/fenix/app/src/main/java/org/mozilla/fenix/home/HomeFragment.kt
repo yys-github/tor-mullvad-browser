@@ -71,6 +71,7 @@ import mozilla.components.support.utils.KeyboardState
 import mozilla.components.support.utils.keyboardAsState
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.BrowserDirection
+import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.GleanMetrics.HomeScreen
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.NavGraphDirections
@@ -178,6 +179,9 @@ import org.mozilla.fenix.utils.allowUndo
 import org.mozilla.fenix.utils.showAddSearchWidgetPromptIfSupported
 import org.mozilla.fenix.wallpapers.Wallpaper
 import java.lang.ref.WeakReference
+
+import org.mozilla.fenix.components.toolbar.ToolbarPosition
+import org.mozilla.fenix.tor.TorHomePage
 
 @Suppress("TooManyFunctions", "LargeClass")
 class HomeFragment : Fragment() {
@@ -620,7 +624,7 @@ class HomeFragment : Fragment() {
             listenForMicrosurveyMessage(requireContext())
         }
 
-        initComposeHomepage()
+        initComposeTorHomePageView()
 
         disableAppBarDragging()
 
@@ -1012,6 +1016,17 @@ class HomeFragment : Fragment() {
             profilerStartTime,
             "HomeFragment.onViewCreated",
         )
+    }
+
+    private fun initComposeTorHomePageView() {
+        binding.torHomepageView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                TorHomePage(
+                    toolBarAtTop = settings().toolbarPosition == ToolbarPosition.TOP
+                )
+            }
+        }
     }
 
     private fun initComposeHomepage() {
