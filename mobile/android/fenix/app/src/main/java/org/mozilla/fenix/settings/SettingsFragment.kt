@@ -14,6 +14,7 @@ import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.VisibleForTesting
 import androidx.appcompat.app.AlertDialog
@@ -490,6 +491,15 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 SettingsFragmentDirections.actionSettingsFragmentToAboutFragment()
             }
 
+            resources.getString(R.string.pref_key_donate) -> {
+                (activity as HomeActivity).openToBrowserAndLoad(
+                    searchTermOrURL = SupportUtils.DONATE_URL,
+                    newTab = true,
+                    from = BrowserDirection.FromSettings
+                )
+                null
+            }
+
             // Only displayed when secret settings are enabled
             resources.getString(R.string.pref_key_debug_settings) -> {
                 SettingsFragmentDirections.actionSettingsFragmentToSecretSettingsFragment()
@@ -527,6 +537,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
         val preferenceRemoteDebugging = findPreference<Preference>(debuggingKey)
         val preferenceMakeDefaultBrowser =
             requirePreference<DefaultBrowserPreference>(R.string.pref_key_make_default_browser)
+
+        requirePreference<Preference>(R.string.pref_key_allow_screenshots_in_private_mode).apply {
+            onPreferenceChangeListener = object : SharedPreferenceUpdater() {
+                override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
+                    if (newValue == false) {
+                        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    } else {
+                        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    }
+                    return super.onPreferenceChange(preference, newValue)
+                }
+            }
+        }
 
         if (!Config.channel.isReleased) {
             preferenceLeakCanary?.setOnPreferenceChangeListener { _, newValue ->
