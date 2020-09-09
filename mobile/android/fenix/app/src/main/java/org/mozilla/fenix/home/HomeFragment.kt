@@ -78,6 +78,7 @@ import mozilla.components.support.utils.DefaultDateTimeProvider
 import mozilla.components.support.utils.ext.navigateToDefaultBrowserAppsSettings
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.BrowserDirection
+import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.GleanMetrics.HomeScreen
 import org.mozilla.fenix.GleanMetrics.Vpn
 import org.mozilla.fenix.HomeActivity
@@ -188,6 +189,8 @@ import org.mozilla.fenix.wallpapers.Wallpaper
 import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
 import org.mozilla.fenix.ipprotection.store.Surface as IPProtectionSurface
+
+import org.mozilla.fenix.tor.TorHomePage
 
 /**
  * The home screen.
@@ -383,7 +386,7 @@ class HomeFragment : Fragment() {
         }
         homepageComposeView = composeView
         nullableToolbarView = buildToolbar(activity, composeView)
-        initComposeHomepage(view = composeView)
+        initComposeTorHomePageView(composeView)
         val view = if (isToolbarSwipeToSwitchTabsEnabled()) {
             wrapInSwipeLayout(activity, composeView)
         } else {
@@ -625,6 +628,32 @@ class HomeFragment : Fragment() {
             right + location[0],
             bottom + location[1],
         )
+    }
+
+    private fun initComposeTorHomePageView(view: ComposeView) {
+        view.setContent {
+            FirefoxTheme {
+                val isToolbarAtTop = requireComponents.settings.toolbarPosition == ToolbarPosition.TOP
+                Scaffold(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .systemBarsPadding()
+                        .displayCutoutPadding()
+                        .imePadding(),
+                    topBar = { if (isToolbarAtTop) toolbarView.Content() },
+                    bottomBar = {
+                        if (isToolbarAtTop) {
+                            homeNavigationBar?.Content()
+                        } else {
+                            toolbarView.Content()
+                        }
+                    },
+                    containerColor = Color.Transparent,
+                ) { _ ->
+                    TorHomePage(toolBarAtTop = isToolbarAtTop)
+                }
+            }
+        }
     }
 
     @Suppress("LongMethod", "CognitiveComplexMethod")

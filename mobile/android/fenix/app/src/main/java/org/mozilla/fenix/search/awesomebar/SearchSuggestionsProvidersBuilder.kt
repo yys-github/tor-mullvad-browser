@@ -82,7 +82,7 @@ class SearchSuggestionsProvidersBuilder(
                 components.core.icons,
                 engineForSpeculativeConnects,
                 showEditSuggestion = false,
-                suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+                // suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
             )
 
         defaultCombinedHistoryProvider =
@@ -94,7 +94,7 @@ class SearchSuggestionsProvidersBuilder(
                 engine = engineForSpeculativeConnects,
                 maxNumberOfSuggestions = METADATA_SUGGESTION_LIMIT,
                 showEditSuggestion = false,
-                suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+                // suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
             )
 
         val searchBitmap = suggestionIconProvider.getSearchIconBitmap()
@@ -223,12 +223,12 @@ class SearchSuggestionsProvidersBuilder(
             }
         }
 
-        if (!browsingModeManager.mode.isPrivate && state.showAllSessionSuggestions) {
+        if (/* !browsingModeManager.mode.isPrivate && */ state.showAllSessionSuggestions) {
             // Unlike other providers, we don't exclude sponsored suggestions for open tabs.
             providersToAdd.add(getLocalTabsProvider())
         }
 
-        if (!browsingModeManager.mode.isPrivate && state.showSessionSuggestionsForCurrentEngine) {
+        if (/* !browsingModeManager.mode.isPrivate && */ state.showSessionSuggestionsForCurrentEngine) {
             getFilterForCurrentEngineResults(state)?.let {
                 providersToAdd.add(getLocalTabsProvider(it))
             }
@@ -241,7 +241,7 @@ class SearchSuggestionsProvidersBuilder(
                         loadUrlUseCase = loadUrlUseCase,
                         includeSponsoredSuggestions = state.showSponsoredSuggestions,
                         includeNonSponsoredSuggestions = state.showNonSponsoredSuggestions,
-                        suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+                        // suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
                         sponsoredSuggestionDescription = suggestionsStringsProvider.getSponsoredSuggestionDescription(),
                         contextId = components.settings.contileContextId,
                         scorer = FxSuggestionExperimentScorer(),
@@ -251,7 +251,7 @@ class SearchSuggestionsProvidersBuilder(
                         loadUrlUseCase = loadUrlUseCase,
                         includeSponsoredSuggestions = state.showSponsoredSuggestions,
                         includeNonSponsoredSuggestions = state.showNonSponsoredSuggestions,
-                        suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+                        // suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
                         sponsoredSuggestionDescription = suggestionsStringsProvider.getSponsoredSuggestionDescription(),
                         contextId = components.settings.contileContextId,
                     )
@@ -329,7 +329,7 @@ class SearchSuggestionsProvidersBuilder(
                     engine = engineForSpeculativeConnects,
                     maxNumberOfSuggestions = METADATA_SUGGESTION_LIMIT,
                     showEditSuggestion = false,
-                    suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+                    // suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
                     resultsUriFilter = filter::shouldIncludeUri,
                 )
             } else {
@@ -344,7 +344,7 @@ class SearchSuggestionsProvidersBuilder(
                     engine = engineForSpeculativeConnects,
                     maxNumberOfSuggestions = METADATA_SUGGESTION_LIMIT,
                     showEditSuggestion = false,
-                    suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+                    // suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
                     resultsUriFilter = filter::shouldIncludeUri,
                 )
             } else {
@@ -456,7 +456,7 @@ class SearchSuggestionsProvidersBuilder(
                 suggestionIconProvider.getMobileIconDrawable(),
                 suggestionIconProvider.getTabletIconDrawable(),
             ),
-            suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+            // suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
             resultsUrlFilter = filter?.let { it::shouldIncludeUrl },
         )
     }
@@ -478,7 +478,7 @@ class SearchSuggestionsProvidersBuilder(
             components.core.icons,
             suggestionIconProvider.getLocalTabIconDrawable(),
             excludeSelectedSession = !includeSelectedTab,
-            suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+            // suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
             switchToTabDescription = suggestionsStringsProvider.getSwitchToTabDescriptionString(),
             resultsUriFilter = filter?.let { it::shouldIncludeUri },
         )
@@ -502,7 +502,7 @@ class SearchSuggestionsProvidersBuilder(
             indicatorIcon = suggestionIconProvider.getBookmarkIconDrawable(),
             engine = engineForSpeculativeConnects,
             showEditSuggestion = false,
-            suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
+            // suggestionsHeader = suggestionsStringsProvider.firefoxSuggestHeader,
             resultsUriFilter = filter?.let { it::shouldIncludeUri },
         )
     }
