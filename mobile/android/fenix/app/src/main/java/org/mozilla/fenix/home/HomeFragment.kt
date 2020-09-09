@@ -43,6 +43,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.children
+import androidx.core.view.doOnLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -96,6 +98,7 @@ import mozilla.components.ui.colors.PhotonColors
 import mozilla.components.ui.tabcounter.TabCounterMenu
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.BrowserDirection
+import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.GleanMetrics.HomeScreen
 import org.mozilla.fenix.GleanMetrics.Homepage
 import org.mozilla.fenix.GleanMetrics.Logins
@@ -316,6 +319,16 @@ class HomeFragment : Fragment() {
             orientationChange = false,
             orientation = requireContext().resources.configuration.orientation,
         )
+
+        // Splits by full stops or commas and puts the parts in different lines.
+        // Ignoring separators at the end of the string, it is expected
+        // that there are at most two parts (e.g. "Explore. Privately.").
+        val localBinding = binding
+        binding.exploreprivately.text = localBinding
+            .exploreprivately
+            .text
+            ?.replace(" *([.,。।]) *".toRegex(), "$1\n")
+            ?.trim()
 
         components.appStore.dispatch(AppAction.ModeChange(browsingModeManager.mode))
 
@@ -1593,7 +1606,8 @@ class HomeFragment : Fragment() {
             else -> ColorStateList.valueOf(color)
         }
 
-        binding.wordmarkText.imageTintList = tintColor
+        // tor-browser#42590
+        // binding.wordmarkText.imageTintList = tintColor
         binding.privateBrowsingButton.imageTintList = tintColor
     }
 
