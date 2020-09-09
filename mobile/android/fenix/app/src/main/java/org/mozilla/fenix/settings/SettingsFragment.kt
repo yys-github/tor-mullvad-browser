@@ -43,6 +43,7 @@ import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.ktx.android.view.showKeyboard
 import mozilla.components.ui.widgets.withCenterAlignedButtons
 import mozilla.telemetry.glean.private.NoExtras
+import org.mozilla.fenix.BrowserDirection
 import org.mozilla.fenix.Config
 import org.mozilla.fenix.FeatureFlags
 import org.mozilla.fenix.GleanMetrics.Addons
@@ -51,6 +52,7 @@ import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.SettingsSearch
 import org.mozilla.fenix.GleanMetrics.TrackingProtection
 import org.mozilla.fenix.GleanMetrics.Translations
+import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.Components
 import org.mozilla.fenix.components.accounts.FenixFxAEntryPoint
@@ -76,6 +78,8 @@ import org.mozilla.fenix.utils.Settings
 import kotlin.system.exitProcess
 import mozilla.components.ui.icons.R as iconsR
 import org.mozilla.fenix.GleanMetrics.Settings as SettingsMetrics
+
+import android.view.WindowManager
 
 /**
  * Main settings screen.
@@ -545,6 +549,16 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
                 SettingsFragmentDirections.actionSettingsFragmentToAboutFragment()
             }
 
+            resources.getString(R.string.pref_key_donate) -> {
+                @Suppress("DEPRECATION")
+                (activity as HomeActivity).openToBrowserAndLoad(
+                    searchTermOrURL = SupportUtils.DONATE_URL,
+                    newTab = true,
+                    from = BrowserDirection.FromSettings
+                )
+                null
+            }
+
             // Only displayed when secret settings are enabled
             resources.getString(R.string.pref_key_debug_settings) -> {
                 SettingsFragmentDirections.actionSettingsFragmentToSecretSettingsFragment()
@@ -582,6 +596,21 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         val preferenceRemoteDebugging = findPreference<Preference>(debuggingKey)
         val preferenceMakeDefaultBrowser =
             requirePreference<DefaultBrowserPreference>(R.string.pref_key_make_default_browser)
+
+        // Copied from PrivateBrowsingFragment with some removals
+        requirePreference<SwitchPreferenceCompat>(R.string.pref_key_allow_screenshots_in_private_mode).apply {
+            onPreferenceChangeListener = object : SharedPreferenceUpdater() {
+                override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
+                    if (newValue == false) {
+                        activity?.window?.addFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    } else {
+                        activity?.window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+                    }
+                    return super.onPreferenceChange(preference, newValue)
+                }
+            }
+        }
+
 
         if (!Config.channel.isReleased) {
             preferenceLeakCanary?.setOnPreferenceChangeListener { _, newValue ->

@@ -204,6 +204,9 @@
     <action
         android:id="@+id/action_global_to_installedAddonDetailsFragment"
         app:destination="@id/installedAddonDetailsFragment" />
+    <action
+        android:id="@+id/action_global_homeFragment"
+        app:destination="@id/homeFragment" />
 
     <dialog
         android:id="@+id/tabManagementFragment"
@@ -1107,6 +1110,11 @@
         android:id="@+id/httpsOnlyFragment"
         android:name="org.mozilla.fenix.settings.HttpsOnlyFragment"
         android:label="@string/preferences_https_only_title" />
+    <fragment
+        android:id="@+id/torBridgeConfigFragment"
+        android:name="org.mozilla.fenix.settings.TorBridgeConfigFragment"
+        android:label="@string/preferences_tor_network_settings_bridge_config"
+        tools:layout="@layout/fragment_tor_bridge_config" />
     <fragment
         android:id="@+id/trackingProtectionFragment"
         android:name="org.mozilla.fenix.settings.TrackingProtectionFragment">

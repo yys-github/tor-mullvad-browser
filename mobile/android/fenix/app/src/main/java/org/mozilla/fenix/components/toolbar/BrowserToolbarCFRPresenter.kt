@@ -105,30 +105,31 @@ class BrowserToolbarCFRPresenter(
             }
         }
 
-        when (getCFRToShow()) {
-            ToolbarCFR.COOKIE_BANNERS -> {
-                scope = browserStore.flowScoped(dispatcher = mainDispatcher) { flow ->
-                    flow.mapNotNull { it.findCustomTabOrSelectedTab(customTabId) }
-                        .ifAnyChanged { tab ->
-                            arrayOf(
-                                tab.cookieBanner,
-                            )
-                        }
-                        .filter {
-                            it.content.private && it.cookieBanner == CookieBannerHandlingStatus.HANDLED
-                        }
-                        .collect {
-                            scope?.cancel()
-                            settings.shouldShowCookieBannersCFR = false
-                            showCookieBannersCFR()
-                        }
-                }
-            }
+        // Removed for tor-browser#42089: Remove ability to submit site support requests
+        // when (getCFRToShow()) {
+        //     ToolbarCFR.COOKIE_BANNERS -> {
+        //         scope = browserStore.flowScoped(dispatcher = mainDispatcher) { flow ->
+        //             flow.mapNotNull { it.findCustomTabOrSelectedTab(customTabId) }
+        //                 .ifAnyChanged { tab ->
+        //                     arrayOf(
+        //                         tab.cookieBanner,
+        //                     )
+        //                 }
+        //                 .filter {
+        //                     it.content.private && it.cookieBanner == CookieBannerHandlingStatus.HANDLED
+        //                 }
+        //                 .collect {
+        //                     scope?.cancel()
+        //                     settings.shouldShowCookieBannersCFR = false
+        //                     showCookieBannersCFR()
+        //                 }
+        //         }
+        //     }
 
-            ToolbarCFR.NONE -> {
-                // no-op
-            }
-        }
+        //     ToolbarCFR.NONE -> {
+        //         // no-op
+        //     }
+        // }
     }
 
     private fun getCFRToShow(): ToolbarCFR = when {
