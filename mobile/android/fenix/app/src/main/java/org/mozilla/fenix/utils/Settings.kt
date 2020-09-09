@@ -1735,7 +1735,7 @@ class Settings(
     val shouldShowSearchSuggestions by
         booleanPreference(
             appContext.getPreferenceKey(R.string.pref_key_show_search_suggestions),
-            default = true,
+            default = false,
         )
 
     val shouldAutocompleteInAwesomebar by
@@ -1753,7 +1753,7 @@ class Settings(
     var shouldShowSearchSuggestionsInPrivate by
         booleanPreference(
             appContext.getPreferenceKey(R.string.pref_key_show_search_suggestions_in_private),
-            default = false,
+            default = shouldDisableNormalMode,
         )
 
     /** Indicates if the user have enabled trending search in search suggestions. */
