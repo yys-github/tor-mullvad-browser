@@ -136,7 +136,7 @@ class MenuNavigationMiddleware(
                 )
 
                 is MenuAction.Navigate.ReleaseNotes -> openToBrowser(
-                    BrowserNavigationParams(url = SupportUtils.WHATS_NEW_URL),
+                    BrowserNavigationParams(url = SupportUtils.getTorWhatsNewUrl()),
                 )
 
                 is MenuAction.Navigate.Tools -> navHostController.navigate(route = TOOLS_MENU_ROUTE)

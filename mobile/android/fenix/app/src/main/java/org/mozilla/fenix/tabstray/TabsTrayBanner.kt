@@ -261,6 +261,7 @@ private fun TabPageBanner(
                         unselectedContentColor = inactiveColor,
                     )
 
+/*
                     Tab(
                         selected = selectedPage == Page.SyncedTabs,
                         onClick = { onTabPageIndicatorClicked(Page.SyncedTabs) },
@@ -276,6 +277,7 @@ private fun TabPageBanner(
                         selectedContentColor = selectedColor,
                         unselectedContentColor = inactiveColor,
                     )
+*/
                 }
             }
 
