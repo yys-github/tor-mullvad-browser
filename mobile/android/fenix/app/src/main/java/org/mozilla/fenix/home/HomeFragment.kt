@@ -69,6 +69,7 @@ import mozilla.components.support.utils.ext.navigateToDefaultBrowserAppsSettings
 import mozilla.components.support.utils.keyboardAsState
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.BrowserDirection
+import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.GleanMetrics.HomeScreen
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.NavGraphDirections
@@ -182,6 +183,8 @@ import org.mozilla.fenix.utils.showAddSearchWidgetPromptIfSupported
 import org.mozilla.fenix.wallpapers.Wallpaper
 import java.lang.ref.WeakReference
 import org.mozilla.fenix.ipprotection.store.Surface as IPProtectionSurface
+
+import org.mozilla.fenix.tor.TorHomePage
 
 /**
  * The home screen.
@@ -387,7 +390,7 @@ class HomeFragment : Fragment(), SystemInsetsPaddedFragment {
         val activity = activity as HomeActivity
         nullableToolbarView = buildToolbar(activity)
 
-        initComposeHomepage()
+        initComposeTorHomePageView()
 
         // DO NOT MOVE ANYTHING BELOW THIS addMarker CALL!
         requireComponents.core.engine.profiler?.addMarker(
@@ -683,6 +686,17 @@ class HomeFragment : Fragment(), SystemInsetsPaddedFragment {
             profilerStartTime,
             "HomeFragment.onViewCreated",
         )
+    }
+
+    private fun initComposeTorHomePageView() {
+        binding.torHomepageView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                TorHomePage(
+                    toolBarAtTop = settings().toolbarPosition == ToolbarPosition.TOP
+                )
+            }
+        }
     }
 
     @Suppress("LongMethod")

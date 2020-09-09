@@ -139,7 +139,8 @@ class QuickSettingsSheetDialogFragment : FenixDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeTrackersChange(requireComponents.core.store, Dispatchers.Main)
+//        Removed as part of Bug_42115: Enhanced Tracking Protection can still be enabled
+//        observeTrackersChange(requireComponents.core.store, Dispatchers.Main)
         consumeFrom(quickSettingsStore) {
             websiteInfoView.update(it.webInfoState)
             websitePermissionsView.update(it.websitePermissionsState)
@@ -198,34 +199,36 @@ class QuickSettingsSheetDialogFragment : FenixDialogFragment() {
     @VisibleForTesting
     internal fun provideTabId(): String = args.sessionId
 
-    @VisibleForTesting
-    internal fun observeTrackersChange(store: BrowserStore, mainDispatcher: CoroutineDispatcher) {
-        consumeFlow(store, mainDispatcher = mainDispatcher) { flow ->
-            flow.mapNotNull { state ->
-                state.findTabOrCustomTab(provideTabId())
-            }.ifAnyChanged { tab ->
-                arrayOf(
-                    tab.trackingProtection.blockedTrackers,
-                    tab.trackingProtection.loadedTrackers,
-                )
-            }.collect {
-                updateTrackers(it)
-            }
-        }
-    }
+//    Removed as part of Bug_42115: Enhanced Tracking Protection can still be enabled
+//    @VisibleForTesting
+//    internal fun observeTrackersChange(store: BrowserStore, mainDispatcher: CoroutineDispatcher) {
+//        consumeFlow(store, mainDispatcher = mainDispatcher) { flow ->
+//            flow.mapNotNull { state ->
+//                state.findTabOrCustomTab(provideTabId())
+//            }.ifAnyChanged { tab ->
+//                arrayOf(
+//                    tab.trackingProtection.blockedTrackers,
+//                    tab.trackingProtection.loadedTrackers,
+//                )
+//            }.collect {
+//                updateTrackers(it)
+//            }
+//        }
+//    }
 
-    @VisibleForTesting
-    internal fun updateTrackers(tab: SessionState) {
-        provideTrackingProtectionUseCases().fetchTrackingLogs(
-            tab.id,
-            onSuccess = { trackers ->
-                protectionsView.updateDetailsSection(trackers.isNotEmpty())
-            },
-            onError = {
-                Logger.error("QuickSettingsSheetDialogFragment - fetchTrackingLogs onError", it)
-            },
-        )
-    }
+//        Removed as part of Bug_42115: Enhanced Tracking Protection can still be enabled
+//    @VisibleForTesting
+//    internal fun updateTrackers(tab: SessionState) {
+//        provideTrackingProtectionUseCases().fetchTrackingLogs(
+//            tab.id,
+//            onSuccess = { trackers ->
+//                protectionsView.updateDetailsSection(trackers.isNotEmpty())
+//            },
+//            onError = {
+//                Logger.error("QuickSettingsSheetDialogFragment - fetchTrackingLogs onError", it)
+//            },
+//        )
+//    }
 
     @VisibleForTesting
     internal fun provideTrackingProtectionUseCases() = requireComponents.useCases.trackingProtectionUseCases
