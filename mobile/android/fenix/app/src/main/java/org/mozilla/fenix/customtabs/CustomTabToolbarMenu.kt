@@ -128,7 +128,7 @@ class CustomTabToolbarMenu(
             sharePage.apply { visible = { isNavBarEnabled && !isSandboxCustomTab } },
             desktopMode,
             findInPage,
-            openInApp.apply { visible = ::shouldShowOpenInApp },
+//          openInApp.apply { visible = ::shouldShowOpenInApp },
             openInFenix.apply { visible = { !isSandboxCustomTab && !isNavBarEnabled } },
             BrowserMenuDivider(),
             if (shouldShowMenuToolbar) menuToolbar else null,
