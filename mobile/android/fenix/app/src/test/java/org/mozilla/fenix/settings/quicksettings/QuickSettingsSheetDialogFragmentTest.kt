@@ -52,121 +52,121 @@ class QuickSettingsSheetDialogFragmentTest {
         every { fragment.activity } returns mockk(relaxed = true)
     }
 
-    @Test
-    fun `WHEN a tracker is loaded THEN trackers view is updated`() = runTest {
-        val tab = createTab("mozilla.org")
+//    @Test
+//    fun `WHEN a tracker is loaded THEN trackers view is updated`() = runTest {
+//        val tab = createTab("mozilla.org")
+//
+//        every { fragment.provideTabId() } returns tab.id
+//        every { fragment.updateTrackers(any()) } just Runs
+//
+//        fragment.observeTrackersChange(
+//            store,
+//            coroutineContext[ContinuationInterceptor] as CoroutineDispatcher,
+//        )
+//
+//        addAndSelectTab(tab)
+//        testScheduler.advanceUntilIdle()
+//
+//        verify(exactly = 1) {
+//            fragment.updateTrackers(tab)
+//        }
+//
+//        store.dispatch(TrackerLoadedAction(tab.id, mockk()))
+//        testScheduler.advanceUntilIdle()
+//
+//        val updatedTab = store.state.findTab(tab.id)!!
+//
+//        assertNotSame(updatedTab, tab)
+//
+//        verify(exactly = 1) {
+//            fragment.updateTrackers(updatedTab)
+//        }
+//    }
 
-        every { fragment.provideTabId() } returns tab.id
-        every { fragment.updateTrackers(any()) } just Runs
+//    @Test
+//    fun `WHEN a tracker is blocked THEN trackers view is updated`() = runTest {
+//        val tab = createTab("mozilla.org")
+//
+//        every { fragment.provideTabId() } returns tab.id
+//        every { fragment.updateTrackers(any()) } just Runs
+//
+//        fragment.observeTrackersChange(
+//            store,
+//            coroutineContext[ContinuationInterceptor] as CoroutineDispatcher,
+//        )
+//
+//        addAndSelectTab(tab)
+//        testScheduler.advanceUntilIdle()
+//
+//        verify(exactly = 1) {
+//            fragment.updateTrackers(tab)
+//        }
+//
+//        store.dispatch(TrackerBlockedAction(tab.id, mockk()))
+//        testScheduler.advanceUntilIdle()
+//
+//        val updatedTab = store.state.findTab(tab.id)!!
+//
+//        assertNotSame(updatedTab, tab)
+//
+//        verify(exactly = 1) {
+//            fragment.updateTrackers(updatedTab)
+//        }
+//    }
 
-        fragment.observeTrackersChange(
-            store,
-            coroutineContext[ContinuationInterceptor] as CoroutineDispatcher,
-        )
+//    @Test
+//    fun `GIVEN no trackers WHEN calling updateTrackers THEN hide the details section`() {
+//        val tab = createTab("mozilla.org")
+//        val trackingProtectionUseCases: TrackingProtectionUseCases = mockk(relaxed = true)
+//        val protectionsView: ProtectionsView = mockk(relaxed = true)
+//
+//        val onComplete = slot<(List<TrackerLog>) -> Unit>()
+//
+//        every { fragment.protectionsView } returns protectionsView
+//
+//        every {
+//            trackingProtectionUseCases.fetchTrackingLogs.invoke(
+//                any(),
+//                capture(onComplete),
+//                any(),
+//            )
+//        }.answers { onComplete.captured.invoke(emptyList()) }
+//
+//        every { fragment.provideTrackingProtectionUseCases() } returns trackingProtectionUseCases
+//
+//        fragment.updateTrackers(tab)
+//
+//        verify {
+//            protectionsView.updateDetailsSection(false)
+//        }
+//    }
 
-        addAndSelectTab(tab)
-        testScheduler.advanceUntilIdle()
-
-        verify(exactly = 1) {
-            fragment.updateTrackers(tab)
-        }
-
-        store.dispatch(TrackerLoadedAction(tab.id, mockk()))
-        testScheduler.advanceUntilIdle()
-
-        val updatedTab = store.state.findTab(tab.id)!!
-
-        assertNotSame(updatedTab, tab)
-
-        verify(exactly = 1) {
-            fragment.updateTrackers(updatedTab)
-        }
-    }
-
-    @Test
-    fun `WHEN a tracker is blocked THEN trackers view is updated`() = runTest {
-        val tab = createTab("mozilla.org")
-
-        every { fragment.provideTabId() } returns tab.id
-        every { fragment.updateTrackers(any()) } just Runs
-
-        fragment.observeTrackersChange(
-            store,
-            coroutineContext[ContinuationInterceptor] as CoroutineDispatcher,
-        )
-
-        addAndSelectTab(tab)
-        testScheduler.advanceUntilIdle()
-
-        verify(exactly = 1) {
-            fragment.updateTrackers(tab)
-        }
-
-        store.dispatch(TrackerBlockedAction(tab.id, mockk()))
-        testScheduler.advanceUntilIdle()
-
-        val updatedTab = store.state.findTab(tab.id)!!
-
-        assertNotSame(updatedTab, tab)
-
-        verify(exactly = 1) {
-            fragment.updateTrackers(updatedTab)
-        }
-    }
-
-    @Test
-    fun `GIVEN no trackers WHEN calling updateTrackers THEN hide the details section`() {
-        val tab = createTab("mozilla.org")
-        val trackingProtectionUseCases: TrackingProtectionUseCases = mockk(relaxed = true)
-        val protectionsView: ProtectionsView = mockk(relaxed = true)
-
-        val onComplete = slot<(List<TrackerLog>) -> Unit>()
-
-        every { fragment.protectionsView } returns protectionsView
-
-        every {
-            trackingProtectionUseCases.fetchTrackingLogs.invoke(
-                any(),
-                capture(onComplete),
-                any(),
-            )
-        }.answers { onComplete.captured.invoke(emptyList()) }
-
-        every { fragment.provideTrackingProtectionUseCases() } returns trackingProtectionUseCases
-
-        fragment.updateTrackers(tab)
-
-        verify {
-            protectionsView.updateDetailsSection(false)
-        }
-    }
-
-    @Test
-    fun `GIVEN trackers WHEN calling updateTrackers THEN show the details section`() {
-        val tab = createTab("mozilla.org")
-        val trackingProtectionUseCases: TrackingProtectionUseCases = mockk(relaxed = true)
-        val protectionsView: ProtectionsView = mockk(relaxed = true)
-
-        val onComplete = slot<(List<TrackerLog>) -> Unit>()
-
-        every { fragment.protectionsView } returns protectionsView
-
-        every {
-            trackingProtectionUseCases.fetchTrackingLogs.invoke(
-                any(),
-                capture(onComplete),
-                any(),
-            )
-        }.answers { onComplete.captured.invoke(listOf(TrackerLog(""))) }
-
-        every { fragment.provideTrackingProtectionUseCases() } returns trackingProtectionUseCases
-
-        fragment.updateTrackers(tab)
-
-        verify {
-            protectionsView.updateDetailsSection(true)
-        }
-    }
+//    @Test
+//    fun `GIVEN trackers WHEN calling updateTrackers THEN show the details section`() {
+//        val tab = createTab("mozilla.org")
+//        val trackingProtectionUseCases: TrackingProtectionUseCases = mockk(relaxed = true)
+//        val protectionsView: ProtectionsView = mockk(relaxed = true)
+//
+//        val onComplete = slot<(List<TrackerLog>) -> Unit>()
+//
+//        every { fragment.protectionsView } returns protectionsView
+//
+//        every {
+//            trackingProtectionUseCases.fetchTrackingLogs.invoke(
+//                any(),
+//                capture(onComplete),
+//                any(),
+//            )
+//        }.answers { onComplete.captured.invoke(listOf(TrackerLog(""))) }
+//
+//        every { fragment.provideTrackingProtectionUseCases() } returns trackingProtectionUseCases
+//
+//        fragment.updateTrackers(tab)
+//
+//        verify {
+//            protectionsView.updateDetailsSection(true)
+//        }
+//    }
 
     private fun addAndSelectTab(tab: TabSessionState) {
         store.dispatch(TabListAction.AddTabAction(tab))
