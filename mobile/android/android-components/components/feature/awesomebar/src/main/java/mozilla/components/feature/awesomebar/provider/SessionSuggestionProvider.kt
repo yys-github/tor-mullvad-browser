@@ -59,7 +59,7 @@ class SessionSuggestionProvider(
                 resultsUriFilter?.invoke(item.content.url.toUri()) != false &&
                 shouldIncludeSelectedTab(state, item)
         }.forEach { item ->
-            val iconRequest = icons?.loadIcon(IconRequest(url = item.content.url, waitOnNetworkLoad = false))
+            val iconRequest = icons?.loadIcon(IconRequest(url = item.content.url, isPrivate = item.content.private, waitOnNetworkLoad = false))
             suggestions.add(
                 AwesomeBar.Suggestion(
                     provider = this,
