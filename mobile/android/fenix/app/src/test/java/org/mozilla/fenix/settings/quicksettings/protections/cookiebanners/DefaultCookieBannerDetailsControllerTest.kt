@@ -220,46 +220,7 @@ internal class DefaultCookieBannerDetailsControllerTest {
             }
         }
 
-    @Test
-    fun `GIVEN cookie banner mode is site not supported WHEN handleRequestSiteSupportPressed THEN request report site domain`() =
-        runTest(testDispatcher) {
-            val store = BrowserStore(
-                BrowserState(
-                    customTabs = listOf(
-                        createCustomTab(
-                            url = "https://www.mozilla.org",
-                            id = "mozilla",
-                        ),
-                    ),
-                ),
-            )
-            every { testContext.components.core.store } returns store
-            coEvery { controller.getTabDomain(any()) } returns "mozilla.org"
-            every { protectionsStore.dispatch(any()) } returns mockk()
-
-            val job = Pings.cookieBannerReportSite.testBeforeNextSubmit {
-                assertNotNull(CookieBanners.reportSiteDomain.testGetValue())
-                assertEquals("mozilla.org", CookieBanners.reportSiteDomain.testGetValue())
-            }
-            controller.handleRequestSiteSupportPressed()
-            testScheduler.advanceUntilIdle()
-
-            job.join()
-
-            assertNotNull(CookieBanners.reportDomainSiteButton.testGetValue())
-            testScheduler.advanceUntilIdle()
-            coVerifyOrder {
-                protectionsStore.dispatch(
-                    ProtectionsAction.RequestReportSiteDomain(
-                        "mozilla.org",
-                    ),
-                )
-                protectionsStore.dispatch(
-                    ProtectionsAction.UpdateCookieBannerMode(
-                        cookieBannerUIMode = CookieBannerUIMode.REQUEST_UNSUPPORTED_SITE_SUBMITTED,
-                    ),
-                )
-                cookieBannersStorage.saveSiteDomain("mozilla.org")
-            }
-        }
+    // tor-browser#42089: the ability to submit site support requests was removed, along with
+    // handleRequestSiteSupportPressed(), ProtectionsAction.RequestReportSiteDomain and
+    // CookieBannerUIMode.REQUEST_UNSUPPORTED_SITE_SUBMITTED this test used to exercise.
 }

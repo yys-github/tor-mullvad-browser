@@ -259,7 +259,7 @@
     <color name="spinner_selected_item">#1415141A</color>
 
     <!-- Icon colors -->
-    <color name="mozac_ui_icons_fill" tools:ignore="UnusedResources">@color/fx_mobile_on_surface</color>
+    <color name="mozac_ui_icons_fill" tools:ignore="UnusedResources">@color/novaWhite</color>
 
     <!-- Add-ons colors -->
     <color name="mozac_feature_addons_messagebar_error_background_color" tools:ignore="UnusedResources">@color/fx_mobile_layer_color_critical</color>
@@ -269,6 +269,11 @@
     <color name="mozac_ui_private_mode_circle_fill" tools:ignore="UnusedResources">@color/fx_mobile_icon_private</color>
     <color name="mozac_ui_private_mode_circle_stroke_fill" tools:ignore="UnusedResources">@color/fx_mobile_private_surface</color>
     <color name="mozac_ui_private_mode_mask_fill" tools:ignore="UnusedResources">@color/fx_mobile_private_on_surface</color>
+
+    <!-- TorHomepage gradient colors -->
+    <color name="tor_homepage_gradient_start">#7529A7</color>
+    <color name="tor_homepage_gradient_middle">#492E85</color>
+    <color name="tor_homepage_gradient_end">#383372</color>
 
     <!-- Account Sync Avatar fill colors -->
     <color name="mozac_ui_avatar_warning_bg_fill_critical" tools:ignore="UnusedResources">@color/fx_mobile_on_surface_variant</color>

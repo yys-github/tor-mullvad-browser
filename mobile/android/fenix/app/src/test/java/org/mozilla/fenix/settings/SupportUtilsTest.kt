@@ -34,15 +34,6 @@ class SupportUtilsTest {
             ),
         )
         assertEquals(
-            "https://support.mozilla.org/1/firefox/20/Android/fr/tracking-protection-firefox-android",
-            SupportUtils.getSumoURLForTopic(
-                mockContext("2 0"),
-                SupportUtils.SumoTopic.TRACKING_PROTECTION,
-                Locale.forLanguageTag("fr"),
-                useMobilePage = false,
-            ),
-        )
-        assertEquals(
             "https://www.mozilla.org/firefox/android/notes",
             SupportUtils.WHATS_NEW_URL,
         )
@@ -69,6 +60,18 @@ class SupportUtilsTest {
         assertEquals(
             "https://www.mozilla.org/zh/privacy/firefox/",
             SupportUtils.getMozillaPageUrl(SupportUtils.MozillaPage.PRIVACY_NOTICE, Locale.forLanguageTag("zh")),
+        )
+    }
+
+    @Test
+    fun getTorPageUrl() {
+        assertEquals(
+            "https://tb-manual.torproject.org/mobile-tor",
+            SupportUtils.getTorHelpPageUrl()
+        )
+        assertEquals(
+            "https://www.torproject.org/releases/",
+            SupportUtils.getTorWhatsNewUrl()
         )
     }
 
