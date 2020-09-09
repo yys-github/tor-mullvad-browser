@@ -33,10 +33,10 @@ class SupportUtilsTest {
                 Locale.forLanguageTag("fr"),
             ),
         )
-        assertEquals(
-            "https://www.mozilla.org/firefox/android/notes",
-            SupportUtils.WHATS_NEW_URL,
-        )
+        // assertEquals(
+        //     "https://www.mozilla.org/firefox/android/notes",
+        //     SupportUtils.WHATS_NEW_URL,
+        // )
     }
 
     @Test
@@ -60,6 +60,18 @@ class SupportUtilsTest {
         assertEquals(
             "https://www.mozilla.org/zh/privacy/firefox/",
             SupportUtils.getMozillaPageUrl(SupportUtils.MozillaPage.PRIVATE_NOTICE, Locale.forLanguageTag("zh")),
+        )
+    }
+
+    @Test
+    fun getTorPageUrl() {
+        assertEquals(
+            "https://tb-manual.torproject.org/mobile-tor",
+            SupportUtils.getTorHelpPageUrl()
+        )
+        assertEquals(
+            "https://www.torproject.org/releases/",
+            SupportUtils.getTorWhatsNewUrl()
         )
     }
 

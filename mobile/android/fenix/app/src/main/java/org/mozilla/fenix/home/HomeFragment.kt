@@ -26,6 +26,8 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.graphics.drawable.toDrawable
+import androidx.core.view.children
+import androidx.core.view.doOnLayout
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -72,6 +74,7 @@ import mozilla.components.lib.state.ext.observeAsState
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.BrowserDirection
+import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.GleanMetrics.HomeScreen
 import org.mozilla.fenix.GleanMetrics.Homepage
 import org.mozilla.fenix.HomeActivity
@@ -155,6 +158,9 @@ import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.utils.allowUndo
 import org.mozilla.fenix.wallpapers.Wallpaper
 import org.mozilla.fenix.GleanMetrics.TabStrip as TabStripMetrics
+
+import org.mozilla.fenix.components.toolbar.ToolbarPosition
+import org.mozilla.fenix.tor.TorHomePage
 
 @Suppress("TooManyFunctions", "LargeClass")
 class HomeFragment : Fragment() {
@@ -547,20 +553,7 @@ class HomeFragment : Fragment() {
             listenForMicrosurveyMessage(requireContext())
         }
 
-        if (requireContext().settings().enableComposeHomepage) {
-            initComposeHomepage()
-        } else {
-            binding.homepageView.isVisible = false
-            binding.sessionControlRecyclerView.isVisible = true
-            sessionControlView = SessionControlView(
-                containerView = binding.sessionControlRecyclerView,
-                viewLifecycleOwner = viewLifecycleOwner,
-                interactor = sessionControlInteractor,
-                fragmentManager = parentFragmentManager,
-            )
-
-            updateSessionControlView()
-        }
+        initComposeTorHomePageView()
 
         disableAppBarDragging()
 
@@ -961,6 +954,17 @@ class HomeFragment : Fragment() {
         )
     }
 
+    private fun initComposeTorHomePageView() {
+        binding.torHomepageView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                TorHomePage(
+                    toolBarAtTop = settings().toolbarPosition == ToolbarPosition.TOP
+                )
+            }
+        }
+    }
+
     private fun initComposeHomepage() {
         binding.sessionControlRecyclerView.isVisible = false
         binding.homepageView.isVisible = true
@@ -1303,7 +1307,8 @@ class HomeFragment : Fragment() {
             else -> ColorStateList.valueOf(color)
         }
 
-        binding.wordmarkText.imageTintList = tintColor
+        // tor-browser#42590
+        // binding.wordmarkText.imageTintList = tintColor
         binding.privateBrowsingButton.buttonTintList = tintColor
     }
 
