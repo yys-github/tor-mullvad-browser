@@ -59,6 +59,7 @@ class DynamicDownloadDialog(
             )
 
             binding.downloadDialogActionButton.apply {
+                visibility = View.VISIBLE
                 text = context.getString(
                     mozilla.components.feature.downloads.R.string.mozac_feature_downloads_button_try_again,
                 )
@@ -79,6 +80,7 @@ class DynamicDownloadDialog(
             )
 
             binding.downloadDialogActionButton.apply {
+                visibility = View.GONE
                 text = context.getString(
                     mozilla.components.feature.downloads.R.string.mozac_feature_downloads_button_open,
                 )
