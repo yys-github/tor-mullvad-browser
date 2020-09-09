@@ -74,7 +74,6 @@ open class DefaultToolbarMenu(
     private var isCurrentUrlBookmarked = false
     private var isBookmarkedJob: Job? = null
 
-    private val shouldDeleteDataOnQuit = context.settings().shouldDeleteBrowsingDataOnQuit
     private val shouldUseBottomToolbar = context.settings().shouldUseBottomToolbar
     private val shouldShowTopSites = context.settings().showTopSitesFeature
     private val accountManager = FenixAccountManager(context)
@@ -310,14 +309,6 @@ open class DefaultToolbarMenu(
         onItemTapped.invoke(ToolbarMenu.Item.OpenInApp)
     }
 
-    private val addToHomeScreenItem = BrowserMenuImageText(
-        label = context.getString(R.string.browser_menu_add_to_homescreen),
-        imageResource = iconsR.drawable.mozac_ic_add_to_homescreen_24,
-        iconTintColorResource = primaryTextColor(),
-        isCollapsingMenuLimit = true,
-    ) {
-        onItemTapped.invoke(ToolbarMenu.Item.AddToHomeScreen)
-    }
 
     private val addAppToHomeScreenItem = BrowserMenuImageText(
         label = context.getString(R.string.browser_menu_add_app_to_homescreen),
@@ -345,14 +336,6 @@ open class DefaultToolbarMenu(
             onItemTapped.invoke(ToolbarMenu.Item.RemoveFromTopSites)
         },
     )
-
-    private val saveToCollectionItem = BrowserMenuImageText(
-        label = context.getString(R.string.browser_menu_save_to_collection_2),
-        imageResource = R.drawable.ic_tab_collection,
-        iconTintColorResource = primaryTextColor(),
-    ) {
-        onItemTapped.invoke(ToolbarMenu.Item.SaveToCollection)
-    }
 
     private val printPageItem = BrowserMenuImageText(
         label = context.getString(R.string.menu_print),
@@ -411,14 +394,6 @@ open class DefaultToolbarMenu(
         onItemTapped.invoke(ToolbarMenu.Item.Quit)
     }
 
-    private fun syncMenuItem(): BrowserMenuItem {
-        return BrowserMenuSignIn(primaryTextColor()) {
-            onItemTapped.invoke(
-                ToolbarMenu.Item.SyncAccount(accountManager.accountState),
-            )
-        }
-    }
-
     @VisibleForTesting(otherwise = PRIVATE)
     val coreMenuItems by lazy {
         val menuItems =
@@ -431,29 +406,18 @@ open class DefaultToolbarMenu(
                 downloadsItem,
                 passwordsItem,
                 extensionsItem,
-                syncMenuItem(),
                 BrowserMenuDivider(),
                 findInPageItem,
                 translationsItem.apply { visible = ::shouldShowTranslations },
                 desktopSiteItem.apply { visible = { store.state.selectedTab?.content?.isPdf == false } },
                 // openInRegularTabItem.apply { visible = ::shouldShowOpenInRegularTab },
                 customizeReaderView.apply { visible = ::shouldShowReaderViewCustomization },
-                openInApp.apply { visible = ::shouldShowOpenInApp },
                 BrowserMenuDivider(),
-                addToHomeScreenItem.apply { visible = ::canAddToHomescreen },
                 addAppToHomeScreenItem.apply { visible = ::canAddAppToHomescreen },
-                if (shouldShowTopSites) addRemoveTopSitesItem else null,
-                saveToCollectionItem,
-                if (FxNimbus.features.print.value().browserPrintEnabled &&
-                    !context.isAndroidAutomotiveAvailable()
-                ) {
-                    printPageItem
-                } else {
-                    null
-                },
+                printPageItem,
                 BrowserMenuDivider(),
                 settingsItem,
-                if (shouldDeleteDataOnQuit) deleteDataOnQuit else null,
+                deleteDataOnQuit,
                 if (shouldUseBottomToolbar) BrowserMenuDivider() else null,
                 if (shouldUseBottomToolbar) menuToolbar else null,
             )
