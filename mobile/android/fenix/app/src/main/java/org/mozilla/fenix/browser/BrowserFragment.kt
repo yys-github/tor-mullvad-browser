@@ -193,7 +193,7 @@ class BrowserFragment : BaseBrowserFragment(), UserInteractionHandler, SystemIns
             view = view,
         )
 
-        if (settings.shouldShowOpenInAppCfr) {
+        if (false) { // settings.shouldShowOpenInAppCfr
             openInAppOnboardingObserver.set(
                 feature = OpenInAppOnboardingObserver(
                     context = context,
