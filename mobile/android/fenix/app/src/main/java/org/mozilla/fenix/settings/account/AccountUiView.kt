@@ -83,7 +83,7 @@ class AccountUiView(
 
             // Signed-out.
         } else {
-            preferenceSignIn.isVisible = true
+            preferenceSignIn.isVisible = false
             preferenceFirefoxAccount.isVisible = false
             preferenceFirefoxAccountAuthError.isVisible = false
             accountPreferenceCategory.isVisible = false

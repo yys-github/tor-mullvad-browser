@@ -122,14 +122,14 @@ class HomeMenuView(
                     HomeFragmentDirections.actionGlobalSettingsFragment(),
                 )
             }
-            HomeMenu.Item.CustomizeHome -> {
-                HomeScreen.customizeHomeClicked.record(NoExtras())
-
-                navController.nav(
-                    R.id.homeFragment,
-                    HomeFragmentDirections.actionGlobalHomeSettingsFragment(),
-                )
-            }
+//            HomeMenu.Item.CustomizeHome -> {
+//                HomeScreen.customizeHomeClicked.record(NoExtras())
+//
+//                navController.nav(
+//                    R.id.homeFragment,
+//                    HomeFragmentDirections.actionGlobalHomeSettingsFragment(),
+//                )
+//            }
             is HomeMenu.Item.SyncAccount -> {
                 navController.nav(
                     R.id.homeFragment,
@@ -179,10 +179,7 @@ class HomeMenuView(
                     HomeFragmentDirections.actionGlobalBrowser(),
                 )
                 fenixBrowserUseCases.loadUrlOrSearch(
-                    searchTermOrURL = SupportUtils.getSumoURLForTopic(
-                        context = context,
-                        topic = SupportUtils.SumoTopic.HELP,
-                    ),
+                    searchTermOrURL = SupportUtils.getTorHelpPageUrl(),
                     newTab = true,
                     private = homeActivity.browsingModeManager.mode.isPrivate,
                 )
@@ -196,7 +193,7 @@ class HomeMenuView(
                     HomeFragmentDirections.actionGlobalBrowser(),
                 )
                 fenixBrowserUseCases.loadUrlOrSearch(
-                    searchTermOrURL = SupportUtils.WHATS_NEW_URL,
+                    searchTermOrURL = SupportUtils.getTorWhatsNewUrl(),
                     newTab = true,
                     private = homeActivity.browsingModeManager.mode.isPrivate,
                 )

@@ -229,7 +229,7 @@ private fun TabPageBanner(
     selectedPage: Page,
     normalTabCount: Int,
     privateTabCount: Int,
-    syncedTabCount: Int,
+    @Suppress("UNUSED_PARAMETER") syncedTabCount: Int,
     onTabPageIndicatorClicked: (Page) -> Unit,
     onDismissClick: () -> Unit,
 ) {
@@ -302,6 +302,7 @@ private fun TabPageBanner(
                     unselectedContentColor = inactiveColor,
                 )
 
+/*
                 Tab(
                     selected = selectedPage == Page.SyncedTabs,
                     onClick = { onTabPageIndicatorClicked(Page.SyncedTabs) },
@@ -320,6 +321,7 @@ private fun TabPageBanner(
                     selectedContentColor = selectedColor,
                     unselectedContentColor = inactiveColor,
                 )
+*/
             }
 
             Spacer(modifier = Modifier.weight(1.0f))
