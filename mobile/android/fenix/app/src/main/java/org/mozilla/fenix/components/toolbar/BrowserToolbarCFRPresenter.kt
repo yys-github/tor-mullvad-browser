@@ -95,49 +95,50 @@ class BrowserToolbarCFRPresenter(
             }
         }
 
-        when (getCFRToShow()) {
-            ToolbarCFR.COOKIE_BANNERS -> {
-                scope = browserStore.flowScoped { flow ->
-                    flow.mapNotNull { it.findCustomTabOrSelectedTab(customTabId) }
-                        .ifAnyChanged { tab ->
-                            arrayOf(
-                                tab.cookieBanner,
-                            )
-                        }
-                        .filter {
-                            it.content.private && it.cookieBanner == CookieBannerHandlingStatus.HANDLED
-                        }
-                        .collect {
-                            scope?.cancel()
-                            settings.shouldShowCookieBannersCFR = false
-                            showCookieBannersCFR()
-                        }
-                }
-            }
-
-            ToolbarCFR.ERASE -> {
-                scope = browserStore.flowScoped { flow ->
-                    flow
-                        .mapNotNull { it.findCustomTabOrSelectedTab(customTabId) }
-                        .filter { it.content.private }
-                        .map { it.content.progress }
-                        // The "transformWhile" below ensures that the 100% progress is only collected once.
-                        .transformWhile { progress ->
-                            emit(progress)
-                            progress != 100
-                        }
-                        .filter { popup == null && it == 100 }
-                        .collect {
-                            scope?.cancel()
-                            showEraseCfr()
-                        }
-                }
-            }
-
-            ToolbarCFR.NONE -> {
-                // no-op
-            }
-        }
+//        Removed for tor-browser#42089: Remove ability to submit site support requests
+//        when (getCFRToShow()) {
+//            ToolbarCFR.COOKIE_BANNERS -> {
+//                scope = browserStore.flowScoped { flow ->
+//                    flow.mapNotNull { it.findCustomTabOrSelectedTab(customTabId) }
+//                        .ifAnyChanged { tab ->
+//                            arrayOf(
+//                                tab.cookieBanner,
+//                            )
+//                        }
+//                        .filter {
+//                            it.content.private && it.cookieBanner == CookieBannerHandlingStatus.HANDLED
+//                        }
+//                        .collect {
+//                            scope?.cancel()
+//                            settings.shouldShowCookieBannersCFR = false
+//                            showCookieBannersCFR()
+//                        }
+//                }
+//            }
+//
+//            ToolbarCFR.ERASE -> {
+//                scope = browserStore.flowScoped { flow ->
+//                    flow
+//                        .mapNotNull { it.findCustomTabOrSelectedTab(customTabId) }
+//                        .filter { it.content.private }
+//                        .map { it.content.progress }
+//                        // The "transformWhile" below ensures that the 100% progress is only collected once.
+//                        .transformWhile { progress ->
+//                            emit(progress)
+//                            progress != 100
+//                        }
+//                        .filter { popup == null && it == 100 }
+//                        .collect {
+//                            scope?.cancel()
+//                            showEraseCfr()
+//                        }
+//                }
+//            }
+//
+//            ToolbarCFR.NONE -> {
+//                // no-op
+//            }
+//        }
     }
 
     private fun getCFRToShow(): ToolbarCFR = when {
