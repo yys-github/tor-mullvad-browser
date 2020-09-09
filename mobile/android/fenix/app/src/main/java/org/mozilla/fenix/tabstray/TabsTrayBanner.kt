@@ -334,6 +334,7 @@ private fun TabPageBanner(
                     unselectedContentColor = inactiveColor,
                 )
 
+/*
                 Tab(
                     selected = config.selectedPage == Page.SyncedTabs,
                     onClick = { callbacks.onTabPageIndicatorClicked(Page.SyncedTabs) },
@@ -352,6 +353,7 @@ private fun TabPageBanner(
                     selectedContentColor = selectedColor,
                     unselectedContentColor = inactiveColor,
                 )
+*/
             }
 
             Spacer(modifier = Modifier.weight(1.0f))
