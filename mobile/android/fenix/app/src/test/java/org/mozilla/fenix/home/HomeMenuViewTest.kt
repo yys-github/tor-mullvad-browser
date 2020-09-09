@@ -99,22 +99,6 @@ class HomeMenuViewTest {
     }
 
     @Test
-    fun `WHEN Customize Home menu item is tapped THEN navigate to home settings fragment and record metrics`() {
-        assertNull(HomeScreen.customizeHomeClicked.testGetValue())
-
-        homeMenuView.onItemTapped(HomeMenu.Item.CustomizeHome)
-
-        assertNotNull(HomeScreen.customizeHomeClicked.testGetValue())
-
-        verify {
-            navController.navigate(
-                HomeFragmentDirections.actionGlobalHomeSettingsFragment(),
-                null,
-            )
-        }
-    }
-
-    @Test
     fun `GIVEN various sync account state WHEN Sync Account menu item is tapped THEN navigate to the appropriate sync fragment`() {
         homeMenuView.onItemTapped(HomeMenu.Item.SyncAccount(AccountState.AUTHENTICATED))
 
@@ -219,7 +203,7 @@ class HomeMenuViewTest {
             WhatsNew.userViewedWhatsNew(testContext)
 
             homeActivity.openToBrowserAndLoad(
-                searchTermOrURL = SupportUtils.WHATS_NEW_URL,
+                searchTermOrURL = SupportUtils.getTorWhatsNewUrl(),
                 newTab = true,
                 from = BrowserDirection.FromHome,
             )
