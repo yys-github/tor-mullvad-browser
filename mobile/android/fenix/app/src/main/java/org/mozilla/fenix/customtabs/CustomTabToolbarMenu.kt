@@ -126,7 +126,7 @@ class CustomTabToolbarMenu(
             BrowserMenuDivider().apply { visible = { !isSandboxCustomTab } },
             desktopMode.apply { visible = { session?.content?.isPdf == false } },
             findInPage,
-            openInApp.apply { visible = ::shouldShowOpenInApp },
+            // openInApp.apply { visible = ::shouldShowOpenInApp },
             openInFenix.apply { visible = { !isSandboxCustomTab } },
             BrowserMenuDivider(),
             menuToolbar,
