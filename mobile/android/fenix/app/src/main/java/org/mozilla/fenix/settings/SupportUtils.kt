@@ -20,6 +20,7 @@ import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 import java.util.Locale
 
+@Suppress("TooManyFunctions")
 object SupportUtils {
     const val RATE_APP_URL = "market://details?id=" + BuildConfig.APPLICATION_ID
     const val POCKET_TRENDING_URL = "https://getpocket.com/fenix-top-articles"
@@ -28,7 +29,9 @@ object SupportUtils {
     const val GOOGLE_URL = "https://www.google.com/"
     const val GOOGLE_US_URL = "https://www.google.com/webhp?client=firefox-b-1-m&channel=ts"
     const val GOOGLE_XX_URL = "https://www.google.com/webhp?client=firefox-b-m&channel=ts"
-    const val WHATS_NEW_URL = "https://www.mozilla.org/firefox/android/notes"
+    // const val WHATS_NEW_URL = "https://www.torproject.org/releases/"
+    const val DONATE_URL = "https://donate.torproject.org/"
+    const val TB_MANUAL_URL = "https://tb-manual.torproject.org/mobile-tor"
     const val FXACCOUNT_SUMO_URL = "https://support.mozilla.org/kb/access-mozilla-services-firefox-account"
 
     // This is locale-less on purpose so that the content negotiation happens on the AMO side because the current
@@ -98,6 +101,21 @@ object SupportUtils {
         val escapedTopic = getEncodedTopicUTF8(topic.topicStr)
         val langTag = getLanguageTag(locale)
         return "https://support.mozilla.org/$langTag/kb/$escapedTopic"
+    }
+
+    fun getTorHelpPageUrl(): String {
+        return TB_MANUAL_URL
+    }
+
+    fun getTorWhatsNewUrl(): String {
+        val versionNumber = BuildConfig.VERSION_NAME.substringBefore(' ') // e.g. "13.5a5"
+        if (versionNumber.isEmpty()) {
+            return "https://blog.torproject.org/"
+        }
+        val alpha: String = if (versionNumber.contains('a')) "alpha-" else ""
+        val versionNumberNoDecimals: String =
+            versionNumber.split('.').joinToString("") // e.g. "135a5"
+        return "https://blog.torproject.org/new-${alpha}release-tor-browser-${versionNumberNoDecimals}/" // e.g. "https://blog.torproject.org/new-alpha-release-tor-browser-135a5/
     }
 
     fun getMozillaPageUrl(page: MozillaPage, locale: Locale = Locale.getDefault()): String {
