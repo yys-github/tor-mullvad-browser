@@ -68,6 +68,7 @@ import org.mozilla.fenix.perf.ProfilerViewModel
 import org.mozilla.fenix.settings.account.AccountUiView
 import org.mozilla.fenix.snackbar.FenixSnackbarDelegate
 import org.mozilla.fenix.snackbar.SnackbarBinding
+import org.mozilla.fenix.tor.SecurityLevel
 import org.mozilla.fenix.utils.Settings
 import kotlin.system.exitProcess
 import org.mozilla.fenix.GleanMetrics.Settings as SettingsMetrics
@@ -363,6 +364,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 SettingsFragmentDirections.actionSettingsFragmentToPrivateBrowsingFragment()
             }
 
+            resources.getString(R.string.pref_key_tor_security_level_settings) -> {
+                SettingsFragmentDirections.actionSettingsFragmentToTorSecurityLevelFragment()
+            }
+
             resources.getString(R.string.pref_key_https_only_settings) -> {
                 SettingsFragmentDirections.actionSettingsFragmentToHttpsOnlyFragment()
             }
@@ -573,6 +578,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setupAmoCollectionOverridePreference(requireContext().settings())
         setupGeckoLogsPreference(requireContext().settings())
         setupAllowDomesticChinaFxaServerPreference()
+        setupSecurityLevelPreference()
         setupHttpsOnlyPreferences()
         setupNotificationPreference()
         setupSearchPreference()
@@ -784,6 +790,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
     internal fun setupInstallAddonFromFilePreference(settings: Settings) {
         with(requirePreference<Preference>(R.string.pref_key_install_local_addon)) {
             isVisible = settings.showSecretDebugMenuThisSession
+        }
+    }
+
+    @VisibleForTesting
+    internal fun setupSecurityLevelPreference() {
+        val securityLevelPreference =
+            requirePreference<Preference>(R.string.pref_key_tor_security_level_settings)
+        securityLevelPreference.summary = context?.settings()?.torSecurityLevel()?.let {
+            when (it) {
+                SecurityLevel.STANDARD -> getString(R.string.tor_security_level_standard_option)
+                SecurityLevel.SAFER -> getString(R.string.tor_security_level_safer_option)
+                SecurityLevel.SAFEST -> getString(R.string.tor_security_level_safest_option)
+            }
         }
     }
 
