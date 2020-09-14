@@ -1446,6 +1446,12 @@ class GeckoEngine(
             get() = runtime.settings.userCharacteristicPingCurrentVersion
             set(value) { runtime.settings.setUserCharacteristicPingCurrentVersion(value) }
 
+        override var torSecurityLevel: Int
+            get() = runtime.settings.torSecurityLevel
+            set(value) {
+                runtime.settings.torSecurityLevel = value
+            }
+
         override var spoofEnglish: Boolean
             get() = runtime.settings.spoofEnglish
             set(value) {
@@ -1527,6 +1533,7 @@ class GeckoEngine(
             this.fdlibmMathEnabled = it.fdlibmMathEnabled
             this.emailTrackerBlockingPrivateBrowsing = it.emailTrackerBlockingPrivateBrowsing
             this.userCharacteristicPingCurrentVersion = it.userCharacteristicPingCurrentVersion
+            this.torSecurityLevel = it.torSecurityLevel
             this.spoofEnglish = it.spoofEnglish
             this.webContentIsolationStrategy = it.webContentIsolationStrategy
             this.fetchPriorityEnabled = it.fetchPriorityEnabled
