@@ -1,5 +1,6 @@
 MOZ_SRC_FILES += [
     "SecurityLevel.sys.mjs",
+    "SecurityLevelNotificationAndroid.sys.mjs",
 ]
 
 XPCOM_MANIFESTS += [
