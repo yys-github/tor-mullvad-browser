@@ -1332,6 +1332,12 @@ class GeckoEngine(
             get() = runtime.settings.globalPrivacyControl
             set(value) { runtime.settings.setGlobalPrivacyControl(value) }
 
+        override var torSecurityLevel: Int
+            get() = runtime.settings.torSecurityLevel
+            set(value) {
+                runtime.settings.torSecurityLevel = value
+            }
+
         override var spoofEnglish: Boolean
             get() = runtime.settings.spoofEnglish
             set(value) {
@@ -1366,6 +1372,7 @@ class GeckoEngine(
             this.cookieBannerHandlingGlobalRulesSubFrames = it.cookieBannerHandlingGlobalRulesSubFrames
             this.globalPrivacyControlEnabled = it.globalPrivacyControlEnabled
             this.emailTrackerBlockingPrivateBrowsing = it.emailTrackerBlockingPrivateBrowsing
+            this.torSecurityLevel = it.torSecurityLevel
             this.spoofEnglish = it.spoofEnglish
         }
     }
