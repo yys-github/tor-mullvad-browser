@@ -300,6 +300,17 @@ abstract class Settings {
      */
     open var userCharacteristicPingCurrentVersion: Int by UnsupportedSetting()
 
+    /**
+     * Setting to control the current security level
+     *
+     * 4 -> STANDARD
+     *
+     * 2 -> SAFER
+     *
+     * 1 -> SAFEST
+     */
+    open var torSecurityLevel: Int by UnsupportedSetting()
+
     open var spoofEnglish: Boolean by UnsupportedSetting()
 
     /**
@@ -411,6 +422,7 @@ data class DefaultSettings(
     override var queryParameterStrippingStripList: String = "",
     override var emailTrackerBlockingPrivateBrowsing: Boolean = false,
     override var userCharacteristicPingCurrentVersion: Int = 0,
+    override var torSecurityLevel: Int = 4,
     override var spoofEnglish: Boolean = false,
     override var webContentIsolationStrategy: WebContentIsolationStrategy? =
         WebContentIsolationStrategy.ISOLATE_HIGH_VALUE,
