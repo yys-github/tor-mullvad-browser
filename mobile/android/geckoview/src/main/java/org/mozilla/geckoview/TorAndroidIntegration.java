@@ -48,6 +48,9 @@ public class TorAndroidIntegration implements BundleEventListener {
   private static final String EVENT_SETTINGS_CHANGED = "GeckoView:Tor:SettingsChanged";
 
   // Events we emit
+  // TODO: Integrate the security level API. tor-browser#43820
+  private static final String EVENT_SECURITY_LEVEL_GET = "GeckoView:Tor:SecurityLevelGet";
+  private static final String EVENT_SECURITY_LEVEL_SET_BEFORE_RESTART = "GeckoView:Tor:SecurityLevelSetBeforeRestart";
   private static final String EVENT_SETTINGS_GET = "GeckoView:Tor:SettingsGet";
   private static final String EVENT_SETTINGS_SET = "GeckoView:Tor:SettingsSet";
   private static final String EVENT_BOOTSTRAP_BEGIN = "GeckoView:Tor:BootstrapBegin";
