@@ -1348,6 +1348,14 @@ class GeckoEngine(
             get() = runtime.settings.fdlibmMathEnabled
             set(value) { runtime.settings.setFdlibmMathEnabled(value) }
 
+        override var torSecurityLevel: Int
+            get() = runtime.settings.torSecurityLevel
+            set(value) {
+                value.let {
+                    runtime.settings.torSecurityLevel = it
+                }
+            }
+
         override var spoofEnglish: Boolean
             get() = runtime.settings.spoofEnglish
             set(value) {
@@ -1386,6 +1394,7 @@ class GeckoEngine(
             this.fingerprintingProtectionOverrides = it.fingerprintingProtectionOverrides
             this.fdlibmMathEnabled = it.fdlibmMathEnabled
             this.emailTrackerBlockingPrivateBrowsing = it.emailTrackerBlockingPrivateBrowsing
+            this.torSecurityLevel = it.torSecurityLevel
             this.spoofEnglish = it.spoofEnglish
         }
     }
