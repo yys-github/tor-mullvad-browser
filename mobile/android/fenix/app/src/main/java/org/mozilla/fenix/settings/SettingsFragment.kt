@@ -9,6 +9,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -73,6 +74,7 @@ import org.mozilla.fenix.perf.ProfilerViewModelFactory
 import org.mozilla.fenix.settings.account.AccountUiView
 import org.mozilla.fenix.snackbar.FenixSnackbarDelegate
 import org.mozilla.fenix.snackbar.SnackbarBinding
+import org.mozilla.fenix.tor.TorSecurityLevel
 import org.mozilla.fenix.utils.Settings
 import kotlin.system.exitProcess
 import mozilla.components.ui.icons.R as iconsR
@@ -414,6 +416,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
                 SettingsFragmentDirections.actionSettingsFragmentToPrivateBrowsingFragment()
             }
 
+            resources.getString(R.string.pref_key_tor_security_level) -> {
+                SettingsFragmentDirections.actionSettingsFragmentToTorSecurityLevelFragment()
+            }
+
             resources.getString(R.string.pref_key_https_only_settings) -> {
                 SettingsFragmentDirections.actionSettingsFragmentToHttpsOnlyFragment()
             }
@@ -651,6 +657,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
             FeatureFlags.customExtensionCollectionFeature,
         )
         setupGeckoLogsPreference(settings)
+        setupSecurityLevelPreference()
         setupHttpsOnlyPreferences(settings)
         setupNotificationPreference(
             NotificationManagerCompat.from(requireContext()).areNotificationsEnabled(),
@@ -867,6 +874,19 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
                 settings.shouldUseHttpsOnlyInPrivateTabsOnly ->
                     getString(R.string.preferences_https_only_on_private)
                 else -> null
+            }
+    }
+
+    @VisibleForTesting
+    internal fun setupSecurityLevelPreference() {
+        val securityLevelPreference =
+            requirePreference<Preference>(R.string.pref_key_tor_security_level)
+        securityLevelPreference.summary =
+            when (requireContext().settings().torSecurityLevel) {
+                TorSecurityLevel.STANDARD.level -> getString(R.string.tor_security_level_standard)
+                TorSecurityLevel.SAFER.level    -> getString(R.string.tor_security_level_safer)
+                TorSecurityLevel.SAFEST.level   -> getString(R.string.tor_security_level_safest)
+                else -> throw Exception("Unexpected TorSecurityLevel of ${requireContext().settings().torSecurityLevel}")
             }
     }
 
