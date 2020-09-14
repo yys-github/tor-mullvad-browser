@@ -63,6 +63,8 @@ import org.mozilla.fenix.settings.registerOnSharedPreferenceChangeListener
 import org.mozilla.fenix.settings.sitepermissions.AUTOPLAY_BLOCK_ALL
 import org.mozilla.fenix.settings.sitepermissions.AUTOPLAY_BLOCK_AUDIBLE
 import org.mozilla.fenix.wallpapers.Wallpaper
+import org.mozilla.fenix.settings.SettingsFragment
+import org.mozilla.fenix.tor.TorSecurityLevel
 import java.security.InvalidParameterException
 import java.util.UUID
 
@@ -342,6 +344,57 @@ class Settings(private val appContext: Context) : PreferencesHolder {
         appContext.getString(R.string.pref_key_return_to_browser),
         false,
     )
+
+    private var oldStandardSecurityLevel by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_tor_security_level_standard_option),
+        default = false
+    )
+
+    private var oldSaferSecurityLevel by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_tor_security_level_safer_option),
+        default = false
+    )
+
+    private var oldSafestSecurityLevel by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_tor_security_level_safest_option),
+        default = false
+    )
+
+    /**
+     * Backing property that should used only for the [SettingsFragment] UI
+     *
+     * 4 -> STANDARD
+     *
+     * 2 -> SAFER
+     *
+     * 1 -> SAFEST
+     */
+    var torSecurityLevel by intPreference(
+        appContext.getPreferenceKey(R.string.pref_key_tor_security_level),
+        migrateTorSecurityLevel() ?: 4,
+    )
+
+    /**
+     * Remove in 15.0 release.
+     */
+    private fun migrateTorSecurityLevel(): Int? {
+        return when {
+            oldSafestSecurityLevel -> {
+                TorSecurityLevel.SAFEST.level
+            }
+            oldSaferSecurityLevel -> {
+                TorSecurityLevel.SAFER.level
+            }
+            oldStandardSecurityLevel -> {
+                TorSecurityLevel.STANDARD.level
+            }
+            else -> null
+        }.also {
+            oldSafestSecurityLevel = false
+            oldSaferSecurityLevel = false
+            oldStandardSecurityLevel = false
+        }
+    }
 
     var spoofEnglish by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_spoof_english),
