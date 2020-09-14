@@ -46,8 +46,11 @@ public class TorAndroidIntegration implements BundleEventListener {
   private static final String EVENT_TOR_LOGS = "GeckoView:Tor:Logs";
   private static final String EVENT_SETTINGS_READY = "GeckoView:Tor:SettingsReady";
   private static final String EVENT_SETTINGS_CHANGED = "GeckoView:Tor:SettingsChanged";
+  private static final String EVENT_SECURITY_LEVEL_CUSTOM = "GeckoView:Tor:SecurityLevelCustom";
 
   // Events we emit
+  private static final String EVENT_SECURITY_LEVEL_GET = "GeckoView:Tor:SecurityLevelGet";
+  private static final String EVENT_SECURITY_LEVEL_SET_BEFORE_RESTART = "GeckoView:Tor:SecurityLevelSetBeforeRestart";
   private static final String EVENT_SETTINGS_GET = "GeckoView:Tor:SettingsGet";
   private static final String EVENT_SETTINGS_SET = "GeckoView:Tor:SettingsSet";
   private static final String EVENT_BOOTSTRAP_BEGIN = "GeckoView:Tor:BootstrapBegin";
@@ -90,6 +93,12 @@ public class TorAndroidIntegration implements BundleEventListener {
   private final MutableLiveData<TorConnectStage> _lastKnownStage = new MutableLiveData<>(null);
   public LiveData<TorConnectStage> lastKnowStage = _lastKnownStage;
 
+  private final MutableLiveData<String> _torSecurityLevel = new MutableLiveData<>();
+  public final LiveData<String> torSecurityLevel = _torSecurityLevel;
+
+  private final MutableLiveData<CustomSecurityLevelNotificationObject> _isTorSecurityLevelCustom = new MutableLiveData<>(new CustomSecurityLevelNotificationObject(false, null));
+  public final LiveData<CustomSecurityLevelNotificationObject> isTorSecurityLevelCustom = _isTorSecurityLevelCustom;
+
   /**
    * mSettings is a Java-side copy of the authoritative settings in the JS code. It's useful to
    * maintain as the UI may be fetching these options often and we don't watch each fetch to be a
@@ -122,6 +131,7 @@ public class TorAndroidIntegration implements BundleEventListener {
             EVENT_MEEK_STOP,
             EVENT_SETTINGS_READY,
             EVENT_SETTINGS_CHANGED,
+            EVENT_SECURITY_LEVEL_CUSTOM,
             EVENT_CONNECT_STAGE_CHANGED,
             EVENT_BOOTSTRAP_PROGRESS,
             EVENT_TOR_LOGS);
@@ -159,6 +169,13 @@ public class TorAndroidIntegration implements BundleEventListener {
       } else {
         Log.w(TAG, "Ignoring a settings changed event that did not have the new settings.");
       }
+    } else if (EVENT_SECURITY_LEVEL_CUSTOM.equals(event)) {
+      Log.d(TAG, "Event " + EVENT_SECURITY_LEVEL_CUSTOM + " received");
+      if (message.getBoolean("isCustom")) {
+        _isTorSecurityLevelCustom.setValue(new CustomSecurityLevelNotificationObject(true, callback));
+      } else {
+        _isTorSecurityLevelCustom.setValue(new CustomSecurityLevelNotificationObject(false, null));
+      }
     } else if (EVENT_CONNECT_STAGE_CHANGED.equals(event)) {
       TorConnectStage stage = new TorConnectStage(message.getBundle("stage"));
       _lastKnownStage.setValue(stage);
@@ -178,6 +195,16 @@ public class TorAndroidIntegration implements BundleEventListener {
       for (TorLogListener listener : new HashSet<TorLogListener>(mLogListeners)) {
         listener.onLog(type, msg, timestamp);
       }
+    }
+  }
+
+  public void userDismissedCustomWarning(EventCallback callback) {
+    GeckoBundle bundle = new GeckoBundle(1);
+    bundle.putBoolean("userDismissedCustomWarning", true);
+    if (callback != null) {
+      callback.sendSuccess(bundle);
+    } else {
+      Log.e(TAG, "userDismissedCustomWarning with unexpected null callback");
     }
   }
 
@@ -773,4 +800,24 @@ public class TorAndroidIntegration implements BundleEventListener {
   }
 
   private final HashSet<TorLogListener> mLogListeners = new HashSet<>();
+
+  public void fetchSecurityLevel() {
+    EventDispatcher.getInstance().queryString(EVENT_SECURITY_LEVEL_GET).then(levelName -> {
+      if (levelName != null) {
+        _torSecurityLevel.setValue(levelName);
+        if (!levelName.equals("custom")) {
+          _isTorSecurityLevelCustom.setValue(new CustomSecurityLevelNotificationObject(false, null));
+        } // if it is custom, we handle that elsewhere
+      } else {
+        Log.e(TAG, "Querying EVENT_SECURITY_LEVEL_GET unexpectedly returned a null levelName");
+      }
+      return new GeckoResult<Void>();
+    });
+  }
+
+  public GeckoResult<Void> setSecurityLevelBeforeRestart(@NonNull String levelName) {
+    GeckoBundle bundle = new GeckoBundle(1);
+    bundle.putString("levelName", levelName);
+    return EventDispatcher.getInstance().queryVoid(EVENT_SECURITY_LEVEL_SET_BEFORE_RESTART, bundle);
+  }
 }
