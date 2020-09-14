@@ -215,6 +215,8 @@ import org.mozilla.fenix.utils.AccessibilityUtils.announcePrivateModeForAccessib
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.changeAppLauncherIcon
 
+import org.mozilla.fenix.tor.CustomSecurityLevelViewModel
+
 /**
  * The main activity of the application. The application is primarily a single Activity (this one) with fragments
  * switching out to display different views. The most important views shown here are the:
@@ -455,6 +457,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
             }
         }
 
+    private val customSecurityLevelViewModel: CustomSecurityLevelViewModel by viewModels()
+
     @Suppress("CognitiveComplexMethod", "CyclomaticComplexMethod")
     final override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT MOVE ANYTHING ABOVE THIS getProfilerTime CALL.
@@ -520,6 +524,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
         // https://gitlab.torproject.org/tpo/applications/tor-browser/-/work_items/44880
         EdgeToEdgeFragmentLifecycleCallbacks.register(supportFragmentManager, window)
         // to fetch or apply Nimbus experiments.
+
+        customSecurityLevelViewModel.setUpCustomSecurityLevelObservers(this, navHost)
 
         lifecycleScope.launch {
             val debugSettingsRepository =
