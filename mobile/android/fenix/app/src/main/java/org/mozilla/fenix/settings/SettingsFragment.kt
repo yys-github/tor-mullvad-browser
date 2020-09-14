@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -71,6 +72,7 @@ import org.mozilla.fenix.perf.ProfilerViewModel
 import org.mozilla.fenix.settings.account.AccountUiView
 import org.mozilla.fenix.snackbar.FenixSnackbarDelegate
 import org.mozilla.fenix.snackbar.SnackbarBinding
+import org.mozilla.fenix.tor.TorSecurityLevel
 import org.mozilla.fenix.utils.Settings
 import kotlin.system.exitProcess
 import org.mozilla.fenix.GleanMetrics.Settings as SettingsMetrics
@@ -370,6 +372,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 SettingsFragmentDirections.actionSettingsFragmentToPrivateBrowsingFragment()
             }
 
+            resources.getString(R.string.pref_key_tor_security_level) -> {
+                SettingsFragmentDirections.actionSettingsFragmentToTorSecurityLevelFragment()
+            }
+
             resources.getString(R.string.pref_key_https_only_settings) -> {
                 SettingsFragmentDirections.actionSettingsFragmentToHttpsOnlyFragment()
             }
@@ -596,6 +602,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setLinkSharingPreference()
         setupAmoCollectionOverridePreference(requireContext().settings())
         setupGeckoLogsPreference(requireContext().settings())
+        setupSecurityLevelPreference()
         setupHttpsOnlyPreferences()
         setupNotificationPreference()
         setupSearchPreference()
@@ -784,6 +791,19 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 isVisible = FxNimbus.features.sentFromFirefox.value().enabled
             }
         }
+    }
+
+    @VisibleForTesting
+    internal fun setupSecurityLevelPreference() {
+        val securityLevelPreference =
+            requirePreference<Preference>(R.string.pref_key_tor_security_level)
+        securityLevelPreference.summary =
+            when (requireContext().settings().torSecurityLevel) {
+                TorSecurityLevel.STANDARD.level -> getString(R.string.tor_security_level_standard)
+                TorSecurityLevel.SAFER.level    -> getString(R.string.tor_security_level_safer)
+                TorSecurityLevel.SAFEST.level   -> getString(R.string.tor_security_level_safest)
+                else -> throw Exception("Unexpected TorSecurityLevel of ${requireContext().settings().torSecurityLevel}")
+            }
     }
 
     @VisibleForTesting
