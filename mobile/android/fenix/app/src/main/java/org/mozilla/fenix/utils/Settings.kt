@@ -63,6 +63,7 @@ import org.mozilla.fenix.settings.registerOnSharedPreferenceChangeListener
 import org.mozilla.fenix.settings.sitepermissions.AUTOPLAY_BLOCK_ALL
 import org.mozilla.fenix.settings.sitepermissions.AUTOPLAY_BLOCK_AUDIBLE
 import org.mozilla.fenix.wallpapers.Wallpaper
+import org.mozilla.fenix.tor.SecurityLevel
 import java.security.InvalidParameterException
 import java.util.UUID
 
@@ -347,6 +348,33 @@ class Settings(private val appContext: Context) : PreferencesHolder {
         key = appContext.getPreferenceKey(R.string.pref_key_show_default_browser_banner),
         default = true,
     )
+
+    var standardSecurityLevel by booleanPreference(
+        appContext.getPreferenceKey(SecurityLevel.STANDARD.preferenceKey),
+        default = true
+    )
+
+    var saferSecurityLevel by booleanPreference(
+        appContext.getPreferenceKey(SecurityLevel.SAFER.preferenceKey),
+        default = false
+    )
+
+    var safestSecurityLevel by booleanPreference(
+        appContext.getPreferenceKey(SecurityLevel.SAFEST.preferenceKey),
+        default = false
+    )
+
+    // torSecurityLevel is defined as the first |true| preference,
+    // beginning at the safest level.
+    // If multiple preferences are true, then that is a bug and the
+    // highest |true| security level is chosen.
+    // Standard is the default level.
+    fun torSecurityLevel(): SecurityLevel = when {
+        safestSecurityLevel -> SecurityLevel.SAFEST
+        saferSecurityLevel -> SecurityLevel.SAFER
+        standardSecurityLevel -> SecurityLevel.STANDARD
+        else -> SecurityLevel.STANDARD
+    }
 
     var spoofEnglish by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_spoof_english),
