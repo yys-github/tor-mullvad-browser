@@ -1783,6 +1783,12 @@ class GeckoEngine(
                 value?.let { runtime.settings.setBaselineFingerprintingProtectionOverrides(it) }
             }
 
+        override var torSecurityLevel: Int
+            get() = runtime.settings.torSecurityLevel
+            set(value) {
+                runtime.settings.torSecurityLevel = value
+            }
+
         override var spoofEnglish: Boolean
             get() = runtime.settings.spoofEnglish
             set(value) {
@@ -1948,6 +1954,7 @@ class GeckoEngine(
             this.userCharacteristicPingCurrentVersion = it.userCharacteristicPingCurrentVersion
             this.baselineFingerprintingProtection = it.baselineFingerprintingProtection
             this.baselineFingerprintingProtectionOverrides = it.baselineFingerprintingProtectionOverrides
+            this.torSecurityLevel = it.torSecurityLevel
             this.spoofEnglish = it.spoofEnglish
             this.webContentIsolationStrategy = it.webContentIsolationStrategy
             this.fetchPriorityEnabled = it.fetchPriorityEnabled
