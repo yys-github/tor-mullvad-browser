@@ -13,6 +13,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   TorProviderTopics:
     "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
   TorSettings: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
+  SecurityLevelPrefs: "resources://gre/modules/SecurityLevel.sys.mjs",
 });
 
 const Prefs = Object.freeze({
@@ -34,6 +35,8 @@ const EmittedEvents = Object.freeze({
 });
 
 const ListenedEvents = Object.freeze({
+  securityLevelGet: "GeckoView:Tor:SecurityLevelGet",
+  securityLevelSetBeforeRestart: "GeckoView:Tor:SecurityLevelSetBeforeRestart",
   settingsGet: "GeckoView:Tor:SettingsGet",
   // The data is passed directly to TorSettings.
   settingsSet: "GeckoView:Tor:SettingsSet",
@@ -162,6 +165,20 @@ class TorAndroidIntegrationImpl {
     logger.debug(`Received event ${event}`, data);
     try {
       switch (event) {
+        case ListenedEvents.securityLevelGet:
+          // "standard"/"safer"/"safest"
+          // TODO: Switch to securityLevelSummary to allow android to handle
+          // "custom" security level. tor-browser#43819
+          callback?.onSuccess(lazy.SecurityLevelPrefs.securityLevel);
+          break;
+        case ListenedEvents.securityLevelSetBeforeRestart:
+          lazy.SecurityLevelPrefs.setSecurityLevelBeforeRestart(data.levelName);
+          // Let the caller know that the setting is applied and the browser
+          // should be restarted now.
+          // NOTE: The caller must wait for this callback before triggering
+          // the restart.
+          callback?.onSuccess();
+          break;
         case ListenedEvents.settingsGet:
           callback?.onSuccess(lazy.TorSettings.getSettings());
           return;
