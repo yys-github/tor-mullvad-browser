@@ -94,16 +94,6 @@ sealed class PreferenceFileInformation(
     )
 
     /**
-     * Represents the "Open Links in Apps" settings screen.
-     */
-    object OpenLinksInAppsPreferences : PreferenceFileInformation(
-        xmlResourceId = R.xml.open_links_in_apps_preferences,
-        topBreadcrumbResourceId = R.string.preferences_open_links_in_apps,
-        categoryHeaderResourceId = R.string.preferences_category_advanced,
-        fragmentId = R.id.openLinksInAppsFragment,
-    )
-
-    /**
      * Represents the "Private Browsing" settings screen.
      */
     object PrivateBrowsingPreferences : PreferenceFileInformation(
