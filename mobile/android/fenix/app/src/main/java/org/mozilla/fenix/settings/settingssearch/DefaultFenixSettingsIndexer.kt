@@ -347,7 +347,6 @@ class DefaultFenixSettingsIndexer(
             PreferenceFileInformation.DefaultSearchEnginePreferences,
             PreferenceFileInformation.DownloadsSettingsPreferences,
             PreferenceFileInformation.HomePreferences,
-            PreferenceFileInformation.OpenLinksInAppsPreferences,
             PreferenceFileInformation.PrivateBrowsingPreferences,
             PreferenceFileInformation.SearchSettingsPreferences,
             PreferenceFileInformation.SiteSettingsPreferences,
