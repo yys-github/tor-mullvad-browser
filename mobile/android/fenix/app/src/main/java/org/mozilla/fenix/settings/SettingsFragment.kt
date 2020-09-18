@@ -53,6 +53,7 @@ import org.mozilla.fenix.GleanMetrics.TrackingProtection
 import org.mozilla.fenix.GleanMetrics.Translations
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
+import org.mozilla.fenix.ReleaseChannel
 import org.mozilla.fenix.components.accounts.FenixFxAEntryPoint
 import org.mozilla.fenix.databinding.AmoCollectionOverrideDialogBinding
 import org.mozilla.fenix.ext.application
@@ -69,6 +70,7 @@ import org.mozilla.fenix.settings.account.AccountUiView
 import org.mozilla.fenix.snackbar.FenixSnackbarDelegate
 import org.mozilla.fenix.snackbar.SnackbarBinding
 import org.mozilla.fenix.tor.SecurityLevel
+import org.mozilla.fenix.tor.QuickstartViewModel
 import org.mozilla.fenix.utils.Settings
 import kotlin.system.exitProcess
 import org.mozilla.fenix.GleanMetrics.Settings as SettingsMetrics
@@ -81,6 +83,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var addonFilePicker: AddonFilePicker
     private val profilerViewModel: ProfilerViewModel by activityViewModels()
     private val snackbarBinding = ViewBoundFeatureWrapper<SnackbarBinding>()
+
+    private val quickstartViewModel: QuickstartViewModel by activityViewModels()
 
     @VisibleForTesting
     internal val accountObserver = object : AccountObserver {
@@ -174,6 +178,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        //setPreferencesFromResource(R.xml.tor_network_settings_preferences, rootKey)
+        //setupConnectionPreferences()
         setPreferencesFromResource(R.xml.preferences, rootKey)
     }
 
@@ -214,7 +220,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
         update(shouldUpdateAccountUIState = !creatingFragment)
 
         requireView().findViewById<RecyclerView>(R.id.recycler_view)
-            ?.hideInitialScrollBar(viewLifecycleOwner.lifecycleScope)
+            .also {
+                it?.hideInitialScrollBar(viewLifecycleOwner.lifecycleScope)
+                // Prevent disabled settings from having a collapsing animation on open
+                it?.disableHidingAnimation()
+            }
 
         args.preferenceToScrollTo?.let {
             scrollToPreference(it)
@@ -274,9 +284,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
 //            getString(R.string.preferences_credit_cards_2)
 //        }
 
-        val openLinksInAppsSettingsPreference =
-            requirePreference<Preference>(R.string.pref_key_open_links_in_apps)
-        openLinksInAppsSettingsPreference.summary = context?.settings()?.getOpenLinksInAppsString()
+//        val openLinksInAppsSettingsPreference =
+//            requirePreference<Preference>(R.string.pref_key_open_links_in_apps)
+//        openLinksInAppsSettingsPreference.summary = context?.settings()?.getOpenLinksInAppsString()
 
         // Hide "Delete browsing data on quit" when in Private Browsing-only mode
         deleteBrowsingDataPreference.isVisible =
@@ -453,9 +463,9 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 null
             }
 
-            resources.getString(R.string.pref_key_open_links_in_apps) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToOpenLinksInAppsFragment()
-            }
+//            resources.getString(R.string.pref_key_open_links_in_apps) -> {
+//                SettingsFragmentDirections.actionSettingsFragmentToOpenLinksInAppsFragment()
+//            }
 
             resources.getString(R.string.pref_key_sync_debug) -> {
                 SettingsFragmentDirections.actionSettingsFragmentToSyncDebugFragment()
@@ -584,6 +594,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
         setupSearchPreference()
         setupHomepagePreference()
         setupTrackingProtectionPreference()
+        setupConnectionPreferences()
     }
 
     /**
@@ -618,6 +629,10 @@ class SettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
+    private fun RecyclerView.disableHidingAnimation() {
+        this.setItemAnimator(null)
+        this.setLayoutAnimation(null)
+    }
     private fun updateFxAAllowDomesticChinaServerMenu() {
         val settings = requireContext().settings()
         val preferenceAllowDomesticChinaServer =
@@ -752,6 +767,45 @@ class SettingsFragment : PreferenceFragmentCompat() {
                 context.settings().useStrictTrackingProtection -> getString(R.string.tracking_protection_strict)
                 context.settings().useCustomTrackingProtection -> getString(R.string.tracking_protection_custom)
                 else -> null
+            }
+        }
+    }
+
+    internal fun setupConnectionPreferences() {
+        // will be needed for phase2
+        //val torController = requireContext().components.torController
+
+        requirePreference<Preference>(R.string.pref_key_tor_network_settings_bridge_config).apply {
+            setOnPreferenceClickListener {
+                val directions =
+                    SettingsFragmentDirections
+                        .actionSettingsFragmentToTorBridgeConfigFragment()
+                requireView().findNavController().navigate(directions)
+                true
+            }
+        }
+
+        requirePreference<SwitchPreference>(R.string.pref_key_quick_start).apply {
+            isChecked = quickstartViewModel.quickstart().value == true
+            setOnPreferenceClickListener {
+                quickstartViewModel.quickstartSet(
+                    isChecked,
+                )
+                true
+            }
+        }
+
+        requirePreference<Preference>(R.string.pref_key_use_html_connection_ui).apply {
+            onPreferenceChangeListener = object : SharedPreferenceUpdater() {}
+            isVisible = Config.channel != ReleaseChannel.Release
+        }
+
+        requirePreference<Preference>(R.string.pref_key_tor_logs).apply {
+            setOnPreferenceClickListener {
+                val directions =
+                    SettingsFragmentDirections.actionSettingsFragmentToTorLogsFragment()
+                requireView().findNavController().navigate(directions)
+                true
             }
         }
     }
