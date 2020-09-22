@@ -22,6 +22,7 @@ import mozilla.components.support.utils.Browsers
 import mozilla.components.support.utils.BrowsersCache
 import mozilla.components.support.utils.ext.packageManagerCompatHelper
 import java.net.URISyntaxException
+import mozilla.components.support.utils.TorUtils
 
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
 internal const val EXTRA_BROWSER_FALLBACK_URL = "browser_fallback_url"
@@ -260,7 +261,7 @@ class AppLinksUseCases(
                     if (clearTop) {
                         it.flags = it.flags or Intent.FLAG_ACTIVITY_CLEAR_TOP
                     }
-                    context.startActivity(it)
+                    TorUtils.startActivityPrompt(context, it)
                 } catch (e: Exception) {
                     when (e) {
                         is ActivityNotFoundException, is SecurityException, is NullPointerException -> {
