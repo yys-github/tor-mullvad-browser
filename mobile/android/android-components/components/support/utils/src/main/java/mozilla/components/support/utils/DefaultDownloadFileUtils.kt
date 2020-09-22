@@ -28,6 +28,7 @@ import mozilla.components.support.utils.DownloadUtils.findFileInMediaStore
 import mozilla.components.support.utils.DownloadUtils.isDefaultDownloadDirectory
 import mozilla.components.support.utils.DownloadUtils.sanitizeMimeType
 import mozilla.components.support.utils.DownloadUtils.truncateFileName
+import mozilla.components.support.utils.TorUtils
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -102,7 +103,7 @@ class DefaultDownloadFileUtils(
         )
 
         return try {
-            context.startActivity(newIntent)
+            TorUtils.startActivityPrompt(context, newIntent)
             true
         } catch (_: ActivityNotFoundException) {
             false
