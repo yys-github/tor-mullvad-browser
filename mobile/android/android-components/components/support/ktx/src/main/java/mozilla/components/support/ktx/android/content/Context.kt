@@ -47,6 +47,7 @@ import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.ktx.R
 import mozilla.components.support.ktx.android.content.res.resolveAttribute
 import mozilla.components.support.utils.ext.getPackageInfoCompat
+import mozilla.components.support.utils.TorUtils
 import java.io.File
 
 /**
@@ -115,12 +116,11 @@ fun Context.share(text: String, subject: String = getString(R.string.mozac_suppo
             flags = FLAG_ACTIVITY_NEW_TASK
         }
 
-        startActivity(
-            intent.createChooserExcludingCurrentApp(
-                this,
-                getString(R.string.mozac_support_ktx_menu_share_with),
-            ),
-        )
+        val shareIntent = intent.createChooserExcludingCurrentApp(this, getString(R.string.mozac_support_ktx_menu_share_with)).apply {
+            flags = FLAG_ACTIVITY_NEW_TASK
+        }
+
+        TorUtils.startActivityPrompt(this, shareIntent)
         true
     } catch (e: ActivityNotFoundException) {
         Log.log(Log.Priority.WARN, message = "No activity to share to found", throwable = e, tag = "share")
@@ -260,7 +260,7 @@ fun Context.email(
             flags = FLAG_ACTIVITY_NEW_TASK
         }
 
-        startActivity(emailIntent)
+        TorUtils.startActivityPrompt(this, emailIntent)
         true
     } catch (e: ActivityNotFoundException) {
         Logger.warn("No activity found to handle email intent", throwable = e)
@@ -291,7 +291,7 @@ fun Context.call(
             flags = FLAG_ACTIVITY_NEW_TASK
         }
 
-        startActivity(callIntent)
+        TorUtils.startActivityPrompt(this, callIntent)
         true
     } catch (e: ActivityNotFoundException) {
         Logger.warn("No activity found to handle dial intent", throwable = e)
@@ -319,7 +319,7 @@ fun Context.addContact(
             addFlags(FLAG_ACTIVITY_NEW_TASK)
         }
 
-        startActivity(intent)
+        TorUtils.startActivityPrompt(this, intent)
         true
     } catch (e: ActivityNotFoundException) {
         Logger.warn("No activity found to handle dial intent", throwable = e)
