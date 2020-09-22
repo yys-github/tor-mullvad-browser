@@ -31,6 +31,8 @@ import mozilla.components.support.utils.DownloadUtils.truncateFileName
 import java.io.File
 import java.io.FileNotFoundException
 
+import android.content.pm.PackageManager
+
 /**
  * The default implementation of [DownloadFileUtils].
  *
@@ -61,6 +63,8 @@ class DefaultDownloadFileUtils(
         private const val SCHEME_CONTENT = "content://"
         private const val SCHEME_FILE = "file"
         private const val FILE_PROVIDER_EXTENSION = ".feature.downloads.fileprovider"
+
+        const val EXTRA_IS_PDF = "mozilla.components.feature.downloads.extras.IS_PDF"
     }
     override val currentDownloadLocation: String
         get() = downloadLocation()
@@ -102,7 +106,15 @@ class DefaultDownloadFileUtils(
         )
 
         return try {
-            context.startActivity(newIntent)
+            if (newIntent.getBooleanExtra(
+                    EXTRA_IS_PDF,
+                    false,
+                ) || newIntent.type == INTENT_TYPE_PDF
+            ) {
+                context.startActivity(newIntent)
+            } else {
+                TorUtils.startActivityPrompt(context, newIntent)
+            }
             true
         } catch (_: ActivityNotFoundException) {
             false
@@ -117,13 +129,23 @@ class DefaultDownloadFileUtils(
         val shareableUri = findShareableDownloadFileUri(fileName, directoryPath)
 
         return if (shareableUri != null) {
-            Intent(Intent.ACTION_VIEW).apply {
+            val newIntent = Intent(Intent.ACTION_VIEW).apply {
                 setDataAndType(
                     shareableUri,
                     getSafeContentType(fileName, downloadContentType, shareableUri),
                 )
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_GRANT_READ_URI_PERMISSION
             }
+
+            val isPdf: Boolean = (downloadContentType == "application/pdf" ||
+                fileName?.let { File(it).extension } == "pdf")
+
+            if (isPdf) {
+                newIntent.setPackage(context.packageName) // Set it to open in TBA
+                newIntent.putExtra(EXTRA_IS_PDF, true)
+            }
+
+            newIntent
         } else {
             // Fallback to opening the downloads manager if the file URI could not be determined.
             Intent(DownloadManager.ACTION_VIEW_DOWNLOADS).apply {
