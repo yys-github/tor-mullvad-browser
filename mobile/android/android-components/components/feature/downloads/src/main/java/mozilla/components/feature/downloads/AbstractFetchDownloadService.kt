@@ -77,6 +77,7 @@ import mozilla.components.support.ktx.kotlinx.coroutines.throttleLatest
 import mozilla.components.support.utils.DownloadUtils
 import mozilla.components.support.utils.ext.registerReceiverCompat
 import mozilla.components.support.utils.ext.stopForegroundCompat
+import mozilla.components.support.utils.TorUtils
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -997,7 +998,7 @@ abstract class AbstractFetchDownloadService : Service() {
             )
 
             return try {
-                applicationContext.startActivity(newIntent)
+                TorUtils.startActivityPrompt(applicationContext, newIntent)
                 true
             } catch (_: ActivityNotFoundException) {
                 false
