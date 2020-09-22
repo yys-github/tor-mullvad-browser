@@ -141,7 +141,7 @@ class AppLinksFeature(
         isAuthenticationFlow: Boolean,
         fragmentManager: FragmentManager?,
     ): Boolean {
-        val shouldShowPrompt = isPrivate || shouldPrompt()
+        val shouldShowPrompt = true
         return fragmentManager == null || !shouldShowPrompt || isAuthenticationFlow
     }
 
