@@ -36,6 +36,7 @@ dependencies {
     implementation project(':ui-widgets')
 
     implementation libs.kotlin.coroutines
+    implementation project(path: ':support-utils')
 
     testImplementation project(':support-test')
     testImplementation project(':support-test-libstate')
