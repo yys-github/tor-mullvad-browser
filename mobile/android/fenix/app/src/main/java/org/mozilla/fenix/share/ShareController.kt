@@ -38,6 +38,7 @@ import mozilla.components.support.ktx.kotlin.isExtensionUrl
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.SyncAccount
+import mozilla.components.support.utils.TorUtils
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.AppStore
 import org.mozilla.fenix.components.accounts.FenixFxAEntryPoint
@@ -158,7 +159,7 @@ class DefaultShareController(
 
         @Suppress("TooGenericExceptionCaught")
         val result = try {
-            context.startActivity(intent)
+            TorUtils.startActivityPrompt(context, intent)
             ShareController.Result.SUCCESS
         } catch (e: Exception) {
             when (e) {
