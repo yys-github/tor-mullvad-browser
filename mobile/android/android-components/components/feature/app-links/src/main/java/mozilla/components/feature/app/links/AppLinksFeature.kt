@@ -108,7 +108,7 @@ class AppLinksFeature(
         }
 
         @Suppress("ComplexCondition")
-        if (isAuthentication(tab, appIntent) || (!tab.content.private && !shouldPrompt()) ||
+        if (isAuthentication(tab, appIntent) || (true || !tab.content.private && !shouldPrompt()) ||
             fragmentManager == null
         ) {
             doOpenApp()
