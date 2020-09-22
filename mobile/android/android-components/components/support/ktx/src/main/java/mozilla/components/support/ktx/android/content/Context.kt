@@ -55,6 +55,7 @@ import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.ktx.R
 import mozilla.components.support.ktx.android.content.res.resolveAttribute
 import mozilla.components.support.utils.ext.packageManagerCompatHelper
+import mozilla.components.support.utils.TorUtils
 
 /**
  * The (visible) version name of the application, as specified by the <manifest> tag's versionName attribute. E.g.
@@ -121,7 +122,8 @@ fun Context.share(text: String, subject: String = getString(R.string.mozac_suppo
                 flags = FLAG_ACTIVITY_NEW_TASK
             }
 
-        startActivity(
+        TorUtils.startActivityPrompt(
+            this,
             intent.createChooserExcludingCurrentApp(
                 this,
                 getString(R.string.mozac_support_ktx_menu_share_with),
@@ -324,7 +326,7 @@ fun Context.email(
                     flags = FLAG_ACTIVITY_NEW_TASK
                 }
 
-        startActivity(emailIntent)
+        TorUtils.startActivityPrompt(this, emailIntent)
         true
     } catch (e: ActivityNotFoundException) {
         Logger.warn("No activity found to handle email intent", throwable = e)
@@ -358,7 +360,7 @@ fun Context.call(
                     flags = FLAG_ACTIVITY_NEW_TASK
                 }
 
-        startActivity(callIntent)
+        TorUtils.startActivityPrompt(this, callIntent)
         true
     } catch (e: ActivityNotFoundException) {
         Logger.warn("No activity found to handle dial intent", throwable = e)
@@ -385,7 +387,7 @@ fun Context.addContact(address: String): Boolean {
                 addFlags(FLAG_ACTIVITY_NEW_TASK)
             }
 
-        startActivity(intent)
+        TorUtils.startActivityPrompt(this, intent)
         true
     } catch (e: ActivityNotFoundException) {
         Logger.warn("No activity found to handle dial intent", throwable = e)

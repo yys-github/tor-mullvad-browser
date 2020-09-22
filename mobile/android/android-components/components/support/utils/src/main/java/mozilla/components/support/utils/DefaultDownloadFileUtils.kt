@@ -30,6 +30,7 @@ import mozilla.components.support.utils.DownloadUtils.findFileInMediaStore
 import mozilla.components.support.utils.DownloadUtils.isDefaultDownloadDirectory
 import mozilla.components.support.utils.DownloadUtils.sanitizeMimeType
 import mozilla.components.support.utils.DownloadUtils.truncateFileName
+import mozilla.components.support.utils.TorUtils
 
 /**
  * The default implementation of [DownloadFileUtils].
@@ -104,7 +105,7 @@ class DefaultDownloadFileUtils(
             )
 
         return try {
-            context.startActivity(newIntent)
+            TorUtils.startActivityPrompt(context, newIntent)
             true
         } catch (_: ActivityNotFoundException) {
             false
