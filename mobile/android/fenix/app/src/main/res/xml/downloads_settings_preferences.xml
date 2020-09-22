@@ -32,10 +32,4 @@
 
     </androidx.preference.PreferenceCategory>
 
-    <SwitchPreferenceCompat
-        android:defaultValue="false"
-        android:key="@string/pref_key_external_download_manager"
-        android:title="@string/preferences_choose_app_for_downloads"
-        app:iconSpaceReserved="false"
-        app:allowDividerAbove="true" />
 </androidx.preference.PreferenceScreen>

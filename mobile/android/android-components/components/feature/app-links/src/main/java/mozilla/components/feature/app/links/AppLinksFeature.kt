@@ -178,7 +178,7 @@ class AppLinksFeature(
         isPrivate: Boolean,
         isWallet: Boolean,
     ): Boolean {
-        val shouldShowPrompt = isPrivate || isWallet || shouldPrompt()
+        val shouldShowPrompt = true
         return !shouldShowPrompt
     }
 
