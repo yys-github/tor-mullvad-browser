@@ -328,7 +328,7 @@ class SnackbarBinding(
                             subText = state.downloadState.fileName,
                             subTextOverflow = TextOverflow.MiddleEllipsis,
                             duration = context.components.settings.getSnackbarTimeout(hasAction = true).value.toInt(),
-                            action = context.getString(R.string.download_completed_snackbar_action_open),
+                            action = if (state.downloadState.isPdf) context.getString(R.string.download_completed_snackbar_action_open) else null,
                         ) {
                             val fileWasOpened = downloadFileUtils.openFile(
                                 fileName = state.downloadState.fileName,
