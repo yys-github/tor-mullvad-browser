@@ -730,7 +730,7 @@ abstract class BaseBrowserFragment :
                         .getBoolean(
                             context.getPreferenceKey(R.string.pref_key_external_download_manager),
                             false,
-                        )
+                        ) && false
                 },
                 promptsStyling =
                     DownloadsFeature.PromptsStyling(
