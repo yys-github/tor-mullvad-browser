@@ -210,6 +210,7 @@
         <androidx.preference.Preference
             android:key="@string/pref_key_downloads"
             app:iconSpaceReserved="false"
+            app:isPreferenceVisible="false"
             android:title="@string/preferences_downloads_2" />
 
         <androidx.preference.Preference
