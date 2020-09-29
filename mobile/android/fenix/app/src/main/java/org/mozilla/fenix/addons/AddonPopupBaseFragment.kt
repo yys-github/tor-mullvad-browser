@@ -137,7 +137,7 @@ abstract class AddonPopupBaseFragment :
                             .getBoolean(
                                 requireContext().getPreferenceKey(R.string.pref_key_external_download_manager),
                                 false,
-                            )
+                            ) && false
                     },
                     promptsStyling =
                         DownloadsFeature.PromptsStyling(
