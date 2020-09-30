@@ -40,6 +40,9 @@ private const val MAX_SIZE = 256
 internal val GENERAL_SEARCH_ENGINE_IDS = setOf(
     GOOGLE_ID,
     "ddg",
+    "ddg-onion",
+    "startpage",
+    "startpage-onion",
     "bing",
     "baidu",
     "ecosia",
