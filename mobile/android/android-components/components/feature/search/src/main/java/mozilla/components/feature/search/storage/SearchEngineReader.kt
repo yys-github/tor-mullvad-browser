@@ -43,6 +43,9 @@ private const val URL_PREFIX = "https://firefox-settings-attachments.cdn.mozilla
 internal val GENERAL_SEARCH_ENGINE_IDS = setOf(
     GOOGLE_ID,
     "ddg",
+    "ddg-onion",
+    "startpage",
+    "startpage-onion",
     "bing",
     "baidu",
     "ecosia",
