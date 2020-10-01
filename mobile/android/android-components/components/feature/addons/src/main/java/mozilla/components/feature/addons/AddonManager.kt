@@ -556,6 +556,7 @@ class AddonManager(
         val installedAddon = Addon.newFromWebExtension(ext, installedState)
 
         addonUpdater.registerForFutureUpdates(installedAddon.id)
+        setAddonAllowedInPrivateBrowsing(installedAddon, true)
         completePendingAddonAction(pendingAction)
         onSuccess(installedAddon)
     }
