@@ -66,7 +66,7 @@ internal const val PAGE_SIZE = 50
  * is being used by default
  * @property ioDispatcher Coroutine dispatcher for IO operations.
  */
-class AMOAddonsProvider(
+open class AMOAddonsProvider(
     private val context: Context,
     private val client: Client,
     private val serverURL: String = DEFAULT_SERVER_URL,
@@ -244,7 +244,7 @@ class AMOAddonsProvider(
     }
 
     @VisibleForTesting
-    internal fun writeToDiskCache(collectionResponse: String, language: String?) {
+    open fun writeToDiskCache(collectionResponse: String, language: String?) {
         synchronized(diskCacheLock) {
             getCacheFile(context, language, useFallbackFile = false).writeString { collectionResponse }
         }
