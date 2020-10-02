@@ -76,6 +76,7 @@ import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.ktx.kotlin.applyRegistrableDomainSpan
 import mozilla.components.support.ktx.kotlin.getOrigin
 import mozilla.components.support.ktx.kotlin.isContentUrl
+import mozilla.components.support.ktx.kotlin.isOnionUrl
 import mozilla.components.support.ktx.kotlin.isUrl
 import mozilla.components.support.ktx.util.URLStringUtils
 import mozilla.components.support.utils.ClipboardHandler
@@ -1273,19 +1274,26 @@ class BrowserToolbarMiddleware(
                     onClick = object : BrowserToolbarEvent {},
                 )
             } else if (
-                selectedTab.content.securityInfo.isSecure &&
-                selectedTab.trackingProtection.enabled &&
-                !selectedTab.trackingProtection.ignoredOnTrackingProtection
+                selectedTab.content.securityInfo.isSecure
             ) {
-                buildSiteInfoAction(
-                    drawableResId = iconsR.drawable.mozac_ic_shield_checkmark_24,
-                    contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
-                    highlighted = highlight,
-                    onClick = StartPageActions.SiteInfoClicked,
-                )
+                if (selectedTab.content.url.isOnionUrl()) {
+                    buildSiteInfoAction(
+                        drawableResId = iconsR.drawable.mozac_ic_onion,
+                        contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
+                        highlighted = highlight,
+                        onClick = StartPageActions.SiteInfoClicked,
+                    )
+                } else {
+                    buildSiteInfoAction(
+                        drawableResId = iconsR.drawable.mozac_ic_lock_24,
+                        contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
+                        highlighted = highlight,
+                        onClick = StartPageActions.SiteInfoClicked,
+                    )
+                }
             } else {
                 buildSiteInfoAction(
-                    drawableResId = iconsR.drawable.mozac_ic_shield_slash_24,
+                    drawableResId = iconsR.drawable.mozac_ic_lock_slash_critical_24,
                     contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
                     highlighted = highlight,
                     onClick = StartPageActions.SiteInfoClicked,
