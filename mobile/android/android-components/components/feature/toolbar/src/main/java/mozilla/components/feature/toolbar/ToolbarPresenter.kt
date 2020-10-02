@@ -21,6 +21,7 @@ import mozilla.components.concept.toolbar.Toolbar.SiteTrackingProtection
 import mozilla.components.feature.toolbar.internal.URLRenderer
 import mozilla.components.lib.state.ext.flowScoped
 import mozilla.components.support.ktx.kotlin.isContentUrl
+import mozilla.components.support.ktx.kotlin.isOnionUrl
 
 /**
  * Presenter implementation for a toolbar implementation in order to update the toolbar whenever
@@ -75,7 +76,11 @@ class ToolbarPresenter(
             toolbar.siteInfo = if (tab.content.url.isContentUrl()) {
                 Toolbar.SiteInfo.LOCAL_PDF
             } else if (tab.content.securityInfo.isSecure) {
-                Toolbar.SiteInfo.SECURE
+                if (tab.content.url.isOnionUrl()) {
+                    Toolbar.SiteInfo.ONION
+                } else {
+                    Toolbar.SiteInfo.SECURE
+                }
             } else {
                 Toolbar.SiteInfo.INSECURE
             }
