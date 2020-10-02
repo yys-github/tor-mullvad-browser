@@ -48,6 +48,11 @@ internal class SiteInfoIconView @JvmOverloads constructor(
                 View.mergeDrawableStates(drawableState, intArrayOf(R.attr.state_site_secure))
                 drawableState
             }
+            SiteInfo.ONION -> {
+                val drawableState = super.onCreateDrawableState(extraSpace + 1)
+                View.mergeDrawableStates(drawableState, intArrayOf(R.attr.state_site_onion))
+                drawableState
+            }
         }
     }
 }
