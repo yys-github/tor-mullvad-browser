@@ -438,6 +438,7 @@ interface Toolbar : ScrollableToolbar {
         INSECURE,
         SECURE,
         LOCAL_PDF,
+        ONION,
     }
 
     /** Indicates which tracking protection status a site has. */
