@@ -494,6 +494,7 @@ interface Toolbar : ScrollableToolbar {
         INSECURE,
         SECURE,
         LOCAL_PDF,
+        ONION,
     }
 
     /**
