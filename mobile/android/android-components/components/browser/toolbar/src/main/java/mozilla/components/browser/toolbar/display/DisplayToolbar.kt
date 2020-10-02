@@ -496,6 +496,7 @@ internal constructor(
                 Toolbar.SiteInfo.INSECURE -> colors.siteInfoIconInsecure
                 Toolbar.SiteInfo.SECURE -> colors.siteInfoIconSecure
                 Toolbar.SiteInfo.LOCAL_PDF -> colors.siteInfoIconLocalPdf
+                Toolbar.SiteInfo.ONION -> colors.siteInfoIconSecure
             }
         if (color == Color.TRANSPARENT) {
             views.siteInfoIndicator.clearColorFilter()
