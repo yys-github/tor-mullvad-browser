@@ -28,3 +28,6 @@
 
 # Keep code generated from Glean Metrics
 -keep class org.mozilla.fenix.GleanMetrics.** {  *; }
+
+# Workaround for 'already has mapping' r8 issue (https://issuetracker.google.com/issues/140851070)
+-keep class com.google.android.gms.common.internal.BaseGmsClient { *; }
