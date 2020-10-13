@@ -302,12 +302,18 @@ android.applicationVariants.configureEach { variant ->
     def isDebugOrDCD = isDebug || isDataCollectionDisabled
     def useReleaseVersioning = variant.buildType.buildConfigFields['USE_RELEASE_VERSIONING']?.value ?: false
 
+    // When this is set, a-s doesn't attempt to download NIMBUS_FML.
+    if (gradle.mozconfig.substs.NIMBUS_FML) {
+        System.setProperty("nimbusFml",  gradle.mozconfig.substs.NIMBUS_FML)
+    }
+
     project.logger.debug("----------------------------------------------")
     project.logger.debug("Variant name:      " + variant.name)
     project.logger.debug("Application ID:    " + [variant.applicationId, variant.buildType.applicationIdSuffix].findAll().join())
     project.logger.debug("Build type:        " + variant.buildType.name)
     project.logger.debug("Flavor:            " + variant.flavorName)
     project.logger.debug("Telemetry enabled: " + !isDebugOrDCD)
+    project.logger.debug("nimbusFml:         " + providers.gradleProperty("nimbusFml").getOrNull())
 
     if (useReleaseVersioning) {
         // The Google Play Store does not allow multiple APKs for the same app that all have the
@@ -852,14 +858,22 @@ def getSupportedLocales() {
     // This isn't running as a task, instead the array is build when the gradle file is parsed.
     // https://github.com/mozilla-mobile/fenix/issues/14175
     def foundLocales = new StringBuilder()
+    def languageCodes = []
     foundLocales.append("new String[]{")
 
     fileTree("src/main/res").visit { FileVisitDetails details ->
-        if (details.file.path.endsWith("${File.separator}strings.xml")) {
+        if (details.file.path.endsWith("${File.separator}torbrowser_strings.xml")) {
             def languageCode = details.file.parent.tokenize(File.separator).last().replaceAll('values-', '').replaceAll('-r', '-')
             languageCode = (languageCode == "values") ? "en-US" : languageCode
-            foundLocales.append("\"").append(languageCode).append("\"").append(",")
+            languageCodes.add(languageCode)
         }
+    }
+
+    // The order of files in a `FileTree` is not stable, even on a single
+    // computer. Thus we need to sort the `languageCode`s. See: fenix#40083.
+    languageCodes.sort()
+    languageCodes.each {
+        foundLocales.append("\"").append(it).append("\"").append(",")
     }
 
     foundLocales.append("}")
