@@ -137,3 +137,6 @@
 ####################################################################################################
 -keepattributes RuntimeVisibleAnnotations,RuntimeInvisibleAnnotations,RuntimeVisibleTypeAnnotations,RuntimeInvisibleTypeAnnotations,AnnotationDefault,InnerClasses,EnclosingMethod,Signature
 -keep class org.mozilla.experiments.nimbus.internal.** { *; }
+
+# Workaround for 'already has mapping' r8 issue (https://issuetracker.google.com/issues/140851070)
+-keep class com.google.android.gms.common.internal.BaseGmsClient { *; }
