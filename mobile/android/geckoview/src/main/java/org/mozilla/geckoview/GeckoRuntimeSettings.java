@@ -588,6 +588,17 @@ public final class GeckoRuntimeSettings extends RuntimeSettings {
       getSettings().setLargeKeepaliveFactor(factor);
       return this;
     }
+
+    /**
+     * Sets whether we should spoof locale to English for webpages.
+     *
+     * @param flag True if we should spoof locale to English for webpages, false otherwise.
+     * @return This Builder instance.
+     */
+    public @NonNull Builder spoofEnglish(final boolean flag) {
+      getSettings().mSpoofEnglish.set(flag ? 2 : 1);
+      return this;
+    }
   }
 
   private GeckoRuntime mRuntime;
@@ -679,6 +690,7 @@ public final class GeckoRuntimeSettings extends RuntimeSettings {
       new Pref<Boolean>("network.cookie.cookieBehavior.optInPartitioning", false);
   /* package */ final Pref<Boolean> mCookieBehaviorOptInPartitioningPBM =
       new Pref<Boolean>("network.cookie.cookieBehavior.optInPartitioning.pbmode", false);
+  /* package */ final Pref<Integer> mSpoofEnglish = new Pref<>("privacy.spoof_english", 0);
 
   /* package */ int mPreferredColorScheme = COLOR_SCHEME_SYSTEM;
 
@@ -1909,6 +1921,26 @@ public final class GeckoRuntimeSettings extends RuntimeSettings {
   /* protected */ @NonNull
   GeckoRuntimeSettings setProcessCount(final int processCount) {
     mProcessCount.commit(processCount);
+    return this;
+  }
+
+  /**
+   * Get whether we should spoof locale to English for webpages.
+   *
+   * @return Whether we should spoof locale to English for webpages.
+   */
+  public boolean getSpoofEnglish() {
+    return mSpoofEnglish.get() == 2;
+  }
+
+  /**
+   * Set whether we should spoof locale to English for webpages.
+   *
+   * @param flag A flag determining whether we should locale to English for webpages.
+   * @return This GeckoRuntimeSettings instance.
+   */
+  public @NonNull GeckoRuntimeSettings setSpoofEnglish(final boolean flag) {
+    mSpoofEnglish.commit(flag ? 2 : 1);
     return this;
   }
 
