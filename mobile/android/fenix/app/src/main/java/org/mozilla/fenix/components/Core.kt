@@ -195,6 +195,7 @@ class Core(
                 fdlibmMathEnabled = FxNimbus.features.fingerprintingProtection.value().fdlibmMath,
                 emailTrackerBlockingPrivateBrowsing = false,
                 userCharacteristicPingCurrentVersion = FxNimbus.features.userCharacteristics.value().currentVersion,
+                spoofEnglish = context.components.settings.spoofEnglish,
                 getDesktopMode = {
                     store.state.desktopMode
                 },
