@@ -300,6 +300,8 @@ abstract class Settings {
      */
     open var userCharacteristicPingCurrentVersion: Int by UnsupportedSetting()
 
+    open var spoofEnglish: Boolean by UnsupportedSetting()
+
     /**
      * Setting to control whether privacy.baselineFingerprintingProtection is enabled.
      * This is enabled by default in all modes.
@@ -423,6 +425,7 @@ data class DefaultSettings(
     override var queryParameterStrippingStripList: String = "",
     override var emailTrackerBlockingPrivateBrowsing: Boolean = false,
     override var userCharacteristicPingCurrentVersion: Int = 0,
+    override var spoofEnglish: Boolean = false,
     override var webContentIsolationStrategy: WebContentIsolationStrategy? =
         WebContentIsolationStrategy.ISOLATE_HIGH_VALUE,
     override var fetchPriorityEnabled: Boolean = true,
