@@ -201,6 +201,7 @@ class Core(
                 context.components.settings.shouldEnableCookieBannerGlobalRulesSubFrame,
             emailTrackerBlockingPrivateBrowsing = false,
             userCharacteristicPingCurrentVersion = FxNimbus.features.userCharacteristics.value().currentVersion,
+            spoofEnglish = context.components.settings.spoofEnglish,
             getDesktopMode = {
                 store.state.desktopMode
             },
