@@ -1446,6 +1446,15 @@ class GeckoEngine(
             get() = runtime.settings.userCharacteristicPingCurrentVersion
             set(value) { runtime.settings.setUserCharacteristicPingCurrentVersion(value) }
 
+        override var spoofEnglish: Boolean
+            get() = runtime.settings.spoofEnglish
+            set(value) {
+                value.let {
+                    runtime.settings.spoofEnglish = it
+                    localeUpdater.updateValue()
+                }
+            }
+
         override var webContentIsolationStrategy: WebContentIsolationStrategy?
             get() = runtime.settings.webContentIsolationStrategy?.intoWebContentIsolationStrategy()
             set(value) {
@@ -1518,6 +1527,7 @@ class GeckoEngine(
             this.fdlibmMathEnabled = it.fdlibmMathEnabled
             this.emailTrackerBlockingPrivateBrowsing = it.emailTrackerBlockingPrivateBrowsing
             this.userCharacteristicPingCurrentVersion = it.userCharacteristicPingCurrentVersion
+            this.spoofEnglish = it.spoofEnglish
             this.webContentIsolationStrategy = it.webContentIsolationStrategy
             this.fetchPriorityEnabled = it.fetchPriorityEnabled
             this.parallelMarkingEnabled = it.parallelMarkingEnabled
