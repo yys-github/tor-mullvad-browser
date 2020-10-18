@@ -348,6 +348,11 @@ class Settings(private val appContext: Context) : PreferencesHolder {
         default = true,
     )
 
+    var spoofEnglish by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_spoof_english),
+        default = false,
+    )
+
     var defaultSearchEngineName by stringPreference(
         appContext.getPreferenceKey(R.string.pref_key_search_engine),
         default = "",
