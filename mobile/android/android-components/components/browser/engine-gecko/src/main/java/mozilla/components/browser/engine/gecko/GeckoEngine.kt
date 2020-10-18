@@ -1626,6 +1626,15 @@ class GeckoEngine(
                 value?.let { runtime.settings.setBaselineFingerprintingProtectionOverrides(it) }
             }
 
+        override var spoofEnglish: Boolean
+            get() = runtime.settings.spoofEnglish
+            set(value) {
+                value.let {
+                    runtime.settings.spoofEnglish = it
+                    localeUpdater.updateValue()
+                }
+            }
+
         override var webContentIsolationStrategy: WebContentIsolationStrategy?
             get() = runtime.settings.webContentIsolationStrategy?.intoWebContentIsolationStrategy()
             set(value) {
@@ -1720,6 +1729,7 @@ class GeckoEngine(
             this.userCharacteristicPingCurrentVersion = it.userCharacteristicPingCurrentVersion
             this.baselineFingerprintingProtection = it.baselineFingerprintingProtection
             this.baselineFingerprintingProtectionOverrides = it.baselineFingerprintingProtectionOverrides
+            this.spoofEnglish = it.spoofEnglish
             this.webContentIsolationStrategy = it.webContentIsolationStrategy
             this.fetchPriorityEnabled = it.fetchPriorityEnabled
             this.parallelMarkingEnabled = it.parallelMarkingEnabled
