@@ -13,6 +13,7 @@ import mozilla.components.browser.state.store.BrowserStore
 import mozilla.components.support.locale.LocaleManager
 import mozilla.components.support.locale.LocaleUseCases
 import org.mozilla.fenix.nimbus.FxNimbus
+import org.mozilla.fenix.ext.components
 import java.util.Locale
 
 /**
@@ -141,5 +142,9 @@ class DefaultLocaleSettingsController(
         config.setLocale(locale)
         config.setLayoutDirection(locale)
         resources.updateConfiguration(config, resources.displayMetrics)
+        // A slightly hacky way of triggering a `runtime.settings.locales` update,
+        // so that the locales are updated in GeckoView.
+        val spoofEnglish = context.components.core.engine.settings.spoofEnglish
+        context.components.core.engine.settings.spoofEnglish = spoofEnglish
     }
 }
