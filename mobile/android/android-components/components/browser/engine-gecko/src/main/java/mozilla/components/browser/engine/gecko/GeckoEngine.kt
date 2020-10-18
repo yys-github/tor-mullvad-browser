@@ -1351,6 +1351,15 @@ class GeckoEngine(
         override var userCharacteristicPingCurrentVersion: Int
             get() = runtime.settings.userCharacteristicPingCurrentVersion
             set(value) { runtime.settings.setUserCharacteristicPingCurrentVersion(value) }
+
+        override var spoofEnglish: Boolean
+            get() = runtime.settings.spoofEnglish
+            set(value) {
+                value.let {
+                    runtime.settings.spoofEnglish = it
+                    localeUpdater.updateValue()
+                }
+            }
     }.apply {
         defaultSettings?.let {
             this.javascriptEnabled = it.javascriptEnabled
@@ -1382,6 +1391,7 @@ class GeckoEngine(
             this.fdlibmMathEnabled = it.fdlibmMathEnabled
             this.emailTrackerBlockingPrivateBrowsing = it.emailTrackerBlockingPrivateBrowsing
             this.userCharacteristicPingCurrentVersion = it.userCharacteristicPingCurrentVersion
+            this.spoofEnglish = it.spoofEnglish
         }
     }
 

@@ -278,6 +278,8 @@ abstract class Settings {
      * Setting to control the user characteristic ping current version.
      */
     open var userCharacteristicPingCurrentVersion: Int by UnsupportedSetting()
+
+    open var spoofEnglish: Boolean by UnsupportedSetting()
 }
 
 /**
@@ -333,6 +335,7 @@ data class DefaultSettings(
     override var queryParameterStrippingStripList: String = "",
     override var emailTrackerBlockingPrivateBrowsing: Boolean = false,
     override var userCharacteristicPingCurrentVersion: Int = 0,
+    override var spoofEnglish: Boolean = false,
 ) : Settings()
 
 class UnsupportedSetting<T> {
