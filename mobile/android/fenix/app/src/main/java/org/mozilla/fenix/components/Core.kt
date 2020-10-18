@@ -171,6 +171,7 @@ class Core(
             cookieBannerHandlingGlobalRulesSubFrames = context.settings().shouldEnableCookieBannerGlobalRulesSubFrame,
             emailTrackerBlockingPrivateBrowsing = false,
             userCharacteristicPingCurrentVersion = FxNimbus.features.userCharacteristics.value().currentVersion,
+            spoofEnglish = context.settings().spoofEnglish,
         )
 
         // Apply fingerprinting protection overrides if the feature is enabled in Nimbus
