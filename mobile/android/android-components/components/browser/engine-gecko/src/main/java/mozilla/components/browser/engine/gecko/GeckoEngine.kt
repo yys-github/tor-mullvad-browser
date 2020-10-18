@@ -1347,6 +1347,15 @@ class GeckoEngine(
         override var fdlibmMathEnabled: Boolean
             get() = runtime.settings.fdlibmMathEnabled
             set(value) { runtime.settings.setFdlibmMathEnabled(value) }
+
+        override var spoofEnglish: Boolean
+            get() = runtime.settings.spoofEnglish
+            set(value) {
+                value.let {
+                    runtime.settings.spoofEnglish = it
+                    localeUpdater.updateValue()
+                }
+            }
     }.apply {
         defaultSettings?.let {
             this.javascriptEnabled = it.javascriptEnabled
@@ -1377,6 +1386,7 @@ class GeckoEngine(
             this.fingerprintingProtectionOverrides = it.fingerprintingProtectionOverrides
             this.fdlibmMathEnabled = it.fdlibmMathEnabled
             this.emailTrackerBlockingPrivateBrowsing = it.emailTrackerBlockingPrivateBrowsing
+            this.spoofEnglish = it.spoofEnglish
         }
     }
 
