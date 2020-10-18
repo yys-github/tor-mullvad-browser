@@ -615,4 +615,6 @@
 
     <string name="pref_key_extensions_version" translatable="false">pref_key_extensions_version</string>
     <string name="pref_key_https_everywhere_removed" translatable="false">pref_key_https_everywhere_removed</string>
+
+    <string name="pref_key_spoof_english" translatable="false">pref_key_spoof_english</string>
 </resources>
