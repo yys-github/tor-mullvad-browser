@@ -91,6 +91,7 @@ private fun Request.toWebRequest(): WebRequest =
         .referrer(referrerUrl)
         .cacheMode(if (useCaches) CACHE_MODE_DEFAULT else CACHE_MODE_RELOAD)
         .beConservative(conservative)
+        .origin(origin)
         .build()
 
 private fun WebRequest.Builder.addHeadersFrom(request: Request): WebRequest.Builder {
