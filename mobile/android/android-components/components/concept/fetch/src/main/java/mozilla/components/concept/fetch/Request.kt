@@ -52,6 +52,7 @@ data class Request(
     val useCaches: Boolean = true,
     val private: Boolean = false,
     val useOhttp: Boolean = false,
+    val origin: String? = null,
 ) {
     var referrerUrl: String? = null
     var conservative: Boolean = false
