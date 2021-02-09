@@ -36,6 +36,7 @@ DIRS += [
     "contextualidentity",
     "controlcenter",
     "miniwindow",
+    "cryptosafety",
     "customizableui",
     "customkeys",
     "downloads",
