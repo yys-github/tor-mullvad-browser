@@ -36,6 +36,7 @@ DIRS += [
     "contentsharing",
     "contextualidentity",
     "controlcenter",
+    "cryptosafety",
     "customizableui",
     "customkeys",
     "downloads",
