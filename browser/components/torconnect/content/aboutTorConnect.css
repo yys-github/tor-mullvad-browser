@@ -1,0 +1,299 @@
+/* Copyright (c) 2021, The Tor Project, Inc. */
+
+@import url("chrome://global/skin/onion-pattern.css");
+
+body:not(.loaded) {
+  /* Keep blank whilst loading. */
+  display: none;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  --progress-shadow-height: 66px;
+  display: grid;
+  grid-template:
+    "progress progress progress progress progress" minmax(calc(var(--progress-shadow-height) + var(--space-large)), 10vh)
+    ". . breadcrumbs . ." auto
+    ". icon heading . ." auto
+    ". icon text-container . ." auto
+    ". . controls-container . ." auto
+    ". . . . ." minmax(var(--onion-pattern-height), 1fr)
+    / var(--space-large) minmax(max-content, 1fr) minmax(350px, 700px) 1fr var(--space-large);
+}
+
+#breadcrumbs {
+  grid-area: breadcrumbs;
+  display: flex;
+  align-items: center;
+  margin: 0 0 var(--space-xlarge) 0;
+}
+
+#breadcrumbs.hidden {
+  visibility: hidden;
+}
+
+.breadcrumb-item,
+.breadcrumb-separator {
+  display: flex;
+  margin: 0;
+  margin-inline-start: var(--space-large);
+  padding: var(--space-small);
+}
+
+.breadcrumb-item {
+  align-items: center;
+  cursor: pointer;
+  color: var(--text-color);
+  border-radius: var(--border-radius-small);
+}
+
+.breadcrumb-item:hover {
+  color: var(--color-accent-primary);
+  background-color: var(--button-background-color-hover);
+}
+
+.breadcrumb-item:active {
+  color: var(--color-accent-primary-active);
+  background-color: var(--button-background-color-active);
+}
+
+.breadcrumb-separator {
+  width: var(--icon-size);
+  list-style-image: url("chrome://browser/content/torconnect/arrow-right.svg");
+}
+
+.breadcrumb-separator:dir(rtl) {
+  scale: -1 1;
+}
+
+.breadcrumb-icon {
+  display: inline list-item;
+  height: var(--icon-size);
+  list-style-position: inside;
+  -moz-context-properties: fill, stroke;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+.breadcrumb-item.active {
+  color: var(--color-accent-primary);
+}
+
+.breadcrumb-item.disabled,
+.breadcrumb-item.disabled:hover,
+.breadcrumb-item.disabled:active {
+  color: var(--text-color);
+  opacity: 0.4;
+  cursor: default;
+}
+
+.breadcrumb-item.hidden,
+.breadcrumb-separator.hidden {
+  display: none;
+}
+
+#connect-to-tor {
+  margin-inline-start: 0;
+}
+
+#connect-to-tor-icon {
+  list-style-image: url("chrome://browser/content/torconnect/tor-connect.svg");
+}
+
+#connection-assist-icon {
+  list-style-image: url("chrome://browser/content/torconnect/tor-connect-broken.svg");
+}
+
+#try-bridge {
+  cursor: default;
+}
+
+#try-bridge-icon {
+  list-style-image: url("chrome://browser/content/torconnect/bridge.svg");
+}
+
+#locationDropdownLabel.error {
+  color: var(--text-color-error);
+}
+
+form#locationDropdown {
+  width: 240px;
+}
+
+form#locationDropdown select {
+  width: 100%;
+  margin: 0;
+  font-weight: var(--font-weight-bold);
+}
+
+:root {
+  --progressbar-shadow-start: rgba(255, 255, 255, 0.7);
+  --progressbar-gradient: linear-gradient(90deg, #fc00ff 0%, #00dbde 50%, #fc00ff 100%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --progressbar-shadow-start: rgba(28, 27, 34, 0.7);
+  }
+}
+
+#progressBar:not([hidden]) {
+  grid-area: progress;
+  display: grid;
+  --progress-percent: 0%;
+  --progress-animation: progressAnimation 5s ease infinite;
+  --progress-bar-height: 7px;
+}
+
+#progressBar > * {
+  grid-area: 1 / 1;
+}
+
+#progressBarBackground {
+  width: 100%;
+  height: var(--progress-bar-height);
+  background: var(--background-color-box-info);
+}
+
+#progressBackground {
+  z-index: 1;
+  width: var(--progress-percent);
+  height: var(--progress-shadow-height);
+  margin-block-start: -26px;
+  background-image: linear-gradient(var(--progressbar-shadow-start), var(--background-color-canvas) 100%), var(--progressbar-gradient);
+  animation: var(--progress-animation);
+  filter: blur(5px);
+  border-end-end-radius: 33px;
+}
+
+#progressSolid {
+  z-index: 2;
+  width: var(--progress-percent);
+  height: var(--progress-bar-height);
+  border-start-end-radius: calc(var(--progress-bar-height) / 2);
+  border-end-end-radius: calc(var(--progress-bar-height) / 2);
+  background-image: var(--progressbar-gradient);
+  animation: var(--progress-animation);
+}
+
+#progressBackground,
+#progressSolid {
+  background-size: 200% 100%;
+}
+
+@keyframes progressAnimation {
+  0% {
+    background-position: 200%;
+  }
+  50% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
+}
+
+@keyframes progressAnimation {
+  0% {
+    background-position: 200%;
+  }
+  50% {
+    background-position: 100%;
+  }
+  100% {
+    background-position: 0%;
+  }
+}
+
+#quickstartToggle {
+  width: max-content;
+}
+
+#viewLogButton {
+  margin-inline: 0;
+  margin-block-start: var(--space-large);
+}
+
+.torconnect-stage-content:not(.show-stage) {
+  display: none;
+}
+
+.torconnect-stage-content {
+  display: contents;
+}
+
+.torconnect-icon {
+  grid-area: icon;
+  justify-self: end;
+  width: 52px;
+  height: 52px;
+  margin-inline-end: var(--space-xlarge);
+  content: url("chrome://browser/content/torconnect/tor-connect.svg");
+  -moz-context-properties: stroke, fill, fill-opacity;
+  fill-opacity: 1;
+  fill: var(--icon-color);
+  stroke: var(--icon-color);
+  /* Make non-interactive (non-draggable). */
+  pointer-events: none;
+}
+
+.torconnect-icon.offline-icon {
+  content: url("chrome://browser/content/torconnect/connection-failure.svg");
+}
+
+.torconnect-icon.assist-icon {
+  content: url("chrome://browser/content/torconnect/tor-connect-broken.svg");
+}
+
+.torconnect-icon.location-icon {
+  content: url("chrome://browser/content/torconnect/connection-location.svg");
+  stroke: var(--icon-color-warning);
+}
+
+.torconnect-heading {
+  grid-area: heading;
+  /* Do not show the focus outline. */
+  outline: none;
+  font-size: var(--font-size-xxxlarge);
+  margin: 0;
+  margin-block-end: var(--space-xxlarge);
+}
+
+.torconnect-text-container {
+  grid-area: text-container;
+}
+
+.torconnect-text-container p {
+  margin: 0;
+}
+
+.torconnect-text-container > *:not(:last-child) {
+  margin-block-end: var(--space-large);
+}
+
+.torconnect-controls-container {
+  grid-area: controls-container;
+  margin-block: var(--space-xlarge) var(--space-large);
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: end;
+  align-items: center;
+  /* Gap between children and rows. */
+  gap: var(--space-small) var(--space-small);
+}
+
+.torconnect-controls-container > * {
+  flex: 0 0 max-content;
+  margin: 0;
+}
+
+/* Temporary hacks for the connectPageContainer. */
+#connectPageContainer .torconnect-text-container > *:last-child {
+  margin-block-end: var(--space-large);
+}
+
+#connectPageContainer .torconnect-controls-container {
+  margin-block-start: calc(var(--space-xlarge) - var(--space-large));
+}
