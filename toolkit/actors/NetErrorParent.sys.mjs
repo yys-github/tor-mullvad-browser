@@ -15,6 +15,7 @@ const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
   BrowserUtils: "resource://gre/modules/BrowserUtils.sys.mjs",
   HomePage: "resource:///modules/HomePage.sys.mjs",
+  TorConnect: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
   SearchService: "moz-src:///toolkit/components/search/SearchService.sys.mjs",
   SearchUIUtils: "moz-src:///browser/components/search/SearchUIUtils.sys.mjs",
   SEARCH_CTA_ACTIONS: "resource://gre/modules/URLKeywordAnalyzer.sys.mjs",
@@ -634,6 +635,8 @@ export class NetErrorParent extends EscapablePageParent {
       case "SearchCTA:SearchAborted":
         this.recordSearchCTAAbort();
         break;
+      case "ShouldShowTorConnect":
+        return lazy.TorConnect.shouldShowTorConnect;
     }
     return undefined;
   }

@@ -78,6 +78,7 @@ DIRS += [
     "taskbartabs",
     "textrecognition",
     "topsites",
+    "torconnect",
     "translations",
     "uitour",
     "urlbar",
