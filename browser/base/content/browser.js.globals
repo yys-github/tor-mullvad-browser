@@ -272,5 +272,10 @@
   "NewIdentityButton",
   "TorUIUtils",
   "TorDomainIsolator",
-  "gTorCircuitPanel"
+  "gTorCircuitPanel",
+  "TorConnect",
+  "TorConnectStage",
+  "TorConnectTopics",
+  "gTorConnectUrlbarButton",
+  "gTorConnectTitlebarStatus"
 ]
