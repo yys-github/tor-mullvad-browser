@@ -6042,6 +6042,9 @@ void nsGlobalWindowOuter::CloseOuter(bool aTrustedCaller) {
         nsDocShell::Cast(mDocShell)->GetSessionHistory();
 
     if (!StringBeginsWith(url, u"about:neterror"_ns) &&
+        // we want about:torconnect pages to be able to close themselves after
+        // bootstrap
+        !StringBeginsWith(url, u"about:torconnect"_ns) &&
         !mBrowsingContext->GetTopLevelCreatedByWebContent() &&
         !aTrustedCaller && csh && csh->Count() > 1) {
       bool allowClose =

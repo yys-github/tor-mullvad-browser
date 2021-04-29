@@ -567,6 +567,20 @@ let JSWINDOWACTORS = {
     messageManagerGroups: ["browsers"],
   },
 
+  TorConnect: {
+    parent: {
+      esModuleURI: "resource://gre/actors/TorConnectParent.sys.mjs",
+    },
+    child: {
+      esModuleURI: "resource://gre/actors/TorConnectChild.sys.mjs",
+      events: {
+        DOMWindowCreated: {},
+      },
+    },
+
+    matches: ["about:torconnect", "about:torconnect?*"],
+  },
+
   // This actor is available for all pages that one can
   // view the source of, however it won't be created until a
   // request to view the source is made via the message
