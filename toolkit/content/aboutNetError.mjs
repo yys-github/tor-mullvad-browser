@@ -304,7 +304,7 @@ function setResponseStatus(shortDesc) {
 }
 
 // Returns pageTitleId, bodyTitle, bodyTitleId, and longDesc as an object
-function initTitleAndBodyIds(baseURL, isTRROnlyFailure) {
+async function initTitleAndBodyIds(baseURL, isTRROnlyFailure) {
   let bodyTitle = document.querySelector(".title-text");
   let longDesc = document.getElementById("errorLongDesc");
   const tryAgain = document.getElementById("netErrorButtonContainer");
@@ -423,12 +423,22 @@ function initTitleAndBodyIds(baseURL, isTRROnlyFailure) {
       learnMore.hidden = false;
       document.body.className = "certerror";
       break;
+
+    case "proxyConnectFailure":
+      if (await RPMSendQuery("ShouldShowTorConnect")) {
+        // pass orginal destination as redirect param
+        const encodedRedirect = encodeURIComponent(document.location.href);
+        document.location.replace(
+          `about:torconnect?redirect=${encodedRedirect}`
+        );
+      }
+      break;
   }
 
   return { pageTitleId, bodyTitle, bodyTitleId, longDesc };
 }
 
-function initPage() {
+async function initPage() {
   // We show an offline support page in case of a system-wide error,
   // when a user cannot connect to the internet and access the SUMO website.
   // For example, clock error, which causes certerrors across the web or
@@ -496,10 +506,8 @@ function initPage() {
   tryAgain.hidden = false;
   const learnMoreLink = document.getElementById("learnMoreLink");
   learnMoreLink.setAttribute("href", baseURL + "connection-not-secure");
-  let { pageTitleId, bodyTitle, bodyTitleId, longDesc } = initTitleAndBodyIds(
-    baseURL,
-    isTRROnlyFailure
-  );
+  let { pageTitleId, bodyTitle, bodyTitleId, longDesc } =
+    await initTitleAndBodyIds(baseURL, isTRROnlyFailure);
 
   // We can handle the offline page separately.
   if (noConnectivity) {
