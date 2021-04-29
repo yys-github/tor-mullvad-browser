@@ -16,6 +16,7 @@ const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
   BrowserUtils: "resource://gre/modules/BrowserUtils.sys.mjs",
   HomePage: "resource:///modules/HomePage.sys.mjs",
+  TorConnect: "resource://gre/modules/TorConnect.sys.mjs",
 });
 
 class CaptivePortalObserver {
@@ -274,6 +275,9 @@ export class NetErrorParent extends EscapablePageParent {
         let win = browser.ownerGlobal;
         win.openPreferences("privacy-doh");
         break;
+      case "ShouldShowTorConnect":
+        return lazy.TorConnect.shouldShowTorConnect;
     }
+    return undefined;
   }
 }
