@@ -1,0 +1,190 @@
+<!-- Copyright (c) 2021, The Tor Project, Inc. -->
+<!doctype html>
+<html>
+  <head>
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src chrome:; object-src 'none'"
+    />
+    <title data-l10n-id="tor-connect-page-title"></title>
+
+    <link rel="stylesheet" href="chrome://global/skin/in-content/common.css" />
+    <link rel="stylesheet" href="chrome://global/skin/tor-common.css" />
+    <link
+      rel="stylesheet"
+      href="chrome://browser/content/torconnect/aboutTorConnect.css"
+    />
+
+    <link rel="localization" href="branding/brand.ftl" />
+    <link rel="localization" href="toolkit/global/tor-browser.ftl" />
+    <link rel="localization" href="toolkit/global/mozSupportLink.ftl" />
+
+    <script
+      type="module"
+      src="chrome://global/content/elements/moz-button.mjs"
+    ></script>
+    <script
+      type="module"
+      src="chrome://global/content/elements/moz-toggle.mjs"
+    ></script>
+    <script
+      type="module"
+      src="chrome://global/content/elements/moz-support-link.mjs"
+    ></script>
+  </head>
+  <body class="onion-pattern-background">
+    <div
+      id="progressBar"
+      role="progressbar"
+      aria-valuenow="0"
+      aria-valuemin="0"
+      aria-valuemax="100"
+      aria-labelledby="tor-connect-heading"
+      hidden="hidden"
+    >
+      <div id="progressSolid"></div>
+      <div id="progressBackground"></div>
+      <div id="progressBarBackground"></div>
+    </div>
+    <nav id="breadcrumbs">
+      <ol>
+        <li id="connect-to-tor">
+          <div class="breadcrumb-item" role="link" tabindex="0">
+            <span id="connect-to-tor-icon" class="breadcrumb-icon"></span>
+            <span class="breadcrumb-label"></span>
+          </div>
+        </li>
+        <li id="connection-assist">
+          <div class="breadcrumb-separator breadcrumb-icon"></div>
+          <div class="breadcrumb-item" role="link" tabindex="0">
+            <span id="connection-assist-icon" class="breadcrumb-icon"></span>
+            <span class="breadcrumb-label"></span>
+          </div>
+        </li>
+        <li id="try-bridge">
+          <div class="breadcrumb-separator breadcrumb-icon"></div>
+          <div class="breadcrumb-item" role="link" tabindex="0">
+            <span id="try-bridge-icon" class="breadcrumb-icon"></span>
+            <span class="breadcrumb-label"></span>
+          </div>
+        </li>
+      </ol>
+    </nav>
+    <div class="torconnect-stage-content" data-stage-name="ProviderStopped">
+      <img class="torconnect-icon assist-icon" alt="" />
+      <h1
+        class="torconnect-heading"
+        tabindex="-1"
+        data-l10n-id="tor-connect-tor-not-working-heading"
+      ></h1>
+      <div class="torconnect-text-container">
+        <p data-l10n-id="tor-connect-tor-not-working-intro"></p>
+        <p
+          class="torconnect-list-intro"
+          data-l10n-id="tor-connect-tor-not-working-cause-intro"
+        ></p>
+        <ul>
+          <li
+            class="provider-config-debugging"
+            data-l10n-id="tor-connect-tor-not-working-cause-applications"
+          ></li>
+          <li
+            class="provider-config-debugging"
+            data-l10n-id="tor-connect-tor-not-working-cause-files"
+          ></li>
+          <li
+            class="provider-config-debugging"
+            data-l10n-id="tor-connect-tor-not-working-cause-other"
+          ></li>
+          <li
+            class="provider-generic-debugging"
+            data-l10n-id="tor-connect-tor-not-working-cause-generic"
+          ></li>
+        </ul>
+        <p
+          class="torconnect-list-intro"
+          data-l10n-id="tor-connect-tor-not-working-resolve-intro"
+        ></p>
+        <ul>
+          <li
+            class="provider-config-debugging"
+            data-l10n-id="tor-connect-tor-not-working-resolve-applications"
+          ></li>
+          <li
+            class="provider-config-debugging"
+            data-l10n-id="tor-connect-tor-not-working-resolve-files"
+          ></li>
+          <li
+            class="provider-config-debugging"
+            data-l10n-id="tor-connect-tor-not-working-resolve-restart-long"
+          ></li>
+          <li
+            class="provider-generic-debugging"
+            data-l10n-id="tor-connect-tor-not-working-resolve-restart-short"
+          ></li>
+        </ul>
+        <p data-l10n-id="tor-connect-tor-not-working-support">
+          <a
+            is="moz-support-link"
+            data-l10n-name="support-link"
+            support-page="tor-manual:get-in-touch__bug-or-feedback"
+          >
+          </a>
+        </p>
+        <a
+          is="moz-support-link"
+          support-page="tor-manual:encountering-issues__troubleshooting"
+        ></a>
+      </div>
+      <div class="torconnect-controls-container">
+        <div id="restart-provider-failed" role="alert">
+          <img id="restart-provider-failed-icon" alt="" />
+          <span
+            data-l10n-id="tor-connect-tor-not-working-restarting-failed"
+          ></span>
+        </div>
+        <moz-button
+          id="restart-provider-button"
+          type="primary"
+          data-l10n-id="tor-connect-tor-not-working-restart-button"
+        ></moz-button>
+      </div>
+    </div>
+    <div id="connectPageContainer" class="torconnect-stage-content">
+      <img id="tor-connect-icon" class="torconnect-icon" alt="" />
+      <h1
+        id="tor-connect-heading"
+        class="torconnect-heading"
+        tabindex="-1"
+      ></h1>
+      <div class="torconnect-text-container">
+        <div id="connectLongContent">
+          <p id="connectLongContentText"></p>
+        </div>
+        <div id="connectShortDesc">
+          <p id="connectShortDescText"></p>
+        </div>
+
+        <button id="viewLogButton"></button>
+
+        <div id="quickstartContainer">
+          <moz-toggle id="quickstartToggle"></moz-toggle>
+        </div>
+      </div>
+      <div class="torconnect-controls-container">
+        <button id="restartButton" hidden="true"></button>
+        <button id="configureButton" hidden="true"></button>
+        <button id="cancelButton" hidden="true"></button>
+        <button id="connectButton" hidden="true" class="tor-button"></button>
+        <label id="locationDropdownLabel" for="regions-select"></label>
+        <select id="regions-select" hidden="hidden">
+          <option id="first-region-option"></option>
+          <optgroup id="frequent-regions-option-group"></optgroup>
+          <optgroup id="full-regions-option-group"></optgroup>
+        </select>
+        <button id="tryBridgeButton" hidden="true" class="tor-button"></button>
+      </div>
+    </div>
+    <script src="chrome://browser/content/torconnect/aboutTorConnect.js"></script>
+  </body>
+</html>
