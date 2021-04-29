@@ -115,6 +115,7 @@
 
     <toolbarbutton class="content-analysis-indicator toolbarbutton-1 content-analysis-indicator-icon"/>
 
+#include ../../../toolkit/components/torconnect/content/torConnectTitlebarStatus.inc.xhtml
 #include titlebar-items.inc.xhtml
 
   </toolbar>
@@ -437,6 +438,13 @@
               <image id="star-button"
                       class="urlbar-icon"/>
             </hbox>
+
+            <hbox id="tor-connect-urlbar-button"
+                  role="button"
+                  class="tor-button tor-urlbar-button"
+                  hidden="true">
+              <label id="tor-connect-urlbar-button-label"/>
+            </hbox>
           </hbox>
         </html:moz-urlbar>
         <toolbartabstop/>
@@ -539,6 +547,7 @@
     <hbox class="titlebar-spacer" type="post-tabs"/>
 #include private-browsing-indicator.inc.xhtml
     <toolbarbutton class="content-analysis-indicator toolbarbutton-1 content-analysis-indicator-icon"/>
+#include ../../../toolkit/components/torconnect/content/torConnectTitlebarStatus.inc.xhtml
 #include titlebar-items.inc.xhtml
   </toolbar>
 
