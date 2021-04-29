@@ -4,6 +4,8 @@
 
 import { EscapablePageParent } from "resource://gre/actors/NetErrorParent.sys.mjs";
 
+import { TorConnect } from "resource://gre/modules/TorConnect.sys.mjs";
+
 export class AboutHttpsOnlyErrorParent extends EscapablePageParent {
   get browser() {
     return this.browsingContext.top.embedderElement;
@@ -14,6 +16,9 @@ export class AboutHttpsOnlyErrorParent extends EscapablePageParent {
       case "goBack":
         this.leaveErrorPage(this.browser);
         break;
+      case "ShouldShowTorConnect":
+        return TorConnect.shouldShowTorConnect;
     }
+    return undefined;
   }
 }
