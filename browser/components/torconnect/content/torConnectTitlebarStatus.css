@@ -1,0 +1,89 @@
+.tor-connect-titlebar-status:not([hidden]) {
+  display: flex;
+  align-items: center;
+  margin-inline: var(--space-small);
+
+  #navigator-toolbox[tabs-hidden] #TabsToolbar > & {
+    /* Hide in the tabs bar when the tabs bar is hidden. E.g. when using
+     * vertical tabs. Should be shown in the #nav-bar instead.
+     * See tor-browser#44101. */
+    display: none;
+  }
+
+  #navigator-toolbox:not([tabs-hidden]) #nav-bar > & {
+    /* Hide in the nav bar when the (horizontal) tabs bar is visible. */
+    display: none;
+  }
+}
+
+.tor-connect-titlebar-status-label {
+  margin-inline: var(--space-small);
+  white-space: nowrap;
+}
+
+.tor-connect-titlebar-status img {
+  -moz-context-properties: fill, stroke;
+  fill: var(--icon-color);
+  stroke: var(--icon-color);
+  width: var(--icon-size);
+  height: var(--icon-size);
+  object-fit: none;
+  --num-animation-steps: 8;
+  /* First frame has no offset. */
+  --tor-not-connected-offset: 0;
+  /* Each frame/step is offset by 20px from the previous. */
+  --tor-connected-offset: calc(-20px * var(--num-animation-steps));
+  object-position: var(--tor-not-connected-offset);
+}
+
+.tor-connect-titlebar-status.tor-connect-status-potentially-blocked img {
+  /* NOTE: context-stroke is only used for the first "frame" for the slash. When
+   * we assign the potentially-blocked class, we do *not* expect to be connected
+   * at the same time, so we only expect this first frame to be visible in this
+   * state. */
+  stroke: var(--icon-color-critical);
+}
+
+.tor-connect-titlebar-status.tor-connect-status-connected img {
+  object-position: var(--tor-connected-offset);
+}
+
+@media not ((prefers-contrast) or (forced-colors)) {
+  /* Make the connected text and icon purple. */
+  .tor-connect-titlebar-status.tor-connect-status-connected {
+    color: var(--text-color-tor);
+  }
+
+  .tor-connect-titlebar-status.tor-connect-status-connected img {
+    fill: var(--text-color-tor);
+    stroke: var(--text-color-tor);
+  }
+}
+
+@keyframes onion-not-connected-to-connected {
+  from {
+    object-position: var(--tor-not-connected-offset);
+  }
+
+  to {
+    object-position: var(--tor-connected-offset);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tor-connect-titlebar-status.tor-connect-status-connected.tor-connect-status-animate-transition {
+    transition: color 1000ms;
+  }
+
+  .tor-connect-titlebar-status.tor-connect-status-connected.tor-connect-status-animate-transition img {
+    transition:
+      fill 1000ms,
+      stroke 1000ms;
+    animation-name: onion-not-connected-to-connected;
+    animation-delay: 200ms;
+    animation-fill-mode: both;
+    /* Run animation at 60 frames-per-second. */
+    animation-duration: calc(var(--num-animation-steps) * 1000ms / 60);
+    animation-timing-function: steps(var(--num-animation-steps));
+  }
+}
