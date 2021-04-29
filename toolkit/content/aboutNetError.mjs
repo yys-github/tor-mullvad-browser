@@ -1294,6 +1294,24 @@ async function ensureCertErrorCode() {
     i++;
     errorCode = await retryCertErrorCode();
   }
+
+  if (!errorCode) {
+    errorCode = gErrorCode;
+  }
+  if (errorCode === "proxyConnectFailure") {
+    let inIframe;
+    try {
+      inIframe = window.self !== window.top;
+    } catch {
+      // Assume a frame if access to top is blocked.
+      inIframe = true;
+    }
+    if (!inIframe && (await RPMSendQuery("ShouldShowTorConnect"))) {
+      // pass orginal destination as redirect param
+      const encodedRedirect = encodeURIComponent(document.location.href);
+      document.location.replace(`about:torconnect?redirect=${encodedRedirect}`);
+    }
+  }
 }
 
 async function main() {
