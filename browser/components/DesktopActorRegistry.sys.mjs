@@ -824,6 +824,22 @@ let JSWINDOWACTORS = {
     safeForUntrustedWebProcess: true,
   },
 
+  TorConnect: {
+    parent: {
+      esModuleURI:
+        "moz-src:///browser/components/torconnect/TorConnectParent.sys.mjs",
+    },
+    child: {
+      esModuleURI:
+        "moz-src:///browser/components/torconnect/TorConnectChild.sys.mjs",
+      events: {
+        DOMWindowCreated: {},
+      },
+    },
+
+    matches: ["about:torconnect", "about:torconnect?*"],
+  },
+
   UITour: {
     parent: {
       esModuleURI: "moz-src:///browser/components/uitour/UITourParent.sys.mjs",

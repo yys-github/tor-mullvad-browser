@@ -37,6 +37,7 @@
   skin/classic/browser/smartwindowGroupTabs.css                (../shared/smartwindowGroupTabs.css)
   skin/classic/browser/toolbarbuttons.css                      (../shared/toolbarbuttons.css)
   skin/classic/browser/toolbarbutton-icons.css                 (../shared/toolbarbutton-icons.css)
+  skin/classic/browser/tor-urlbar-button.css                   (../shared/tor-urlbar-button.css)
   skin/classic/browser/urlbar/badge-bookmark.svg               (../shared/urlbar/icons/badge-bookmark.svg)
   skin/classic/browser/urlbar/badge-history.svg                (../shared/urlbar/icons/badge-history.svg)
   skin/classic/browser/urlbar/badge-pin.svg                    (../shared/urlbar/icons/badge-pin.svg)

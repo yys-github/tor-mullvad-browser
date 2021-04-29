@@ -106,6 +106,11 @@ ChromeUtils.defineESModuleGetters(this, {
   ToolbarDropHandler:
     "moz-src:///browser/components/customizableui/ToolbarDropHandler.sys.mjs",
   ToolbarIconColor: "moz-src:///browser/themes/ToolbarIconColor.sys.mjs",
+  TorConnect: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  TorConnectStage: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  TorConnectTopics: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  TorConnectParent:
+    "moz-src:///browser/components/torconnect/TorConnectParent.sys.mjs",
   TorDomainIsolator:
     "moz-src:///toolkit/components/tor-launcher/TorDomainIsolator.sys.mjs",
   TorUIUtils: "moz-src:///browser/modules/TorUIUtils.sys.mjs",
@@ -316,6 +321,16 @@ XPCOMUtils.defineLazyScriptGetter(
   this,
   "gProfiles",
   "chrome://browser/content/browser-profiles.js"
+);
+XPCOMUtils.defineLazyScriptGetter(
+  this,
+  ["gTorConnectUrlbarButton"],
+  "chrome://browser/content/torconnect/torConnectUrlbarButton.js"
+);
+XPCOMUtils.defineLazyScriptGetter(
+  this,
+  ["gTorConnectTitlebarStatus"],
+  "chrome://browser/content/torconnect/torConnectTitlebarStatus.js"
 );
 XPCOMUtils.defineLazyScriptGetter(
   this,
@@ -738,6 +753,7 @@ var gPageIcons = {
 };
 
 var gInitialPages = [
+  "about:torconnect",
   "about:blank",
   "about:home",
   "about:firefoxview",
