@@ -35,6 +35,7 @@
   skin/classic/browser/smartbar.css                            (../shared/smartbar.css)
   skin/classic/browser/toolbarbuttons.css                      (../shared/toolbarbuttons.css)
   skin/classic/browser/toolbarbutton-icons.css                 (../shared/toolbarbutton-icons.css)
+  skin/classic/browser/tor-urlbar-button.css                   (../shared/tor-urlbar-button.css)
   skin/classic/browser/urlbar/dynamic-results.css              (../shared/urlbar/dynamic-results.css)
   skin/classic/browser/urlbar/flight-airline.svg               (../shared/urlbar/icons/flight-airline.svg)
   skin/classic/browser/urlbar/flight-inflight-progress-0.svg   (../shared/urlbar/icons/flight-inflight-progress-0.svg)
