@@ -162,6 +162,11 @@ static const RedirEntry kRedirMap[] = {
          nsIAboutModule::IS_SECURE_CHROME_UI | nsIAboutModule::ALLOW_SCRIPT |
          nsIAboutModule::URI_MUST_LOAD_IN_CHILD |
          nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS},
+    {"torconnect", "chrome://browser/content/torconnect/aboutTorConnect.html",
+     nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
+         nsIAboutModule::URI_CAN_LOAD_IN_CHILD | nsIAboutModule::ALLOW_SCRIPT |
+         nsIAboutModule::HIDE_FROM_ABOUTABOUT |
+         nsIAboutModule::IS_SECURE_CHROME_UI},
 };
 
 static nsAutoCString GetAboutModuleName(nsIURI* aURI) {
