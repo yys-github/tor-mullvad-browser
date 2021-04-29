@@ -74,6 +74,7 @@ export let RemotePageAccessManager = {
       RPMAddMessageListener: ["WWWReachable"],
       RPMTryPingSecureWWWLink: ["*"],
       RPMOpenSecureWWWLink: ["*"],
+      RPMSendQuery: ["ShouldShowTorConnect"],
     },
     "about:certificate": {
       RPMSendQuery: ["getCertificates"],
@@ -142,7 +143,7 @@ export let RemotePageAccessManager = {
       RPMIsSiteSpecificTRRError: ["*"],
       RPMSetTRRDisabledLoadFlags: ["*"],
       RPMShowOSXLocalNetworkPermissionWarning: ["*"],
-      RPMSendQuery: ["Browser:AddTRRExcludedDomain"],
+      RPMSendQuery: ["Browser:AddTRRExcludedDomain", "ShouldShowTorConnect"],
       RPMGetIntPref: ["network.trr.mode", "security.dialog_enable_delay"],
     },
     "about:newtab": {
@@ -279,6 +280,28 @@ export let RemotePageAccessManager = {
       RPMSendAsyncMessage: ["Load", "closeTab", "restoreTab", "restoreAll"],
       RPMAddMessageListener: ["*"],
       RPMRemoveMessageListener: ["*"],
+    },
+    "about:torconnect": {
+      RPMAddMessageListener: [
+        "torconnect:stage-change",
+        "torconnect:provider-status-change",
+        "torconnect:bootstrap-progress",
+        "torconnect:quickstart-change",
+        "torconnect:region-names-change",
+      ],
+      RPMSendAsyncMessage: [
+        "torconnect:open-tor-preferences",
+        "torconnect:begin-bootstrapping",
+        "torconnect:cancel-bootstrapping",
+        "torconnect:set-quickstart",
+        "torconnect:view-tor-logs",
+        "torconnect:restart",
+        "torconnect:restart-provider",
+        "torconnect:start-again",
+        "torconnect:choose-region",
+      ],
+      RPMSendQuery: ["torconnect:get-init-args", "torconnect:get-regions"],
+      RPMGetFormatURLPref: ["app.support.baseURL"],
     },
     "about:welcome": {
       RPMSendAsyncMessage: ["ActivityStream:ContentToMain"],
