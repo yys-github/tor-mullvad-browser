@@ -133,6 +133,8 @@ export default [
       "toolkit/components/printing/content/printUtils.js",
       "browser/components/newidentity/content/newidentity.js",
       "browser/components/torcircuit/content/torCircuitPanel.js",
+      "browser/components/torconnect/content/torConnectTitlebarStatus.js",
+      "browser/components/torconnect/content/torConnectUrlbarButton.js",
     ],
     languageOptions: {
       globals: mozilla.environments["browser-window"].globals,
@@ -387,6 +389,7 @@ export default [
       "toolkit/content/aboutNetError.mjs",
       "toolkit/content/aboutNetErrorHelpers.mjs",
       "toolkit/content/net-error-card.mjs",
+      "browser/components/torconnect/content/aboutTorConnect.js",
     ],
     languageOptions: { globals: mozilla.environments["remote-page"].globals },
   },
