@@ -218,7 +218,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
         )
 
         // Set the metric configuration from Nimbus.
-        Glean.applyServerKnobsConfig(FxNimbus.features.glean.value().metricsEnabled.toString())
+        // Glean.applyServerKnobsConfig(FxNimbus.features.glean.value().metricsEnabled.toString())
 
         Glean.initialize(
             applicationContext = this,
@@ -250,7 +250,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
         //
         // We can initialize Nimbus before Glean because Glean will queue messages
         // before it's initialized.
-        initializeNimbus()
+        // initializeNimbus()
 
         ProfilerMarkerFactProcessor.create { components.core.engine.profiler }.register()
 
