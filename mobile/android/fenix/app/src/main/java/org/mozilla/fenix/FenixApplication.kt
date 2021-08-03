@@ -217,7 +217,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
         //
         // We can initialize Nimbus before Glean because Glean will queue messages
         // before it's initialized.
-        initializeNimbus()
+        // initializeNimbus()
 
         ProfilerMarkerFactProcessor.create { components.core.engine.profiler }.register()
 
