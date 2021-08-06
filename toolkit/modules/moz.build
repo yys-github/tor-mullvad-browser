@@ -214,10 +214,15 @@ EXTRA_JS_MODULES += [
 ]
 
 MOZ_SRC_FILES += [
+    "BridgeDB.sys.mjs",
     "ColorPickerPanel.sys.mjs",
     "DateTimePickerPanel.sys.mjs",
+    "DomainFrontedRequests.sys.mjs",
     "FaviconUtils.sys.mjs",
     "InputPickerPanelCommon.sys.mjs",
+    "Moat.sys.mjs",
+    "TorConnect.sys.mjs",
+    "TorSettings.sys.mjs",
     "TorStrings.sys.mjs",
 ]
 
