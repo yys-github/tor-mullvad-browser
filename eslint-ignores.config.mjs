@@ -315,4 +315,6 @@ export default [
   "browser/app/profile/001-base-profile.js",
   "browser/app/profile/000-tor-browser.js",
   "mobile/android/app/000-tor-browser-android.js",
+  "toolkit/content/pt_config.json",
+  "toolkit/content/moat_contries_dev_build.json",
 ];
