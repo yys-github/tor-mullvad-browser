@@ -226,3 +226,10 @@ toolkit.jar:
    content/global/vendor/react-transition-group.js (vendor/react/react-transition-group.js)
    content/global/vendor/redux.js (vendor/react/redux.js)
    content/global/vendor/react-redux.js (vendor/react/react-redux.js)
+
+   # The pt_config.json content should be replaced in the omni.ja in
+   # tor-browser-build. See tor-browser#42343.
+   content/global/pt_config.json               (pt_config.json)
+   # The moat_countries.json content should be replaced in the omni.ja in
+   # tor-browser-build. See tor-browser#43463.
+   content/global/moat_countries.json          (moat_countries_dev_build.json)
