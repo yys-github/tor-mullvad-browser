@@ -222,6 +222,7 @@ MOZ_SRC_FILES += [
     "FaviconUtils.sys.mjs",
     "InputPickerPanelCommon.sys.mjs",
     "Moat.sys.mjs",
+    "QRCode.sys.mjs",
     "TorAndroidIntegration.sys.mjs",
     "TorConnect.sys.mjs",
     "TorSettings.sys.mjs",
