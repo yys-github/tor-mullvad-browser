@@ -42,6 +42,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   LoginHelper: "resource://gre/modules/LoginHelper.sys.mjs",
   MigrationUtils: "resource:///modules/MigrationUtils.sys.mjs",
   NimbusFeatures: "resource://nimbus/ExperimentAPI.sys.mjs",
+  OnionAliasStore: "resource:///modules/OnionAliasStore.sys.mjs",
   OnboardingMessageProvider:
     "resource:///modules/asrouter/OnboardingMessageProvider.sys.mjs",
   PageDataService: "resource:///modules/pagedata/PageDataService.sys.mjs",
@@ -74,6 +75,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
   TelemetryReportingPolicy:
     "resource://gre/modules/TelemetryReportingPolicy.sys.mjs",
   TRRRacer: "resource:///modules/TRRPerformance.sys.mjs",
+  TorConnect: "resource://gre/modules/TorConnect.sys.mjs",
+  TorConnectTopics: "resource://gre/modules/TorConnect.sys.mjs",
   TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
   TorSettingsNotification:
     "resource:///modules/TorSettingsNotification.sys.mjs",
@@ -1097,6 +1100,7 @@ BrowserGlue.prototype = {
         // can perform at-shutdown tasks later in shutdown.
         Services.fog;
       },
+      () => lazy.OnionAliasStore.uninit(),
     ];
 
     for (let task of tasks) {
@@ -1364,6 +1368,30 @@ BrowserGlue.prototype = {
         name: "webProtocolHandlerService.asyncInit",
         task: () => {
           lazy.WebProtocolHandlerRegistrar.prototype.init(true);
+        },
+      },
+
+      {
+        task: () => {
+          if (!lazy.TorConnect.shouldShowTorConnect) {
+            // we will take this path when the user is using the legacy tor launcher or
+            // when Tor Browser didn't launch its own tor.
+            lazy.OnionAliasStore.init();
+          } else {
+            // this path is taken when using about:torconnect, we wait to init
+            // after we are bootstrapped and connected to tor
+            const topic = lazy.TorConnectTopics.BootstrapComplete;
+            let bootstrapObserver = {
+              observe(aSubject, aTopic) {
+                if (aTopic === topic) {
+                  lazy.OnionAliasStore.init();
+                  // we only need to init once, so remove ourselves as an obvserver
+                  Services.obs.removeObserver(this, topic);
+                }
+              },
+            };
+            Services.obs.addObserver(bootstrapObserver, topic);
+          }
         },
       },
 
