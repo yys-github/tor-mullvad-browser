@@ -1,6 +1,8 @@
 JAR_MANIFESTS += ["jar.mn"]
 
 MOZ_SRC_FILES += [
+    "OnionAliasStore.sys.mjs",
     "OnionLocationChild.sys.mjs",
     "OnionLocationParent.sys.mjs",
+    "TorRequestWatch.sys.mjs",
 ]
