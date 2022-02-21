@@ -391,6 +391,7 @@ export default [
       "toolkit/content/aboutNetErrorHelpers.mjs",
       "toolkit/content/net-error-card.mjs",
       "browser/components/torconnect/content/aboutTorConnect.js",
+      "browser/components/rulesets/content/aboutRulesets.js",
     ],
     languageOptions: { globals: mozilla.environments["remote-page"].globals },
   },

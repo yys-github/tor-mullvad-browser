@@ -76,6 +76,7 @@ category browser-first-window-ready moz-src:///browser/modules/ClipboardPrivacy.
 category browser-first-window-ready moz-src:///browser/modules/SecurityLevelNotification.sys.mjs SecurityLevelNotification.ready
 category browser-first-window-ready moz-src:///toolkit/modules/DragDropFilter.sys.mjs DragDropFilter.init
 category browser-first-window-ready moz-src:///browser/modules/TorSettingsNotification.sys.mjs TorSettingsNotification.ready
+category browser-first-window-ready moz-src:///browser/components/onionservices/OnionAliasStore.sys.mjs OnionAliasStore.init
 
 category browser-idle-startup moz-src:///browser/components/places/PlacesUIUtils.sys.mjs PlacesUIUtils.unblockToolbars
 category browser-idle-startup resource:///modules/BuiltInThemes.sys.mjs BuiltInThemes.ensureBuiltInThemes
@@ -124,5 +125,6 @@ category browser-quit-application-granted resource://gre/modules/UpdateListener.
 category browser-quit-application-granted moz-src:///browser/components/urlbar/UrlbarSearchTermsPersistence.sys.mjs UrlbarSearchTermsPersistence.uninit
 category browser-quit-application-granted moz-src:///browser/components/ipprotection/IPProtectionHelpers.sys.mjs IPProtectionActivator.uninit
 category browser-quit-application-granted moz-src:///browser/components/aiwindow/ui/modules/AIWindow.sys.mjs AIWindow.uninit
+category browser-quit-application-granted moz-src:///browser/components/onionservices/OnionAliasStore.sys.mjs OnionAliasStore.uninit
 
 category browser-newtab-external-component moz-src:///browser/components/search/SearchUIUtils.sys.mjs SearchNewTabComponentsRegistrant
