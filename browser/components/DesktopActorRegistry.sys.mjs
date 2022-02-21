@@ -591,6 +591,19 @@ let JSWINDOWACTORS = {
     enablePreference: "accessibility.blockautorefresh",
   },
 
+  Rulesets: {
+    parent: {
+      esModuleURI: "resource:///modules/RulesetsParent.sys.mjs",
+    },
+    child: {
+      esModuleURI: "resource:///modules/RulesetsChild.sys.mjs",
+      events: {
+        DOMWindowCreated: {},
+      },
+    },
+    matches: ["about:rulesets*"],
+  },
+
   ScreenshotsComponent: {
     parent: {
       esModuleURI: "resource:///modules/ScreenshotsUtils.sys.mjs",
