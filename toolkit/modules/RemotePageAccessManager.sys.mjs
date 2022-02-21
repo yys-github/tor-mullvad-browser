@@ -270,6 +270,20 @@ export let RemotePageAccessManager = {
       RPMSendAsyncMessage: ["goBack"],
       RPMGetBoolPref: ["security.restrict_to_adults.always"],
     },
+    "about:rulesets": {
+      RPMAddMessageListener: ["rulesets:channels-change"],
+      RPMSendAsyncMessage: [
+        "rulesets:delete-channel",
+        "rulesets:enable-channel",
+        "rulesets:set-show-warning",
+      ],
+      RPMSendQuery: [
+        "rulesets:get-channels",
+        "rulesets:get-init-args",
+        "rulesets:set-channel",
+        "rulesets:update-channel",
+      ],
+    },
     "about:tabcrashed": {
       RPMSendAsyncMessage: ["Load", "closeTab", "restoreTab", "restoreAll"],
       RPMAddMessageListener: ["*"],
