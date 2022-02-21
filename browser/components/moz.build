@@ -67,6 +67,7 @@ DIRS += [
     "remotecontrol",
     "reportbrokensite",
     "resistfingerprinting",
+    "rulesets",
     "screenshots",
     "search",
     "securitylevel",
