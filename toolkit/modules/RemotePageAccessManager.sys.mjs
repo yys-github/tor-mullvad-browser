@@ -239,6 +239,20 @@ export let RemotePageAccessManager = {
       ],
       RPMRecordGleanEvent: ["securityUiProtections"],
     },
+    "about:rulesets": {
+      RPMAddMessageListener: ["rulesets:channels-change"],
+      RPMSendAsyncMessage: [
+        "rulesets:delete-channel",
+        "rulesets:enable-channel",
+        "rulesets:set-show-warning",
+      ],
+      RPMSendQuery: [
+        "rulesets:get-channels",
+        "rulesets:get-init-args",
+        "rulesets:set-channel",
+        "rulesets:update-channel",
+      ],
+    },
     "about:tabcrashed": {
       RPMSendAsyncMessage: ["Load", "closeTab", "restoreTab", "restoreAll"],
       RPMAddMessageListener: ["*"],
