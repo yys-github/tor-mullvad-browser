@@ -126,3 +126,7 @@ LICENSES["jpnic"].notice = """
 LICENSED_UNDER += [
     "jpnic",
 ]
+
+XPIDL_SOURCES += ["IOnionAliasService.idl"]
+UNIFIED_SOURCES += ["OnionAliasService.cpp"]
+EXPORTS.torproject += ["OnionAliasService.h"]
