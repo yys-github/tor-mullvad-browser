@@ -4,3 +4,8 @@ EXTRA_JS_MODULES += [
     "OnionLocationChild.sys.mjs",
     "OnionLocationParent.sys.mjs",
 ]
+
+MOZ_SRC_FILES += [
+    "OnionAliasStore.sys.mjs",
+    "TorRequestWatch.sys.mjs",
+]
