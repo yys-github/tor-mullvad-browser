@@ -65,6 +65,7 @@ DIRS += [
     "referrals",
     "reportbrokensite",
     "resistfingerprinting",
+    "rulesets",
     "screenshots",
     "search",
     "securitylevel",
