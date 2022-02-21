@@ -829,4 +829,13 @@
    0x4450,                                    \
    {0xb0, 0x19, 0xd1, 0xc1, 0xfb, 0xa5, 0x60, 0x25}}
 
+// Onion alias service implementing IOnionAliasService
+#define ONIONALIAS_CONTRACTID "@torproject.org/onion-alias-service;1"
+#define ONIONALIAS_CID                               \
+  { /* 0df7784b-7316-486d-bc99-bf47b7a05974 */       \
+    0x0df7784b, 0x7316, 0x486d, {                    \
+      0xbc, 0x99, 0xbf, 0x47, 0xb7, 0xa0, 0x59, 0x74 \
+    }                                                \
+  }
+
 #endif  // nsNetCID_h__
