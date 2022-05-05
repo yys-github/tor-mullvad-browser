@@ -16,6 +16,11 @@
 #include "mozilla/dom/ContentChild.h"
 #include "mozilla/browser/NimbusFeatures.h"
 
+// For Tor Browser manual
+#include "nsTHashSet.h"
+#include "mozilla/intl/LocaleService.h"
+#include "mozilla/Omnijar.h"
+
 #define PROFILES_ENABLED_PREF "browser.profiles.enabled"
 #define ABOUT_WELCOME_CHROME_URL \
   "chrome://browser/content/aboutwelcome/aboutwelcome.html"
@@ -192,6 +197,12 @@ static const RedirEntry kRedirMap[] = {
          nsIAboutModule::URI_CAN_LOAD_IN_CHILD | nsIAboutModule::ALLOW_SCRIPT |
          nsIAboutModule::HIDE_FROM_ABOUTABOUT |
          nsIAboutModule::IS_SECURE_CHROME_UI},
+    // The correct URI must be obtained by GetManualChromeURI
+    {"manual", "about:blank",
+     nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
+         nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::URI_MUST_LOAD_IN_CHILD |
+         nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS |
+         nsIAboutModule::IS_SECURE_CHROME_UI},
 };
 
 static nsAutoCString GetAboutModuleName(nsIURI* aURI) {
@@ -206,6 +217,47 @@ static nsAutoCString GetAboutModuleName(nsIURI* aURI) {
 
   ToLowerCase(path);
   return path;
+}
+
+static nsAutoCString GetManualChromeURI() {
+  nsTArray<nsCString> availableLocales;
+  nsCString availableLocalesStr;
+  if (NS_SUCCEEDED(mozilla::Preferences::GetCString(
+          "torbrowser.manual.available-locales", availableLocalesStr)) &&
+      availableLocalesStr.Length() > 0) {
+    for (const nsACString& locale : availableLocalesStr.Split(',')) {
+      availableLocales.AppendElement(locale);
+    }
+  }
+  nsCString tryLocale;
+  if (!NS_SUCCEEDED(mozilla::Preferences::GetCString("torbrowser.manual.locale",
+                                                     tryLocale)) ||
+      !availableLocales.Contains(tryLocale)) {
+    nsTArray<nsCString> appLocales;
+    intl::LocaleService::GetInstance()->GetAppLocalesAsBCP47(appLocales);
+    bool found = false;
+    for (size_t i = 0; i < appLocales.Length(); i++) {
+      tryLocale = appLocales[i];
+      if (availableLocales.Contains(tryLocale)) {
+        found = true;
+        break;
+      } else if (tryLocale.Length() > 3 && tryLocale[2] == '-') {
+        // Strip the region code and see if the lang matches.
+        tryLocale.SetLength(2);
+        if (availableLocales.Contains(tryLocale)) {
+          found = true;
+          break;
+        }
+      }
+    }
+    if (!found) {
+      tryLocale.AssignLiteral("en");
+    }
+  }
+  nsAutoCString uri;
+  uri.AppendPrintf("chrome://browser/content/aboutmanual/aboutManual-%s.html",
+                   tryLocale.get());
+  return uri;
 }
 
 NS_IMETHODIMP
@@ -243,6 +295,10 @@ AboutRedirector::NewChannel(nsIURI* aURI, nsILoadInfo* aLoadInfo,
           (path.EqualsLiteral("newtab") &&
            StaticPrefs::browser_newtabpage_enabled())) {
         url.AssignASCII(BASE_BROWSER_HOME_PAGE_URL);
+      }
+
+      if (path.EqualsLiteral("manual")) {
+        url = GetManualChromeURI();
       }
 
       // fall back to the specified url in the map
@@ -302,6 +358,10 @@ AboutRedirector::GetChromeURI(nsIURI* aURI, nsIURI** chromeURI) {
   NS_ENSURE_ARG_POINTER(aURI);
 
   nsAutoCString name = GetAboutModuleName(aURI);
+
+  if (name.EqualsLiteral("manual")) {
+    return NS_NewURI(chromeURI, GetManualChromeURI());
+  }
 
   for (const auto& redir : kRedirMap) {
     if (name.Equals(redir.id)) {
