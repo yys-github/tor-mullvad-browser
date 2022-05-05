@@ -103,6 +103,12 @@ document.addEventListener(
         case "helpPolicySupport":
           openTrustedLinkIn(Services.policies.getSupportMenu().URL.href, "tab");
           break;
+        case "torBrowserUserManual":
+          gBrowser.selectedTab = gBrowser.addTab("about:manual", {
+            triggeringPrincipal:
+              Services.scriptSecurityManager.getSystemPrincipal(),
+          });
+          break;
       }
     });
 
