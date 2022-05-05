@@ -128,6 +128,13 @@ document.addEventListener(
             });
           }
           break;
+
+        case "torBrowserUserManual":
+          gBrowser.selectedTab = gBrowser.addTab("about:manual", {
+            triggeringPrincipal:
+              Services.scriptSecurityManager.getSystemPrincipal(),
+          });
+          break;
       }
     });
 
