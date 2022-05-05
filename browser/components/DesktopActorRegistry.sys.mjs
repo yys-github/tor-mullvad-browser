@@ -126,6 +126,23 @@ let JSWINDOWACTORS = {
     remoteTypes: ["privilegedabout"],
   },
 
+  AboutManual: {
+    parent: {
+      esModuleURI:
+        "moz-src:///browser/components/aboutmanual/AboutManualParent.sys.mjs",
+    },
+    child: {
+      esModuleURI:
+        "moz-src:///browser/components/aboutmanual/AboutManualChild.sys.mjs",
+
+      events: {
+        ManualLocaleSelected: { wantUntrusted: true },
+      },
+    },
+
+    matches: ["about:manual"],
+  },
+
   AboutMessagePreview: {
     parent: {
       esModuleURI: "resource:///actors/AboutMessagePreviewParent.sys.mjs",
