@@ -823,6 +823,12 @@ const PanelUI = {
       case "appMenu_helpPolicySupport":
         openTrustedLinkIn(Services.policies.getSupportMenu().URL.href, "tab");
         break;
+      case "appMenu_torBrowserUserManual":
+        gBrowser.selectedTab = gBrowser.addTab("about:manual", {
+          triggeringPrincipal:
+            Services.scriptSecurityManager.getSystemPrincipal(),
+        });
+        break;
     }
   },
 
