@@ -5,3 +5,9 @@
 MOZ_BRANDING_DIRECTORY=mobile/android/branding/unofficial
 MOZ_OFFICIAL_BRANDING_DIRECTORY=mobile/android/branding/official
 # MOZ_APP_DISPLAYNAME is set by branding/configure.sh
+
+# Disable telemetry at compile-time
+unset MOZ_TELEMETRY_REPORTING
+
+# Disable data reporting at compile-time
+unset MOZ_DATA_REPORTING
