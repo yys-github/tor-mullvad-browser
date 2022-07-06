@@ -1268,6 +1268,13 @@ static void GetSystemFontInfo(GtkStyleContext* aStyle, nsString* aFontName,
                               gfxFontStyle* aFontStyle) {
   aFontStyle->style = FontSlantStyle::NORMAL;
 
+#ifdef BASE_BROWSER_VERSION
+  *aFontName = u"\"Arimo\"";
+  aFontStyle->systemFont = true;
+  aFontStyle->weight = FontWeight::NORMAL;
+  aFontStyle->stretch = FontStretch::NORMAL;
+  aFontStyle->size = 14;
+#else
   // As in
   // https://git.gnome.org/browse/gtk+/tree/gtk/gtkwidget.c?h=3.22.19#n10333
   PangoFontDescription* desc;
@@ -1302,6 +1309,7 @@ static void GetSystemFontInfo(GtkStyleContext* aStyle, nsString* aFontName,
   aFontStyle->size = size;
 
   pango_font_description_free(desc);
+#endif
 }
 
 bool nsLookAndFeel::NativeGetFont(FontID aID, nsString& aFontName,
