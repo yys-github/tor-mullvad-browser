@@ -23,10 +23,12 @@ import mozilla.components.feature.tabs.CustomTabsUseCases
 import mozilla.components.feature.tabs.TabsUseCases
 import mozilla.components.feature.webnotifications.WebNotificationIntentProcessor
 import org.mozilla.fenix.customtabs.FennecWebAppIntentProcessor
+import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.home.intent.FennecBookmarkShortcutsIntentProcessor
 import org.mozilla.fenix.intent.ExternalDeepLinkIntentProcessor
 import org.mozilla.fenix.perf.lazyMonitored
 import org.mozilla.fenix.shortcut.PasswordManagerIntentProcessor
+import org.mozilla.fenix.tor.TorSecurityLevel
 
 /** Component group for miscellaneous components. */
 @Suppress("LongParameterList")
@@ -49,6 +51,7 @@ class IntentProcessors(
             isPrivate = false,
             engine = engine,
             applicationScope = applicationScope,
+            jsEnabled = context.components.settings.torSecurityLevel != TorSecurityLevel.safest.level,
         )
     }
 
@@ -60,6 +63,7 @@ class IntentProcessors(
             isPrivate = true,
             engine = engine,
             applicationScope = applicationScope,
+            jsEnabled = context.components.settings.torSecurityLevel != TorSecurityLevel.safest.level,
         )
     }
 
