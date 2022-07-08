@@ -252,5 +252,6 @@
   "gFindBarPromise",
   "SelectableProfileService",
   "ActionsProviderContextualSearch",
-  "ToolbarDropHandler"
+  "ToolbarDropHandler",
+  "SecurityLevelButton"
 ]
