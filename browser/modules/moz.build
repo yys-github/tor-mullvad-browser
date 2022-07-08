@@ -153,6 +153,7 @@ MOZ_SRC_FILES += [
     "FaviconUtils.sys.mjs",
     "ObserverForwarder.sys.mjs",
     "PrivateBrowsingUI.sys.mjs",
+    "SecurityLevelNotification.sys.mjs",
     "UnexpectedScriptObserver.sys.mjs",
     "WebAuthnPromptHelper.sys.mjs",
 ]
