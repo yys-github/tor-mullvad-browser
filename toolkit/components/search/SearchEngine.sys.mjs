@@ -9,6 +9,7 @@ const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
   SearchSettings: "resource://gre/modules/SearchSettings.sys.mjs",
   SearchUtils: "resource://gre/modules/SearchUtils.sys.mjs",
+  SecurityLevelPrefs: "resource://gre/modules/SecurityLevel.sys.mjs",
   OpenSearchEngine: "resource://gre/modules/OpenSearchEngine.sys.mjs",
 });
 
@@ -343,6 +344,25 @@ export class EngineURL {
    */
   getSubmission(searchTerms, queryCharset) {
     var url = ParamSubstitution(this.template, searchTerms, queryCharset);
+
+    if (
+      lazy.SecurityLevelPrefs?.securityLevel === "safest" &&
+      this.type === lazy.SearchUtils.URL_TYPE.SEARCH
+    ) {
+      let host = this.templateHost;
+      try {
+        host = Services.eTLD.getBaseDomainFromHost(host);
+      } catch (ex) {
+        lazy.logConsole.warn("Failed to get a FPD", ex, host);
+      }
+      if (
+        host === "duckduckgo.com" ||
+        host ===
+          "duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion"
+      ) {
+        url += "html";
+      }
+    }
 
     // Create an application/x-www-form-urlencoded representation of our params
     // (name=value&name=value&name=value)
