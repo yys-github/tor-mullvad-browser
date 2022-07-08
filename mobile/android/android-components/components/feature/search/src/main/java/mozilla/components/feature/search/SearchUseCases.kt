@@ -14,6 +14,8 @@ import mozilla.components.browser.state.state.SessionState
 import mozilla.components.browser.state.state.selectedOrDefaultSearchEngine
 import mozilla.components.browser.state.store.BrowserStore
 import mozilla.components.concept.engine.EngineSession
+import mozilla.components.concept.engine.Settings
+import mozilla.components.concept.engine.UnsupportedSettingException
 import mozilla.components.feature.search.ext.buildSearchUrl
 import mozilla.components.feature.session.SessionUseCases
 import mozilla.components.feature.tabs.TabsUseCases
@@ -26,6 +28,7 @@ class SearchUseCases(
     store: BrowserStore,
     tabsUseCases: TabsUseCases,
     sessionUseCases: SessionUseCases,
+    settings: Settings? = null,
 ) {
     interface SearchUseCase {
         /**
@@ -42,6 +45,7 @@ class SearchUseCases(
         private val store: BrowserStore,
         private val tabsUseCases: TabsUseCases,
         private val sessionUseCases: SessionUseCases,
+        private val settings: Settings? = null,
     ) : SearchUseCase {
         private val logger = Logger("DefaultSearchUseCase")
 
@@ -77,7 +81,13 @@ class SearchUseCases(
                 store.state.findTab(it)?.content?.private
             } ?: false
             val resolvedEngine = searchEngine ?: store.state.search.selectedOrDefaultSearchEngine(isTabPrivate)
-            val searchUrl = resolvedEngine?.buildSearchUrl(searchTerms)
+            var securityLevel: Int
+            try {
+                securityLevel = settings?.torSecurityLevel ?: 0
+            } catch (e: UnsupportedSettingException) {
+                securityLevel = 0
+            }
+            val searchUrl = resolvedEngine?.buildSearchUrl(searchTerms, securityLevel)
 
             if (searchUrl == null) {
                 logger.warn("No default search engine available to perform search")
@@ -127,6 +137,7 @@ class SearchUseCases(
         private val store: BrowserStore,
         private val tabsUseCases: TabsUseCases,
         private val isPrivate: Boolean,
+        private val settings: Settings? = null,
     ) : SearchUseCase {
         private val logger = Logger("NewTabSearchUseCase")
 
@@ -165,7 +176,13 @@ class SearchUseCases(
             additionalHeaders: Map<String, String>? = null,
         ) {
             val resolvedEngine = searchEngine ?: store.state.search.selectedOrDefaultSearchEngine(isPrivate)
-            val searchUrl = resolvedEngine?.buildSearchUrl(searchTerms)
+            var securityLevel: Int
+            try {
+                securityLevel = settings?.torSecurityLevel ?: 0
+            } catch (e: UnsupportedSettingException) {
+                securityLevel = 0
+            }
+            val searchUrl = resolvedEngine?.buildSearchUrl(searchTerms, securityLevel)
 
             if (searchUrl == null) {
                 logger.warn("No default search engine available to perform search")
@@ -350,15 +367,15 @@ class SearchUseCases(
     }
 
     val defaultSearch: DefaultSearchUseCase by lazy {
-        DefaultSearchUseCase(store, tabsUseCases, sessionUseCases)
+        DefaultSearchUseCase(store, tabsUseCases, sessionUseCases, settings)
     }
 
     val newTabSearch: NewTabSearchUseCase by lazy {
-        NewTabSearchUseCase(store, tabsUseCases, false)
+        NewTabSearchUseCase(store, tabsUseCases, false, settings)
     }
 
     val newPrivateTabSearch: NewTabSearchUseCase by lazy {
-        NewTabSearchUseCase(store, tabsUseCases, true)
+        NewTabSearchUseCase(store, tabsUseCases, true, settings)
     }
 
     val addSearchEngine: AddNewSearchEngineUseCase by lazy {
