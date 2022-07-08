@@ -748,6 +748,17 @@ public final class GeckoRuntimeSettings extends RuntimeSettings {
       getSettings().mSpoofEnglish.set(flag ? 2 : 1);
       return this;
     }
+
+    /**
+     * Set security level.
+     *
+     * @param level A value determining the security level. Default is 0.
+     * @return This Builder instance.
+     */
+    public @NonNull Builder torSecurityLevel(final int level) {
+      getSettings().mSecurityLevel.set(level);
+      return this;
+    }
   }
 
   private GeckoRuntime mRuntime;
@@ -880,6 +891,8 @@ public final class GeckoRuntimeSettings extends RuntimeSettings {
   /* package */ final PrefWithoutDefault<String> mCrliteChannel =
       new PrefWithoutDefault<String>("security.pki.crlite_channel");
   /* package */ final Pref<Integer> mSpoofEnglish = new Pref<>("privacy.spoof_english", 0);
+  /* package */ final Pref<Integer> mSecurityLevel =
+      new Pref<>("browser.security_level.security_slider", 4);
 
   /* package */ int mPreferredColorScheme = COLOR_SCHEME_SYSTEM;
 
@@ -2601,6 +2614,26 @@ public final class GeckoRuntimeSettings extends RuntimeSettings {
    */
   public @NonNull GeckoRuntimeSettings setSpoofEnglish(final boolean flag) {
     mSpoofEnglish.commit(flag ? 2 : 1);
+    return this;
+  }
+
+  /**
+   * Gets the current security level.
+   *
+   * @return current security protection level
+   */
+  public int getTorSecurityLevel() {
+    return mSecurityLevel.get();
+  }
+
+  /**
+   * Sets the Security Level.
+   *
+   * @param level security protection level
+   * @return This GeckoRuntimeSettings instance.
+   */
+  public @NonNull GeckoRuntimeSettings setTorSecurityLevel(final int level) {
+    mSecurityLevel.commit(level);
     return this;
   }
 
