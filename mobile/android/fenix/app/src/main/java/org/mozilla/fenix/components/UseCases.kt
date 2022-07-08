@@ -76,6 +76,7 @@ class UseCases(
             store,
             tabsUseCases,
             sessionUseCases,
+            engine.settings,
         )
     }
 
