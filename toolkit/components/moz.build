@@ -74,6 +74,7 @@ DIRS += [
     "reportbrokensite",
     "resistfingerprinting",
     "search",
+    "securitylevel",
     "sessionstore",
     "shell",
     "startup",
