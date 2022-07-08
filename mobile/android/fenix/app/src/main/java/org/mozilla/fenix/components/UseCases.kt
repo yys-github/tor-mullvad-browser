@@ -80,6 +80,7 @@ class UseCases(
             store.value,
             tabsUseCases,
             sessionUseCases,
+            engine.value.settings,
         )
     }
 
