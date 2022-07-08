@@ -267,5 +267,6 @@
   "gFindBarPromise",
   "BrowserSearch",
   "PBMExitStatus",
-  "SelectableProfileService"
+  "SelectableProfileService",
+  "SecurityLevelButton"
 ]
