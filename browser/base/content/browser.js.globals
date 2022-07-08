@@ -238,5 +238,6 @@
   "ProfilesDatastoreService",
   "gTrustPanelHandler",
   "ContentSharingUtils",
-  "Referrals"
+  "Referrals",
+  "SecurityLevelButton"
 ]
