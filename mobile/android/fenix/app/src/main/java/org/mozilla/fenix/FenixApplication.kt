@@ -145,6 +145,8 @@ import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.isLargeScreenSize
 import org.mozilla.fenix.wallpapers.Wallpaper
 
+import org.mozilla.fenix.tor.TorSecurityLevel
+
 private const val RAM_THRESHOLD_MEGABYTES = 1024
 private const val BYTES_TO_MEGABYTES_CONVERSION = 1024.0 * 1024.0
 
@@ -1040,7 +1042,7 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
                             }
                         )
                         name.set(searchEngine.name)
-                        searchUrl.set(searchEngine.buildSearchUrl(""))
+                        searchUrl.set(searchEngine.buildSearchUrl("", jsEnabled = components.settings.torSecurityLevel != TorSecurityLevel.safest.level))
                     }
                 } else {
                     SearchDefaultEngine.apply {
@@ -1063,7 +1065,7 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
                                 }
                             )
                             name.set(if (isSameAsDefault) "default" else privateEngine.name)
-                            searchUrl.set(privateEngine.buildSearchUrl(""))
+                            searchUrl.set(privateEngine.buildSearchUrl("", jsEnabled = components.settings.torSecurityLevel != TorSecurityLevel.safest.level))
                         }
                     } else {
                         SearchDefaultEngineForPrivate.apply {

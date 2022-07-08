@@ -322,6 +322,9 @@ var gBrowserInit = {
       window
     );
 
+    // Init the SecurityLevelButton
+    SecurityLevelButton.init();
+
     // Certain kinds of automigration rely on this notification to complete
     // their tasks BEFORE the browser window is shown. SessionStore uses it to
     // restore tabs into windows AFTER important parts like gMultiProcessBrowser
@@ -1134,6 +1137,8 @@ var gBrowserInit = {
       gBrowser.removeProgressListener(window.XULBrowserWindow);
       gBrowser.removeTabsProgressListener(window.TabsProgressListener);
     } catch (ex) {}
+
+    SecurityLevelButton.uninit();
 
     // LinkPreview.sys.mjs is missing. tor-browser#44045.
 
