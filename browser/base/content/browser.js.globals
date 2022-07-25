@@ -238,5 +238,6 @@
   "gTrustPanelHandler",
   "ContentSharingUtils",
   "SecurityLevelButton",
-  "TorUIUtils"
+  "TorUIUtils",
+  "NewIdentityButton"
 ]

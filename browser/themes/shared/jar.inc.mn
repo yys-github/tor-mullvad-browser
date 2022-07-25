@@ -358,3 +358,5 @@
 
   skin/classic/browser/illustrations/market-opt-in.svg         (../shared/illustrations/market-opt-in.svg)
   skin/classic/browser/illustrations/yelpRealtime-opt-in.svg   (../shared/illustrations/yelpRealtime-opt-in.svg)
+
+  skin/classic/browser/new_identity.svg                        (../shared/icons/new_identity.svg)
