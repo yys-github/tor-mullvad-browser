@@ -316,6 +316,9 @@ document.addEventListener(
           case "zoomWindow":
             zoomWindow();
             break;
+          case "cmd_newIdentity":
+            NewIdentityButton.onCommand(event);
+            break;
         }
       });
 
