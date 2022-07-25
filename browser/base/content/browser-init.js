@@ -241,6 +241,9 @@ var gBrowserInit = {
     // Init the SecurityLevelButton
     SecurityLevelButton.init();
 
+    // Init the NewIdentityButton
+    NewIdentityButton.init();
+
     // Certain kinds of automigration rely on this notification to complete
     // their tasks BEFORE the browser window is shown. SessionStore uses it to
     // restore tabs into windows AFTER important parts like gMultiProcessBrowser
@@ -1045,6 +1048,8 @@ var gBrowserInit = {
     DownloadsButton.uninit();
 
     SecurityLevelButton.uninit();
+
+    NewIdentityButton.uninit();
 
     if (gToolbarKeyNavEnabled) {
       ToolbarKeyboardNavigator.uninit();
