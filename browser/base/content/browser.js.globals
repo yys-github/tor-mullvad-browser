@@ -268,5 +268,6 @@
   "BrowserSearch",
   "PBMExitStatus",
   "SelectableProfileService",
-  "SecurityLevelButton"
+  "SecurityLevelButton",
+  "NewIdentityButton"
 ]
