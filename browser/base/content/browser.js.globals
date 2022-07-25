@@ -238,5 +238,6 @@
   "ToolbarDropHandler",
   "ProfilesDatastoreService",
   "gTrustPanelHandler",
-  "SecurityLevelButton"
+  "SecurityLevelButton",
+  "NewIdentityButton"
 ]
