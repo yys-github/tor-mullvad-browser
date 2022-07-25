@@ -267,5 +267,6 @@
   "gFindBarPromise",
   "BrowserSearch",
   "SelectableProfileService",
-  "SecurityLevelButton"
+  "SecurityLevelButton",
+  "NewIdentityButton"
 ]
