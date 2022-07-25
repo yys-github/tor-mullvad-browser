@@ -272,5 +272,6 @@
   "gFindBarPromise",
   "BrowserSearch",
   "PBMExitStatus",
-  "SecurityLevelButton"
+  "SecurityLevelButton",
+  "NewIdentityButton"
 ]
