@@ -43,6 +43,7 @@ DIRS += [
     "ipprotection",
     "messagepreview",
     "migration",
+    "newidentity",
     # Exclude newtab component. tor-browser#43886.
     "originattributes",
     "pagedata",
