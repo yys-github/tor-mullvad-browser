@@ -48,6 +48,7 @@ DIRS += [
     "migration",
     "mozcachedohttp",
     "multilineeditor",
+    "newidentity",
     # Exclude newtab component. tor-browser#43886.
     "nova",
     "originattributes",
