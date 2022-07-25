@@ -42,6 +42,7 @@ DIRS += [
     "genai",
     "messagepreview",
     "migration",
+    "newidentity",
     "newtab",
     "originattributes",
     "pagedata",
