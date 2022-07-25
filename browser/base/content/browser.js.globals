@@ -239,5 +239,6 @@
   "ContentSharingUtils",
   "Referrals",
   "SecurityLevelButton",
-  "TorUIUtils"
+  "TorUIUtils",
+  "NewIdentityButton"
 ]
