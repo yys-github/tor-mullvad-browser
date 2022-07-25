@@ -43,6 +43,7 @@ DIRS += [
     "ipprotection",
     "messagepreview",
     "migration",
+    "newidentity",
     "newtab",
     "originattributes",
     "pagedata",
