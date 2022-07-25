@@ -253,5 +253,6 @@
   "SelectableProfileService",
   "ActionsProviderContextualSearch",
   "ToolbarDropHandler",
-  "SecurityLevelButton"
+  "SecurityLevelButton",
+  "NewIdentityButton"
 ]
