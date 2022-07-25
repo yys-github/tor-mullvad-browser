@@ -258,5 +258,6 @@
   "gFindBarPromise",
   "SelectableProfileService",
   "ActionsProviderContextualSearch",
-  "SecurityLevelButton"
+  "SecurityLevelButton",
+  "NewIdentityButton"
 ]
