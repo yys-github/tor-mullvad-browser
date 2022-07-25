@@ -239,5 +239,6 @@
   "ProfilesDatastoreService",
   "gTrustPanelHandler",
   "SecurityLevelButton",
-  "TorUIUtils"
+  "TorUIUtils",
+  "NewIdentityButton"
 ]
