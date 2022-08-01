@@ -369,3 +369,6 @@ toolkit/crashreporter/minidump-analyzer/analyzer-test/target/
 
 # Ignore mozperftest artifacts folder
 /artifacts/
+
+# Ignore binary base of Tor Browser
+.binaries
