@@ -389,3 +389,6 @@ toolkit/crashreporter/minidump-analyzer/target/
 
 # Ignore personal preferences files
 CLAUDE.local.md
+
+# Ignore binary base of Tor Browser
+.binaries
