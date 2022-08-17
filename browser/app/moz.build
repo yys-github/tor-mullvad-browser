@@ -80,6 +80,12 @@ if CONFIG["MOZ_WIDGET_TOOLKIT"] == "cocoa":
             f"!/{FINAL_TARGET}/org.mozilla.updater",
             "Library/LaunchServices/org.mozilla.updater",
         ))
+    moves = [("ChannelPrefs.framework", "Frameworks/ChannelPrefs.framework")]
+    if not CONFIG["BASE_BROWSER"]:
+        moves.append((
+            "org.mozilla.dmgInstallHelper",
+            "Library/LaunchServices/org.mozilla.dmgInstallHelper",
+        ))
     MacOSBundle(
         f"!/dist/{CONFIG['MOZ_MACBUNDLE_NAME']}",
         skeleton="macbuild/Contents",
@@ -93,13 +99,7 @@ if CONFIG["MOZ_WIDGET_TOOLKIT"] == "cocoa":
             (f"!/{FINAL_TARGET}/{CONFIG['MOZ_APP_NAME']}", CONFIG["MOZ_APP_NAME"])
         ],
         extra_files=extra_files,
-        moves=[
-            ("ChannelPrefs.framework", "Frameworks/ChannelPrefs.framework"),
-            (
-                "org.mozilla.dmgInstallHelper",
-                "Library/LaunchServices/org.mozilla.dmgInstallHelper",
-            ),
-        ],
+        moves=moves,
         pkginfo="APPLTORB",
     )
 
