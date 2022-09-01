@@ -165,6 +165,14 @@ abstract class WebExtension(
     open fun isBuiltIn(): Boolean = url.toUri().scheme == "resource"
 
     /**
+     * Checks whether or not this extension is bundled with this browser,
+     * but otherwise behaves as an unprivileged (non built-in) extension,
+     * except it cannot be disabled or uninstalled from the UI (e.g.
+     * NoScript in the Tor Browser).
+     */
+    open fun isBundled(): Boolean = id == "{73a6fe31-595d-460b-a920-fcc0f8843232}"
+
+    /**
      * Checks whether or not this extension is enabled.
      */
     abstract fun isEnabled(): Boolean
@@ -500,6 +508,11 @@ data class Metadata(
      * https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/incognito
      */
     val incognito: Incognito,
+
+    /**
+     * Wether this extension should default to pbm-allowed because being installed in global PBM
+     */
+    val defaultPrivateBrowsingAllowed : Boolean = false,
 )
 
 /**
