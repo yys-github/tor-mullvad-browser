@@ -286,6 +286,9 @@ class PermissionsDialogFragment : AddonDialogFragment() {
         ) {
             optionalsSettingsTitle.isVisible = false
             allowedInPrivateBrowsing.isVisible = false
+        } else {
+            allowedInPrivateBrowsing.isChecked = addon.defaultPrivateBrowsingAllowed
+            allowedInPrivateBrowsing.isVisible = !addon.defaultPrivateBrowsingAllowed
         }
 
         if (dataCollectionPermissions.contains(TECHNICAL_AND_INTERACTION_PERM) && !forOptionalPermissions) {
