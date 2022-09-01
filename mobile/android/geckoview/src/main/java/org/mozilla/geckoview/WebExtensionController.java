@@ -1284,6 +1284,27 @@ public class WebExtensionController {
             });
   }
 
+  private boolean isBundledExtension(final String extensionId) {
+    return "{73a6fe31-595d-460b-a920-fcc0f8843232}".equals(extensionId);
+  }
+
+  private boolean promptBypass(final WebExtension extension, final EventCallback callback) {
+    // allow bundled extensions, e.g. NoScript, to be installed with no prompt
+    if (isBundledExtension(extension.id)) {
+      callback.resolveTo(
+        GeckoResult.allow().map(
+          allowOrDeny -> {
+            final GeckoBundle response = new GeckoBundle(1);
+            response.putBoolean("allow", true);
+            return response;
+          }
+        )
+      );
+      return true;
+    }
+    return false;
+  }
+
   private void installPromptRequest(final GeckoBundle message, final EventCallback callback) {
     final GeckoBundle extensionBundle = message.getBundle("extension");
     if (extensionBundle == null
@@ -1298,6 +1319,10 @@ public class WebExtensionController {
     }
 
     final WebExtension extension = new WebExtension(mDelegateControllerProvider, extensionBundle);
+
+    if (promptBypass(extension, callback)) {
+      return;
+    }
 
     if (mPromptDelegate == null) {
       Log.e(
@@ -1345,6 +1370,10 @@ public class WebExtensionController {
         new WebExtension(mDelegateControllerProvider, message.getBundle("updatedExtension"));
     final String[] newPermissions = message.getStringArray("newPermissions");
     final String[] newOrigins = message.getStringArray("newOrigins");
+
+    if (promptBypass(currentExtension, callback)) {
+      return;
+    }
 
     if (mPromptDelegate == null) {
       Log.e(
