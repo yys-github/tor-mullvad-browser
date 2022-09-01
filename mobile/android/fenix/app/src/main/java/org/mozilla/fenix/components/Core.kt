@@ -195,6 +195,8 @@ class Core(
             if (Config.channel.isNightlyOrDebug || Config.channel.isBeta) {
                 WebCompatReporterFeature.install(it, "fenix")
             }
+
+            TorBrowserFeatures.install(context, it)
         }
     }
 
