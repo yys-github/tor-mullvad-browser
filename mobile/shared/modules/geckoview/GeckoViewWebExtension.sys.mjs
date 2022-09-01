@@ -362,7 +362,8 @@ async function exportExtension(aAddon, aSourceURI) {
     privateBrowsingAllowed = policy.privateBrowsingAllowed;
   } else {
     const { permissions } = await lazy.ExtensionPermissions.get(aAddon.id);
-    privateBrowsingAllowed = permissions.includes(PRIVATE_BROWSING_PERM_NAME);
+    privateBrowsingAllowed = permissions.includes(PRIVATE_BROWSING_PERM_NAME)
+                            || lazy.PrivateBrowsingUtils.permanentPrivateBrowsing;
   }
 
   let updateDate;
@@ -518,6 +519,9 @@ class ExtensionInstallListener {
 
   async onInstallEnded(aInstall, aAddon) {
     debug`onInstallEnded addonId=${aAddon.id}`;
+    if (lazy.PrivateBrowsingUtils.permanentPrivateBrowsing) {
+      await GeckoViewWebExtension.setPrivateBrowsingAllowed(aAddon.id, true);
+    }
     const extension = await exportExtension(aAddon, aInstall.sourceURI);
     this.resolve({ extension });
   }
