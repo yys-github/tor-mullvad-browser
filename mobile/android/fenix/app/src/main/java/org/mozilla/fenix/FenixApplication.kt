@@ -135,6 +135,7 @@ import org.mozilla.fenix.theme.DefaultThemeProvider
 import org.mozilla.fenix.theme.Theme
 import org.mozilla.fenix.theme.Theme.Private
 import org.mozilla.fenix.theme.ThemeProvider
+import org.mozilla.fenix.tor.RunOnceBootstrapped
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.isLargeScreenSize
 import org.mozilla.fenix.wallpapers.Wallpaper
@@ -142,6 +143,9 @@ import java.util.Date
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToLong
 import mozilla.components.support.AppServicesInitializer.Config as AppServicesConfig
+
+import org.mozilla.fenix.components.TorBrowserFeatures.NOSCRIPT_ID
+
 
 private const val RAM_THRESHOLD_MEGABYTES = 1024
 private const val BYTES_TO_MEGABYTES_CONVERSION = 1024.0 * 1024.0
@@ -857,8 +861,22 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
                     components.useCases.tabsUseCases.selectTab(sessionId)
                 },
                 onExtensionsLoaded = { extensions ->
-                    components.addonUpdater.registerForFutureUpdates(extensions)
-                    subscribeForNewAddonsIfNeeded(components.supportedAddonsChecker, extensions)
+                    // enable noscript if it is disabled
+                    extensions.find { extension : WebExtension ->
+                        extension.id == NOSCRIPT_ID
+                    }?.let { noScript ->
+                        if (!noScript.isEnabled()) {
+                            components.core.engine.enableWebExtension(noScript)
+                        }
+                    }
+
+                    // Delay until bootstrap is finished so that it will actually update tor-browser#44303
+                    components.torController.registerRunOnceBootstrapped(object : RunOnceBootstrapped {
+                        override fun onBootstrapped() {
+                            components.addonUpdater.registerForFutureUpdates(extensions)
+                            subscribeForNewAddonsIfNeeded(components.supportedAddonsChecker, extensions)
+                        }
+                    })
                 },
                 onUpdatePermissionRequest = components.addonUpdater::onUpdatePermissionRequest,
             )
