@@ -372,6 +372,7 @@ class GeckoWebExtension(
                 temporary = it.temporary,
                 detailUrl = it.amoListingUrl,
                 incognito = Incognito.fromString(it.incognito),
+                defaultPrivateBrowsingAllowed = it.allowedInPrivateBrowsing,
             )
         }
     }
@@ -386,6 +387,7 @@ class GeckoWebExtension(
 
     override fun isAllowedInPrivateBrowsing(): Boolean {
         return isBuiltIn() || nativeExtension.metaData.allowedInPrivateBrowsing
+            || isBundled()
     }
 
     override suspend fun loadIcon(size: Int): Bitmap? {
