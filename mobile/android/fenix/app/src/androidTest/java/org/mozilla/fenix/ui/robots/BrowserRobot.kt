@@ -135,7 +135,7 @@ class BrowserRobot {
             verifyUrl("/releaseNotes")
         } catch (e: AssertionError) {
             Log.i(TAG, "verifyWhatsNewURL: AssertionError caught, checking redirect URL")
-            verifyUrl(SupportUtils.WHATS_NEW_URL)
+            verifyUrl(SupportUtils.getTorWhatsNewUrl())
         }
     }
 
