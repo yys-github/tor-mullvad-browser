@@ -469,4 +469,7 @@
     <string name="pref_key_setup_step_toolbar" translatable="false">pref_key_setup_step_toolbar</string>
     <string name="pref_key_setup_step_theme" translatable="false">pref_key_setup_step_theme</string>
     <string name="pref_key_setup_step_extensions" translatable="false">pref_key_setup_step_extensions</string>
+
+    <string name="pref_key_extensions_version" translatable="false">pref_key_extensions_version</string>
+    <string name="pref_key_https_everywhere_removed" translatable="false">pref_key_https_everywhere_removed</string>
 </resources>
