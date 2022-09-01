@@ -29,6 +29,7 @@ import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.ktx.android.content.appName
 import mozilla.components.support.ktx.android.content.appVersionName
 import org.mozilla.fenix.BuildConfig
+import mozilla.components.support.webextensions.WebExtensionSupport.installedExtensions
 import org.mozilla.fenix.databinding.FragmentInstalledAddOnDetailsBinding
 import org.mozilla.fenix.e2e.SystemInsetsPaddedFragment
 import org.mozilla.fenix.ext.components
@@ -52,6 +53,8 @@ class InstalledAddonDetailsFragment : Fragment(), SystemInsetsPaddedFragment {
     @Suppress("VariableNaming")
     internal var _binding: FragmentInstalledAddOnDetailsBinding? = null
 
+    private var isBundledAddon = false
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -59,6 +62,7 @@ class InstalledAddonDetailsFragment : Fragment(), SystemInsetsPaddedFragment {
     ): View {
         if (!::addon.isInitialized) {
             addon = AddonDetailsFragmentArgs.fromBundle(requireNotNull(arguments)).addon
+            isBundledAddon = installedExtensions[addon.id]?.isBundled() ?: false
         }
 
         setBindingAndBindUI(
@@ -195,6 +199,7 @@ class InstalledAddonDetailsFragment : Fragment(), SystemInsetsPaddedFragment {
         // When the ad-on is blocklisted or not correctly signed, we do not want to enable the toggle switch
         // because users shouldn't be able to re-enable an add-on in this state.
         if (
+            isBundledAddon ||
             addon.isDisabledAsBlocklisted() ||
             addon.isDisabledAsNotCorrectlySigned() ||
             addon.isDisabledAsIncompatible()
@@ -213,7 +218,7 @@ class InstalledAddonDetailsFragment : Fragment(), SystemInsetsPaddedFragment {
                         runIfFragmentIsAttached {
                             this.addon = it
                             switch.isClickable = true
-                            privateBrowsingSwitch.isVisible = it.isEnabled()
+                            privateBrowsingSwitch.isVisible = false
                             privateBrowsingSwitch.isChecked =
                                 it.incognito != Addon.Incognito.NOT_ALLOWED && it.isAllowedInPrivateBrowsing()
                             binding.settings.isVisible = shouldSettingsBeVisible()
@@ -295,7 +300,7 @@ class InstalledAddonDetailsFragment : Fragment(), SystemInsetsPaddedFragment {
     @VisibleForTesting
     internal fun bindAllowInPrivateBrowsingSwitch() {
         val switch = providePrivateBrowsingSwitch()
-        switch.isVisible = addon.isEnabled()
+        switch.isVisible = false
 
         if (addon.incognito == Addon.Incognito.NOT_ALLOWED) {
             switch.isChecked = false
@@ -334,6 +339,7 @@ class InstalledAddonDetailsFragment : Fragment(), SystemInsetsPaddedFragment {
     }
 
     private fun bindReportButton() {
+        binding.reportAddOn.isVisible = !isBundledAddon
         binding.reportAddOn.setOnClickListener { v ->
             val shouldCreatePrivateSession = v.context.components.appStore.state.mode.isPrivate
 
@@ -397,6 +403,7 @@ class InstalledAddonDetailsFragment : Fragment(), SystemInsetsPaddedFragment {
     }
 
     private fun bindRemoveButton() {
+        binding.removeAddOn.isVisible = !isBundledAddon
         binding.removeAddOn.setOnClickListener {
             setAllInteractiveViewsClickable(binding, false)
             requireContext().components.addonManager.uninstallAddon(

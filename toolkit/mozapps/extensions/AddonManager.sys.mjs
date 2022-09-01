@@ -90,8 +90,11 @@ ChromeUtils.defineESModuleGetters(lazy, {
   AbuseReporter: "resource://gre/modules/AbuseReporter.sys.mjs",
   AddonRepository: "resource://gre/modules/addons/AddonRepository.sys.mjs",
   DeferredTask: "resource://gre/modules/DeferredTask.sys.mjs",
+  GeckoViewWebExtension: "resource://gre/modules/GeckoViewWebExtension.sys.mjs",
+  EventDispatcher: "resource://gre/modules/Messaging.sys.mjs",
   Extension: "resource://gre/modules/Extension.sys.mjs",
   ObjectUtils: "resource://gre/modules/ObjectUtils.sys.mjs",
+  PrivateBrowsingUtils: "resource://gre/modules/PrivateBrowsingUtils.sys.mjs",
   RemoteSettings: "resource://services-settings/remote-settings.sys.mjs",
   TelemetryUtils: "resource://gre/modules/TelemetryUtils.sys.mjs",
   isGatedPermissionType:
@@ -2441,6 +2444,24 @@ var AddonManagerInternal = {
     return promiseInstall;
   },
 
+  async installGeckoViewWebExtension(extensionUri) {
+    const installId = Services.uuid.generateUUID().toString();
+    let { extension } = await lazy.GeckoViewWebExtension.installWebExtension(
+      installId,
+      extensionUri
+    );
+    if (lazy.PrivateBrowsingUtils.permanentPrivateBrowsing) {
+      extension = await lazy.GeckoViewWebExtension.setPrivateBrowsingAllowed(
+        extension.webExtensionId,
+        true
+      );
+    }
+    await lazy.EventDispatcher.instance.sendRequest({
+      type: "GeckoView:WebExtension:OnInstalled",
+      extension,
+    });
+  },
+
   /**
    * Starts installation of an AddonInstall notifying the registered
    * web install listener of a blocked or started install.
@@ -2613,6 +2634,11 @@ var AddonManagerInternal = {
       );
 
       if (installAllowed) {
+        if (AppConstants.platform == "android") {
+          aInstall.cancel();
+          this.installGeckoViewWebExtension(aInstall.sourceURI);
+          return;
+        }
         startInstall("AMO");
       } else if (installPerm === Ci.nsIPermissionManager.DENY_ACTION) {
         // Block without prompt
