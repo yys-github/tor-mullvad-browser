@@ -300,6 +300,9 @@ class PermissionsDialogFragment @JvmOverloads constructor(mainDispatcher: Corout
         if (addon.incognito == Addon.Incognito.NOT_ALLOWED || forOptionalPermissions) {
             optionalsSettingsTitle.isVisible = false
             allowedInPrivateBrowsing.isVisible = false
+        } else {
+            allowedInPrivateBrowsing.isChecked = addon.defaultPrivateBrowsingAllowed
+            allowedInPrivateBrowsing.isVisible = !addon.defaultPrivateBrowsingAllowed
         }
 
         if (dataCollectionPermissions.contains(TECHNICAL_AND_INTERACTION_PERM) && !forOptionalPermissions) {
