@@ -11,6 +11,7 @@ export default [
       "actors/**",
     ],
     rules: {
+      complexity: ["error", 35],
       "no-unused-vars": [
         "error",
         {

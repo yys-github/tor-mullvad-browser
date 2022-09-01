@@ -1045,7 +1045,7 @@ class Settings(
 
     var shouldUseHttpsOnly by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_https_only),
-        default = false,
+        default = true
     )
 
     var shouldUseHttpsOnlyInAllTabs by booleanPreference(
@@ -2409,6 +2409,21 @@ class Settings(
     var growthEarlySearchUsed by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_growth_early_search),
         default = false,
+    )
+
+    var noscriptInstalled by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_noscript_installed),
+        default = false
+    )
+
+    var noscriptUpdated by intPreference(
+        appContext.getPreferenceKey(R.string.pref_key_noscript_updated),
+        default = 0
+    )
+
+    var httpsEverywhereRemoved by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_https_everywhere_removed),
+        default = false
     )
 
     /**
