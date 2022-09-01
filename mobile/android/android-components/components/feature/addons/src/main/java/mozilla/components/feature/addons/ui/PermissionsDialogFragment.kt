@@ -289,6 +289,9 @@ class PermissionsDialogFragment
             forOptionalPermissions
         ) {
             allowedInPrivateBrowsing.isVisible = false
+        } else {
+            allowedInPrivateBrowsing.isChecked = addon.defaultPrivateBrowsingAllowed
+            allowedInPrivateBrowsing.isVisible = !addon.defaultPrivateBrowsingAllowed
         }
 
         positiveButton.setOnClickListener {
