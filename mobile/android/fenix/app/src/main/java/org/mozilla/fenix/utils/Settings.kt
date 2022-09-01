@@ -1292,7 +1292,7 @@ class Settings(
     var shouldUseHttpsOnly by
         booleanPreference(
             appContext.getPreferenceKey(R.string.pref_key_https_only),
-            default = false,
+            default = true
         )
 
     var shouldUseHttpsOnlyInAllTabs by
@@ -2633,6 +2633,16 @@ class Settings(
             key = appContext.getPreferenceKey(R.string.pref_key_growth_early_search),
             default = false,
         )
+
+    var extensionsVersion by stringPreference(
+        appContext.getPreferenceKey(R.string.pref_key_extensions_version),
+        default = ""
+    )
+
+    var httpsEverywhereRemoved by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_https_everywhere_removed),
+        default = false
+    )
 
     /**
      * Indicates if hidden engines were restored due to migration to unified search settings UI. Should be removed once
