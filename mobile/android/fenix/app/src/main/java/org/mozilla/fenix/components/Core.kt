@@ -256,6 +256,7 @@ class Core(
             runtime = geckoRuntime,
         ).also {
             WebCompatFeature.install(it)
+            TorBrowserFeatures.install(context, it)
         }
     }
 

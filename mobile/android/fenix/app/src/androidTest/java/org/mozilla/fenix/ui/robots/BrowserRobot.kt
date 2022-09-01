@@ -169,8 +169,7 @@ class BrowserRobot(private val composeTestRule: ComposeTestRule) {
             verifyUrl("firefox.com/en-US/firefox/android/")
         } catch (e: AssertionError) {
             Log.i(TAG, "verifyWhatsNewURL: AssertionError caught, checking redirect URL")
-            val redirectURL = SupportUtils.WHATS_NEW_URL.toUri()
-            verifyUrl(redirectURL.authority?.removePrefix("www.") + redirectURL.encodedPath)
+            verifyUrl(SupportUtils.getTorWhatsNewUrl())
         }
     }
 
