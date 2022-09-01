@@ -53,6 +53,7 @@ val logger = Logger("Addon")
  * @property ratingUrl The link to the ratings page (user reviews) for this [Addon].
  * @property detailUrl The link to the detail page for this [Addon].
  * @property incognito Indicates how the extension works with private browsing windows.
+ * @property defaultPrivateBrowsingAllowed whether the extension should default to pbm-enabled.
  */
 @Parcelize
 data class Addon(
@@ -79,6 +80,7 @@ data class Addon(
     val ratingUrl: String = "",
     val detailUrl: String = "",
     val incognito: Incognito = Incognito.SPANNING,
+    val defaultPrivateBrowsingAllowed: Boolean = false,
 ) : Parcelable {
 
     /**
@@ -653,6 +655,7 @@ data class Addon(
                 detailUrl = detailUrl,
                 incognito = incognito,
                 installedState = installedState,
+                defaultPrivateBrowsingAllowed = metadata?.defaultPrivateBrowsingAllowed == true,
             )
         }
 
