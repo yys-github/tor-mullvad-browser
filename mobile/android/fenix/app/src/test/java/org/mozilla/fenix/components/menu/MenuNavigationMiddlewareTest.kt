@@ -214,7 +214,7 @@ class MenuNavigationMiddlewareTest {
 
         store.dispatch(MenuAction.Navigate.ReleaseNotes).join()
 
-        assertEquals(SupportUtils.WHATS_NEW_URL, params?.url)
+        assertEquals(SupportUtils.getTorWhatsNewUrl(), params?.url)
     }
 
     @Test
