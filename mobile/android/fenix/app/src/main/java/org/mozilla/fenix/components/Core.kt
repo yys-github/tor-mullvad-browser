@@ -263,6 +263,7 @@ class Core(
             )
             .also {
                 WebCompatFeature.install(it)
+                TorBrowserFeatures.install(context, it)
             }
     }
 
