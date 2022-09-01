@@ -137,6 +137,7 @@ import org.mozilla.fenix.theme.DefaultThemeProvider
 import org.mozilla.fenix.theme.Theme
 import org.mozilla.fenix.theme.Theme.Private
 import org.mozilla.fenix.theme.ThemeProvider
+import org.mozilla.fenix.tor.RunOnceBootstrapped
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.isLargeScreenSize
 import org.mozilla.fenix.wallpapers.Wallpaper
@@ -868,8 +869,13 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
                     components.useCases.tabsUseCases.selectTab(sessionId)
                 },
                 onExtensionsLoaded = { extensions ->
-                    components.addonUpdater.registerForFutureUpdates(extensions)
-                    subscribeForNewAddonsIfNeeded(components.supportedAddonsChecker, extensions)
+                    // Delay until bootstrap is finished so that it will actually update tor-browser#44303
+                    components.torController.registerRunOnceBootstrapped(object : RunOnceBootstrapped {
+                        override fun onBootstrapped() {
+                            components.addonUpdater.registerForFutureUpdates(extensions)
+                            subscribeForNewAddonsIfNeeded(components.supportedAddonsChecker, extensions)
+                        }
+                    })
 
                     // Bug 1948634 - Make sure the webcompat-reporter extension is fully uninstalled.
                     // This is added here because we need gecko to load the extension first.
