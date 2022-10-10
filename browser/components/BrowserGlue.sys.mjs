@@ -85,6 +85,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
     "resource://gre/modules/TelemetryReportingPolicy.sys.mjs",
   TRRRacer: "resource:///modules/TRRPerformance.sys.mjs",
   TabCrashHandler: "resource:///modules/ContentCrashHandlers.sys.mjs",
+  TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
   UrlbarPrefs: "resource:///modules/UrlbarPrefs.sys.mjs",
   UsageReporting: "resource://gre/modules/UsageReporting.sys.mjs",
   WebChannel: "resource://gre/modules/WebChannel.sys.mjs",
@@ -2007,6 +2008,8 @@ BrowserGlue.prototype = {
     if (AppConstants.MOZ_SELECTABLE_PROFILES) {
       lazy.SelectableProfileService.init().catch(console.error);
     }
+
+    lazy.TorProviderBuilder.firstWindowLoaded();
 
     ClipboardPrivacy.startup();
 
