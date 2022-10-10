@@ -79,6 +79,7 @@ DIRS += [
     "thumbnails",
     "timermanager",
     "tooltiptext",
+    "tor-launcher",
     "typeaheadfind",
     "utils",
     "url-classifier",
