@@ -99,6 +99,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   TRRRacer: "resource:///modules/TRRPerformance.sys.mjs",
   TabCrashHandler: "resource:///modules/ContentCrashHandlers.sys.mjs",
   TabUnloader: "resource:///modules/TabUnloader.sys.mjs",
+  TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
   UIState: "resource://services-sync/UIState.sys.mjs",
   UrlbarPrefs: "resource:///modules/UrlbarPrefs.sys.mjs",
   UrlbarSearchTermsPersistence:
@@ -2037,6 +2038,8 @@ BrowserGlue.prototype = {
     lazy.PageActions.init();
 
     lazy.DoHController.init();
+
+    lazy.TorProviderBuilder.firstWindowLoaded();
 
     ClipboardPrivacy.startup();
 
