@@ -239,6 +239,9 @@
 @RESPATH@/chrome/torbutton.manifest
 @RESPATH@/chrome/torbutton/*
 
+; Tor integration
+@RESPATH@/components/tor-launcher.manifest
+
 ; [DevTools Startup Files]
 @RESPATH@/browser/chrome/devtools-startup@JAREXT@
 @RESPATH@/browser/chrome/devtools-startup.manifest
