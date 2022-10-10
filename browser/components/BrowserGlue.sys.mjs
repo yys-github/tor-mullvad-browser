@@ -73,6 +73,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   TelemetryReportingPolicy:
     "resource://gre/modules/TelemetryReportingPolicy.sys.mjs",
   TRRRacer: "resource:///modules/TRRPerformance.sys.mjs",
+  TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
   WebChannel: "resource://gre/modules/WebChannel.sys.mjs",
   WebProtocolHandlerRegistrar:
     "resource:///modules/WebProtocolHandlerRegistrar.sys.mjs",
@@ -985,6 +986,8 @@ BrowserGlue.prototype = {
     }
 
     lazy.SecurityLevelRestartNotification.ready();
+
+    lazy.TorProviderBuilder.firstWindowLoaded();
 
     ClipboardPrivacy.startup();
 
