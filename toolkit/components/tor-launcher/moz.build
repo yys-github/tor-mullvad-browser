@@ -1,0 +1,26 @@
+EXTRA_JS_MODULES += [
+    "TorDomainIsolator.sys.mjs",
+]
+
+MOZ_SRC_FILES += [
+    "TorBootstrapRequest.sys.mjs",
+    "TorControlPort.sys.mjs",
+    "TorLauncherUtil.sys.mjs",
+    "TorParsers.sys.mjs",
+    "TorProcess.sys.mjs",
+    "TorProcessAndroid.sys.mjs",
+    "TorProvider.sys.mjs",
+    "TorProviderBase.sys.mjs",
+    "TorProviderBuilder.sys.mjs",
+    "TorProviderMock.sys.mjs",
+    "TorProviderNone.sys.mjs",
+    "TorStartupService.sys.mjs",
+]
+
+XPCOM_MANIFESTS += [
+    "components.conf",
+]
+
+EXTRA_COMPONENTS += [
+    "tor-launcher.manifest",
+]
