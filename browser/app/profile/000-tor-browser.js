@@ -139,3 +139,5 @@ pref("extensions.torlauncher.moat_service", "https://bridges.torproject.org/moat
 pref("browser.profiles.enable", false);
 
 // Log levels
+pref("browser.tor_provider.log_level", "Warn");
+pref("browser.tor_provider.cp_log_level", "Warn");
