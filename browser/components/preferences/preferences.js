@@ -875,6 +875,26 @@ function scrollAndHighlight(subcategory) {
     return;
   }
 
+  // We assign a tabindex=-1 to the element so that we can focus it. This allows
+  // us to move screen reader's focus to an arbitrary position on the page.
+  // See tor-browser#41454 and mozilla bug 1799153.
+  const doFocus = () => {
+    elements[0].setAttribute("tabindex", "-1");
+    Services.focus.setFocus(elements[0], Services.focus.FLAG_NOSCROLL);
+    // Immediately remove again now that it has focus.
+    elements[0].removeAttribute("tabindex");
+  };
+  // The element is not always immediately focusable, so we wait until document
+  // load.
+  if (document.readyState === "complete") {
+    doFocus();
+  } else {
+    // Wait until document load to move focus.
+    // NOTE: This should be called after DOMContentLoaded, where the searchInput
+    // is focused.
+    window.addEventListener("load", doFocus, { once: true });
+  }
+
   elements[0].scrollIntoView({
     behavior: "smooth",
     block: "center",
