@@ -1015,4 +1015,131 @@ export let ProfileDataUpgrader = {
     }
     Services.prefs.setIntPref(MIGRATION_PREF, MIGRATION_VERSION);
   },
+
+  async upgradeTB(isNewProfile) {
+    // Version 1: Tor Browser 12.0. We use it to remove langpacks, after the
+    //            migration to packaged locales.
+    // Version 2: Tor Browser 13.0/13.0a1: tor-browser#41845. Also, removed some
+    //            torbutton preferences that are not used anymore.
+    // Version 3: Tor Browser 13.0.7/13.5a3: Remove blockchair
+    //            (tor-browser#42283).
+    // Version 4: Tor Browser 14.0a4 (2024-09-02): Remove Twitter, Yahoo and
+    //            YouTube search engines (tor-browser#41835).
+    // Version 5: Tor Browser 14.0a5: Clear user preference for CFR settings
+    //            since we hid the UI (tor-browser#43118).
+    // Version 6: Tor Browser 14.5a3: Clear preference for TorSettings that is
+    //            no longer used (tor-browser#41921).
+    //            Drop unused TorConnect setting (tor-browser#43462).
+    // Version 7: Tor Browser 14.5a6: Clear home page update url preference
+    //            (tor-browser#43567).
+    // Version 8: Tor Browser 15.0a2: Remove legacy search addons
+    //            (tor-browser#43111).
+    // Version 9: Tor Browser 15.0a3: Remove YEC 2024 preference.
+    //            (tor-browser#44180)
+    const TBB_MIGRATION_VERSION = 9;
+    const MIGRATION_PREF = "torbrowser.migration.version";
+
+    // If we decide to force updating users to pass through any version
+    // following 12.0, we can remove this check, and check only whether
+    // MIGRATION_PREF has a user value, like Mozilla does.
+    if (isNewProfile) {
+      // Do not migrate fresh profiles
+      Services.prefs.setIntPref(MIGRATION_PREF, TBB_MIGRATION_VERSION);
+      return;
+    } else if (isNewProfile === undefined) {
+      // If this happens, check if upstream updated their function and do not
+      // set this member anymore!
+      console.error("upgradeTB: isNewProfile is undefined.");
+    }
+
+    const currentVersion = Services.prefs.getIntPref(MIGRATION_PREF, 0);
+    const removeLangpacks = async () => {
+      for (const addon of await AddonManager.getAddonsByTypes(["locale"])) {
+        await addon.uninstall();
+      }
+    };
+    if (currentVersion < 1) {
+      try {
+        await removeLangpacks();
+      } catch (err) {
+        console.error("Could not remove langpacks", err);
+      }
+    }
+    if (currentVersion < 2) {
+      const prefToClear = [
+        // tor-browser#41845: We were forcing these value by check the value of
+        // automatic PBM. We decided not to change
+        "browser.cache.disk.enable",
+        "places.history.enabled",
+        "security.nocertdb",
+        "permissions.memory_only",
+        // Old torbutton preferences not used anymore.
+        "extensions.torbutton.loglevel",
+        "extensions.torbutton.logmethod",
+        "extensions.torbutton.pref_fixup_version",
+        "extensions.torbutton.resize_new_windows",
+        "extensions.torbutton.startup",
+        "extensions.torlauncher.prompt_for_locale",
+        "extensions.torlauncher.loglevel",
+        "extensions.torlauncher.logmethod",
+        "extensions.torlauncher.torrc_fixup_version",
+      ];
+      for (const pref of prefToClear) {
+        if (Services.prefs.prefHasUserValue(pref)) {
+          Services.prefs.clearUserPref(pref);
+        }
+      }
+    }
+    const dropAddons = async list => {
+      for (const id of list) {
+        try {
+          const engine = await lazy.AddonManager.getAddonByID(id);
+          await engine?.uninstall();
+        } catch {}
+      }
+    };
+    if (currentVersion < 3) {
+      await dropAddons([
+        "blockchair@search.mozilla.org",
+        "blockchair-onion@search.mozilla.org",
+      ]);
+    }
+    if (currentVersion < 4) {
+      await dropAddons([
+        "twitter@search.mozilla.org",
+        "yahoo@search.mozilla.org",
+        "youtube@search.mozilla.org",
+      ]);
+    }
+    if (currentVersion < 5) {
+      for (const pref of [
+        "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons",
+        "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features",
+      ]) {
+        Services.prefs.clearUserPref(pref);
+      }
+    }
+    if (currentVersion < 6) {
+      Services.prefs.clearUserPref("torbrowser.settings.enabled");
+      Services.prefs.clearUserPref("torbrowser.bootstrap.allow_internet_test");
+    }
+    if (currentVersion < 7) {
+      Services.prefs.clearUserPref("torbrowser.post_update.url");
+    }
+    if (currentVersion < 8) {
+      await dropAddons([
+        "ddg@search.mozilla.org",
+        "ddg-onion@search.mozilla.org",
+        "google@search.mozilla.org",
+        "startpage@search.mozilla.org",
+        "startpage-onion@search.mozilla.org",
+        "wikipedia@search.mozilla.org",
+      ]);
+    }
+    if (currentVersion < 9) {
+      Services.prefs.clearUserPref("torbrowser.homepage.yec2024.message");
+    }
+
+    Services.prefs.setIntPref(MIGRATION_PREF, TBB_MIGRATION_VERSION);
+  },
 };
