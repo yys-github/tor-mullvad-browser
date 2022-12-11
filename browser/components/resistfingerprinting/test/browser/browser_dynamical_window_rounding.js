@@ -46,7 +46,7 @@ function getPlatform() {
 }
 
 async function waitForLetterboxing() {
-  await TestUtils.topicObserved("test:letterboxing:update-margin-finish");
+  await TestUtils.topicObserved("test:letterboxing:update-size-finish");
 }
 
 function handleOSFuzziness(aContent, aTarget) {
@@ -68,8 +68,8 @@ function checkForDefaultSetting(
   aRealHeight
 ) {
   // We can get the rounded size by subtracting twice the margin.
-  let targetWidth = aRealWidth - 2 * RFPHelper.steppedRange(aRealWidth, true);
-  let targetHeight = aRealHeight - 2 * RFPHelper.steppedRange(aRealHeight);
+  let targetWidth = aRealWidth - 2 * RFPHelper.steppedSize(aRealWidth, true);
+  let targetHeight = aRealHeight - 2 * RFPHelper.steppedSize(aRealHeight);
 
   // This platform-specific code is explained in the large comment below.
   if (getPlatform() != "linux") {
