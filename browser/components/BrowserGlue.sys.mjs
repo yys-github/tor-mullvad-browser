@@ -33,6 +33,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   DoHController: "resource:///modules/DoHController.sys.mjs",
   DownloadsViewableInternally:
     "resource:///modules/DownloadsViewableInternally.sys.mjs",
+  DragDropFilter: "resource://gre/modules/DragDropFilter.sys.mjs",
   ExtensionsUI: "resource:///modules/ExtensionsUI.sys.mjs",
   FirefoxBridgeExtensionUtils:
     "resource:///modules/FirefoxBridgeExtensionUtils.sys.mjs",
@@ -2008,6 +2009,8 @@ BrowserGlue.prototype = {
     if (AppConstants.MOZ_SELECTABLE_PROFILES) {
       lazy.SelectableProfileService.init().catch(console.error);
     }
+
+    lazy.DragDropFilter.init();
 
     lazy.TorProviderBuilder.firstWindowLoaded();
 
