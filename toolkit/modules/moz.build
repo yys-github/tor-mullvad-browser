@@ -226,6 +226,7 @@ MOZ_SRC_FILES += [
     "ColorPickerPanel.sys.mjs",
     "DateTimePickerPanel.sys.mjs",
     "InputPickerPanelCommon.sys.mjs",
+    "DragDropFilter.sys.mjs",
 ]
 
 if CONFIG["MOZ_ASAN_REPORTER"]:
