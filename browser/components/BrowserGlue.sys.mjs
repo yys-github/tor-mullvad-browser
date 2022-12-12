@@ -31,6 +31,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   DistributionManagement: "resource:///modules/distribution.sys.mjs",
   DownloadsViewableInternally:
     "resource:///modules/DownloadsViewableInternally.sys.mjs",
+  DragDropFilter: "resource://gre/modules/DragDropFilter.sys.mjs",
   ExtensionsUI: "resource:///modules/ExtensionsUI.sys.mjs",
   // FilePickerCrashed is used by the `listeners` object below.
   // eslint-disable-next-line mozilla/valid-lazy
@@ -980,6 +981,8 @@ BrowserGlue.prototype = {
     }
 
     lazy.SecurityLevelRestartNotification.ready();
+
+    lazy.DragDropFilter.init();
 
     lazy.TorProviderBuilder.firstWindowLoaded();
 
