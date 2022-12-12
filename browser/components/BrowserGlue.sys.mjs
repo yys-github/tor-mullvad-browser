@@ -31,6 +31,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   DistributionManagement: "resource:///modules/distribution.sys.mjs",
   DownloadsViewableInternally:
     "moz-src:///browser/components/downloads/DownloadsViewableInternally.sys.mjs",
+  DragDropFilter: "resource://gre/modules/DragDropFilter.sys.mjs",
   ExtensionsUI: "resource:///modules/ExtensionsUI.sys.mjs",
   FormAutofillUtils: "resource://gre/modules/shared/FormAutofillUtils.sys.mjs",
   Interactions: "moz-src:///browser/components/places/Interactions.sys.mjs",
@@ -938,6 +939,8 @@ BrowserGlue.prototype = {
     }
 
     lazy.SecurityLevelRestartNotification.ready();
+
+    lazy.DragDropFilter.init();
 
     lazy.TorProviderBuilder.firstWindowLoaded();
 
