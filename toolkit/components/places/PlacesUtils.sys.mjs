@@ -12,6 +12,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   Bookmarks: "resource://gre/modules/Bookmarks.sys.mjs",
   BrowserUtils: "resource://gre/modules/BrowserUtils.sys.mjs",
   History: "resource://gre/modules/History.sys.mjs",
+  OpaqueDrag: "moz-src:///toolkit/modules/DragDropFilter.sys.mjs",
   PlacesSyncUtils: "resource://gre/modules/PlacesSyncUtils.sys.mjs",
   Sqlite: "resource://gre/modules/Sqlite.sys.mjs",
 });
@@ -1222,6 +1223,9 @@ export var PlacesUtils = {
     /** @type {{uri: string, title: string, type: string}[]} */
     let validNodes = [];
     let invalidNodes = [];
+    if (type === "application/x-torbrowser-opaque") {
+      ({ value: blob, type } = lazy.OpaqueDrag.retrieve(blob));
+    }
     switch (type) {
       case this.TYPE_X_MOZ_PLACE:
       case this.TYPE_X_MOZ_PLACE_SEPARATOR:
