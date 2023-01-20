@@ -8,8 +8,6 @@ import { XPCOMUtils } from "resource://gre/modules/XPCOMUtils.sys.mjs";
 
 import { PromiseUtils } from "resource://gre/modules/PromiseUtils.sys.mjs";
 
-import { AppConstants } from "resource://gre/modules/AppConstants.sys.mjs";
-
 const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
@@ -1330,11 +1328,6 @@ export class SearchService {
 
     let result = Cr.NS_OK;
     try {
-      // Create the search engine selector.
-      this.#engineSelector = new lazy.SearchEngineSelector(
-        this.#handleConfigurationUpdated.bind(this)
-      );
-
       // See if we have a settings file so we don't have to parse a bunch of XML.
       let settings = await this._settings.get();
 
@@ -2265,25 +2258,9 @@ export class SearchService {
   // This is prefixed with _ rather than # because it is
   // called in test_remove_engine_notification_box.js
   async _fetchEngineSelectorEngines() {
-    let searchEngineSelectorProperties = {
-      locale: Services.locale.appLocaleAsBCP47,
-      region: lazy.Region.home || "default",
-      channel: AppConstants.MOZ_APP_VERSION_DISPLAY.endsWith("esr")
-        ? "esr"
-        : AppConstants.MOZ_UPDATE_CHANNEL,
-      experiment:
-        lazy.NimbusFeatures.searchConfiguration.getVariable("experiment") ?? "",
-      distroID: lazy.SearchUtils.distroID ?? "",
-    };
-
-    for (let [key, value] of Object.entries(searchEngineSelectorProperties)) {
-      this._settings.setMetaDataAttribute(key, value);
-    }
-
-    let { engines, privateDefault } =
-      await this.#engineSelector.fetchEngineConfiguration(
-        searchEngineSelectorProperties
-      );
+    const engines = [
+      { webExtension: { id: "ddg@search.mozilla.org" }, orderHint: 100 },
+    ];
 
     for (let e of engines) {
       if (!e.webExtension) {
@@ -2293,7 +2270,7 @@ export class SearchService {
         e.webExtension?.locale ?? lazy.SearchUtils.DEFAULT_TAG;
     }
 
-    return { engines, privateDefault };
+    return { engines, privateDefault: undefined };
   }
 
   #setDefaultAndOrdersFromSelector(engines, privateDefault) {
