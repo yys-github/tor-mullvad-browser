@@ -2779,6 +2779,8 @@ static nsresult ProfileMissingDialog(nsINativeAppSupport* aNative) {
 #endif  // MOZ_WIDGET_ANDROID
 }
 
+// If aUnlocker is NULL, it is also OK for the following arguments to be NULL:
+//   aProfileDir, aProfileLocalDir, aResult.
 static ReturnAbortOnError ProfileLockedDialog(nsIFile* aProfileDir,
                                               nsIFile* aProfileLocalDir,
                                               nsIProfileUnlocker* aUnlocker,
@@ -2792,10 +2794,12 @@ static ReturnAbortOnError ProfileLockedDialog(nsIFile* aProfileDir,
   gStartupLock = nullptr;
 #endif
 
-  bool exists;
-  aProfileDir->Exists(&exists);
-  if (!exists) {
-    return ProfileMissingDialog(aNative);
+  if (aProfileDir) {
+    bool exists;
+    aProfileDir->Exists(&exists);
+    if (!exists) {
+      return ProfileMissingDialog(aNative);
+    }
   }
 
   ScopedXPCOMStartup xpcom;
@@ -2805,7 +2809,7 @@ static ReturnAbortOnError ProfileLockedDialog(nsIFile* aProfileDir,
 #if defined(MOZ_TELEMETRY_REPORTING)
   // We cannot check if telemetry has been disabled by the user, yet.
   // So, rely on the build time settings, instead.
-  mozilla::Telemetry::WriteFailedProfileLock(aProfileDir);
+  if (aProfileDir) mozilla::Telemetry::WriteFailedProfileLock(aProfileDir);
 #endif
 
   rv = xpcom.SetWindowCreator(aNative);
