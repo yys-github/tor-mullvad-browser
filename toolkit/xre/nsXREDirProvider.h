@@ -131,6 +131,13 @@ class nsXREDirProvider final : public nsIDirectoryServiceProvider2,
   nsresult GetProfileDir(nsIFile** aResult);
 
   /**
+   * Get the Tor Browser user data directory.
+   * We take for granted that for Tor Browser we can take the parent directory
+   * of the one returned by GetUserDataDirectoryHome (with aLocal = false).
+   */
+  nsresult GetTorBrowserUserDataDir(nsIFile** aFile);
+
+  /**
    * Test only methods used by XREAppDir gtests to reset the values of
    * gDataDirProfileLocal and gDataDirProfile
    */
