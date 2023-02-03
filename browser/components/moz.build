@@ -49,7 +49,6 @@ DIRS += [
     "pagedata",
     "permissions",
     "places",
-    "pocket",
     "preferences",
     "privatebrowsing",
     "prompts",
