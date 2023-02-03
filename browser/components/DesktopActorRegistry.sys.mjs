@@ -752,22 +752,6 @@ let JSWINDOWACTORS = {
     allFrames: true,
   },
 
-  ASRouter: {
-    parent: {
-      esModuleURI: "resource:///actors/ASRouterParent.sys.mjs",
-    },
-    child: {
-      esModuleURI: "resource:///actors/ASRouterChild.sys.mjs",
-      events: {
-        // This is added so the actor instantiates immediately and makes
-        // methods available to the page js on load.
-        DOMDocElementInserted: {},
-      },
-    },
-    matches: ["about:asrouter*", "about:welcome*", "about:privatebrowsing*"],
-    remoteTypes: ["privilegedabout"],
-  },
-
   SwitchDocumentDirection: {
     child: {
       esModuleURI: "resource:///actors/SwitchDocumentDirectionChild.sys.mjs",
