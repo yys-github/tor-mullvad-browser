@@ -44,7 +44,7 @@ DIRS += [
     "messagepreview",
     "migration",
     "mozcachedohttp",
-    "newtab",
+    # Exclude newtab component. tor-browser#43886.
     "originattributes",
     "pagedata",
     "permissions",
