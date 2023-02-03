@@ -9,12 +9,8 @@ const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
   AboutHomeStartupCache: "resource:///modules/AboutHomeStartupCache.sys.mjs",
-  AboutNewTab: "resource:///modules/AboutNewTab.sys.mjs",
   AWToolbarButton: "resource:///modules/aboutwelcome/AWToolbarUtils.sys.mjs",
   ASRouter: "resource:///modules/asrouter/ASRouter.sys.mjs",
-  ASRouterDefaultConfig:
-    "resource:///modules/asrouter/ASRouterDefaultConfig.sys.mjs",
-  ASRouterNewTabHook: "resource:///modules/asrouter/ASRouterNewTabHook.sys.mjs",
   ActorManagerParent: "resource://gre/modules/ActorManagerParent.sys.mjs",
   AddonManager: "resource://gre/modules/AddonManager.sys.mjs",
   AsyncShutdown: "resource://gre/modules/AsyncShutdown.sys.mjs",
@@ -416,27 +412,6 @@ let JSWINDOWACTORS = {
       },
     },
     matches: ["about:messagepreview", "about:messagepreview?*"],
-  },
-
-  AboutPocket: {
-    parent: {
-      esModuleURI: "resource:///actors/AboutPocketParent.sys.mjs",
-    },
-    child: {
-      esModuleURI: "resource:///actors/AboutPocketChild.sys.mjs",
-
-      events: {
-        DOMDocElementInserted: { capture: true },
-      },
-    },
-
-    remoteTypes: ["privilegedabout"],
-    matches: [
-      "about:pocket-saved*",
-      "about:pocket-signup*",
-      "about:pocket-home*",
-      "about:pocket-style-guide*",
-    ],
   },
 
   AboutPrivateBrowsing: {
@@ -994,22 +969,6 @@ let JSWINDOWACTORS = {
 
     messageManagerGroups: ["browsers"],
     allFrames: true,
-  },
-
-  ASRouter: {
-    parent: {
-      esModuleURI: "resource:///actors/ASRouterParent.sys.mjs",
-    },
-    child: {
-      esModuleURI: "resource:///actors/ASRouterChild.sys.mjs",
-      events: {
-        // This is added so the actor instantiates immediately and makes
-        // methods available to the page js on load.
-        DOMDocElementInserted: {},
-      },
-    },
-    matches: ["about:asrouter*", "about:welcome*", "about:privatebrowsing*"],
-    remoteTypes: ["privilegedabout"],
   },
 
   SwitchDocumentDirection: {
@@ -1982,8 +1941,6 @@ BrowserGlue.prototype = {
 
   // the first browser window has finished initializing
   _onFirstWindowLoaded: function BG__onFirstWindowLoaded(aWindow) {
-    lazy.AboutNewTab.init();
-
     lazy.TabCrashHandler.init();
 
     lazy.ProcessHangMonitor.init();
@@ -3050,13 +3007,6 @@ BrowserGlue.prototype = {
           ) {
             await lazy.AWToolbarButton.maybeAddSetupButton();
           }
-        },
-      },
-
-      {
-        name: "ASRouterNewTabHook.createInstance",
-        task: () => {
-          lazy.ASRouterNewTabHook.createInstance(lazy.ASRouterDefaultConfig());
         },
       },
 
