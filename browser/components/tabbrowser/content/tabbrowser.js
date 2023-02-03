@@ -108,8 +108,6 @@
         PictureInPicture: "resource://gre/modules/PictureInPicture.sys.mjs",
         // SmartTabGrouping.sys.mjs is missing. tor-browser#44045.
         // Unused in this context. See mozilla bug 1981785.
-        SponsorProtection:
-          "moz-src:///browser/components/newtab/SponsorProtection.sys.mjs",
         TabMetrics:
           "moz-src:///browser/components/tabbrowser/TabMetrics.sys.mjs",
         TabStateFlusher:
@@ -7367,10 +7365,6 @@
           debugStringArray.push("[A]");
         }
 
-        if (this.SponsorProtection.isProtectedBrowser(tab.linkedBrowser)) {
-          debugStringArray.push("[S]");
-        }
-
         if (debugStringArray.length) {
           labelArray.push(debugStringArray.join(" "));
         }
@@ -8900,10 +8894,6 @@
       { loadFlags, globalHistoryOptions }
     ) {
       if (globalHistoryOptions?.triggeringSponsoredURL) {
-        if (globalHistoryOptions.triggeringSource == "newtab") {
-          gBrowser.SponsorProtection.addProtectedBrowser(browser);
-        }
-
         try {
           // Browser may access URL after fixing it up, then store the URL into DB.
           // To match with it, fix the link up explicitly.
@@ -8924,8 +8914,6 @@
             globalHistoryOptions.triggeringSource
           );
         } catch (e) {}
-      } else {
-        gBrowser.SponsorProtection.removeProtectedBrowser(browser);
       }
 
       if (globalHistoryOptions?.triggeringSearchEngine) {
