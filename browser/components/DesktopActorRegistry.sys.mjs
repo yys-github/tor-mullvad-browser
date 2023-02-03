@@ -132,27 +132,6 @@ let JSWINDOWACTORS = {
       "browser.newtabpage.activity-stream.asrouter.devtoolsEnabled",
   },
 
-  AboutPocket: {
-    parent: {
-      esModuleURI: "resource:///actors/AboutPocketParent.sys.mjs",
-    },
-    child: {
-      esModuleURI: "resource:///actors/AboutPocketChild.sys.mjs",
-
-      events: {
-        DOMDocElementInserted: { capture: true },
-      },
-    },
-
-    remoteTypes: ["privilegedabout"],
-    matches: [
-      "about:pocket-saved*",
-      "about:pocket-signup*",
-      "about:pocket-home*",
-      "about:pocket-style-guide*",
-    ],
-  },
-
   AboutPrivateBrowsing: {
     parent: {
       esModuleURI: "resource:///actors/AboutPrivateBrowsingParent.sys.mjs",
@@ -642,22 +621,6 @@ let JSWINDOWACTORS = {
 
     messageManagerGroups: ["browsers"],
     allFrames: true,
-  },
-
-  ASRouter: {
-    parent: {
-      esModuleURI: "resource:///actors/ASRouterParent.sys.mjs",
-    },
-    child: {
-      esModuleURI: "resource:///actors/ASRouterChild.sys.mjs",
-      events: {
-        // This is added so the actor instantiates immediately and makes
-        // methods available to the page js on load.
-        DOMDocElementInserted: {},
-      },
-    },
-    matches: ["about:asrouter*", "about:welcome*", "about:privatebrowsing*"],
-    remoteTypes: ["privilegedabout"],
   },
 
   SwitchDocumentDirection: {
