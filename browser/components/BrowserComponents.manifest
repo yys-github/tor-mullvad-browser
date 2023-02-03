@@ -50,7 +50,6 @@ category browser-quit-application-granted resource://gre/modules/NewTabUtils.sys
 category browser-quit-application-granted resource://normandy/Normandy.sys.mjs Normandy.uninit
 #endif
 category browser-quit-application-granted resource://gre/modules/RFPHelper.sys.mjs RFPHelper.uninit
-category browser-quit-application-granted resource:///modules/asrouter/ASRouterNewTabHook.sys.mjs ASRouterNewTabHook.destroy
 #ifdef MOZ_UPDATER
 category browser-quit-application-granted resource://gre/modules/UpdateListener.sys.mjs UpdateListener.reset
 #endif
