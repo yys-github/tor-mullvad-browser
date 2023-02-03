@@ -71,7 +71,6 @@ ChromeUtils.defineESModuleGetters(this, {
   ReportBrokenSite: "resource:///modules/ReportBrokenSite.sys.mjs",
   SafeBrowsing: "resource://gre/modules/SafeBrowsing.sys.mjs",
   Sanitizer: "resource:///modules/Sanitizer.sys.mjs",
-  SaveToPocket: "chrome://pocket/content/SaveToPocket.sys.mjs",
   ScreenshotsUtils: "resource:///modules/ScreenshotsUtils.sys.mjs",
   SearchUIUtils: "resource:///modules/SearchUIUtils.sys.mjs",
   SessionStartup: "resource:///modules/sessionstore/SessionStartup.sys.mjs",
@@ -3391,8 +3390,6 @@ var XULBrowserWindow = {
     BrowserPageActions.onLocationChange();
 
     SafeBrowsingNotificationBox.onLocationChange(aLocationURI);
-
-    SaveToPocket.onLocationChange(window);
 
     UrlbarProviderSearchTips.onLocationChange(
       window,
