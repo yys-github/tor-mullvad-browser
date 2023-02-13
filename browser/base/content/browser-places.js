@@ -1449,6 +1449,7 @@ var BookmarkingUI = {
     let newTabURLs = [
       newTabURL,
       "about:home",
+      "about:mullvad-browser",
       "chrome://browser/content/blanktab.html",
     ];
     if (PrivateBrowsingUtils.isWindowPrivate(window)) {
