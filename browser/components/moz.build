@@ -42,6 +42,7 @@ DIRS += [
     "genai",
     "messagepreview",
     "migration",
+    "mullvad-browser",
     "newidentity",
     "newtab",
     "originattributes",
