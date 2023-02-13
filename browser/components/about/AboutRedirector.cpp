@@ -22,7 +22,7 @@
 #define ABOUT_WELCOME_CHROME_URL \
   "chrome://browser/content/aboutwelcome/aboutwelcome.html"
 #define ABOUT_HOME_URL "about:home"
-#define BASE_BROWSER_HOME_PAGE_URL "chrome://browser/content/blanktab.html"
+#define BASE_BROWSER_HOME_PAGE_URL "about:mullvad-browser"
 
 namespace mozilla {
 namespace browser {
@@ -172,6 +172,9 @@ static const RedirEntry kRedirMap[] = {
          nsIAboutModule::URI_MUST_LOAD_IN_CHILD |
          nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS |
          nsIAboutModule::HIDE_FROM_ABOUTABOUT},
+    {"mullvad-browser",
+     "chrome://browser/content/mullvad-browser/aboutMullvadBrowser.html",
+     BASE_BROWSER_HOME_PAGE_FLAGS},
     {"newprofile", "chrome://browser/content/profiles/new-profile.html",
      nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
          nsIAboutModule::IS_SECURE_CHROME_UI | nsIAboutModule::ALLOW_SCRIPT |
