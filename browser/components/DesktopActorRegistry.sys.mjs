@@ -140,6 +140,19 @@ let JSWINDOWACTORS = {
       "browser.newtabpage.activity-stream.asrouter.devtoolsEnabled",
   },
 
+  AboutMullvadBrowser: {
+    parent: {
+      esModuleURI: "resource:///actors/AboutMullvadBrowserParent.sys.mjs",
+    },
+    child: {
+      esModuleURI: "resource:///actors/AboutMullvadBrowserChild.sys.mjs",
+      events: {
+        DOMContentLoaded: {},
+      },
+    },
+    matches: ["about:mullvad-browser"],
+  },
+
   AboutPrivateBrowsing: {
     parent: {
       esModuleURI: "resource:///actors/AboutPrivateBrowsingParent.sys.mjs",
