@@ -46,6 +46,7 @@ DIRS += [
     "messagepreview",
     "migration",
     "mozcachedohttp",
+    "mullvad-browser",
     "multilineeditor",
     "newidentity",
     # Exclude newtab component. tor-browser#43886.
