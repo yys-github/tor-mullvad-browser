@@ -416,7 +416,7 @@ class BaseAboutNewTabRedirector {
    * the newtab page has no effect on the result of this function.
    */
   get defaultURL() {
-    return "about:blank";
+    return "about:mullvad-browser";
   }
 
   newChannel() {
