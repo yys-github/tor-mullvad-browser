@@ -9,4 +9,4 @@
 # remain unchanged across different versions (Nightly, Beta, etc.).
 -brand-product-name = Mullvad Browser
 -vendor-short-name = Mullvad
-trademarkInfo = Firefox and the Firefox logos are trademarks of the Mozilla Foundation.
+trademarkInfo = Mullvad Browser and the Mullvad Browser logos are trademarks of Mullvad VPN AB.
