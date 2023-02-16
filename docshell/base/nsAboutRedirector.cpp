@@ -230,6 +230,8 @@ static const RedirEntry kRedirMap[] = {
     {"sync-log", "chrome://global/content/aboutSyncLog.html",
      nsIAboutModule::ALLOW_SCRIPT},
 #  endif
+#endif
+#ifdef MULLVAD_BROWSER
     {"telemetry", "chrome://global/content/aboutTelemetry.xhtml",
      nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::IS_SECURE_CHROME_UI},
 #endif
