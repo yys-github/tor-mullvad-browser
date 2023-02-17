@@ -10,3 +10,6 @@ pref("network.trr.uri", "https://doh.mullvad.net/dns-query");
 pref("network.trr.default_provider_uri", "https://doh.mullvad.net/dns-query");
 pref("network.trr.mode", 3);
 pref("doh-rollout.provider-list", "[{\"UIName\":\"Mullvad\",\"autoDefault\":true,\"canonicalName\":\"\",\"id\":\"mullvad\",\"last_modified\":0,\"schema\":0,\"uri\":\"https://doh.mullvad.net/dns-query\"},{\"UIName\":\"Mullvad (Ad-blocking)\",\"autoDefault\":false,\"canonicalName\":\"\",\"id\":\"mullvad\",\"last_modified\":0,\"schema\":0,\"uri\":\"https://adblock.doh.mullvad.net/dns-query\"}]");
+
+// privacy-browser#37: Customization for the about dialog
+pref("app.releaseNotesURL.aboutDialog", "about:blank");
