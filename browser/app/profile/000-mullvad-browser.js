@@ -15,3 +15,7 @@ pref("doh-rollout.provider-list", "[{\"UIName\":\"Mullvad\",\"autoDefault\":true
 
 // privacy-browser#37: Customization for the about dialog
 pref("app.releaseNotesURL.aboutDialog", "about:blank");
+
+// privacy-browser#70: Temporarily disable the language notification
+// TODO: Remove when we enable other languages
+pref("intl.language_notification.shown", true);
