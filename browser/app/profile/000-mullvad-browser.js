@@ -30,3 +30,8 @@ pref("dom.webaudio.enabled", false);
 pref("media.peerconnection.enabled", false);
 pref("media.navigator.enabled", false);
 #endif
+
+// Temporarily disable signature verification on extensions
+// FIXME: This should be removed as soon as the Mullvad extension is signed!
+// See also privacy-browser#72, privacy-browser#20
+pref("xpinstall.signatures.required", false);
