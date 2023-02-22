@@ -19,3 +19,11 @@ pref("app.releaseNotesURL.aboutDialog", "about:blank");
 // privacy-browser#70: Temporarily disable the language notification
 // TODO: Remove when we enable other languages
 pref("intl.language_notification.shown", true);
+
+// WebRTC (privacy-browser#24, 25, 26 and 45)
+#ifdef XP_WIN
+// Still not supported, so keep these features off
+pref("dom.webaudio.enabled", false);
+pref("media.peerconnection.enabled", false);
+pref("media.navigator.enabled", false);
+#endif

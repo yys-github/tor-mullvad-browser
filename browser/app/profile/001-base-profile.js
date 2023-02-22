@@ -265,7 +265,6 @@ pref("dom.disable_window_move_resize", true);
 pref("media.benchmark.vp9.threshold", 0);
 pref("dom.enable_resource_timing", false); // Bug 13024: To hell with this API
 pref("privacy.resistFingerprinting.block_mozAddonManager", true); // Bug 26114
-pref("dom.webaudio.enabled", false); // Bug 13017: Disable Web Audio API
 pref("dom.webmidi.enabled", false); //  Bug 41398: Disable Web MIDI API
 pref("dom.w3c_touch_events.enabled", 0); // Bug 10286: Always disable Touch API
 pref("dom.vr.enabled", false); // Bug 21607: Disable WebVR for now
@@ -360,10 +359,6 @@ pref("network.http.http2.enable-hpack-dump", false, locked);
 // tor-browser#23044: Make sure we don't have any GIO supported protocols
 // (defense in depth measure)
 pref("network.gio.supported-protocols", "");
-pref("media.peerconnection.enabled", false); // Disable WebRTC interfaces
-// Disables media devices but only if `media.peerconnection.enabled` is set to
-// `false` as well. (see bug 16328 for this defense-in-depth measure)
-pref("media.navigator.enabled", false);
 // GMPs (Gecko Media Plugins, https://wiki.mozilla.org/GeckoMediaPlugins)
 // We make sure they don't show up on the Add-on panel and confuse users.
 // And the external update/donwload server must not get pinged. We apply a
