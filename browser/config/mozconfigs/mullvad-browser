@@ -1,6 +1,6 @@
 . $topsrcdir/browser/config/mozconfigs/base-browser
 
-export MOZ_APP_BASENAME=PrivacyBrowser
+export MOZ_APP_BASENAME=MullvadBrowser
 mk_add_options MOZ_APP_DISPLAYNAME="Mullvad Browser"
 
 ac_add_options --with-user-appdir=Mullvad
