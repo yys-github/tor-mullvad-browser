@@ -8,7 +8,7 @@ body {
   grid-template-rows: 1fr auto;
   text-align: center;
   color: #FBFBFE;
-  background: radial-gradient(117.28% 57.8% at 50% 47.7%, #205C9D 0%, #1B4D83 26.04%, #05101B 100%);
+  background: radial-gradient(117% 58% at 50% 48%, #205C9D 0%, #1B4D83 26%, #05101B 100%);
   font-family: 'Open Sans', sans-serif;
 }
 
