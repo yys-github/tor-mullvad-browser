@@ -803,3 +803,14 @@ section:not(:empty) ~ :is(#empty-addons-message, #empty-addons-promo) {
     --addons-promo-text-padding-inline: 0;
   }
 }
+
+/* Mullvad Browser discourages users from installing extensions */
+addon-page-header .main-search {
+  /* preserving the vertical space in order to keep the title aligned */
+  visibility: hidden;
+}
+
+#help-button,
+#empty-addons-message {
+  display: none;
+}
