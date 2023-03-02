@@ -816,3 +816,14 @@ section:not(:empty) ~ #empty-addons-message {
 .permission-header > .addon-sitepermissions-host {
   font-weight: var(--font-weight-bold);
 }
+
+/* Mullvad Browser discourages users from installing extensions */
+addon-page-header .main-search {
+  /* preserving the vertical space in order to keep the title aligned */
+  visibility: hidden;
+}
+
+#help-button,
+#empty-addons-message {
+  display: none;
+}
