@@ -14,6 +14,17 @@ body {
 
 a {
   color: #FFBD4F;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #FFD567;
+  text-decoration: underline solid;
+}
+
+a:active {
+  color: #FFEA80;
+  text-decoration: none;
 }
 
 p {
