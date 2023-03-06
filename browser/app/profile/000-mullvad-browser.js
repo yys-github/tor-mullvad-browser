@@ -28,3 +28,8 @@ pref("dom.webaudio.enabled", false);
 pref("media.peerconnection.enabled", false);
 pref("media.navigator.enabled", false);
 #endif
+
+// privacy-browser#94: Disable legacy global microphone/webcam indicator
+// Disable the legacy Firefox Quantum-styled global webcam/microphone indicator in favor of each
+// platform's native indicator
+pref("privacy.webrtc.legacyGlobalIndicator", false);
