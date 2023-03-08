@@ -261,5 +261,6 @@
   "SecurityLevelButton",
   "NewIdentityButton",
   "TorUIUtils",
-  "TorDomainIsolator"
+  "TorDomainIsolator",
+  "gTorCircuitPanel"
 ]
