@@ -307,6 +307,11 @@ XPCOMUtils.defineLazyScriptGetter(
   "gProfiles",
   "chrome://browser/content/browser-profiles.js"
 );
+XPCOMUtils.defineLazyScriptGetter(
+  this,
+  ["gTorCircuitPanel"],
+  "chrome://browser/content/torCircuitPanel.js"
+);
 
 // lazy service getters
 
