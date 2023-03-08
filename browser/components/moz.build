@@ -70,6 +70,7 @@ DIRS += [
     "translations",
     "uitour",
     "urlbar",
+    "torcircuit",
 ]
 
 DIRS += ["build"]
