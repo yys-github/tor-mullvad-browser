@@ -32,7 +32,9 @@
 
       /* And don't show the identity icon box in this case,
          just permissions indication */
-      > #identity-icon-box {
+      /* Hide the tor circuit when the identity box is also hidden.
+       * tor-browser#45398. */
+      > :is(#identity-icon-box, #tor-circuit-button) {
         display: none;
       }
     }
