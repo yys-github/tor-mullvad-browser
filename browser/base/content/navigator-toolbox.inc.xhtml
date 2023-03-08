@@ -198,6 +198,19 @@
             <image id="remote-control-icon"/>
           </box>
 
+          <!-- We follow the surrounding code and use a
+             - <xul:box role="button"> rather than a more semantic
+             - <html:button>, <xul:button> or <xul:toolbarbutton> -->
+          <box id="tor-circuit-button"
+               role="button"
+               class="identity-box-button"
+               align="center"
+               data-l10n-id="tor-circuit-urlbar-button"
+               urlbar-slot="site-info"
+               hidden="true">
+            <image id="tor-circuit-button-icon"/>
+          </box>
+
           <box id="trust-icon-container" align="center" role="button" data-l10n-id="urlbar-identity-button" urlbar-slot="site-info">
             <image id="trust-icon"/>
             <label id="trust-label" crop="center" flex="1" data-l10n-id="urlbar-trust-icon-notsecure-label" />
