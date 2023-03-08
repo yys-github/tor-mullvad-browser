@@ -7,6 +7,7 @@
 #tracking-protection-icon-container,
 #identity-box,
 #trust-icon-container,
+#tor-circuit-button,
 #urlbar-label-box {
   height: var(--urlbar-basic-component-size);
 }
