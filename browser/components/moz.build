@@ -73,6 +73,7 @@ DIRS += [
     "uitour",
     "urlbar",
     "webrtc",
+    "torcircuit",
 ]
 
 DIRS += ["build"]
