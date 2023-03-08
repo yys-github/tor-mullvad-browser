@@ -349,6 +349,8 @@ var gBrowserInit = {
     // Init the SecurityLevelButton
     SecurityLevelButton.init();
 
+    gTorCircuitPanel.init();
+
     // Certain kinds of automigration rely on this notification to complete
     // their tasks BEFORE the browser window is shown. SessionStore uses it to
     // restore tabs into windows AFTER important parts like gMultiProcessBrowser
@@ -1196,6 +1198,8 @@ var gBrowserInit = {
     BookmarkingUI.uninit();
 
     SecurityLevelButton.uninit();
+
+    gTorCircuitPanel.uninit();
 
     // LinkPreview.sys.mjs is missing. tor-browser#44045.
 
