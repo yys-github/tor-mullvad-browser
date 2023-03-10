@@ -5,6 +5,7 @@
 #include "sdp/RsdparsaSdpAttributeList.h"
 
 #include <limits>
+#include <string>
 
 #include "SdpAttribute.h"
 #include "nsCRT.h"
