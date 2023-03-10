@@ -220,11 +220,13 @@ case "$target" in
         fi
         MOZ_OPTIMIZE_FLAGS="-O2"
         LDFLAGS="$LDFLAGS -LARGEADDRESSAWARE"
+
+        # avoid conficts with std::min/max
+        AC_DEFINE(NOMINMAX)
     fi
     AC_DEFINE(HAVE__MSIZE)
     AC_DEFINE(WIN32_LEAN_AND_MEAN)
     dnl See http://support.microsoft.com/kb/143208 to use STL
-    AC_DEFINE(NOMINMAX)
 
     case "$host_os" in
     cygwin*|msvc*|mks*)
