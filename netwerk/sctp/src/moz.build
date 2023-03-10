@@ -63,6 +63,8 @@ if CONFIG['OS_TARGET'] in ('Linux', 'Android'):
     DEFINES['_GNU_SOURCE'] = 1
 elif CONFIG['OS_TARGET'] == 'Darwin':
     DEFINES['__APPLE_USE_RFC_2292'] = 1
+elif CONFIG['OS_TARGET'] == 'WINNT':
+    DEFINES['_CRT_RAND_S'] = True
 
 LICENSES += ["sctp"]
 LICENSES["sctp"].title = "SCTP Licenses"
