@@ -40,7 +40,7 @@ const PREF_REMOTESETTINGS_DISABLED = "extensions.remoteSettings.disabled";
 const PREF_USE_REMOTE = "extensions.webextensions.remote";
 const PREF_AMTELEMETRY_ADDONS_BUILDER =
   "extensions.telemetry.EnvironmentAddonBuilder";
-const PREF_EM_LAST_FORK_VERSION = "extensions.lastBaseBrowserVersion";
+const PREF_EM_LAST_FORK_VERSION = "extensions.lastTorBrowserVersion";
 
 const PREF_MIN_WEBEXT_PLATFORM_VERSION =
   "extensions.webExtensionsMinPlatformVersion";
