@@ -8,10 +8,18 @@
 
 import os
 
+# TODO When TOR_BROWSER_DATA_OUTSIDE_APP_DIR is used on all platforms,
+# we should remove all lines in this file that contain:
+#      TorBrowser/Data
+
 
 def get_build_entries(root_path):
     """Iterates through the root_path, creating a list for each file and
     directory. Excludes any file paths ending with channel-prefs.js.
+    To support Tor Browser updates, excludes:
+      TorBrowser/Data/Browser/profiles.ini
+      TorBrowser/Data/Browser/profile.default/bookmarks.html
+      TorBrowser/Data/Tor/torrc
     """
     rel_file_path_set = set()
     rel_dir_path_set = set()
@@ -20,6 +28,11 @@ def get_build_entries(root_path):
             parent_dir_rel_path = root[len(root_path) + 1 :]
             rel_path_file = os.path.join(parent_dir_rel_path, file_name)
             rel_path_file = rel_path_file.replace("\\", "/")
+            tb_data_files = {
+                "TorBrowser/Data/Browser/profiles.ini",
+                "TorBrowser/Data/Browser/profile.default/bookmarks.html",
+                "TorBrowser/Data/Tor/torrc",
+            }
             if not (
                 rel_path_file.endswith("channel-prefs.js")
                 or rel_path_file.endswith("update-settings.ini")
@@ -28,6 +41,7 @@ def get_build_entries(root_path):
                 or "/UpdateSettings.framework/" in rel_path_file
                 or rel_path_file.startswith("UpdateSettings.framework/")
                 or "distribution/" in rel_path_file
+                or rel_path_file in tb_data_files
             ):
                 rel_file_path_set.add(rel_path_file)
 
