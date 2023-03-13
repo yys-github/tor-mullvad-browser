@@ -3978,7 +3978,7 @@ CompatCheckResult CheckCompatibility(nsIFile* aProfileDir,
   nsAutoCString buf;
 
   nsAutoCString forkVersion(BASE_BROWSER_VERSION_QUOTED);
-  rv = parser.GetString("Compatibility", "LastBaseBrowserVersion", buf);
+  rv = parser.GetString("Compatibility", "LastTorBrowserVersion", buf);
   if (NS_FAILED(rv) || !forkVersion.Equals(buf)) return result;
 
   rv = parser.GetString("Compatibility", "LastOSABI", buf);
@@ -4043,7 +4043,7 @@ static void WriteVersion(nsIFile* aProfileDir, const nsCString& aVersion,
 
   nsAutoCString forkVersion(BASE_BROWSER_VERSION_QUOTED);
   static const char kForkVersionHeader[] =
-      NS_LINEBREAK "LastBaseBrowserVersion=";
+      NS_LINEBREAK "LastTorBrowserVersion=";
   PR_Write(fd, kForkVersionHeader, sizeof(kForkVersionHeader) - 1);
   PR_Write(fd, forkVersion.get(), forkVersion.Length());
 
