@@ -50,9 +50,9 @@ pref("browser.download.useDownloadDir", false);
 pref("browser.download.manager.addToRecentDocs", false);
 
 // Misc privacy: Disk
-pref("signon.rememberSignons", false);
-pref("browser.formfill.enable", false);
-pref("signon.autofillForms", false);
+pref("signon.rememberSignons", false, locked);
+pref("browser.formfill.enable", false, locked);
+pref("signon.autofillForms", false, locked);
 pref("browser.sessionstore.privacy_level", 2);
 // Use the in-memory media cache and increase its maximum size (#29120)
 pref("browser.privatebrowsing.forceMediaMemoryCache", true);
@@ -238,7 +238,7 @@ pref("security.remote_settings.crlite_filters.enabled", false);
 pref("security.pki.crlite_mode", 0);
 
 // Disable website password breach alerts
-pref("signon.management.page.breach-alerts.enabled", false);
+pref("signon.management.page.breach-alerts.enabled", false, locked);
 
 // Disable remote "password recipes"
 pref("signon.recipes.remoteRecipes.enabled", false);
