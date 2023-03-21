@@ -23,14 +23,6 @@ pref("app.releaseNotesURL.aboutDialog", "about:blank");
 // TODO: Remove when we enable other languages
 pref("intl.language_notification.shown", true);
 
-// WebRTC (privacy-browser#24, 25, 26 and 45)
-#ifdef XP_WIN
-// Still not supported, so keep these features off
-pref("dom.webaudio.enabled", false);
-pref("media.peerconnection.enabled", false);
-pref("media.navigator.enabled", false);
-#endif
-
 // privacy-browser#94: Disable legacy global microphone/webcam indicator
 // Disable the legacy Firefox Quantum-styled global webcam/microphone indicator in favor of each
 // platform's native indicator

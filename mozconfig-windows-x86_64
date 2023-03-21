@@ -12,5 +12,3 @@ ac_add_options --disable-default-browser-agent
 
 # See bug #41131
 ac_add_options --disable-update-agent
-
-ac_add_options --disable-webrtc
