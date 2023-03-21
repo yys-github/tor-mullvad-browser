@@ -17,12 +17,12 @@ MOZ_OFFICIAL_BRANDING_DIRECTORY=browser/branding/official
 # of values.
 # The MAR_CHANNEL_ID must not contain the following 3 characters: ",\t "
 if test "$MOZ_UPDATE_CHANNEL" = "alpha"; then
-  ACCEPTED_MAR_CHANNEL_IDS=basebrowser-torproject-alpha
-  MAR_CHANNEL_ID=basebrowser-torproject-alpha
+  ACCEPTED_MAR_CHANNEL_IDS=mullvadbrowser-mullvad-alpha
+  MAR_CHANNEL_ID=mullvadbrowser-mullvad-alpha
 elif test "$MOZ_UPDATE_CHANNEL" = "nightly"; then
-  ACCEPTED_MAR_CHANNEL_IDS=basebrowser-torproject-nightly
-  MAR_CHANNEL_ID=basebrowser-torproject-nightly
+  ACCEPTED_MAR_CHANNEL_IDS=mullvadbrowser-mullvad-nightly
+  MAR_CHANNEL_ID=mullvadbrowser-mullvad-nightly
 else
-  ACCEPTED_MAR_CHANNEL_IDS=basebrowser-torproject-release
-  MAR_CHANNEL_ID=basebrowser-torproject-release
+  ACCEPTED_MAR_CHANNEL_IDS=mullvadbrowser-mullvad-release
+  MAR_CHANNEL_ID=mullvadbrowser-mullvad-release
 fi
