@@ -27,8 +27,3 @@ pref("intl.language_notification.shown", true);
 // Disable the legacy Firefox Quantum-styled global webcam/microphone indicator in favor of each
 // platform's native indicator
 pref("privacy.webrtc.legacyGlobalIndicator", false);
-
-// Temporarily disable signature verification on extensions
-// FIXME: This should be removed as soon as the Mullvad extension is signed!
-// See also privacy-browser#72, privacy-browser#20
-pref("xpinstall.signatures.required", false);
