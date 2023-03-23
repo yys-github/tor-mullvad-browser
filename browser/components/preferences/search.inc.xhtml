@@ -17,7 +17,7 @@
 
 
     <!-- Search Suggestions -->
-    <html:setting-group groupid="searchSuggestions" data-srd-migrated="" data-category="paneSearch" hidden="true" />
+    <html:setting-group groupid="searchSuggestions" data-srd-migrated="" data-category="paneSearch" hidden="true" data-hidden-from-search="true" />
 
     <!-- Firefox Suggest / Address Bar -->
     <html:setting-group groupid="firefoxSuggest" data-category="paneSearch" hidden="true" data-subcategory="locationBar" data-srd-migrated=""/>
@@ -68,7 +68,7 @@
                 />
 
       </hbox>
-      <hbox id="addEnginesBox" pack="start">
+      <hbox id="addEnginesBox" pack="start" hidden="true">
         <label id="addEngines" data-l10n-id="search-find-more-link" is="text-link"></label>
       </hbox>
     </groupbox>
