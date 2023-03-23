@@ -18,7 +18,7 @@
 
 
     <!-- Search Suggestions -->
-    <groupbox id="searchSuggestionsGroup" data-category="paneSearch" hidden="true">
+    <groupbox id="searchSuggestionsGroup" data-category="paneSearch" hidden="true" data-hidden-from-search="true">
       <html:setting-group groupid="searchSuggestions" />
     </groupbox>
 
@@ -72,7 +72,7 @@
                 />
 
       </hbox>
-      <hbox id="addEnginesBox" pack="start">
+      <hbox id="addEnginesBox" pack="start" hidden="true">
         <label id="addEngines" data-l10n-id="search-find-more-link" is="text-link"></label>
       </hbox>
     </groupbox>
