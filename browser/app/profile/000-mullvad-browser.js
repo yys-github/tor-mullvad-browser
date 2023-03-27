@@ -29,3 +29,11 @@ pref("intl.language_notification.shown", true);
 // Disable the legacy Firefox Quantum-styled global webcam/microphone indicator in favor of each
 // platform's native indicator
 pref("privacy.webrtc.legacyGlobalIndicator", false);
+
+// privacy-browser#87: Windows and Linux need additional work to make the
+// default browser choice working.
+// We are shipping only the portable versions for the initial release anyway, so
+// we leave this popup enabled only on macOS.
+#ifndef XP_MACOSX
+pref("browser.shell.checkDefaultBrowser", false);
+#endif
