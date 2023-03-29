@@ -195,6 +195,10 @@ CO01:
         # toolkit/neterror/certError.ftl
         - cert-error-mitm-mozilla
         - cert-error-mitm-connection
+        # toolkit/locales/en-US/toolkit/global/base-browser.ftl
+        - basebrowser-addon-badge-recommended
+        - basebrowser-addon-badge-verified
+        - basebrowser-about-dialog-version
     files:
         - browser/locales/en-US/browser/profile/default-bookmarks.ftl
         - toolkit/locales/en-US/toolkit/about/aboutMozilla.ftl
