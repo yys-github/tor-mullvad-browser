@@ -195,6 +195,10 @@ CO01:
         - unified-extensions-mb-blocklist-error-single
         - unified-extensions-mb-blocklist-warning-multiple
         - unified-extensions-mb-blocklist-warning-single
+        # toolkit/locales/en-US/toolkit/global/base-browser.ftl
+        - basebrowser-addon-badge-recommended
+        - basebrowser-addon-badge-verified
+        - basebrowser-about-dialog-version
     files:
         - browser/components/ion/content/ion.ftl
         - browser/locales/en-US/browser/profile/default-bookmarks.ftl
