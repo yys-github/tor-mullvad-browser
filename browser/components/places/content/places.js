@@ -16,6 +16,8 @@ ChromeUtils.defineESModuleGetters(this, {
   PlacesBackups: "resource://gre/modules/PlacesBackups.sys.mjs",
   PrivateBrowsingUtils: "resource://gre/modules/PrivateBrowsingUtils.sys.mjs",
   DownloadUtils: "resource://gre/modules/DownloadUtils.sys.mjs",
+  DownloadsTorWarning:
+    "moz-src:///browser/components/downloads/DownloadsTorWarning.sys.mjs",
 });
 XPCOMUtils.defineLazyScriptGetter(
   this,
@@ -153,6 +155,20 @@ var PlacesOrganizer = {
       Ci.nsINavHistoryService.TRANSITION_DOWNLOAD +
       "&sort=" +
       Ci.nsINavHistoryQueryOptions.SORT_BY_DATE_DESCENDING;
+
+    const torWarning = new DownloadsTorWarning(
+      document.getElementById("placesDownloadsTorWarning"),
+      true,
+      () => {
+        document
+          .getElementById("downloadsListBox")
+          .focus({ preventFocusRing: true });
+      }
+    );
+    torWarning.activate();
+    window.addEventListener("unload", () => {
+      torWarning.deactivate();
+    });
 
     ContentArea.setContentViewForQueryString(
       DOWNLOADS_QUERY,
@@ -1513,9 +1529,21 @@ var ContentArea = {
       oldView.associatedElement.hidden = true;
       aNewView.associatedElement.hidden = false;
 
+      // Hide the Tor warning when not in the downloads view.
+      const isDownloads = aNewView.associatedElement.id === "downloadsListBox";
+      const torWarningMessage = document.getElementById(
+        "placesDownloadsTorWarning"
+      );
+      const torWarningLoosingFocus =
+        torWarningMessage.contains(document.activeElement) && !isDownloads;
+      torWarningMessage.classList.toggle("downloads-visible", isDownloads);
+
       // If the content area inactivated view was focused, move focus
       // to the new view.
-      if (document.activeElement == oldView.associatedElement) {
+      if (
+        document.activeElement == oldView.associatedElement ||
+        torWarningLoosingFocus
+      ) {
         aNewView.associatedElement.focus();
       }
     }
