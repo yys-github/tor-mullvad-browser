@@ -373,6 +373,10 @@ Preferences.addSetting({
 });
 
 Preferences.addSetting({
+  id: "downloadsTorWarningBanner",
+});
+
+Preferences.addSetting({
   id: "applicationsFilter",
   get(val) {
     return val || "";
@@ -1849,6 +1853,26 @@ SettingGroupManager.registerGroups({
     headingLevel: 2,
     inProgress: true,
     items: [
+      {
+        id: "downloadsTorWarningBanner",
+        l10nId: "downloads-tor-warning-message-bar",
+        control: "moz-message-bar",
+        controlAttrs: {
+          role: "complementary",
+          type: "warning",
+        },
+        options: [
+          {
+            l10nId: "downloads-tor-warning-tails-link",
+            slot: "support-link",
+            control: "a",
+            controlAttrs: {
+              href: "https://tails.net/",
+              target: "_blank",
+            },
+          },
+        ],
+      },
       {
         id: "applicationsFilter",
         control: "moz-input-search",

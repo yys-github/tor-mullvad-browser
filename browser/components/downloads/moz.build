@@ -13,6 +13,7 @@ MOZ_SRC_FILES += [
     "DownloadsCommon.sys.mjs",
     "DownloadSpamProtection.sys.mjs",
     "DownloadsTaskbar.sys.mjs",
+    "DownloadsTorWarning.sys.mjs",
     "DownloadsViewableInternally.sys.mjs",
     "DownloadsViewUI.sys.mjs",
 ]
