@@ -1747,6 +1747,7 @@ var gPrivacyPane = {
     let blockCookiesMenu = document.getElementById("blockCookiesMenu");
     let deleteOnCloseCheckbox = document.getElementById("deleteOnClose");
     let deleteOnCloseNote = document.getElementById("deleteOnCloseNote");
+    let cookieExceptions = document.getElementById("cookieExceptions");
     let blockCookies = behavior != Ci.nsICookieService.BEHAVIOR_ACCEPT;
     let cookieBehaviorLocked = Services.prefs.prefIsLocked(
       "network.cookie.cookieBehavior"
@@ -1761,6 +1762,7 @@ var gPrivacyPane = {
     ).value;
     deleteOnCloseCheckbox.disabled = privateBrowsing || completelyBlockCookies;
     deleteOnCloseNote.hidden = !privateBrowsing;
+    cookieExceptions.disabled = privateBrowsing;
 
     switch (behavior) {
       case Ci.nsICookieService.BEHAVIOR_ACCEPT:
