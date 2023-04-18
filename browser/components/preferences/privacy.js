@@ -1896,6 +1896,7 @@ Preferences.addSetting(
 );
 Preferences.addSetting({
   id: "cookieExceptions",
+  deps: ["privateBrowsingAutoStart"],
   onUserClick() {
     gSubDialog.open(
       "chrome://browser/content/preferences/dialogs/permissions.xhtml",
@@ -1908,6 +1909,9 @@ Preferences.addSetting({
         permissionType: "cookie",
       }
     );
+  },
+  disabled({ privateBrowsingAutoStart }) {
+    return privateBrowsingAutoStart.value;
   },
 });
 
