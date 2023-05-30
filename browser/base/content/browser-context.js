@@ -131,7 +131,7 @@ document.addEventListener(
           gContextMenu.saveMedia();
           break;
         case "context-copyimage-contents":
-          goDoCommand("cmd_copyImage");
+          goDoCommand("cmd_copyImageContents");
           break;
         case "context-copyaudiourl":
         case "context-copyimage":
