@@ -20,9 +20,7 @@
 ### Type of Issue: What are we dealing with?
 
 - [ ] Security (sandbox escape, remote code execution, etc)
-- [ ] Proxy Bypass (traffic contents becoming MITM'able)
-- [ ] De-Anonymization (otherwise identifying which website a user is visiting)
-- [ ] Cross-Site Linkability (correlating sessions across circuits and websites)
+- [ ] Cross-Site Linkability (correlating sessions across websites)
 - [ ] Disk Leak (persisting session information to disk)
 - [ ] Other (please explain)
 
@@ -39,16 +37,11 @@
   - [ ] **morgan** : signing, release
   - [ ] **thorin** : fingerprinting
 - [ ] Other Engineering Teams
-  - [ ] Networking (**ahf**, **dgoulet**)
-  - [ ] Anti-Censorship (**meskio**, **cohosh**)
   - [ ] UX (**donuts**)
   - [ ] TPA (**anarcat**, **lavamind**)
 - [ ] External Tor Partners
-  - [ ] Mozilla
-  - [ ] Mullvad
-  - [ ] Brave
-  - [ ] Guardian Project (Orbot, Onion Browser)
-  - [ ] Tails
+  - [ ] Mozilla (**tjr**)
+  - [ ] Mullvad (**ruihildt**)
   - [ ] Other (please list)
 
 ### Urgency: When do we need to act?
@@ -75,6 +68,7 @@ Sometimes fixes have side-effects: users lose their data, roadmaps need to be ad
 
 - [ ] Start an initial email thread with the following people:
   - [ ] **bella**
+  - [ ] **ruihildt**, **support@mullvadvpn.net**
   - [ ] Relevant Applications Developers
   - [ ] **(Optional)** **micah**
     - if there are considerations or asks outside the Applications Team
@@ -93,6 +87,7 @@ Godspeed! :pray:
 /cc @ma1
 /cc @micah
 /cc @morgan
+/cc @ruihildt
 
 /confidential
 
