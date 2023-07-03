@@ -290,6 +290,7 @@ static nsresult CreateTransferable(
       NS_ENSURE_SUCCESS(rv, rv);
     }
 
+#if !defined(BASE_BROWSER_VERSION)
     // Try and get source URI of the items that are being dragged
     nsIURI* uri = aDocument.GetDocumentURI();
     if (uri) {
@@ -310,6 +311,7 @@ static nsresult CreateTransferable(
         NS_ENSURE_SUCCESS(rv, rv);
       }
     }
+#endif
   } else {
     if (!aEncodedDocumentWithContext.mSerializationForTextPlain.IsEmpty()) {
       // Add the unicode DataFlavor to the transferable
