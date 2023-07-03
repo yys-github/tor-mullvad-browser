@@ -5,4 +5,5 @@
 FINAL_TARGET_FILES.defaults.settings.main += [
     "doh-config.json",
     "doh-providers.json",
+    "query-stripping.json",
 ]
