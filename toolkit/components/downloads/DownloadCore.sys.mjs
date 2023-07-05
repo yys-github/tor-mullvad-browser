@@ -775,6 +775,10 @@ Download.prototype = {
     }
 
     this._promiseUnblock = (async () => {
+      if (this.allow) {
+        this.allow();
+        return;
+      }
       try {
         if (this.target.partFilePath) {
           await IOUtils.move(this.target.partFilePath, this.target.path);
@@ -785,7 +789,6 @@ Download.prototype = {
         this._promiseUnblock = null;
         throw ex;
       }
-
       this.succeeded = true;
       this.hasBlockedData = false;
       this._notifyChange();
@@ -1060,7 +1063,9 @@ Download.prototype = {
             await this._promiseCanceled;
           }
           // Ask the saver object to remove any partial data.
-          await this.saver.removeData();
+          if (this.saver) {
+            await this.saver.removeData();
+          }
           // For completeness, clear the number of bytes transferred.
           if (this.currentBytes != 0 || this.hasPartialData) {
             this.currentBytes = 0;
