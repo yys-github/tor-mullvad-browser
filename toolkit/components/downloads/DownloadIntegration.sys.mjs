@@ -1499,10 +1499,7 @@ var DownloadObserver = {
       case "blocked-automatic-download":
         if (AppConstants.MOZ_BUILD_APP == "browser") {
           DownloadIntegration._initializeDownloadSpamProtection();
-          DownloadIntegration.downloadSpamProtection.update(
-            aData,
-            aSubject.topChromeWindow
-          );
+          DownloadIntegration.downloadSpamProtection.update(aData, aSubject);
         }
         break;
     }
