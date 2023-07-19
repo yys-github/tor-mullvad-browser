@@ -116,10 +116,7 @@ class IconHandler {
       await this.#buildIconMap();
     }
 
-    let iconList = this.#iconMap.get(this.getKey(engineIdentifier)) || [];
-    return iconList.filter(r =>
-      this.#identifierMatches(engineIdentifier, r.engineIdentifiers)
-    );
+    return this.#iconMap.get(engineIdentifier);
   }
 
   /**
@@ -238,26 +235,20 @@ class IconHandler {
    * Obtains the icon list from the remote settings collection.
    */
   async #buildIconMap() {
-    let iconList = [];
     try {
-      iconList = await this.#iconCollection.get();
+      this.#iconMap = new Map(
+        await (
+          await fetch(
+            "chrome://global/content/search/mullvadBrowserSearchEngineIcons.json"
+          )
+        ).json()
+      );
     } catch (ex) {
       console.error(ex);
+      this.#iconMap = null;
     }
-    if (!iconList.length) {
+    if (!this.#iconMap) {
       console.error("Failed to obtain search engine icon list records");
-    }
-
-    this.#iconMap = new Map();
-    for (let record of iconList) {
-      let keys = new Set(record.engineIdentifiers.map(this.getKey));
-      for (let key of keys) {
-        if (this.#iconMap.has(key)) {
-          this.#iconMap.get(key).push(record);
-        } else {
-          this.#iconMap.set(key, [record]);
-        }
-      }
     }
   }
 
