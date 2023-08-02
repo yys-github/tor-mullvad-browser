@@ -995,6 +995,27 @@ nsBrowserContentHandler.prototype = {
               "%OLD_BASE_BROWSER_VERSION%",
               old_forkVersion
             );
+            if (overridePage && AppConstants.BASE_BROWSER_UPDATE) {
+              // Tor Browser: Instead of opening the post-update "override page"
+              // directly, we ensure that about:tor will be opened, which should
+              // notify the user that their browser was updated.
+              //
+              // The overridePage comes from the openURL attribute within the
+              // updates.xml file or, if no showURL action is present, from the
+              // startup.homepage_override_url pref.
+              Services.prefs.setCharPref(
+                "torbrowser.post_update.url",
+                overridePage
+              );
+              Services.prefs.setBoolPref(
+                "torbrowser.post_update.shouldNotify",
+                true
+              );
+              // If the user's homepage is about:tor, we will inform them
+              // about the update on that page; otherwise, we arrange to
+              // open about:tor in a secondary tab.
+              overridePage = startPage === "about:tor" ? "" : "about:tor";
+            }
             break;
           }
           case OVERRIDE_NEW_BUILD_ID: {
