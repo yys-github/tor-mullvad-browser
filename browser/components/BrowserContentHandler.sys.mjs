@@ -781,6 +781,7 @@ nsBrowserContentHandler.prototype = {
     var overridePage = "";
     var additionalPage = "";
     var willRestoreSession = false;
+    let openAboutTor = false;
     try {
       // Read the old value of homepage_override.mstone before
       // needHomepageOverride updates it, so that we can later add it to the
@@ -976,6 +977,19 @@ nsBrowserContentHandler.prototype = {
               "%OLD_BASE_BROWSER_VERSION%",
               old_forkVersion
             );
+            if (AppConstants.BASE_BROWSER_UPDATE) {
+              // Tor Browser: Instead of opening the post-update "override page"
+              // directly, we ensure that about:tor will be opened, which should
+              // notify the user that their browser was updated.
+              // NOTE: We ignore any existing overridePage value, which can come
+              // from the openURL attribute within the updates.xml file.
+              Services.prefs.setBoolPref(
+                "torbrowser.post_update.shouldNotify",
+                true
+              );
+              openAboutTor = true;
+              overridePage = "about:tor";
+            }
             break;
           }
           case OVERRIDE_NEW_BUILD_ID: {
@@ -1072,6 +1086,16 @@ nsBrowserContentHandler.prototype = {
     var startPage = this.getNewWindowArgs(skipStartPage && !willRestoreSession);
 
     if (startPage == "about:blank") {
+      startPage = "";
+    }
+
+    // If the user's homepage is about:tor, we do not want to open it twice with
+    // the override.
+    if (
+      openAboutTor &&
+      startPage === "about:tor" &&
+      overridePage?.split("|").includes("about:tor")
+    ) {
       startPage = "";
     }
 
