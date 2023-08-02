@@ -1,0 +1,61 @@
+/**
+ * Actor child class for the about:tor page.
+ */
+export class AboutTorChild extends JSWindowActorChild {
+  handleEvent(event) {
+    switch (event.type) {
+      case "DOMContentLoaded":
+        this.sendQuery("AboutTor:GetInitialData").then(data => {
+          if (data) {
+            this.#dispatchInitialData(data);
+          }
+        });
+        break;
+      case "SubmitSearchOnionize":
+        this.sendAsyncMessage("AboutTor:SetSearchOnionize", !!event.detail);
+        break;
+      case "SurveyDismissed":
+        // event.detail is the survey version.
+        this.sendAsyncMessage("AboutTor:SurveyDismissed", event.detail);
+        break;
+      case "L10nMutationsFinished":
+        // Pass on chrome-only event for completed localization to content.
+        this.contentWindow.dispatchEvent(
+          new this.contentWindow.CustomEvent("L10nMutationsFinished")
+        );
+        break;
+      case "UserDismissedYEC":
+        // YEC banner was closed. Persist this for the rest of this session.
+        // See tor-browser#42188.
+        this.sendAsyncMessage("AboutTor:UserDismissedYEC");
+        break;
+    }
+  }
+
+  receiveMessage(message) {
+    switch (message.name) {
+      case "AboutTor:DelayedInitialData":
+        this.#dispatchInitialData(message.data);
+        break;
+      case "AboutTor:DismissYEC": {
+        this.contentWindow.dispatchEvent(
+          new this.contentWindow.CustomEvent("DismissYEC")
+        );
+        break;
+      }
+    }
+    return undefined;
+  }
+
+  /**
+   * Send the initial data to the page.
+   *
+   * @param {object} data - The data to send.
+   */
+  #dispatchInitialData(data) {
+    const initialDataEvent = new this.contentWindow.CustomEvent("InitialData", {
+      detail: Cu.cloneInto(data, this.contentWindow),
+    });
+    this.contentWindow.dispatchEvent(initialDataEvent);
+  }
+}
