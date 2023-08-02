@@ -76,6 +76,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   UrlbarPrefs: "resource:///modules/UrlbarPrefs.sys.mjs",
   WebChannel: "resource://gre/modules/WebChannel.sys.mjs",
   WindowsRegistry: "resource://gre/modules/WindowsRegistry.sys.mjs",
+  checkHomepageOverride: "resource:///modules/HomepageOverride.sys.mjs",
   clearTimeout: "resource://gre/modules/Timer.sys.mjs",
   setTimeout: "resource://gre/modules/Timer.sys.mjs",
 });
@@ -493,6 +494,23 @@ let JSWINDOWACTORS = {
     },
 
     matches: ["about:tabcrashed*"],
+  },
+
+  AboutTor: {
+    parent: {
+      esModuleURI: "resource:///actors/AboutTorParent.sys.mjs",
+    },
+    child: {
+      esModuleURI: "resource:///actors/AboutTorChild.sys.mjs",
+
+      events: {
+        DOMContentLoaded: {},
+        SubmitSearchOnionize: { wantUntrusted: true },
+        SurveyDismissed: { wantUntrusted: true },
+      },
+    },
+
+    matches: ["about:tor"],
   },
 
   AboutWelcome: {
@@ -1426,6 +1444,8 @@ BrowserGlue.prototype = {
     if (AppConstants.MOZ_NORMANDY) {
       lazy.Normandy.init();
     }
+
+    lazy.checkHomepageOverride();
 
     AboutHomeStartupCache.init();
 
