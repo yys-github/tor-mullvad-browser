@@ -750,6 +750,7 @@ async function gLazyFindCommand(cmd, ...args) {
 }
 
 var gPageIcons = {
+  "about:tor": "chrome://branding/content/icon32.png",
   "about:home": "chrome://branding/content/icon32.png",
   "about:newtab": "chrome://branding/content/icon32.png",
   "about:welcome": "chrome://branding/content/icon32.png",
@@ -757,6 +758,7 @@ var gPageIcons = {
 };
 
 var gInitialPages = [
+  "about:tor",
   "about:torconnect",
   "about:blank",
   "about:home",
