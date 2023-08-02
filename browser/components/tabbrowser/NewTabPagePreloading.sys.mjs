@@ -185,6 +185,24 @@ export let NewTabPagePreloading = {
       this.browserCounts[countKey]--;
       browser.removeAttribute("preloadedState");
       browser.setAttribute("autocompletepopup", "PopupAutoComplete");
+      // Let a preloaded about:tor page know that it is no longer preloaded
+      // (about to be shown). See tor-browser#44314.
+      // NOTE: We call the AboutTorParent instance directly because it is not
+      // reliable for the AboutTorParent to wait for the "preloadedState"
+      // attribute to change via a MutationObserver on the browsingContext's
+      // browser element because the AboutTorParent's browsingContext's browser
+      // element may be swapped out. E.g. see the "SwapDocShells" event.
+      // NOTE: We assume that this is the only place that removes the
+      // "preloadedState" attribute.
+      // NOTE: Alternatively, we could have the AboutTorParent wait for
+      // MozAfterPaint, but this would be slightly delayed.
+      try {
+        browser.browsingContext?.currentWindowGlobal
+          ?.getActor("AboutTor")
+          .preloadedRemoved();
+      } catch {
+        // Not an about:tor page with an AboutTorParent instance.
+      }
     }
 
     return browser;
