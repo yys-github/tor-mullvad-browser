@@ -23,7 +23,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   Management: "resource://gre/modules/Extension.sys.mjs",
 });
 
-const DEFAULT_HOMEPAGE_URL = "about:home";
+const DEFAULT_HOMEPAGE_URL = "about:tor";
 const BLANK_HOMEPAGE_URL = "chrome://browser/content/blanktab.html";
 const HOMEPAGE_OVERRIDE_KEY = "homepage_override";
 const URL_OVERRIDES_TYPE = "url_overrides";
@@ -838,10 +838,7 @@ export class AboutPreferences {
           control: "moz-select",
           l10nId: "home-homepage-new-windows",
           options: [
-            {
-              value: "home",
-              l10nId: "home-mode-choice-default-fx-srd",
-            },
+            { value: "home", l10nId: "home-mode-choice-tor" },
             { value: "blank", l10nId: "home-mode-choice-blank-srd" },
             { value: "custom", l10nId: "home-mode-choice-custom-srd" },
           ],
@@ -858,10 +855,7 @@ export class AboutPreferences {
           control: "moz-select",
           l10nId: "home-homepage-new-tabs",
           options: [
-            {
-              value: "home",
-              l10nId: "home-mode-choice-default-fx-srd",
-            },
+            { value: "home", l10nId: "home-mode-choice-tor" },
             { value: "blank", l10nId: "home-mode-choice-blank-srd" },
           ],
         },
