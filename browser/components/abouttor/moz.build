@@ -1,0 +1,8 @@
+JAR_MANIFESTS += ["jar.mn"]
+
+MOZ_SRC_FILES += [
+    "AboutTorChild.sys.mjs",
+    "AboutTorMessage.sys.mjs",
+    "AboutTorParent.sys.mjs",
+    "HomepageOverride.sys.mjs",
+]
