@@ -21,7 +21,18 @@
 #define ABOUT_WELCOME_CHROME_URL \
   "chrome://browser/content/aboutwelcome/aboutwelcome.html"
 #define ABOUT_HOME_URL "about:home"
-#define BASE_BROWSER_HOME_PAGE_URL "chrome://browser/content/blanktab.html"
+// NOTE: We return "about:tor" rather than the "chrome:" path
+// "chrome://browser/content/abouttor/aboutTor.html"
+// The result is that the channel created in NewChannel in will have its
+// resultPrincipalURI set to "about:tor".
+// What this means in practice is that the loaded document's documentURI and
+// currentURI will be "about:tor" rather than "about:newtab", "about:home",
+// "about:welcome" or "about:privatebrowsing".
+// The disadvantage of this is that we often need to add "about:tor" to places
+// where "about:newtab" or other URIs appear.
+// The advantage is that we maintain more control against changes in
+// mozilla-central.
+#define BASE_BROWSER_HOME_PAGE_URL "about:tor"
 
 namespace mozilla {
 namespace browser {
@@ -167,6 +178,8 @@ static const RedirEntry kRedirMap[] = {
          nsIAboutModule::URI_MUST_LOAD_IN_CHILD |
          nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS},
 #endif
+    {"tor", "chrome://browser/content/abouttor/aboutTor.html",
+     BASE_BROWSER_HOME_PAGE_FLAGS},
 };
 
 static nsAutoCString GetAboutModuleName(nsIURI* aURI) {
