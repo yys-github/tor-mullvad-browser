@@ -190,6 +190,24 @@ let JSWINDOWACTORS = {
     matches: ["about:tabcrashed*"],
   },
 
+  AboutTor: {
+    parent: {
+      esModuleURI: "resource:///actors/AboutTorParent.sys.mjs",
+    },
+    child: {
+      esModuleURI: "resource:///actors/AboutTorChild.sys.mjs",
+
+      events: {
+        DOMContentLoaded: {},
+        L10nMutationsFinished: {},
+        SubmitSearchOnionize: { wantUntrusted: true },
+        SurveyDismissed: { wantUntrusted: true },
+      },
+    },
+
+    matches: ["about:tor"],
+  },
+
   // Removed AboutWelcomeShopping. tor-browser#42831.
 
   AboutWelcome: {
