@@ -179,7 +179,7 @@ class MenuDialogMiddleware(
 
             store.dispatch(MenuAction.UpdateAvailableAddons(addons.filter { it.isInstalled() && it.isEnabled() }))
 
-            if (addons.any { it.isInstalled() }) {
+            if (true) {
                 store.dispatch(MenuAction.UpdateShowExtensionsOnboarding(false))
                 store.dispatch(MenuAction.UpdateManageExtensionsMenuItemVisibility(true))
                 return@launch
@@ -190,7 +190,7 @@ class MenuDialogMiddleware(
                 .shuffled()
                 .take(NUMBER_OF_RECOMMENDED_ADDONS_TO_SHOW)
 
-            if (recommendedAddons.isNotEmpty()) {
+            if (false) {
                 store.dispatch(
                     MenuAction.UpdateExtensionState(
                         recommendedAddons = recommendedAddons,

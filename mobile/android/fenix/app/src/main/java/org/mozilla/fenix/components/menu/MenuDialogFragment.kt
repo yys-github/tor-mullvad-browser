@@ -364,7 +364,7 @@ class MenuDialogFragment : BottomSheetDialogFragment() {
                     }
 
                     val showExtensionsOnboarding by store.observeAsState(initialValue = false) { state ->
-                        state.extensionMenuState.showExtensionsOnboarding
+                        false
                     }
 
                     val showDisabledExtensionsOnboarding by store.observeAsState(initialValue = false) { state ->
