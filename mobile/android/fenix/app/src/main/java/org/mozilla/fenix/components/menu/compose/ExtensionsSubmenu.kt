@@ -66,7 +66,7 @@ internal fun ExtensionsSubmenu(
             )
         },
     ) {
-        if (showExtensionsOnboarding || showDisabledExtensionsOnboarding) {
+        if (false) {
             ExtensionsSubmenuBanner(
                 title = if (showExtensionsOnboarding) {
                     stringResource(
