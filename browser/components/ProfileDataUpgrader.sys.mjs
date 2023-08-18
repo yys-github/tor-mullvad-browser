@@ -1003,4 +1003,119 @@ export let ProfileDataUpgrader = {
     // Update the migration version.
     Services.prefs.setIntPref("browser.migration.version", newVersion);
   },
+
+  upgradeBB(isNewProfile) {
+    // Version 1: 13.0a3. Reset layout.css.prefers-color-scheme.content-override
+    //            for tor-browser#41739.
+    // Version 2: 14.0a5: Reset the privacy tracking headers preferences since
+    //            the UI is hidden. tor-browser#42777.
+    //            Also, do not set
+    //            dom.security.https_only_mode_send_http_background_request in
+    //            the security level anymore (tor-browser#42149).
+    //            Also, reset security.xfocsp.errorReporting.automatic since we
+    //            hid its neterror checkbox. tor-browser#42653.
+    // Version 3: 14.0a7: Reset general.smoothScroll. tor-browser#42070.
+    // Version 4: 15.0a2: Drop ML components. tor-browser#44045.
+    // Version 5: 15.0a3: Disable LaterRun using prefs. tor-browser#42630.
+    // Version 6: 15.0a4: Reset browser colors. tor-browser#43850.
+    const MIGRATION_VERSION = 6;
+    const MIGRATION_PREF = "basebrowser.migration.version";
+
+    if (isNewProfile) {
+      // Do not migrate fresh profiles
+      Services.prefs.setIntPref(MIGRATION_PREF, MIGRATION_VERSION);
+      return;
+    } else if (isNewProfile === undefined) {
+      // If this happens, check if upstream updated their function and do not
+      // set this member anymore!
+      console.error("upgradeBB: isNewProfile is undefined.");
+    }
+
+    const currentVersion = Services.prefs.getIntPref(MIGRATION_PREF, 0);
+    if (currentVersion < 1) {
+      Services.prefs.clearUserPref(
+        "layout.css.prefers-color-scheme.content-override"
+      );
+    }
+    if (currentVersion < 2) {
+      for (const prefName of [
+        "privacy.globalprivacycontrol.enabled",
+        "privacy.donottrackheader.enabled",
+        // Telemetry preference for if the user changed the value.
+        "privacy.globalprivacycontrol.was_ever_enabled",
+        // The next two preferences have no corresponding UI, but are related.
+        "privacy.globalprivacycontrol.functionality.enabled",
+        "privacy.globalprivacycontrol.pbmode.enabled",
+        "dom.security.https_only_mode_send_http_background_request",
+        "security.xfocsp.errorReporting.automatic",
+      ]) {
+        Services.prefs.clearUserPref(prefName);
+      }
+    }
+    if (currentVersion < 3) {
+      Services.prefs.clearUserPref("general.smoothScroll");
+    }
+    if (currentVersion < 4) {
+      for (const prefName of [
+        "browser.translations.enable",
+        "browser.ml.enable",
+        "browser.ml.chat.enabled",
+        "browser.ml.linkPreview.enabled",
+        "browser.tabs.groups.smart.enabled",
+        "browser.tabs.groups.smart.userEnabled",
+        "extensions.ml.enabled",
+        "pdfjs.enableAltText",
+        "pdfjs.enableAltTextForEnglish",
+        "pdfjs.enableGuessAltText",
+        "pdfjs.enableAltTextModelDownload",
+        "browser.urlbar.quicksuggest.mlEnabled",
+        "places.semanticHistory.featureGate",
+      ]) {
+        // Preferences are locked. Do not want user values to linger in the
+        // user's profile and become active if these preferences become unlocked
+        // in the future.
+        Services.prefs.clearUserPref(prefName);
+      }
+    }
+    if (currentVersion < 5) {
+      for (const prefName of [
+        "browser.laterrun.bookkeeping.sessionCount",
+        "browser.laterrun.bookkeeping.profileCreationTime",
+        "browser.laterrun.bookkeeping.updateAppliedTime",
+      ]) {
+        Services.prefs.clearUserPref(prefName);
+      }
+    }
+    if (currentVersion < 6) {
+      // Clear the related preference that is no longer read by upstream's code.
+      Services.prefs.clearUserPref("browser.display.use_system_colors");
+      if (Services.prefs.getBoolPref("privacy.resistFingerprinting", true)) {
+        for (const prefName of [
+          // User has not switched off resist fingerprinting. We want to reset
+          // any "0" (automatic, use system colours) and "2" (always use browser
+          // colours) values.
+          // The "0" value cannot be set by the user under RFP in
+          // about:preferences. The "2" value can be set, but has a different
+          // name and a warning about website detectability. tor-browser#43850.
+          "browser.display.document_color_use",
+          // Under RFP, the following colours are ignored. So we clear them.
+          // NOTE: Only a subset of can be set via the colors.xhtml dialog in
+          // about:preferences.
+          "browser.anchor_color",
+          "browser.anchor_color.dark",
+          "browser.visited_color",
+          "browser.visited_color.dark",
+          "browser.display.foreground_color",
+          "browser.display.foreground_color.dark",
+          "browser.display.background_color",
+          "browser.display.background_color.dark",
+          "browser.active_color",
+          "browser.active_color.dark",
+        ]) {
+          Services.prefs.clearUserPref(prefName);
+        }
+      }
+    }
+    Services.prefs.setIntPref(MIGRATION_PREF, MIGRATION_VERSION);
+  },
 };
