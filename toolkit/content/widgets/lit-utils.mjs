@@ -272,6 +272,9 @@ export class MozBaseInputElement extends MozLitElement {
     ariaDescription: { type: String, mapped: true },
     title: { type: String, mapped: true },
     inputLayout: { type: String, reflect: true, attribute: "inputlayout" },
+    // label-align-before is a customisation for the moz-toggle in about:tor.
+    // See tor-browser#43727.
+    labelAlignBefore: { type: Boolean, attribute: "label-align-before" },
     // Allow us to set more complex content in a label (e.g. a moz-badge).
     // See tor-browser#45201.
     useLabelSlot: { type: Boolean, attribute: "use-label-slot" },
@@ -460,9 +463,10 @@ export class MozBaseInputElement extends MozLitElement {
             part="label"
             for="input"
             shownaccesskey=${ifDefined(this.accessKey)}
-            >${this.inputLayout === "inline"
+            >${this.labelAlignBefore ? this.labelTemplate() : ""}${this
+              .inputLayout === "inline"
               ? this.inputTemplate()
-              : ""}${this.labelTemplate()}</label
+              : ""}${this.labelAlignBefore ? "" : this.labelTemplate()}</label
           >${this.hasDescription ? "" : this.supportLinkTemplate()}
           ${this.descriptionTemplate()}
         </span>
