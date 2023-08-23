@@ -30,6 +30,10 @@ export default class MozToggle extends MozLitElement {
     ariaLabel: { type: String, attribute: "aria-label" },
     accessKeyAttribute: { type: String, attribute: "accesskey", reflect: true },
     accessKey: { type: String, state: true },
+    // Extension for tor-browser. Used for tor-browser#41333.
+    title: { type: String, attribute: "title" },
+    // Extension for tor-browser. Used for tor-browser#40837.
+    labelAlignAfter: { type: Boolean, attribute: "label-align-after" },
   };
 
   static get queries() {
@@ -94,6 +98,12 @@ export default class MozToggle extends MozLitElement {
 
   buttonTemplate() {
     const { pressed, disabled, description, ariaLabel, handleClick } = this;
+    // For tor-browser, if we have a title we use it as the aria-description.
+    // Used for tor-browser#41333.
+    // Only set the description using the title if it differs from the
+    // accessible name derived from the label.
+    const label = ariaLabel || this.label;
+    const ariaDescription = label === this.title ? undefined : this.title;
     return html`
       <button
         id="moz-toggle-button"
@@ -103,6 +113,7 @@ export default class MozToggle extends MozLitElement {
         ?disabled=${disabled}
         aria-pressed=${pressed}
         aria-label=${ifDefined(ariaLabel ?? undefined)}
+        aria-description=${ifDefined(ariaDescription ?? undefined)}
         aria-describedby=${ifDefined(
           description ? "moz-toggle-description" : undefined
         )}
@@ -113,6 +124,11 @@ export default class MozToggle extends MozLitElement {
   }
 
   render() {
+    // For tor-browser, we want to be able to place the label after the toggle
+    // as well.
+    // Used for the enable-bridges switch tor-browser#40837.
+    const labelAlignAfter = this.labelAlignAfter;
+
     return html`
       <link
         rel="stylesheet"
@@ -127,11 +143,12 @@ export default class MozToggle extends MozLitElement {
               for="moz-toggle-button"
               shownaccesskey=${ifDefined(this.accessKey)}
             >
+              ${labelAlignAfter ? this.buttonTemplate() : ""}
               <span>
                 ${this.label}
                 ${!this.description ? this.supportLinkTemplate() : ""}
               </span>
-              ${this.buttonTemplate()}
+              ${labelAlignAfter ? "" : this.buttonTemplate()}
             </label>
           `
         : this.buttonTemplate()}
