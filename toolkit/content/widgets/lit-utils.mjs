@@ -250,6 +250,9 @@ export class MozBaseInputElement extends MozLitElement {
     supportPage: { type: String, attribute: "support-page" },
     accessKey: { type: String, mapped: true, fluent: true },
     parentDisabled: { type: Boolean, state: true },
+    // label-align-before is a customisation for the moz-toggle in about:tor.
+    // See tor-browser#43727.
+    labelAlignBefore: { type: Boolean, attribute: "label-align-before" },
   };
   static inputLayout = "inline";
 
@@ -404,9 +407,10 @@ export class MozBaseInputElement extends MozLitElement {
           part="label"
           for="input"
           shownaccesskey=${ifDefined(this.accessKey)}
-          >${this.isInlineLayout
+          >${this.labelAlignBefore ? this.labelTemplate() : ""}${this
+            .isInlineLayout
             ? this.inputTemplate()
-            : ""}${this.labelTemplate()}</label
+            : ""}${this.labelAlignBefore ? "" : this.labelTemplate()}</label
         >${this.hasDescription ? "" : this.supportLinkTemplate()}
       </span>
       ${this.descriptionTemplate()}
