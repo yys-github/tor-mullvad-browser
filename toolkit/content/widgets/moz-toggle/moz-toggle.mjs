@@ -25,6 +25,8 @@ export default class MozToggle extends MozBaseInputElement {
   static properties = {
     ariaLabel: { type: String, mapped: true },
     pressed: { type: Boolean, reflect: true },
+    // Extension for tor-browser. Used for tor-browser#41333.
+    title: { type: String, attribute: "title" },
   };
 
   static activatedProperty = "pressed";
@@ -50,6 +52,12 @@ export default class MozToggle extends MozBaseInputElement {
 
   inputTemplate() {
     const { pressed, disabled, ariaLabel, handleClick } = this;
+    // For tor-browser, if we have a title we use it as the aria-description.
+    // Used for tor-browser#41333.
+    // Only set the description using the title if it differs from the
+    // accessible name derived from the label.
+    const label = ariaLabel || this.label;
+    const ariaDescription = label === this.title ? undefined : this.title;
     return html`<button
       id="input"
       part="button"
@@ -60,6 +68,7 @@ export default class MozToggle extends MozBaseInputElement {
       ?disabled=${disabled}
       aria-pressed=${pressed}
       aria-label=${ifDefined(ariaLabel ?? undefined)}
+      aria-description=${ifDefined(ariaDescription ?? undefined)}
       aria-describedby="description"
       accesskey=${ifDefined(this.accessKey)}
       @click=${handleClick}
