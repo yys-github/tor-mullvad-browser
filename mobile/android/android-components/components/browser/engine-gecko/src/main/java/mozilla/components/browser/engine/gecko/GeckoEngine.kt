@@ -2174,6 +2174,8 @@ class GeckoEngine(
         installedExtension.registerTabHandler(webExtensionTabHandler, defaultSettings)
         onSuccess(installedExtension)
     }
+
+    fun getTorIntegrationController() = runtime.getTorIntegrationController()
 }
 
 internal fun ContentBlockingController.LogEntry.BlockingData.hasBlockedCookies(): Boolean {

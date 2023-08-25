@@ -464,6 +464,7 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
         }
 
         components.tabDataCoordinator.initialize()
+        components.torController.start()
     }
 
     private fun restoreBrowserState() = applicationScope.launch {
@@ -1143,7 +1144,7 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
             clipboardSuggestionsEnabled.set(settings.shouldShowClipboardSuggestions)
             voiceSearchEnabled.set(settings.shouldShowVoiceSearch)
             googleLensEnabled.set(settings.googleLensIntegrationEnabled && settings.googleLensIntegrationUserEnabled)
-            openLinksInAppEnabled.set(settings.openLinksInExternalApp)
+            // openLinksInAppEnabled.set(settings.openLinksInExternalApp)
             signedInSync.set(settings.signedInFxaAccount)
             isolatedContentProcessesEnabled.set(settings.isIsolatedProcessEnabled)
             appZygoteIsolatedContentProcessesEnabled.set(settings.isAppZygoteEnabled)
