@@ -299,6 +299,8 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
         CoroutineScope(IO).launch {
             components.useCases.wallpaperUseCases.fetchCurrentWallpaperUseCase.invoke()
         }
+
+        components.torController.start()
     }
 
     @OptIn(DelicateCoroutinesApi::class) // GlobalScope usage
@@ -908,7 +910,7 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
             clipboardSuggestionsEnabled.set(settings.shouldShowClipboardSuggestions)
             searchShortcutsEnabled.set(settings.shouldShowSearchShortcuts)
             voiceSearchEnabled.set(settings.shouldShowVoiceSearch)
-            openLinksInAppEnabled.set(settings.openLinksInExternalApp)
+            // openLinksInAppEnabled.set(settings.openLinksInExternalApp)
             signedInSync.set(settings.signedInFxaAccount)
 
             val syncedItems = SyncEnginesStorage(applicationContext).getStatus().entries.filter {
