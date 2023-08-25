@@ -1,3 +1,4 @@
+import com.android.build.api.variant.BuildConfigField
 import com.android.build.api.variant.FilterConfiguration
 
 import java.time.format.DateTimeFormatter
@@ -295,11 +296,16 @@ androidComponents {
             System.setProperty("nimbusFml",  gradle.mozconfig.substs.NIMBUS_FML)
         }
 
+        def disableTor = providers.gradleProperty("disableTor").getOrElse(false)
+
         project.logger.debug("----------------------------------------------")
         project.logger.debug("Variant name:      " + variant.name)
         project.logger.debug("Build type:        " + buildType)
         project.logger.debug("Flavor:            " + variant.flavorName)
         project.logger.debug("nimbusFml:         " + providers.gradleProperty("nimbusFml").getOrNull())
+        project.logger.debug("Tor is disabled:   " + disableTor)
+
+        variant.buildConfigFields.put("DISABLE_TOR", new BuildConfigField("boolean", "$disableTor", null))
 
         // This list must stay in sync with the build types that set USE_RELEASE_VERSIONING=true in
         // their buildConfigField. The legacy variant API exposed buildConfigFields on the build type
@@ -695,6 +701,9 @@ dependencies {
     androidTestUtil libs.androidx.test.orchestrator
 
     lintChecks project(':components:tooling-lint')
+
+    // Tor Expert Bundle
+    implementation files(gradle.mozconfig.substs.TOR_EXPERT_BUNDLE_AAR)
 }
 
 protobuf {
