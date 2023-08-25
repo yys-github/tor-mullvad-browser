@@ -155,20 +155,20 @@ public class TorAndroidIntegration implements BundleEventListener {
     } else if (EVENT_CONNECT_STAGE_CHANGED.equals(event)) {
       TorConnectStage stage = new TorConnectStage(message.getBundle("stage"));
       _lastKnownStage.setValue(stage);
-      for (BootstrapStateChangeListener listener : mBootstrapStateListeners) {
+      for (BootstrapStateChangeListener listener : new HashSet<BootstrapStateChangeListener>(mBootstrapStateListeners)) {
         listener.onBootstrapStageChange(stage);
       }
     } else if (EVENT_BOOTSTRAP_PROGRESS.equals(event)) {
       double progress = message.getDouble("progress");
       boolean hasWarnings = message.getBoolean("hasWarnings");
-      for (BootstrapStateChangeListener listener : mBootstrapStateListeners) {
+      for (BootstrapStateChangeListener listener : new HashSet<BootstrapStateChangeListener>(mBootstrapStateListeners)) {
         listener.onBootstrapProgress(progress, hasWarnings);
       }
     } else if (EVENT_TOR_LOGS.equals(event)) {
       String msg = message.getString("message");
       String type = message.getString("logType");
       String timestamp = message.getString("timestamp");
-      for (TorLogListener listener : mLogListeners) {
+      for (TorLogListener listener : new HashSet<TorLogListener>(mLogListeners)) {
         listener.onLog(type, msg, timestamp);
       }
     }
