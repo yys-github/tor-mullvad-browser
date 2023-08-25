@@ -68,6 +68,7 @@ import org.mozilla.fenix.perf.StartupActivityLog
 import org.mozilla.fenix.perf.StartupStateProvider
 import org.mozilla.fenix.perf.StrictModeManager
 import org.mozilla.fenix.perf.lazyMonitored
+import org.mozilla.fenix.tor.TorControllerGV
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.isLargeScreenSize
 import org.mozilla.fenix.wifi.WifiConnectionMonitor
@@ -319,6 +320,8 @@ class Components(private val context: Context) {
             distributionProviderChecker = DefaultDistributionProviderChecker(context),
         )
     }
+
+    val torController by lazyMonitored { TorControllerGV(context) }
 }
 
 /**
