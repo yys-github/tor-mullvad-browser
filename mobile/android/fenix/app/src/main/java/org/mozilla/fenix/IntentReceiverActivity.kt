@@ -6,11 +6,13 @@ package org.mozilla.fenix
 
 import android.app.Activity
 import android.content.Intent
+import android.content.Intent.ACTION_MAIN
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.StrictMode
 import androidx.annotation.VisibleForTesting
+import mozilla.components.browser.engine.gecko.GeckoEngine
 import mozilla.components.feature.intent.ext.sanitize
 import mozilla.components.feature.intent.processing.IntentProcessor
 import mozilla.components.feature.intent.processing.TabIntentProcessor.Companion.EXTRA_APP_LINK_LAUNCH_TYPE
@@ -30,6 +32,8 @@ import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.perf.MarkersActivityLifecycleCallbacks
 import org.mozilla.fenix.perf.StartupTimeline
 import org.mozilla.fenix.shortcut.NewTabShortcutIntentProcessor
+import org.mozilla.geckoview.TorAndroidIntegration.BootstrapStateChangeListener
+import org.mozilla.geckoview.TorConnectStage
 
 /**
  * Processes incoming intents and sends them to the corresponding activity.
@@ -63,7 +67,28 @@ class IntentReceiverActivity : Activity() {
             super.onCreate(savedInstanceState)
         }
 
-        processIntent(intent)
+        if (intent.action == ACTION_MAIN || components.torController.isBootstrapped) {
+            processIntent(intent)
+        } else {
+            // Wait until Tor is connected to handle intents from external apps for links, search, etc.
+            val engine = components.core.engine as GeckoEngine
+            engine.getTorIntegrationController().registerBootstrapStateChangeListener(
+                object : BootstrapStateChangeListener {
+
+                    override fun onBootstrapStageChange(stage: TorConnectStage) {
+                        if (stage.isBootstrapped) {
+                            engine.getTorIntegrationController().unregisterBootstrapStateChangeListener(this)
+                            processIntent(intent)
+                        }
+                    }
+
+                    override fun onBootstrapProgress(progress: Double, hasWarnings: Boolean) {}
+                })
+
+
+            // In the meantime, open the HomeActivity so the user can get connected.
+            processIntent(Intent())
+        }
 
         components.core.engine.profiler?.addMarker(
             MarkersActivityLifecycleCallbacks.MARKER_NAME,
