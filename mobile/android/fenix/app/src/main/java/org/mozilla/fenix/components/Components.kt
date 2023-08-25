@@ -103,6 +103,7 @@ import org.mozilla.fenix.settings.pagesummaries.PageSummariesSettingsSearchProvi
 import org.mozilla.fenix.settings.settingssearch.DefaultFenixSettingsIndexer
 import org.mozilla.fenix.termsofuse.TermsOfUseManager
 import org.mozilla.fenix.termsofuse.store.DefaultTermsOfUsePromptRepository
+import org.mozilla.fenix.tor.TorControllerGV
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.getApplicationInstalledTime
 import org.mozilla.fenix.utils.isLargeScreenSize
@@ -518,6 +519,8 @@ class Components(private val context: Context) {
             context = context,
         )
     }
+
+    val torController by lazyMonitored { TorControllerGV(context) }
 }
 
 /**

@@ -4,6 +4,7 @@
 
 package org.mozilla.fenix
 
+import android.annotation.SuppressLint
 import android.app.assist.AssistContent
 import android.app.PendingIntent
 import android.content.ComponentName
@@ -186,6 +187,7 @@ import org.mozilla.fenix.theme.StatusBarColorManager
 import org.mozilla.fenix.theme.ThemeManager
 import org.mozilla.fenix.translations.TranslationsAIControllableFeatureRegistrar
 import org.mozilla.fenix.translations.TranslationsEnabledSettings
+import org.mozilla.fenix.tor.TorEvents
 import org.mozilla.fenix.utils.AccessibilityUtils.announcePrivateModeForAccessibility
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.changeAppLauncherIcon
@@ -967,7 +969,26 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
     /**
      * Handles intents received when the activity is open.
      */
+    @SuppressLint("MissingSuperCall") // super.onNewIntent is called in [onNewIntentInternal(intent)]
     final override fun onNewIntent(intent: Intent) {
+        if (intent.action == ACTION_MAIN || components.torController.isBootstrapped) {
+            onNewIntentInternal(intent)
+        } else {
+            // Wait until Tor is connected to handle intents from external apps for links, search, etc.
+            components.torController.registerTorListener(object : TorEvents {
+                override fun onTorConnected() {
+                    components.torController.unregisterTorListener(this)
+                    onNewIntentInternal(intent)
+                }
+                override fun onTorConnecting() { /* no-op */ }
+                override fun onTorStopped() { /* no-op */ }
+                override fun onTorStatusUpdate(entry: String?, status: String?, progress: Double?) { /* no-op */ }
+            })
+            return
+        }
+    }
+
+    private fun onNewIntentInternal(intent: Intent) {
         super.onNewIntent(intent)
         handleNewIntent(intent)
         startupPathProvider.onIntentReceived(intent)
@@ -1443,11 +1464,11 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
 
     @VisibleForTesting
     internal fun navigateToHome(navController: NavController) {
-        if (this is ExternalAppBrowserActivity) {
-            return
-        }
+        // if (this is ExternalAppBrowserActivity) {
+        //     return
+        // }
 
-        navController.navigate(NavGraphDirections.actionStartupHome())
+        navController.navigate(NavGraphDirections.actionStartupTorbootstrap())
     }
 
     final override fun attachBaseContext(base: Context) {
@@ -1546,14 +1567,17 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
 
     /**
      *  Indicates if the user should be redirected to the [BrowserFragment] or to the [HomeFragment],
-     *  links from an external apps should always opened in the [BrowserFragment].
+     *  links from an external apps should always opened in the [BrowserFragment],
+     *  unless Tor is not yet connected.
      */
     @VisibleForTesting
     internal fun shouldStartOnHome(intent: Intent? = this.intent): Boolean {
         return components.strictMode.allowViolation(StrictMode::allowThreadDiskReads) {
             // We only want to open on home when users tap the app,
-            // we want to ignore other cases when the app gets open by users clicking on links.
-            getSettings().shouldStartOnHome() && intent?.action == ACTION_MAIN
+            // we want to ignore other cases when the app gets open by users clicking on links,
+            // unless Tor is not yet connected.
+            getSettings().shouldStartOnHome() && (intent?.action == ACTION_MAIN ||
+                    !components.torController.isBootstrapped)
         }
     }
 
