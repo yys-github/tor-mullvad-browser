@@ -318,6 +318,11 @@ android.applicationVariants.configureEach { variant ->
         System.setProperty("nimbusFml", "${topsrcdir}/mobile/android/fenix/tools/nimbus-fml")
     }
 
+    def disableTor = false
+    if (project.hasProperty("disableTor")) {
+        disableTor = project.getProperty("disableTor")
+    }
+
     println("----------------------------------------------")
     println("Variant name:      " + variant.name)
     println("Application ID:    " + [variant.applicationId, variant.buildType.applicationIdSuffix].findAll().join())
@@ -325,6 +330,9 @@ android.applicationVariants.configureEach { variant ->
     println("Flavor:            " + variant.flavorName)
     println("Telemetry enabled: " + !isDebugOrDCD)
     println("nimbusFml:        " + System.getProperty("nimbusFml"))
+    println("Tor is disabled:   " + disableTor)
+
+    buildConfigField "boolean", "DISABLE_TOR", "$disableTor"
 
     if (useReleaseVersioning) {
         // The Google Play Store does not allow multiple APKs for the same app that all have the
@@ -772,6 +780,9 @@ dependencies {
 
     lintPublish project(":mozilla-lint-rules")
     lintChecks project(':tooling-lint')
+
+    // Tor Expert Bundle
+    implementation files('tor-expert-bundle.aar')
 }
 
 protobuf {
