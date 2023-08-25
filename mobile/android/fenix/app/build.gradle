@@ -330,6 +330,11 @@ android.applicationVariants.configureEach { variant ->
     def isDebugOrDCD = isDebug || isDataCollectionDisabled
     def useReleaseVersioning = variant.buildType.buildConfigFields['USE_RELEASE_VERSIONING']?.value ?: false
 
+    def disableTor = false
+    if (project.hasProperty("disableTor")) {
+        disableTor = project.getProperty("disableTor")
+    }
+
     // only set this property to pass to our patched application-service if it's defined in
     // local.poperties, indicating this is a local dev build,
     // otherwise we are in a TBB build env and the env var should be set and will be picked up
@@ -344,6 +349,9 @@ android.applicationVariants.configureEach { variant ->
     println("Flavor:            " + variant.flavorName)
     println("Telemetry enabled: " + !isDebugOrDCD)
     println("nimbusFml:         " + System.getProperty("nimbusFml"))
+    println("Tor is disabled:   " + disableTor)
+
+    buildConfigField "boolean", "DISABLE_TOR", "$disableTor"
 
     if (useReleaseVersioning) {
         // The Google Play Store does not allow multiple APKs for the same app that all have the
@@ -775,6 +783,9 @@ dependencies {
 
     lintChecks project(":mozilla-lint-rules")
     lintChecks project(':tooling-lint')
+
+    // Tor Expert Bundle
+    implementation files('tor-expert-bundle.aar')
 }
 
 protobuf {

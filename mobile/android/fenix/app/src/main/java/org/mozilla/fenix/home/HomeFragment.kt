@@ -184,6 +184,8 @@ import org.mozilla.fenix.snackbar.SnackbarBinding
 import org.mozilla.fenix.tabstray.Page
 import org.mozilla.fenix.tabstray.TabsTrayAccessPoint
 import org.mozilla.fenix.theme.FirefoxTheme
+import org.mozilla.fenix.tor.TorBootstrapFragmentDirections
+import org.mozilla.fenix.tor.TorBootstrapStatus
 import org.mozilla.fenix.utils.Settings.Companion.TOP_SITES_PROVIDER_MAX_THRESHOLD
 import org.mozilla.fenix.utils.allowUndo
 import org.mozilla.fenix.wallpapers.Wallpaper
@@ -281,6 +283,8 @@ class HomeFragment : Fragment() {
     private val searchSelectorMenuBinding = ViewBoundFeatureWrapper<SearchSelectorMenuBinding>()
     private val homeScreenPopupManager = ViewBoundFeatureWrapper<HomeScreenPopupManager>()
 
+    private lateinit var torBootstrapStatus: TorBootstrapStatus
+
     override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT ADD ANYTHING ABOVE THIS getProfilerTime CALL!
         val profilerStartTime = requireComponents.core.engine.profiler?.getProfilerTime()
@@ -316,6 +320,12 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val activity = activity as HomeActivity
         val components = requireComponents
+
+        torBootstrapStatus = TorBootstrapStatus(
+            !BuildConfig.DISABLE_TOR,
+            components.torController,
+            ::dispatchModeChanges
+        )
 
         val currentWallpaperName = requireContext().settings().currentWallpaperName
         applyWallpaper(
@@ -1343,6 +1353,7 @@ class HomeFragment : Fragment() {
     override fun onStop() {
         dismissRecommendPrivateBrowsingShortcut()
         super.onStop()
+        torBootstrapStatus.unregisterTorListener()
     }
 
     override fun onStart() {
@@ -1393,6 +1404,15 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun dispatchModeChanges(isBootstrapping: Boolean) {
+        if (isBootstrapping) {
+            val directions =
+                TorBootstrapFragmentDirections
+                    .actionStartupTorbootstrap()
+            findNavController().navigate(directions)
+        }
+    }
+
     @VisibleForTesting
     internal fun removeCollectionWithUndo(tabCollection: TabCollection) {
         val snackbarMessage = getString(R.string.snackbar_collection_deleted)
@@ -1415,6 +1435,7 @@ class HomeFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
+        torBootstrapStatus.registerTorListener()
         if (browsingModeManager.mode == BrowsingMode.Private) {
             activity?.window?.setBackgroundDrawableResource(R.drawable.private_home_background_gradient)
         }
