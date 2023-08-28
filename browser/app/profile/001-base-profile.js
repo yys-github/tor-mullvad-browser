@@ -50,9 +50,11 @@ pref("permissions.memory_only", true);
 pref("network.cookie.lifetimePolicy", 2);
 pref("security.nocertdb", true);
 
-// Disk activity: TBB Directory Isolation
+// Disk activity: download tweaks to minimize disk leaks (tor-browser#42050)
 pref("browser.download.useDownloadDir", false);
+pref("browser.download.always_ask_before_handling_new_types", true);
 pref("browser.download.manager.addToRecentDocs", false);
+pref("browser.download.start_downloads_in_tmp_dir", true);
 
 // Prevent download stuffing / DOS (tor-browser#41764)
 pref("browser.download.enable_spam_prevention", true);
