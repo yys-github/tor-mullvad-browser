@@ -269,5 +269,6 @@
   "PBMExitStatus",
   "SelectableProfileService",
   "SecurityLevelButton",
-  "NewIdentityButton"
+  "NewIdentityButton",
+  "TorUIUtils"
 ]
