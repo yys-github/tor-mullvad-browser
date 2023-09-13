@@ -239,5 +239,6 @@
   "gTrustPanelHandler",
   "ContentSharingUtils",
   "Referrals",
-  "SecurityLevelButton"
+  "SecurityLevelButton",
+  "TorUIUtils"
 ]
