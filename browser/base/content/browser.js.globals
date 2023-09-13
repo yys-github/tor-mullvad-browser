@@ -259,5 +259,6 @@
   "SelectableProfileService",
   "ActionsProviderContextualSearch",
   "SecurityLevelButton",
-  "NewIdentityButton"
+  "NewIdentityButton",
+  "TorUIUtils"
 ]
