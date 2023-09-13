@@ -254,5 +254,6 @@
   "ActionsProviderContextualSearch",
   "ToolbarDropHandler",
   "SecurityLevelButton",
-  "NewIdentityButton"
+  "NewIdentityButton",
+  "TorUIUtils"
 ]
