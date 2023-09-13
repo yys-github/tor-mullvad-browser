@@ -251,5 +251,6 @@
   "ToolbarDropHandler",
   "ProfilesDatastoreService",
   "SecurityLevelButton",
-  "NewIdentityButton"
+  "NewIdentityButton",
+  "TorUIUtils"
 ]
