@@ -274,5 +274,6 @@
   "BrowserSearch",
   "PBMExitStatus",
   "SecurityLevelButton",
-  "NewIdentityButton"
+  "NewIdentityButton",
+  "TorUIUtils"
 ]
