@@ -5126,6 +5126,11 @@ var FirefoxViewHandler = {
     }
   },
   openTab(section) {
+    if (AppConstants.BASE_BROWSER_VERSION) {
+      // about:firefoxview is disabled. tor-browser#42037.
+      return;
+    }
+
     let viewURL = "about:firefoxview";
     if (section) {
       viewURL = `${viewURL}#${section}`;
