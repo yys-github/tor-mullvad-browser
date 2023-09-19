@@ -19,7 +19,7 @@ import mozilla.components.browser.domains.autocomplete.BaseDomainAutocompletePro
 import mozilla.components.browser.domains.autocomplete.ShippedDomainsProvider
 import mozilla.components.browser.engine.gecko.GeckoEngine
 import mozilla.components.browser.engine.gecko.cookiebanners.GeckoCookieBannersStorage
-import mozilla.components.browser.engine.gecko.cookiebanners.ReportSiteDomainsRepository
+//import mozilla.components.browser.engine.gecko.cookiebanners.ReportSiteDomainsRepository
 import mozilla.components.browser.engine.gecko.fetch.GeckoViewFetchClient
 import mozilla.components.browser.engine.gecko.permission.GeckoSitePermissionsStorage
 import mozilla.components.browser.icons.BrowserIcons
@@ -266,14 +266,14 @@ class Core(
         )
     }
 
-    private val Context.dataStore by preferencesDataStore(
-        name = ReportSiteDomainsRepository.REPORT_SITE_DOMAINS_REPOSITORY_NAME,
-    )
+//    private val Context.dataStore by preferencesDataStore(
+//        name = ReportSiteDomainsRepository.REPORT_SITE_DOMAINS_REPOSITORY_NAME,
+//    )
 
     val cookieBannersStorage by lazyMonitored {
         GeckoCookieBannersStorage(
             geckoRuntime,
-            ReportSiteDomainsRepository(context.dataStore),
+//            ReportSiteDomainsRepository(context.dataStore),
         )
     }
 
@@ -392,7 +392,7 @@ class Core(
                 context,
                 engine,
                 icons,
-                R.drawable.ic_status_logo,
+                R.drawable.mozac_lib_crash_notification,
                 permissionStorage.permissionsStorage,
                 IntentReceiverActivity::class.java,
                 notificationsDelegate = context.components.notificationsDelegate,
