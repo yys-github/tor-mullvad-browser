@@ -27,15 +27,15 @@ suspend fun CookieBannersStorage.getCookieBannerUIMode(
     publicSuffixList: PublicSuffixList,
 ): CookieBannerUIMode {
     return if (isFeatureEnabledInPrivateMode) {
-        val isSiteDomainReported = withContext(Dispatchers.IO) {
-            val host = tab.content.url.toUri().host.orEmpty()
-            val siteDomain = publicSuffixList.getPublicSuffixPlusOne(host).await()
-            siteDomain?.let { isSiteDomainReported(it) }
-        }
+        // val isSiteDomainReported = withContext(Dispatchers.IO) {
+        //     val host = tab.content.url.toUri().host.orEmpty()
+        //     val siteDomain = publicSuffixList.getPublicSuffixPlusOne(host).await()
+        //     siteDomain?.let { isSiteDomainReported(it) }
+        // }
 
-        if (isSiteDomainReported == true) {
-            return CookieBannerUIMode.REQUEST_UNSUPPORTED_SITE_SUBMITTED
-        }
+        // if (isSiteDomainReported == true) {
+        //     return CookieBannerUIMode.REQUEST_UNSUPPORTED_SITE_SUBMITTED
+        // }
 
         val hasException = withContext(Dispatchers.IO) {
             hasException(tab.content.url, tab.content.private)
