@@ -42,3 +42,6 @@ pref("app.releaseNotesURL", "https://github.com/mullvad/mullvad-browser/releases
 pref("app.releaseNotesURL.aboutDialog", "about:blank");
 // point to our feedback url rather than Mozilla's
 pref("app.feedback.baseURL", "https://mullvad.net/help/tag/browser/");
+
+// mullvad-browser#228: default to spoof en-US and skip showing the dialog
+pref("privacy.spoof_english", 2);
