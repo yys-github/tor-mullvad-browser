@@ -1984,10 +1984,7 @@ class Settings(
      * application after the legacy cookie banner feature was removed.
      */
     fun deleteReportSiteDomainsDataStoreIfNeeded() {
-        if (!hasDeletedReportSiteDomainsDataStore) {
-            File(appContext.filesDir, "datastore/report_site_domains_preferences.preferences_pb").delete()
-            hasDeletedReportSiteDomainsDataStore = true
-        }
+        // tor-browser#45146: Audit, and restore if we could actually use this cleanup.
     }
 
     fun incrementNumTimesPrivateModeOpened() = numTimesPrivateModeOpened.increment()
