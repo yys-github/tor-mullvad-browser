@@ -58,7 +58,7 @@ interface CookieBannerDetailsController {
     /**
      * @see [CookieBannerDetailsInteractor.handleRequestSiteSupportPressed]
      */
-    fun handleRequestSiteSupportPressed()
+//    fun handleRequestSiteSupportPressed()
 }
 
 /**
@@ -154,35 +154,35 @@ class DefaultCookieBannerDetailsController(
         }
     }
 
-    override fun handleRequestSiteSupportPressed() {
-        val tab = requireNotNull(browserStore.state.findTabOrCustomTab(sessionId)) {
-            "A session is required to report site domain"
-        }
-        CookieBanners.reportDomainSiteButton.record(NoExtras())
-        scope.launch {
-            val siteDomain = getTabDomain(tab)
-            siteDomain?.let { domain ->
-                protectionsStore.dispatch(ProtectionsAction.RequestReportSiteDomain(domain))
-                CookieBanners.reportSiteDomain.set(domain)
-                Pings.cookieBannerReportSite.submit()
-                protectionsStore.dispatch(
-                    ProtectionsAction.UpdateCookieBannerMode(
-                        cookieBannerUIMode = CookieBannerUIMode.REQUEST_UNSUPPORTED_SITE_SUBMITTED,
-                    ),
-                )
-                fragment.activity?.getRootView()?.let { view ->
-                    showSnackBar(
-                        view,
-                        context.getString(R.string.cookie_banner_handling_report_site_snack_bar_text_2),
-                        SnackbarState.Duration.Preset.Long,
-                    )
-                }
-                withContext(ioDispatcher) {
-                    cookieBannersStorage.saveSiteDomain(domain)
-                }
-            }
-        }
-    }
+//    override fun handleRequestSiteSupportPressed() {
+//        val tab = requireNotNull(browserStore.state.findTabOrCustomTab(sessionId)) {
+//            "A session is required to report site domain"
+//        }
+//        CookieBanners.reportDomainSiteButton.record(NoExtras())
+//        scope.launch {
+//            val siteDomain = getTabDomain(tab)
+//            siteDomain?.let { domain ->
+//                protectionsStore.dispatch(ProtectionsAction.RequestReportSiteDomain(domain))
+//                CookieBanners.reportSiteDomain.set(domain)
+//                Pings.cookieBannerReportSite.submit()
+//                protectionsStore.dispatch(
+//                    ProtectionsAction.UpdateCookieBannerMode(
+//                        cookieBannerUIMode = CookieBannerUIMode.REQUEST_UNSUPPORTED_SITE_SUBMITTED,
+//                    ),
+//                )
+//                fragment.activity?.getRootView()?.let { view ->
+//                    showSnackBar(
+//                        view,
+//                        context.getString(R.string.cookie_banner_handling_report_site_snack_bar_text_2),
+//                        SnackbarState.Duration.Preset.Long,
+//                    )
+//                }
+//                withContext(ioDispatcher) {
+//                    cookieBannersStorage.saveSiteDomain(domain)
+//                }
+//            }
+//        }
+//    }
 
     @VisibleForTesting
     internal suspend fun clearSiteData(tab: SessionState) {
