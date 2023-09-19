@@ -81,6 +81,7 @@ import mozilla.components.feature.top.sites.PinnedSiteStorage
 import mozilla.components.feature.webnotifications.WebNotificationFeature
 import mozilla.components.lib.ai.controls.AIFeatureBlockStorage
 import mozilla.components.lib.ai.controls.dataStore
+import mozilla.components.lib.crash.R as crashR
 import mozilla.components.lib.dataprotect.SecureAbove22Preferences
 import mozilla.components.service.digitalassetlinks.RelationChecker
 import mozilla.components.service.digitalassetlinks.local.StatementApi
@@ -440,7 +441,7 @@ class Core(
                     context,
                     engine,
                     icons,
-                    R.drawable.ic_status_logo,
+                    crashR.drawable.mozac_lib_crash_notification,
                     permissionStorage.permissionsStorage,
                     IntentReceiverActivity::class.java,
                     notificationsDelegate = context.components.notificationsDelegate,
