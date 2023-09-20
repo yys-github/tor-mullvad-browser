@@ -964,17 +964,21 @@ export const UrlbarShared = {
         return checkForSubType("tab", result);
       case UrlbarShared.RESULT_TYPE.TIP:
         if (result.providerName === "UrlbarProviderInterventions") {
+          // disable as part of tor-browser#41327
           switch (result.payload.type) {
             case UrlbarShared.INTERVENTION_TIP_TYPE.CLEAR:
-              return "intervention_clear";
+            // return "intervention_clear";
+            // fall-through
             case UrlbarShared.INTERVENTION_TIP_TYPE.REFRESH:
-              return "intervention_refresh";
+            // return "intervention_refresh";
+            // fall-through
             case UrlbarShared.INTERVENTION_TIP_TYPE.UPDATE_ASK:
             case UrlbarShared.INTERVENTION_TIP_TYPE.UPDATE_CHECKING:
             case UrlbarShared.INTERVENTION_TIP_TYPE.UPDATE_REFRESH:
             case UrlbarShared.INTERVENTION_TIP_TYPE.UPDATE_RESTART:
             case UrlbarShared.INTERVENTION_TIP_TYPE.UPDATE_WEB:
-              return "intervention_update";
+            // return "intervention_update";
+            // fall-through
             default:
               return "intervention_unknown";
           }
