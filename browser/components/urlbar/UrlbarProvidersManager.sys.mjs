@@ -89,11 +89,7 @@ var localProviderModules = [
     module: "resource:///modules/UrlbarProviderInputHistory.sys.mjs",
     supportedInputTypes: ["urlbar"],
   },
-  {
-    name: "UrlbarProviderInterventions",
-    module: "resource:///modules/UrlbarProviderInterventions.sys.mjs",
-    supportedInputTypes: ["urlbar"],
-  },
+  // disable UrlbarProviderInterventions as part of tor-browser#41327
   {
     name: "UrlbarProviderOmnibox",
     module: "resource:///modules/UrlbarProviderOmnibox.sys.mjs",
