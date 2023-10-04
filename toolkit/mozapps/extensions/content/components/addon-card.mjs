@@ -422,6 +422,13 @@ export class AddonCard extends AboutAddonsHTMLElement {
           addon.quarantineIgnoredByUser = e.target.value == "1";
           break;
         }
+        case "noscript-visibility": {
+          // Update the NoScript toolbar button visibility.
+          // See tor-browser#41581.
+          const hide = e.target.value !== "show";
+          Services.prefs.setBoolPref(HIDE_NO_SCRIPT_PREF, hide);
+          break;
+        }
       }
     } else if (e.type == "mousedown") {
       // Open panel on mousedown when the mouse is used.
