@@ -45,6 +45,8 @@ const PRIVATE_BROWSING_PERMS = {
   origins: [],
 };
 
+const HIDE_NO_SCRIPT_PREF = "extensions.hideNoScript";
+
 /**
  * A card component for managing an add-on. It should be initialized by setting
  * the add-on with `setAddon()` before being connected to the document.
@@ -420,6 +422,13 @@ export class AddonCard extends AboutAddonsHTMLElement {
         }
         case "quarantined-domains-user-allowed": {
           addon.quarantineIgnoredByUser = e.target.value == "1";
+          break;
+        }
+        case "noscript-visibility": {
+          // Update the NoScript toolbar button visibility.
+          // See tor-browser#41581.
+          const hide = e.target.value !== "show";
+          Services.prefs.setBoolPref(HIDE_NO_SCRIPT_PREF, hide);
           break;
         }
       }
