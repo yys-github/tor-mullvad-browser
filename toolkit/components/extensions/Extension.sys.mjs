@@ -3972,8 +3972,9 @@ export class Extension extends ExtensionData {
         });
         this.permissions.delete(PRIVATE_ALLOWED_PERMISSION);
       }
+    }
 
-    // Bug 40253: Explicitly allow NoScript in Private Browsing mode.
+    // tor-browser#40253: Explicitly allow NoScript in Private Browsing mode.
     if (this.isNoScript) {
       lazy.ExtensionPermissions.add(this.id, {
         permissions: [PRIVATE_ALLOWED_PERMISSION],
