@@ -44,6 +44,8 @@ const PRIVATE_BROWSING_PERMS = {
   origins: [],
 };
 
+const HIDE_NO_SCRIPT_PREF = "extensions.hideNoScript";
+
 /**
  * @typedef {object} AddonMessageInfo
  * @property {string} [messageId]
@@ -480,6 +482,13 @@ export class AddonCard extends AboutAddonsHTMLElement {
         }
         case "quarantined-domains-user-allowed": {
           addon.quarantineIgnoredByUser = e.target.value == "1";
+          break;
+        }
+        case "noscript-visibility": {
+          // Update the NoScript toolbar button visibility.
+          // See tor-browser#41581.
+          const hide = e.target.value !== "show";
+          Services.prefs.setBoolPref(HIDE_NO_SCRIPT_PREF, hide);
           break;
         }
       }
