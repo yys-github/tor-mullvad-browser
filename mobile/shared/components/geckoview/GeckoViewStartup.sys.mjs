@@ -16,6 +16,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
   PdfJs: "resource://pdf.js/PdfJs.sys.mjs",
   GeckoViewPreferences: "resource://gre/modules/GeckoViewPreferences.sys.mjs",
   RFPHelper: "resource://gre/modules/RFPHelper.sys.mjs",
+  TorAndroidIntegration:
+    "moz-src:///toolkit/modules/TorAndroidIntegration.sys.mjs",
 });
 
 const { debug, warn } = GeckoViewUtils.initLogging("Startup");
@@ -328,6 +330,7 @@ export class GeckoViewStartup {
 
         this.#migratePreferences();
 
+        lazy.TorAndroidIntegration.init();
         Services.obs.addObserver(this, "browser-idle-startup-tasks-finished");
         Services.obs.addObserver(this, "handlersvc-store-initialized");
 
