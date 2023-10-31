@@ -4,6 +4,12 @@
 
 import { GeckoViewModule } from "resource://gre/modules/GeckoViewModule.sys.mjs";
 
+const lazy = {};
+ChromeUtils.defineESModuleGetters(lazy, {
+  TorDomainIsolator:
+    "moz-src:///toolkit/components/tor-launcher/TorDomainIsolator.sys.mjs",
+});
+
 export class GeckoViewContent extends GeckoViewModule {
   onInit() {
     this.registerListener([
@@ -25,6 +31,8 @@ export class GeckoViewContent extends GeckoViewModule {
       "GeckoView:IsPdfJs",
       "GeckoView:GetWebCompatInfo",
       "GeckoView:SendMoreWebCompatInfo",
+      "GeckoView:GetTorCircuit",
+      "GeckoView:NewTorCircuit",
     ]);
   }
 
@@ -294,6 +302,12 @@ export class GeckoViewContent extends GeckoViewModule {
       case "GeckoView:ProcessBackPressed":
         this._processBackPressed(aCallback);
         break;
+      case "GeckoView:GetTorCircuits":
+        this._getTorCircuits(aCallback);
+        break;
+      case "GeckoView:NewTorCircuit":
+        this._newTorCircuit(aCallback);
+        break;
     }
   }
 
@@ -449,6 +463,25 @@ export class GeckoViewContent extends GeckoViewModule {
     } catch (error) {
       aCallback.onError(`Cannot send more web compat info, error: ${error}`);
     }
+  }
+
+  _getTorCircuits(aCallback) {
+    if (this.browser && aCallback) {
+      const domain = lazy.TorDomainIsolator.getDomainForBrowser(this.browser);
+      const circuits = lazy.TorDomainIsolator.getCircuits(
+        this.browser,
+        domain,
+        this.browser.contentPrincipal.originAttributes.userContextId
+      );
+      aCallback?.onSuccess({ domain, circuits });
+    } else {
+      aCallback?.onSuccess(null);
+    }
+  }
+
+  _newTorCircuit(aCallback) {
+    lazy.TorDomainIsolator.newCircuitForBrowser(this.browser);
+    aCallback?.onSuccess();
   }
 
   async _containsFormData(aCallback) {
