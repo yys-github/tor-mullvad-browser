@@ -263,6 +263,8 @@ public final class GeckoRuntime implements Parcelable {
   private final CrashPullController.CrashPullProxy mCrashPullProxy;
   private final GeckoScreenChangeListener mScreenChangeListener;
 
+  private TorAndroidIntegration mTorIntegration;
+
   private GeckoRuntime() {
     mWebExtensionController = new WebExtensionController(this);
     mContentBlockingController = new ContentBlockingController();
@@ -577,6 +579,8 @@ public final class GeckoRuntime implements Parcelable {
       mScreenChangeListener.enable();
     }
 
+    mTorIntegration = new TorAndroidIntegration(context);
+
     ProfilerController.addMarker(
         "GeckoView Initialization START", ProfilerController.getProfilerTime());
     return true;
@@ -675,6 +679,10 @@ public final class GeckoRuntime implements Parcelable {
 
     if (mScreenChangeListener != null) {
       mScreenChangeListener.disable();
+    }
+
+    if (mTorIntegration != null) {
+      mTorIntegration.shutdown();
     }
 
     GeckoThread.forceQuit();
@@ -1133,6 +1141,14 @@ public final class GeckoRuntime implements Parcelable {
   public void notifyTelemetryPrefChanged(final boolean isEnabled) {
     GeckoAppShell.notifyObservers(
         "mobile-telemetry-pref-changed", isEnabled ? "enabled" : "disabled");
+  }
+
+  /**
+   * Get the Tor integration controller for this runtime.
+   */
+  @UiThread
+  public @NonNull TorAndroidIntegration getTorIntegrationController() {
+    return mTorIntegration;
   }
 
   /**
