@@ -344,7 +344,6 @@ pref("browser.link.open_newwindow.restriction", 0); // Bug 9881: Open popups in 
 pref("dom.disable_window_move_resize", true);
 // Set video VP9 to 0 for everyone (bug 22548)
 pref("media.benchmark.vp9.threshold", 0);
-pref("dom.enable_resource_timing", false); // Bug 13024: To hell with this API
 pref("privacy.resistFingerprinting.block_mozAddonManager", true); // Bug 26114
 pref("dom.webmidi.enabled", false); //  Bug 41398: Disable Web MIDI API
 // tor-browser#42043: Stop reporting device IDs (and spoof their number without
