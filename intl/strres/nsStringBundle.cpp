@@ -966,6 +966,7 @@ nsresult nsStringBundleService::FormatWithBundle(
 NS_IMETHODIMP
 nsStringBundleService::FormatStatusMessage(nsresult aStatus,
                                            const char16_t* aStatusArg,
+                                           bool aSpoofLocale,
                                            nsAString& result) {
   uint32_t i, argCount = 0;
   nsCOMPtr<nsIStringBundle> bundle;
@@ -1001,7 +1002,8 @@ nsStringBundleService::FormatStatusMessage(nsresult aStatus,
 
   switch (NS_ERROR_GET_MODULE(aStatus)) {
     case NS_ERROR_MODULE_XSLT:
-      getStringBundle(XSLT_MSGS_URL, getter_AddRefs(bundle));
+      getStringBundle(aSpoofLocale ? XSLT_MSGS_URL_en_US : XSLT_MSGS_URL,
+                      getter_AddRefs(bundle));
       break;
     default:
       getStringBundle(GLOBAL_PROPERTIES, getter_AddRefs(bundle));
