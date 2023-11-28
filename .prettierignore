@@ -1818,3 +1818,4 @@ browser/app/profile/000-tor-browser.js
 !browser/components/torpreferences/content/connectionPane.inc.xhtml
 toolkit/content/pt_config.json
 toolkit/content/moat_countries_dev_build.json
+toolkit/components/lox/lox_wasm.jsm
