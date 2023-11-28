@@ -311,4 +311,5 @@ module.exports = [
   "mobile/android/app/000-tor-browser-android.js",
   "toolkit/content/pt_config.json",
   "toolkit/content/moat_contries_dev_build.json",
+  "toolkit/components/lox/lox_wasm.jsm",
 ];
