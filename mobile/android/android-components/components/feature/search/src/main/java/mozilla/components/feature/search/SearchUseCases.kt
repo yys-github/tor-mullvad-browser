@@ -81,12 +81,7 @@ class SearchUseCases(
                 store.state.findTab(it)?.content?.private
             } ?: false
             val resolvedEngine = searchEngine ?: store.state.search.selectedOrDefaultSearchEngine(isTabPrivate)
-            var securityLevel: Int
-            try {
-                securityLevel = settings?.torSecurityLevel ?: 0
-            } catch (e: UnsupportedSettingException) {
-                securityLevel = 0
-            }
+            val securityLevel : Int = settings!!.torSecurityLevel
             val searchUrl = resolvedEngine?.buildSearchUrl(searchTerms, securityLevel)
 
             if (searchUrl == null) {
@@ -176,12 +171,7 @@ class SearchUseCases(
             additionalHeaders: Map<String, String>? = null,
         ) {
             val resolvedEngine = searchEngine ?: store.state.search.selectedOrDefaultSearchEngine(isPrivate)
-            var securityLevel: Int
-            try {
-                securityLevel = settings?.torSecurityLevel ?: 0
-            } catch (e: UnsupportedSettingException) {
-                securityLevel = 0
-            }
+            val securityLevel : Int = settings!!.torSecurityLevel
             val searchUrl = resolvedEngine?.buildSearchUrl(searchTerms, securityLevel)
 
             if (searchUrl == null) {
