@@ -1865,6 +1865,10 @@ abstract class BaseBrowserFragment :
                 resumeDownloadDialogState(selectedTab.id, context.components.core.store, context)
                 @Suppress("DEPRECATION")
                 it.announceForAccessibility(selectedTab.toDisplayTitle())
+                if (getCurrentTab()?.content?.url == "about:torconnect") {
+                    // FIXME: view is not available anymore.
+                    // browserToolbarView.view.visibility = View.GONE
+                }
             }
         } else {
             view?.let { view -> initializeUI(view) }
@@ -1890,6 +1894,8 @@ abstract class BaseBrowserFragment :
         BiometricAuthenticationManager.biometricAuthenticationNeededInfo.authenticationStatus =
             AuthenticationStatus.NOT_AUTHENTICATED
 
+        handleBetaHtmlTorConnect()
+
         getSafeCurrentTab()?.id?.let {
             requireComponents.core.store.dispatch(
                 ContentAction.UpdateExpandedToolbarStateAction(
@@ -1897,6 +1903,22 @@ abstract class BaseBrowserFragment :
                     expanded = true,
                 ),
             )
+        }
+    }
+
+    private fun handleBetaHtmlTorConnect() {
+        val currentTab = getCurrentTab() ?: return
+        if (currentTab.content.url == "about:torconnect") {
+            if (!requireActivity().settings().useHtmlConnectionUi) {
+                requireContext().components.useCases.tabsUseCases.removeTab(currentTab.id)
+                (requireActivity() as HomeActivity).navigateToHome(findNavController())
+            } else {
+                // This just makes it not flash (be visible for a split second) before handleTabSelected() hides it again
+                // FIXME: view is not available anymore.
+                // browserToolbarView.view.visibility = View.GONE
+            }
+        } else if (currentTab.content.url == "about:tor") {
+            requireContext().components.useCases.tabsUseCases.removeTab(currentTab.id)
         }
     }
 
