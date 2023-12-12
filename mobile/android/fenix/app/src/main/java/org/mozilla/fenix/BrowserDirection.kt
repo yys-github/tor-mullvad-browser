@@ -40,4 +40,5 @@ enum class BrowserDirection(@param:IdRes val fragmentId: Int) {
     FromMenuDialogFragment(R.id.menuDialogFragment),
     FromWebCompatReporterFragment(R.id.webCompatReporterFragment),
     FromGleanDebugToolsFragment(R.id.gleanDebugToolsFragment),
+    FromTorConnectionAssistFragment(R.id.torConnectionAssistFragment),
 }

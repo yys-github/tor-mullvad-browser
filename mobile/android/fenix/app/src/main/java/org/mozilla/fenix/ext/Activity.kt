@@ -60,6 +60,7 @@ import org.mozilla.fenix.settings.studies.StudiesFragmentDirections
 import org.mozilla.fenix.settings.wallpaper.WallpaperSettingsFragmentDirections
 import org.mozilla.fenix.share.AddNewDeviceFragmentDirections
 import org.mozilla.fenix.tabstray.ui.TabManagementFragmentDirections
+import org.mozilla.fenix.tor.TorConnectionAssistFragmentDirections
 import org.mozilla.fenix.translations.TranslationsDialogFragmentDirections
 import org.mozilla.fenix.translations.preferences.downloadlanguages.DownloadLanguagesPreferenceFragmentDirections
 import org.mozilla.fenix.webcompat.ui.WebCompatReporterFragmentDirections
@@ -326,6 +327,9 @@ private fun getHomeNavDirections(from: BrowserDirection): NavDirections =
             DownloadLanguagesPreferenceFragmentDirections.actionGlobalBrowser()
 
         BrowserDirection.FromWebCompatReporterFragment -> WebCompatReporterFragmentDirections.actionGlobalBrowser()
+
+        BrowserDirection.FromTorConnectionAssistFragment ->
+            TorConnectionAssistFragmentDirections.actionGlobalBrowser()
     }
 
 const val REQUEST_CODE_BROWSER_ROLE = 1
