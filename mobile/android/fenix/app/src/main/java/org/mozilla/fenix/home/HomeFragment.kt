@@ -93,6 +93,7 @@ import mozilla.components.feature.top.sites.TopSitesProviderConfig
 import mozilla.components.lib.state.ext.consumeFlow
 import mozilla.components.lib.state.ext.consumeFrom
 import mozilla.components.lib.state.ext.observeAsState
+import mozilla.components.support.base.feature.UserInteractionHandler
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.ui.colors.PhotonColors
 import mozilla.components.ui.tabcounter.TabCounterMenu
@@ -183,6 +184,7 @@ import org.mozilla.fenix.tabstray.TabsTrayAccessPoint
 import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.tor.TorBootstrapFragmentDirections
 import org.mozilla.fenix.tor.TorBootstrapStatus
+import org.mozilla.fenix.tor.TorConnectionAssistViewModel
 import org.mozilla.fenix.utils.Settings.Companion.TOP_SITES_PROVIDER_MAX_THRESHOLD
 import org.mozilla.fenix.utils.allowUndo
 import org.mozilla.fenix.wallpapers.Wallpaper
@@ -190,7 +192,7 @@ import java.lang.ref.WeakReference
 import org.mozilla.fenix.GleanMetrics.TabStrip as TabStripMetrics
 
 @Suppress("TooManyFunctions", "LargeClass")
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), UserInteractionHandler {
     private val args by navArgs<HomeFragmentArgs>()
 
     @VisibleForTesting
@@ -203,6 +205,7 @@ class HomeFragment : Fragment() {
     private val snackbarBinding = ViewBoundFeatureWrapper<SnackbarBinding>()
 
     private val homeViewModel: HomeScreenViewModel by activityViewModels()
+    private val torConnectionAssistViewModel: TorConnectionAssistViewModel by activityViewModels()
 
     private var _bottomToolbarContainerView: BottomToolbarContainerView? = null
     private val bottomToolbarContainerView: BottomToolbarContainerView
@@ -1157,6 +1160,17 @@ class HomeFragment : Fragment() {
             view = view,
         )
 
+        torConnectionAssistViewModel.urlToLoadAfterConnecting.also {
+            if(!it.isNullOrBlank()){
+                (requireActivity() as HomeActivity).openToBrowserAndLoad(
+                    searchTermOrURL = it,
+                    newTab = true,
+                    from = BrowserDirection.FromHome,
+                )
+                torConnectionAssistViewModel.urlToLoadAfterConnecting = null // Only load this url once
+            }
+        }
+
         // DO NOT MOVE ANYTHING BELOW THIS addMarker CALL!
         requireComponents.core.engine.profiler?.addMarker(
             MarkersFragmentLifecycleCallbacks.MARKER_NAME,
@@ -1679,5 +1693,10 @@ class HomeFragment : Fragment() {
 
         // Elevation for undo toasts
         internal const val TOAST_ELEVATION = 80f
+    }
+
+    override fun onBackPressed(): Boolean {
+        requireActivity().finish()
+        return true
     }
 }
