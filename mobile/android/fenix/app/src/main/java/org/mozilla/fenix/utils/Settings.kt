@@ -2698,4 +2698,9 @@ class Settings(private val appContext: Context) : PreferencesHolder {
         key = appContext.getPreferenceKey(R.string.pref_key_use_html_connection_ui),
         default = false,
     )
+
+    var quickStart by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_quick_start),
+        default = false,
+    )
 }
