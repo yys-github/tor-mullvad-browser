@@ -38,6 +38,8 @@ import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.whatsnew.WhatsNew
 import org.mozilla.geckoview.BuildConfig as GeckoViewBuildConfig
 
+import org.mozilla.fenix.HomeActivity
+
 /**
  * Displays the logo and information about the app, including library versions.
  */
@@ -244,6 +246,7 @@ class AboutFragment(
     }
 
     private fun openLinkInNormalTab(url: String) {
+        if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(url)) return
         findNavController().openToBrowser()
         requireComponents.useCases.fenixBrowserUseCases.loadUrlOrSearch(
             searchTermOrURL = url,

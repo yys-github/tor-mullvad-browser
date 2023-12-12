@@ -265,6 +265,13 @@ class SecretSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFra
             }
         }
 
+        requirePreference<Preference>(R.string.pref_key_test_kill_tor).apply {
+            setOnPreferenceClickListener {
+                requireContext().components.core.geckoRuntime.torIntegrationController.shutdown()
+                true
+            }
+        }
+
         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_enable_fxsuggest).apply {
             isVisible = FeatureFlags.FX_SUGGEST
             isChecked = settings.enableFxSuggest
