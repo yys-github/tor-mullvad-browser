@@ -327,6 +327,7 @@ internal fun Snackbar(
                         onClick = snackbarState.action.onClick,
                         modifier = Modifier.testTag(SNACKBAR_BUTTON_TEST_TAG),
                         textColor = colors.actionTextColor,
+                        upperCaseText = false,
                     )
 
                     Spacer(modifier = Modifier.width(snackbarActionHorizontalSpacing))

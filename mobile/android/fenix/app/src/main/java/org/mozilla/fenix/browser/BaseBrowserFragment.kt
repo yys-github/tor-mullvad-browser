@@ -1762,6 +1762,10 @@ abstract class BaseBrowserFragment :
 
                 @Suppress("DEPRECATION")
                 it.announceForAccessibility(selectedTab.toDisplayTitle())
+                if (getCurrentTab()?.content?.url == "about:torconnect") {
+                    // FIXME: view is not available anymore.
+                    // browserToolbarView.view.visibility = View.GONE
+                }
             }
         } else {
             view?.let { view -> initializeUI(view) }
@@ -1786,6 +1790,27 @@ abstract class BaseBrowserFragment :
             true
         BiometricAuthenticationManager.biometricAuthenticationNeededInfo.authenticationStatus =
             AuthenticationStatus.NOT_AUTHENTICATED
+
+        handleBetaHtmlTorConnect()
+    }
+
+    private fun handleBetaHtmlTorConnect() {
+        val currentTab = getCurrentTab() ?: return
+        if (currentTab.content.url == "about:torconnect") {
+            if (!requireActivity().settings().useHtmlConnectionUi) {
+                requireContext().components.useCases.tabsUseCases.removeTab(currentTab.id)
+                (requireActivity() as HomeActivity).navigateToHome(
+                    findNavController(),
+                    focusOnAddressBar = true
+                )
+            } else {
+                // This just makes it not flash (be visible for a split second) before handleTabSelected() hides it again
+                // FIXME: view is not available anymore.
+                // browserToolbarView.view.visibility = View.GONE
+            }
+        } else if (currentTab.content.url == "about:tor") {
+            requireContext().components.useCases.tabsUseCases.removeTab(currentTab.id)
+        }
     }
 
     private fun evaluateMessagesForMicrosurvey(components: Components) =
