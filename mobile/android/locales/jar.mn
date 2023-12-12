@@ -53,6 +53,8 @@ relativesrcdir toolkit/locales:
   toolkit/branding                                 (%toolkit/branding/*brandings.ftl)
   toolkit/global                                   (%toolkit/global/*processTypes.ftl)
   toolkit/global                                   (%toolkit/global/*resetProfile.ftl)
+#country/region names (used by TorConnect; see tor-browser#43633)
+  toolkit/intl/regionNames.ftl                     (%toolkit/intl/regionNames.ftl)
 #endif
 # Do not add files below the endif. Reviewers, expand more context above
 # for comments.
