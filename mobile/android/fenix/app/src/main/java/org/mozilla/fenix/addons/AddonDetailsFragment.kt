@@ -19,6 +19,7 @@ import mozilla.components.feature.addons.Addon
 import mozilla.components.feature.addons.ui.showInformationDialog
 import mozilla.components.feature.addons.ui.translateName
 import mozilla.components.feature.addons.update.DefaultAddonUpdater.UpdateAttemptStorage
+import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.databinding.FragmentAddOnDetailsBinding
 import org.mozilla.fenix.e2e.SystemInsetsPaddedFragment
@@ -51,6 +52,7 @@ class AddonDetailsFragment :
     }
 
     override fun openWebsite(url: Uri) {
+        if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(url.toString())) return
         findNavController().openToBrowser()
         requireComponents.useCases.fenixBrowserUseCases.loadUrlOrSearch(
             searchTermOrURL = url.toString(),
