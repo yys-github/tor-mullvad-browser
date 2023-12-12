@@ -65,6 +65,7 @@ import mozilla.components.feature.top.sites.presenter.DefaultTopSitesPresenter
 import mozilla.components.lib.state.ext.flow
 import mozilla.components.lib.state.ext.observeAsComposableState
 import mozilla.components.service.nimbus.messaging.Message
+import mozilla.components.support.base.feature.UserInteractionHandler
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.ktx.android.view.toScope
 import mozilla.components.support.utils.BuildManufacturerChecker
@@ -185,18 +186,20 @@ import java.lang.ref.WeakReference
 import org.mozilla.fenix.ipprotection.store.Surface as IPProtectionSurface
 
 import org.mozilla.fenix.tor.TorHomePage
+import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 
 /**
  * The home screen.
  */
 @Suppress("TooManyFunctions", "LargeClass")
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), UserInteractionHandler {
     private val args by navArgs<HomeFragmentArgs>()
 
     @VisibleForTesting
     internal lateinit var bundleArgs: Bundle
 
     private val homeViewModel: HomeScreenViewModel by activityViewModels()
+    private val urlQuickLoadViewModel: UrlQuickLoadViewModel by activityViewModels()
 
     private val snackbarHostState = SnackbarHostState()
 
@@ -547,6 +550,19 @@ class HomeFragment : Fragment() {
             activity = requireActivity(),
             launcher = continuousOnboardingDefaultBrowserLauncher,
         )
+
+        urlQuickLoadViewModel.urlToLoadAfterConnecting.observe(viewLifecycleOwner) {
+            if (!it.isNullOrBlank()) {
+                @Suppress("DEPRECATION")
+                (requireActivity() as HomeActivity).openToBrowserAndLoad(
+                    searchTermOrURL = it,
+                    newTab = true,
+                    from = BrowserDirection.FromHome,
+                )
+                // Only load this url once
+                urlQuickLoadViewModel.urlToLoadAfterConnecting.value = null
+            }
+        }
 
         // DO NOT MOVE ANYTHING BELOW THIS addMarker CALL!
         requireComponents.core.engine.profiler?.addMarker(
@@ -1453,5 +1469,9 @@ class HomeFragment : Fragment() {
         const val FOCUS_ON_ADDRESS_BAR = "focusOnAddressBar"
         const val START_VOICE_SEARCH = "startVoiceSearch"
         private const val SESSION_TO_DELETE = "sessionToDelete"
+    }
+
+    override fun onBackPressed(): Boolean {
+        (requireActivity() as HomeActivity).shutDown()
     }
 }
