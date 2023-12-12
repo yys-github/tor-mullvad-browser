@@ -33,6 +33,15 @@ class NotificationsDelegate(
     var isRequestingPermission: Boolean = false
         private set
 
+    /**
+     * Defaults to true, normal behavior is to destroy the app when OnDestroy is called with isFinishing set to true
+     *
+     * A value of false indicates that the notification was just swiped away and the app should not shut down on it's behalf
+     *
+     * Workaround to make swiping the notification away not shutdown the app
+     */
+    var shouldShutDownWithOnDestroyWhenIsFinishing: Boolean = true
+
     @VisibleForTesting
     internal var permissionRequestsCount: Int = 0
 

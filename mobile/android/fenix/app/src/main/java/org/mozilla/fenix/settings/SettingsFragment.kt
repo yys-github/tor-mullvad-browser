@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.StrictMode
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -34,7 +33,6 @@ import androidx.preference.SwitchPreferenceCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mozilla.components.browser.state.state.selectedOrDefaultSearchEngine
@@ -46,6 +44,7 @@ import mozilla.components.concept.sync.Profile
 import mozilla.components.feature.addons.ui.AddonFilePicker
 import mozilla.components.service.fxrelay.eligibility.Eligible
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
+import mozilla.components.support.base.feature.UserInteractionHandler
 import mozilla.components.support.ktx.android.view.showKeyboard
 import mozilla.components.support.utils.BuildManufacturerChecker
 import mozilla.components.support.utils.DateTimeProvider
@@ -100,7 +99,7 @@ import android.view.WindowManager
  * Main settings screen.
  */
 @Suppress("LargeClass", "TooManyFunctions")
-class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment {
+class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment, UserInteractionHandler {
 
     private val args by navArgs<SettingsFragmentArgs>()
     private lateinit var accountUiView: AccountUiView
@@ -398,9 +397,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
                 SettingsFragmentDirections.actionSettingsFragmentToTabsSettingsFragment()
             }
 
-            resources.getString(R.string.pref_key_home) -> {
-                SettingsFragmentDirections.actionSettingsFragmentToHomeSettingsFragment()
-            }
+            // resources.getString(R.string.pref_key_home) -> {
+            //     SettingsFragmentDirections.actionSettingsFragmentToHomeSettingsFragment()
+            // }
 
             resources.getString(R.string.pref_key_customize) -> {
                 SettingsFragmentDirections.actionSettingsFragmentToCustomizationFragment()
@@ -808,20 +807,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
 
     @VisibleForTesting
     internal fun setupHomepagePreference(settings: Settings) {
-        with(requirePreference<Preference>(R.string.pref_key_home)) {
-            summary = when {
-                settings.alwaysOpenTheHomepageWhenOpeningTheApp ->
-                    getString(R.string.opening_screen_homepage_summary)
-
-                settings.openHomepageAfterFourHoursOfInactivity ->
-                    getString(R.string.opening_screen_after_four_hours_of_inactivity_summary)
-
-                settings.alwaysOpenTheLastTabWhenOpeningTheApp ->
-                    getString(R.string.opening_screen_last_tab_summary)
-
-                else -> null
-            }
-        }
     }
 
     @VisibleForTesting
@@ -878,11 +863,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
                 )
                 true
             }
-        }
-
-        requirePreference<Preference>(R.string.pref_key_use_html_connection_ui).apply {
-            onPreferenceChangeListener = object : SharedPreferenceUpdater() {}
-            isVisible = Config.channel != ReleaseChannel.Release
         }
 
         requirePreference<Preference>(R.string.pref_key_tor_logs).apply {
@@ -1014,5 +994,19 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         private const val SCROLL_INDICATOR_DELAY = 10L
         private const val FXA_SYNC_OVERRIDE_EXIT_DELAY = 2000L
         private const val AMO_COLLECTION_OVERRIDE_EXIT_DELAY = 3000L
+    }
+
+    override fun onBackPressed(): Boolean {
+        // If tor is already bootstrapped, skip going back to [TorConnectionAssistFragment] and instead go directly to [HomeFragment]
+        if (requireComponents.torController.isBootstrapped) {
+            val navController = findNavController()
+            if (navController.previousBackStackEntry?.destination?.id == R.id.torConnectionAssistFragment) {
+                navController.navigate(
+                    SettingsFragmentDirections.actionGlobalHomeFragment(),
+                )
+                return true
+            }
+        }
+        return false
     }
 }
