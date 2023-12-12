@@ -203,6 +203,7 @@ class HomeMenuView(
                     activity = homeActivity,
                     coroutineScope = homeActivity.lifecycleScope,
                 )
+                homeActivity.shutDown()
             }
             HomeMenu.Item.ReconnectSync -> {
                 navController.nav(
