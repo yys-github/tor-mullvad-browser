@@ -7,6 +7,7 @@ package org.mozilla.fenix
 import android.annotation.SuppressLint
 import android.app.assist.AssistContent
 import android.app.PendingIntent
+import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -19,6 +20,7 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.text.format.DateUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.view.ActionMode
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -28,6 +30,7 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import androidx.activity.BackEventCompat
+import androidx.activity.viewModels
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.VisibleForTesting
@@ -39,7 +42,9 @@ import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.text.layoutDirection
 import androidx.core.view.doOnLayout
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment
@@ -89,6 +94,7 @@ import mozilla.components.support.utils.BrowsersCache
 import mozilla.components.support.utils.BuildManufacturerChecker
 import mozilla.components.support.utils.SafeIntent
 import mozilla.components.support.utils.TorUtils
+import mozilla.components.support.utils.ext.getParcelableExtraCompat
 import mozilla.components.support.utils.toSafeIntent
 import mozilla.components.support.webextensions.WebExtensionOptionsPageObserver
 import mozilla.components.support.webextensions.WebExtensionPopupObserver
@@ -188,14 +194,24 @@ import org.mozilla.fenix.theme.StatusBarColorManager
 import org.mozilla.fenix.theme.ThemeManager
 import org.mozilla.fenix.translations.TranslationsAIControllableFeatureRegistrar
 import org.mozilla.fenix.translations.TranslationsEnabledSettings
-import org.mozilla.fenix.tor.TorEvents
+import org.mozilla.fenix.tor.TorConnectionAssistFragmentDirections
 import org.mozilla.fenix.utils.AccessibilityUtils.announcePrivateModeForAccessibility
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.changeAppLauncherIcon
 import java.util.Locale
 import mozilla.components.ui.icons.R as iconsR
 
+import mozilla.components.browser.engine.gecko.GeckoEngine
+import org.mozilla.fenix.compose.core.Action
+import org.mozilla.fenix.compose.snackbar.SnackbarState
+import org.mozilla.fenix.compose.snackbar.Snackbar
 import org.mozilla.fenix.tor.CustomSecurityLevelViewModel
+import org.mozilla.fenix.tor.TorController
+import org.mozilla.fenix.tor.ProviderStoppedViewModel
+import org.mozilla.fenix.tor.UrlQuickLoadViewModel
+import org.mozilla.geckoview.TorAndroidIntegration.BootstrapStateChangeListener
+import org.mozilla.geckoview.TorConnectStage
+import kotlin.system.exitProcess
 
 /**
  * The main activity of the application. The application is primarily a single Activity (this one)
@@ -425,12 +441,28 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
 
     private var dialog: RedirectDialogFragment? = null
 
+    private val providerStoppedViewModel: ProviderStoppedViewModel by viewModels()
+
+    private val urlQuickLoadViewModel: UrlQuickLoadViewModel by viewModels()
+
     private val customSecurityLevelViewModel: CustomSecurityLevelViewModel by viewModels()
 
     @Suppress("CognitiveComplexMethod", "CyclomaticComplexMethod")
     final override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT MOVE ANYTHING ABOVE THIS getProfilerTime CALL.
         val startTimeProfiler = components.core.engine.profiler?.getProfilerTime()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                providerStoppedViewModel.providerStoppedStateFlow.collect { isStopped ->
+                    Log.d("providerStoppedViewModel", "isStopped = $isStopped")
+                    if (isStopped) {
+                        navHost.navController.navigate(NavGraphDirections.actionNavigateToConnectionAssistFromAnywhere())
+                        providerStoppedViewModel.providerStoppedStateFlow.value = false
+                    }
+                }
+            }
+        }
 
         // Setup nimbus-cli tooling. This is a NOOP when launching normally.
         components.nimbus.sdk.initializeTooling(applicationContext, intent)
@@ -883,7 +915,9 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
     override fun onProvideAssistContent(outContent: AssistContent?) {
         super.onProvideAssistContent(outContent)
         val currentTabUrl = components.core.store.state.selectedTab?.content?.url
-        outContent?.webUri = currentTabUrl?.let { it.toUri() }
+        if (components.core.store.state.selectedTab?.content?.private == false) {
+            outContent?.webUri = currentTabUrl?.let { it.toUri() }
+        }
     }
 
     @CallSuper
@@ -914,6 +948,16 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
         val activityStartedWithLink = startupPathProvider.startupPathForActivity == StartupPathProvider.StartupPath.VIEW
         if (this !is ExternalAppBrowserActivity && !activityStartedWithLink) {
             stopMediaSession()
+        }
+
+        if (applicationContext.components.notificationsDelegate.shouldShutDownWithOnDestroyWhenIsFinishing) {
+            if (isFinishing) {
+                shutDown()
+            }
+        } else {
+            // We only want to not shut down when the notification is swiped away,
+            // if we do not reset this value
+            applicationContext.components.notificationsDelegate.shouldShutDownWithOnDestroyWhenIsFinishing = true
         }
 
         components.core.engine.profiler?.addMarker(
@@ -980,15 +1024,21 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
             onNewIntentInternal(intent)
         } else {
             // Wait until Tor is connected to handle intents from external apps for links, search, etc.
-            components.torController.registerTorListener(object : TorEvents {
-                override fun onTorConnected() {
-                    components.torController.unregisterTorListener(this)
-                    onNewIntentInternal(intent)
+            val torIntegration = (components.core.engine as GeckoEngine).getTorIntegrationController()
+            torIntegration.registerBootstrapStateChangeListener(
+                object : BootstrapStateChangeListener {
+
+                    override fun onBootstrapStageChange(stage: TorConnectStage) {
+                        if (stage.isBootstrapped) {
+                            torIntegration.unregisterBootstrapStateChangeListener(this)
+                            onNewIntentInternal(intent)
+                        }
+                    }
+
+                    override fun onBootstrapProgress(progress: Double, hasWarnings: Boolean) {}
                 }
-                override fun onTorConnecting() { /* no-op */ }
-                override fun onTorStopped() { /* no-op */ }
-                override fun onTorStatusUpdate(entry: String?, status: String?, progress: Double?) { /* no-op */ }
-            })
+            )
+
             return
         }
     }
@@ -1430,6 +1480,30 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
         historyMetadata: HistoryMetadataKey? = null,
         additionalHeaders: Map<String, String>? = null,
     ) {
+        if (!components.torController.isBootstrapped && !searchTermOrURL.startsWith("about:")) {
+            Snackbar.make(
+                snackBarParentView = binding.root,
+                snackbarState = SnackbarState(
+                    message = getString(R.string.connection_assist_connect_to_tor_before_opening_links),
+                    duration = SnackbarState.Duration.Preset.Long,
+                    action = Action(
+                        label = getString(R.string.connection_assist_connect_to_tor_before_opening_links_confirmation),
+                        onClick = {
+                            urlQuickLoadViewModel.urlToLoadAfterConnecting.value = searchTermOrURL
+                            urlQuickLoadViewModel.maybeBeginBootstrap()
+                            if (navHost.navController.previousBackStackEntry?.destination?.id == R.id.torConnectionAssistFragment) {
+                                supportFragmentManager.popBackStack()
+                            } else {
+                                navHost.navController.navigate(
+                                    TorConnectionAssistFragmentDirections.actionConnectToTorBeforeOpeningLinks(),
+                                )
+                            }
+                        },
+                    ),
+                ),
+            ).show()
+            return
+        }
         openToBrowser(from, customTabSessionId)
 
         components.useCases.fenixBrowserUseCases.loadUrlOrSearch(
@@ -1469,11 +1543,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
 
     @VisibleForTesting
     internal fun navigateToHome(navController: NavController) {
-        // if (this is ExternalAppBrowserActivity) {
-        //     return
-        // }
-
-        navController.navigate(NavGraphDirections.actionStartupTorbootstrap())
+        navController.navigate(NavGraphDirections.actionStartupTorConnectionAssist())
     }
 
     final override fun attachBaseContext(base: Context) {
@@ -1720,5 +1790,30 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
             R.id.addonDetailsFragment,
             R.id.addonPermissionsDetailFragment,
         )
+    }
+
+    fun restartApplication() {
+        startActivity(
+            Intent(applicationContext, HomeActivity::class.java).addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
+            ),
+        )
+        shutDown()
+    }
+
+    fun shutDown() : Nothing {
+        finishAndRemoveTask()
+        components.torController.shutdown()
+        exitProcess(0)
+    }
+
+    fun openBatterySaverSettings() {
+        try {
+            startActivity(
+                Intent(android.provider.Settings.ACTION_BATTERY_SAVER_SETTINGS)
+            )
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+        }
     }
 }
