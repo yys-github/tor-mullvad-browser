@@ -79,6 +79,7 @@ class PrivateNotificationService : AbstractPrivateNotificationService() {
     @SuppressLint("MissingSuperCall")
     override fun erasePrivateTabs() {
         val inPrivateMode = store.state.selectedTab?.content?.private ?: false
+        notificationsDelegate.shouldShutDownWithOnDestroyWhenIsFinishing = false
 
         // Trigger use case directly for now (instead of calling super.erasePrivateTabs)
         // as otherwise SessionManager and the store will be out of sync.
