@@ -3347,4 +3347,9 @@ class Settings(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_pdf_tools),
         default = { FxNimbus.features.pdfViewer.value().androidUiTools },
     )
+
+    var quickStart by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_quick_start),
+        default = false,
+    )
 }
