@@ -43,4 +43,5 @@ enum class BrowserDirection(@IdRes val fragmentId: Int) {
     FromDownloadLanguagesPreferenceFragment(R.id.downloadLanguagesPreferenceFragment),
     FromMenuDialogFragment(R.id.menuDialogFragment),
     FromWebCompatReporterFragment(R.id.webCompatReporterFragment),
+    FromTorConnectionAssistFragment(R.id.torConnectionAssistFragment),
 }
