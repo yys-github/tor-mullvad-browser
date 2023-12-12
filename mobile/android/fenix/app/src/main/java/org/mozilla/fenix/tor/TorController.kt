@@ -38,4 +38,5 @@ interface TorController {
 
     fun initiateTorBootstrap(lifecycleScope: LifecycleCoroutineScope? = null, withDebugLogging: Boolean = false)
     fun stopTor()
+    fun shutdown()
 }
