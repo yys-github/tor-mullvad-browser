@@ -94,6 +94,7 @@ import mozilla.components.feature.top.sites.TopSitesProviderConfig
 import mozilla.components.lib.state.ext.consumeFlow
 import mozilla.components.lib.state.ext.consumeFrom
 import mozilla.components.lib.state.ext.observeAsState
+import mozilla.components.support.base.feature.UserInteractionHandler
 import mozilla.components.support.base.feature.ViewBoundFeatureWrapper
 import mozilla.components.support.utils.BrowsersCache
 import mozilla.components.ui.colors.PhotonColors
@@ -190,8 +191,10 @@ import org.mozilla.fenix.wallpapers.Wallpaper
 import java.lang.ref.WeakReference
 import org.mozilla.fenix.GleanMetrics.TabStrip as TabStripMetrics
 
+import org.mozilla.fenix.tor.UrlQuickLoadViewModel
+
 @Suppress("TooManyFunctions", "LargeClass")
-class HomeFragment : Fragment() {
+class HomeFragment : Fragment(), UserInteractionHandler {
     private val args by navArgs<HomeFragmentArgs>()
 
     @VisibleForTesting
@@ -204,6 +207,7 @@ class HomeFragment : Fragment() {
     private val snackbarBinding = ViewBoundFeatureWrapper<SnackbarBinding>()
 
     private val homeViewModel: HomeScreenViewModel by activityViewModels()
+    private val urlQuickLoadViewModel: UrlQuickLoadViewModel by activityViewModels()
 
     private var _bottomToolbarContainerView: BottomToolbarContainerView? = null
     private val bottomToolbarContainerView: BottomToolbarContainerView
@@ -1191,6 +1195,18 @@ class HomeFragment : Fragment() {
             view = view,
         )
 
+        urlQuickLoadViewModel.urlToLoadAfterConnecting.observe(viewLifecycleOwner) {
+            if (!it.isNullOrBlank()) {
+                (requireActivity() as HomeActivity).openToBrowserAndLoad(
+                    searchTermOrURL = it,
+                    newTab = true,
+                    from = BrowserDirection.FromHome,
+                )
+                // Only load this url once
+                urlQuickLoadViewModel.urlToLoadAfterConnecting.value = null
+            }
+        }
+
         // DO NOT MOVE ANYTHING BELOW THIS addMarker CALL!
         requireComponents.core.engine.profiler?.addMarker(
             MarkersFragmentLifecycleCallbacks.MARKER_NAME,
@@ -1703,5 +1719,9 @@ class HomeFragment : Fragment() {
 
         // Elevation for undo toasts
         internal const val TOAST_ELEVATION = 80f
+    }
+
+    override fun onBackPressed(): Boolean {
+        (requireActivity() as HomeActivity).shutDown()
     }
 }
