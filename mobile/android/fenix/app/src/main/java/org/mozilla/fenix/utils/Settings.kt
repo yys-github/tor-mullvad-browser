@@ -3375,4 +3375,9 @@ class Settings(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_homepage_trending_recent_search),
         default = { FxNimbus.features.homepageTrendingRecentSearch.value().enabled },
     )
+
+    var quickStart by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_quick_start),
+        default = false,
+    )
 }
