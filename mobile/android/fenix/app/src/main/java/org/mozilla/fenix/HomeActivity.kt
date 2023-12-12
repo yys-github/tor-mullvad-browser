@@ -28,6 +28,7 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.WindowManager.LayoutParams.FLAG_SECURE
 import androidx.activity.BackEventCompat
+import androidx.activity.viewModels
 import androidx.annotation.CallSuper
 import androidx.annotation.IdRes
 import androidx.annotation.VisibleForTesting
@@ -85,6 +86,7 @@ import mozilla.components.support.utils.BrowsersCache
 import mozilla.components.support.utils.BuildManufacturerChecker
 import mozilla.components.support.utils.SafeIntent
 import mozilla.components.support.utils.TorUtils
+import mozilla.components.support.utils.ext.getParcelableExtraCompat
 import mozilla.components.support.utils.toSafeIntent
 import mozilla.components.support.webextensions.WebExtensionPopupObserver
 import mozilla.telemetry.glean.private.NoExtras
@@ -171,12 +173,22 @@ import org.mozilla.fenix.tabstray.TabsTrayFragment
 import org.mozilla.fenix.theme.DefaultThemeManager
 import org.mozilla.fenix.theme.StatusBarColorManager
 import org.mozilla.fenix.theme.ThemeManager
-import org.mozilla.fenix.tor.TorEvents
+import org.mozilla.fenix.tor.TorConnectionAssistFragmentDirections
 import org.mozilla.fenix.utils.AccessibilityUtils.announcePrivateModeForAccessibility
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.changeAppLauncherIcon
 import java.util.Locale
 import mozilla.components.ui.icons.R as iconsR
+
+import mozilla.components.browser.engine.gecko.GeckoEngine
+import org.mozilla.fenix.compose.core.Action
+import org.mozilla.fenix.compose.snackbar.SnackbarState
+import org.mozilla.fenix.compose.snackbar.Snackbar
+import org.mozilla.fenix.tor.UrlQuickLoadViewModel
+import org.mozilla.geckoview.TorAndroidIntegration
+import org.mozilla.geckoview.TorAndroidIntegration.BootstrapStateChangeListener
+import org.mozilla.geckoview.TorConnectStage
+import kotlin.system.exitProcess
 
 /**
  * The main activity of the application. The application is primarily a single Activity (this one)
@@ -185,7 +197,7 @@ import mozilla.components.ui.icons.R as iconsR
  * - browser screen
  */
 @SuppressWarnings("TooManyFunctions", "LargeClass", "LongMethod")
-open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
+open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAndroidIntegration.BootstrapStateChangeListener {
     @VisibleForTesting
     internal lateinit var binding: ActivityHomeBinding
     lateinit var themeManager: ThemeManager
@@ -366,6 +378,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
     }
 
     private var dialog: RedirectDialogFragment? = null
+
+    private val urlQuickLoadViewModel: UrlQuickLoadViewModel by viewModels()
 
     @Suppress("CognitiveComplexMethod", "CyclomaticComplexMethod")
     final override fun onCreate(savedInstanceState: Bundle?) {
@@ -597,6 +611,14 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             onBackPressedCallback = onBackPressedCallback,
         )
 
+        if (settings().useHtmlConnectionUi) {
+            val engine = components.core.engine
+            if (engine is GeckoEngine) {
+                val torIntegration = engine.getTorIntegrationController()
+                torIntegration.registerBootstrapStateChangeListener(this)
+            }
+        }
+
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.
     }
 
@@ -809,7 +831,9 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
     override fun onProvideAssistContent(outContent: AssistContent?) {
         super.onProvideAssistContent(outContent)
         val currentTabUrl = components.core.store.state.selectedTab?.content?.url
-        outContent?.webUri = currentTabUrl?.let { it.toUri() }
+        if (components.core.store.state.selectedTab?.content?.private == false) {
+            outContent?.webUri = currentTabUrl?.let { it.toUri() }
+        }
     }
 
     @CallSuper
@@ -842,6 +866,16 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         val activityStartedWithLink = startupPathProvider.startupPathForActivity == StartupPathProvider.StartupPath.VIEW
         if (this !is ExternalAppBrowserActivity && !activityStartedWithLink) {
             stopMediaSession()
+        }
+
+        if (applicationContext.components.notificationsDelegate.shouldShutDownWithOnDestroyWhenIsFinishing) {
+            if (isFinishing) {
+                shutDown()
+            }
+        } else {
+            // We only want to not shut down when the notification is swiped away,
+            // if we do not reset this value
+            applicationContext.components.notificationsDelegate.shouldShutDownWithOnDestroyWhenIsFinishing = true
         }
 
         components.core.engine.profiler?.addMarker(
@@ -908,15 +942,21 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             onNewIntentInternal(intent)
         } else {
             // Wait until Tor is connected to handle intents from external apps for links, search, etc.
-            components.torController.registerTorListener(object : TorEvents {
-                override fun onTorConnected() {
-                    components.torController.unregisterTorListener(this)
-                    onNewIntentInternal(intent)
+            val torIntegration = (components.core.engine as GeckoEngine).getTorIntegrationController()
+            torIntegration.registerBootstrapStateChangeListener(
+                object : BootstrapStateChangeListener {
+
+                    override fun onBootstrapStageChange(stage: TorConnectStage) {
+                        if (stage.isBootstrapped) {
+                            torIntegration.unregisterBootstrapStateChangeListener(this)
+                            onNewIntentInternal(intent)
+                        }
+                    }
+
+                    override fun onBootstrapProgress(progress: Double, hasWarnings: Boolean) {}
                 }
-                override fun onTorConnecting() { /* no-op */ }
-                override fun onTorStopped() { /* no-op */ }
-                override fun onTorStatusUpdate(entry: String?, status: String?, progress: Double?) { /* no-op */ }
-            })
+            )
+
             return
         }
     }
@@ -1285,6 +1325,30 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         historyMetadata: HistoryMetadataKey? = null,
         additionalHeaders: Map<String, String>? = null,
     ) {
+        if (!components.torController.isBootstrapped && !searchTermOrURL.startsWith("about:")) {
+            Snackbar.make(
+                snackBarParentView = binding.root,
+                snackbarState = SnackbarState(
+                    message = getString(R.string.connection_assist_connect_to_tor_before_opening_links),
+                    duration = SnackbarState.Duration.Preset.Long,
+                    action = Action(
+                        label = getString(R.string.connection_assist_connect_to_tor_before_opening_links_confirmation),
+                        onClick = {
+                            urlQuickLoadViewModel.urlToLoadAfterConnecting.value = searchTermOrURL
+                            urlQuickLoadViewModel.maybeBeginBootstrap()
+                            if (navHost.navController.previousBackStackEntry?.destination?.id == R.id.torConnectionAssistFragment) {
+                                supportFragmentManager.popBackStack()
+                            } else {
+                                navHost.navController.navigate(
+                                    TorConnectionAssistFragmentDirections.actionConnectToTorBeforeOpeningLinks(),
+                                )
+                            }
+                        },
+                    ),
+                ),
+            ).show()
+            return
+        }
         openToBrowser(from, customTabSessionId)
 
         components.useCases.fenixBrowserUseCases.loadUrlOrSearch(
@@ -1328,7 +1392,16 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         //     return
         // }
 
-        navController.navigate(NavGraphDirections.actionStartupTorbootstrap())
+        if (!settings().useHtmlConnectionUi) {
+            navController.navigate(NavGraphDirections.actionStartupTorConnectionAssist())
+        } else {
+            navController.navigate(NavGraphDirections.actionStartupHome())
+            openToBrowserAndLoad(
+                searchTermOrURL = "about:torconnect",
+                newTab = true,
+                from = BrowserDirection.FromHome,
+            )
+        }
     }
 
     final override fun attachBaseContext(base: Context) {
@@ -1521,4 +1594,28 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
 
         private const val REQUEST_CODE_CAMERA_PERMISSIONS = 1
     }
+
+    fun restartApplication() {
+        startActivity(
+            Intent(applicationContext, HomeActivity::class.java).addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
+            ),
+        )
+        shutDown()
+    }
+
+    fun shutDown() : Nothing {
+        finishAndRemoveTask()
+        exitProcess(0)
+    }
+
+    override fun onBootstrapStageChange(stage: TorConnectStage)  {
+        if (stage.isBootstrapped) {
+            if (settings().useHtmlConnectionUi) {
+                components.useCases.tabsUseCases.removeAllTabs()
+                navHost.navController.navigate(NavGraphDirections.actionStartupHome())
+            }
+        }
+    }
+    override fun onBootstrapProgress(progress: Double, hasWarnings: Boolean) = Unit
 }

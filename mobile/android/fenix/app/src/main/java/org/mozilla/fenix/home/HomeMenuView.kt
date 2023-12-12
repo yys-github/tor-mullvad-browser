@@ -206,6 +206,7 @@ class HomeMenuView(
                         homeActivity.finishAndRemoveTask()
                     }
                 }
+                homeActivity.shutDown()
             }
             HomeMenu.Item.ReconnectSync -> {
                 navController.nav(
