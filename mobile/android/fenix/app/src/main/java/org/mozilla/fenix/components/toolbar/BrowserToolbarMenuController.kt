@@ -170,6 +170,7 @@ class DefaultBrowserToolbarMenuController(
             }
             is ToolbarMenu.Item.Quit -> {
                 deleteAndQuit(activity)
+                activity.shutDown()
             }
             is ToolbarMenu.Item.CustomizeReaderView -> {
                 readerModeController.showControls()
