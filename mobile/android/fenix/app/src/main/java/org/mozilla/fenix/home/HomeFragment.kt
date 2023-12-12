@@ -199,6 +199,7 @@ import org.mozilla.fenix.wallpapers.LocalWallpaperState
 import org.mozilla.fenix.wallpapers.Wallpaper
 
 import org.mozilla.fenix.tor.TorHomePage
+import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 
 /** The home screen. */
 @Suppress("TooManyFunctions", "LargeClass")
@@ -208,6 +209,7 @@ class HomeFragment : Fragment(), UserInteractionHandler, OnLongPressedListener {
     @VisibleForTesting internal lateinit var bundleArgs: Bundle
 
     private val homeViewModel: HomeScreenViewModel by activityViewModels()
+    private val urlQuickLoadViewModel: UrlQuickLoadViewModel by activityViewModels()
 
     private val snackbarHostState = SnackbarHostState()
 
@@ -598,6 +600,21 @@ class HomeFragment : Fragment(), UserInteractionHandler, OnLongPressedListener {
 
         initController()
         initInteractor()
+
+        urlQuickLoadViewModel.urlToLoadAfterConnecting.observe(viewLifecycleOwner) {
+            if (!it.isNullOrBlank()) {
+                if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(it)) return@observe
+                (requireActivity() as HomeActivity).openToBrowser(
+                    from = BrowserDirection.FromHome,
+                )
+                requireContext().components.useCases.fenixBrowserUseCases.loadUrlOrSearch(
+                    searchTermOrURL = it,
+                    newTab = true,
+                )
+                // Only load this url once
+                urlQuickLoadViewModel.urlToLoadAfterConnecting.value = null
+            }
+        }
 
         // DO NOT MOVE ANYTHING BELOW THIS addMarker CALL!
         requireComponents.core.engine.profiler?.addMarker(
@@ -1197,6 +1214,8 @@ class HomeFragment : Fragment(), UserInteractionHandler, OnLongPressedListener {
     }
 
     override fun onBackPressed(): Boolean {
+        (requireActivity() as HomeActivity).shutDown()
+
         if (context == null || !requireComponents.settings.enableHomepageAsNewTab) {
             return false
         }

@@ -79,7 +79,7 @@ internal fun View.openLearnMoreLink(
     )
 }
 
-private fun resolveLearnMoreUrl(
+fun resolveLearnMoreUrl(
     link: AddonsManagerAdapterDelegate.LearnMoreLinks,
     addon: Addon,
 ): String? {
