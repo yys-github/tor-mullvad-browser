@@ -38,6 +38,7 @@ import org.mozilla.fenix.GleanMetrics.Events
 import org.mozilla.fenix.GleanMetrics.ReaderMode
 import org.mozilla.fenix.GleanMetrics.Toolbar
 import org.mozilla.fenix.GleanMetrics.Translations
+import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.NavGraphDirections
 import org.mozilla.fenix.R
 import org.mozilla.fenix.browser.BrowserFragmentDirections
@@ -163,6 +164,7 @@ class DefaultBrowserToolbarMenuController(
             }
             is ToolbarMenu.Item.Quit -> {
                 deleteAndQuit(fragment.requireActivity())
+                (fragment.requireActivity() as HomeActivity).shutDown()
             }
             is ToolbarMenu.Item.CustomizeReaderView -> {
                 readerModeController.showControls()

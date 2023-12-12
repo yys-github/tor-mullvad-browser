@@ -323,4 +323,12 @@
     <!-- Lock slash critical fill colors for mozac_ic_lock_slash_critical_24 -->
     <color name="mozac_ui_lock_slash_bg_fill_critical" tools:ignore="UnusedResources">@color/fx_mobile_icon_color_secondary</color>
     <color name="mozac_ui_lock_slash_fill_critical" tools:ignore="UnusedResources">@color/fx_mobile_icon_color_critical</color>
+
+    <!-- Connection Assist -->
+    <color name="connect_button_purple">#9059FF</color>
+    <color name="disabled_connect_button_purple">#5C42A9</color>
+    <color name="disabled_text_gray_purple">#8782A9</color>
+    <color name="configure_connection_button_white">#E1E0E7</color>
+    <color name="warning_yellow">#FFA436</color>
+    <color name="progress_background_tint">#55148C</color>
 </resources>

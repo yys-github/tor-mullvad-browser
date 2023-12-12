@@ -45,4 +45,5 @@ enum class BrowserDirection(
     FromMenuDialogFragment(R.id.menuDialogFragment),
     FromWebCompatReporterFragment(R.id.webCompatReporterFragment),
     FromGleanDebugToolsFragment(R.id.gleanDebugToolsFragment),
+    FromTorConnectionAssistFragment(R.id.torConnectionAssistFragment),
 }

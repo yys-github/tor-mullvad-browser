@@ -210,13 +210,6 @@
             android:title="@string/tor_connect_automatically_label"
             app:iconSpaceReserved="false" />
 
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="@string/pref_key_use_html_connection_ui"
-            android:summary="Recommended only for debugging"
-            android:title="Enable HTML connection UI"
-            app:iconSpaceReserved="false" />
-
         <Preference
             android:key="@string/pref_key_tor_logs"
             app:iconSpaceReserved="false"

@@ -3271,8 +3271,8 @@ class Settings(
         default = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).path,
     )
 
-    var useHtmlConnectionUi by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_use_html_connection_ui),
+    var quickStart by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_quick_start),
         default = false,
     )
 }
