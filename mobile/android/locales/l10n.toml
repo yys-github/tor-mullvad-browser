@@ -196,3 +196,7 @@ exclude-multi-locale = [
 [[paths]]
     reference = "toolkit/locales/en-US/toolkit/global/resetProfile.ftl"
     l10n = "{l}toolkit/toolkit/global/resetProfile.ftl"
+
+[[paths]]
+    reference = "toolkit/locales/en-US/toolkit/intl/regionNames.ftl"
+    l10n = "{l}toolkit/toolkit/intl/regionNames.ftl"
