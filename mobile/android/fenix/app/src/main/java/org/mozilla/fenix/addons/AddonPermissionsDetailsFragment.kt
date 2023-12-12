@@ -17,6 +17,7 @@ import androidx.navigation.fragment.navArgs
 import mozilla.components.feature.addons.Addon
 import mozilla.components.feature.addons.Addon.Companion.isAllURLsPermission
 import mozilla.components.feature.addons.ui.translateName
+import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.addons.ui.AddonPermissionsScreen
 import org.mozilla.fenix.e2e.SystemInsetsPaddedFragment
 import org.mozilla.fenix.ext.components
@@ -171,6 +172,7 @@ class AddonPermissionsDetailsFragment : Fragment(), SystemInsetsPaddedFragment {
     }
 
     private fun openWebsite(addonSiteUrl: String) {
+        if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(addonSiteUrl)) return
         findNavController().openToBrowser()
         requireComponents.useCases.fenixBrowserUseCases.loadUrlOrSearch(
             searchTermOrURL = addonSiteUrl,

@@ -1068,6 +1068,7 @@ class MenuDialogFragment : BottomSheetDialogFragment() {
         }
 
         url?.let {
+            if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(url)) return@let
             findNavController().openToBrowser()
             requireComponents.useCases.fenixBrowserUseCases.loadUrlOrSearch(
                 searchTermOrURL = url,

@@ -30,6 +30,7 @@ import mozilla.components.support.ktx.android.content.appName
 import mozilla.components.support.ktx.android.content.appVersionName
 import org.mozilla.fenix.BuildConfig
 import mozilla.components.support.webextensions.WebExtensionSupport.installedExtensions
+import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.databinding.FragmentInstalledAddOnDetailsBinding
 import org.mozilla.fenix.e2e.SystemInsetsPaddedFragment
 import org.mozilla.fenix.ext.components
@@ -174,6 +175,7 @@ class InstalledAddonDetailsFragment : Fragment(), SystemInsetsPaddedFragment {
                 messageBarWarningView,
                 messageBarErrorView,
                 onLearnMoreLinkClicked = { link ->
+                    if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(resolveLearnMoreUrl(link, addon) ?: return@bindMessageBars)) return@bindMessageBars
                     binding.root.openLearnMoreLink(link, addon)
                 },
                 addon,

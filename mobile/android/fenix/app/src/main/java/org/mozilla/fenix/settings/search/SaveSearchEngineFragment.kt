@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
 import mozilla.components.browser.icons.IconRequest
 import mozilla.components.feature.search.ext.createSearchEngine
 import org.mozilla.fenix.GleanMetrics.Events
+import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.databinding.FragmentSaveSearchEngineBinding
 import org.mozilla.fenix.e2e.SystemInsetsPaddedFragment
@@ -85,14 +86,17 @@ class SaveSearchEngineFragment : Fragment(R.layout.fragment_save_search_engine),
         }
 
         val learnMoreListener: (View) -> Unit = {
-            findNavController().openToBrowser()
-            requireComponents.useCases.fenixBrowserUseCases.loadUrlOrSearch(
-                searchTermOrURL = SupportUtils.getSumoURLForTopic(
-                    requireContext(),
-                    SupportUtils.SumoTopic.CUSTOM_SEARCH_ENGINES,
-                ),
-                newTab = true,
+            val url = SupportUtils.getSumoURLForTopic(
+                requireContext(),
+                SupportUtils.SumoTopic.CUSTOM_SEARCH_ENGINES,
             )
+            if (!(requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(url)) {
+                findNavController().openToBrowser()
+                requireComponents.useCases.fenixBrowserUseCases.loadUrlOrSearch(
+                    searchTermOrURL = url,
+                    newTab = true,
+                )
+            }
         }
         binding.customSearchEnginesLearnMoreWrapper.setOnClickListener(learnMoreListener)
         binding.customSearchSuggestionsLearnMoreWrapper.setOnClickListener(learnMoreListener)
