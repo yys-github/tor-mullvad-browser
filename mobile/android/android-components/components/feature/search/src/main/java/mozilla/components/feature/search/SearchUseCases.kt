@@ -76,12 +76,7 @@ class SearchUseCases(
             flags: EngineSession.LoadUrlFlags = EngineSession.LoadUrlFlags.none(),
             additionalHeaders: Map<String, String>? = null,
         ) {
-            var securityLevel: Int
-            try {
-                securityLevel = settings?.torSecurityLevel ?: 0
-            } catch (e: UnsupportedSettingException) {
-                securityLevel = 0
-            }
+            val securityLevel : Int = settings!!.torSecurityLevel
             val searchUrl = searchEngine?.let {
                 searchEngine.buildSearchUrl(searchTerms, securityLevel)
             } ?: store.state.search.selectedOrDefaultSearchEngine?.buildSearchUrl(searchTerms, securityLevel)
@@ -172,12 +167,7 @@ class SearchUseCases(
             flags: EngineSession.LoadUrlFlags = EngineSession.LoadUrlFlags.none(),
             additionalHeaders: Map<String, String>? = null,
         ) {
-            var securityLevel: Int
-            try {
-                securityLevel = settings?.torSecurityLevel ?: 0
-            } catch (e: UnsupportedSettingException) {
-                securityLevel = 0
-            }
+            val securityLevel : Int = settings!!.torSecurityLevel
             val searchUrl = searchEngine?.let {
                 searchEngine.buildSearchUrl(searchTerms, securityLevel)
             } ?: store.state.search.selectedOrDefaultSearchEngine?.buildSearchUrl(searchTerms, securityLevel)
