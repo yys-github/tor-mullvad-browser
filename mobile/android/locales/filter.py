@@ -24,6 +24,7 @@ def test(mod, path, entity=None):
             "toolkit/branding/brandings.ftl",
             "toolkit/global/processTypes.ftl",
             "toolkit/global/resetProfile.ftl",
+            "toolkit/intl/regionNames.ftl",
         ):
             return "error"
         if re.match(r"toolkit/about/[^/]*About.ftl", path):
