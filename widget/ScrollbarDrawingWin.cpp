@@ -8,6 +8,7 @@
 #include "mozilla/Maybe.h"
 #include "mozilla/StaticPrefs_widget.h"
 #include "mozilla/gfx/Helpers.h"
+#include "nsContentUtils.h"
 #include "nsLayoutUtils.h"
 #include "nsNativeTheme.h"
 
@@ -156,7 +157,10 @@ void ScrollbarDrawingWin::RecomputeScrollbarParams() {
   }
   ConfigureScrollbarSize(defaultSize);
 
-  if (StaticPrefs::widget_non_native_theme_win_scrollbar_use_system_size()) {
+  // Do not leak system size when using ResistFingerprinting.
+  if (!nsContentUtils::ShouldResistFingerprinting("No context available",
+                                                  RFPTarget::CSSResolution) &&
+      StaticPrefs::widget_non_native_theme_win_scrollbar_use_system_size()) {
     ConfigureScrollbarSize(LookAndFeel::GetInt(
         LookAndFeel::IntID::SystemScrollbarSize, defaultSize));
   }
