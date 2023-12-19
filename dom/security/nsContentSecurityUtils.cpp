@@ -616,6 +616,9 @@ bool nsContentSecurityUtils::IsEvalAllowed(JSContext* cx,
 
       // The Browser Toolbox/Console
       "debugger"_ns,
+
+      // Tor Browser's Lox wasm integration
+      "resource://gre/modules/lox_wasm.jsm"_ns,
   };
 
   // We also permit two specific idioms in eval()-like contexts. We'd like to
