@@ -54,6 +54,7 @@ DIRS += [
     "jsoncpp",
     "jsoncpp/src/lib_json",
     "kvstore",
+    "lox",
     "media",
     "mediasniffer",
     # Exclude the "ml" component. tor-browser#44045.

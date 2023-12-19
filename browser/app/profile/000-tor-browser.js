@@ -141,3 +141,4 @@ pref("browser.profiles.enable", false);
 // Log levels
 pref("browser.tor_provider.log_level", "Warn");
 pref("browser.tor_provider.cp_log_level", "Warn");
+pref("lox.log_level", "Warn");
