@@ -51,6 +51,7 @@ DIRS += [
     "httpsonlyerror",
     "jsoncpp/src/lib_json",
     "kvstore",
+    "lox",
     "mediasniffer",
     "ml",
     "mozintl",
