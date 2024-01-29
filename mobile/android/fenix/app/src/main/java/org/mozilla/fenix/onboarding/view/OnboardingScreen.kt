@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import mozilla.components.compose.base.LinkTextState
 import mozilla.components.compose.base.PagerIndicator
+import mozilla.components.lib.crash.R as crashR
 import mozilla.components.lib.state.ext.observeAsComposableState
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.appstate.AppAction
@@ -451,7 +452,9 @@ private fun OnboardingScreenPreview() {
 private fun defaultPreviewPages() = listOf(
     OnboardingPageUiData(
         type = OnboardingPageUiData.Type.DEFAULT_BROWSER,
-        imageRes = R.drawable.ic_onboarding_welcome,
+        // Removed to reduce APK size as part of https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/42386
+        // Set to something else to make the compiler happy
+        imageRes = crashR.drawable.mozac_lib_crash_notification,
         title = stringResource(R.string.juno_onboarding_default_browser_title_nimbus_2),
         description = stringResource(R.string.juno_onboarding_default_browser_description_nimbus_3),
         primaryButtonLabel = stringResource(R.string.juno_onboarding_default_browser_positive_button),
@@ -467,7 +470,9 @@ private fun defaultPreviewPages() = listOf(
     ),
     OnboardingPageUiData(
         type = OnboardingPageUiData.Type.SYNC_SIGN_IN,
-        imageRes = R.drawable.ic_onboarding_sync,
+        // Removed to reduce APK size as part of https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/42386
+        // Set to something else to make the compiler happy
+        imageRes = crashR.drawable.mozac_lib_crash_notification,
         title = stringResource(R.string.juno_onboarding_sign_in_title_2),
         description = stringResource(R.string.juno_onboarding_sign_in_description_3),
         primaryButtonLabel = stringResource(R.string.juno_onboarding_sign_in_positive_button),
@@ -483,7 +488,9 @@ private fun defaultPreviewPages() = listOf(
     ),
     OnboardingPageUiData(
         type = OnboardingPageUiData.Type.NOTIFICATION_PERMISSION,
-        imageRes = R.drawable.ic_notification_permission,
+        // Removed to reduce APK size as part of https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/42386
+        // Set to something else to make the compiler happy
+        imageRes = crashR.drawable.mozac_lib_crash_notification,
         title = stringResource(R.string.juno_onboarding_enable_notifications_title_nimbus_2),
         description = stringResource(R.string.juno_onboarding_enable_notifications_description_nimbus_2),
         primaryButtonLabel = stringResource(R.string.juno_onboarding_enable_notifications_positive_button),

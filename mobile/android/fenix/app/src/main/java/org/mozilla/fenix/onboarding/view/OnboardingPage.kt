@@ -36,6 +36,7 @@ import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
 import mozilla.components.compose.base.button.FilledButton
 import mozilla.components.compose.base.button.IconButton
 import mozilla.components.compose.base.button.OutlinedButton
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.theme.FirefoxTheme
 import mozilla.components.ui.icons.R as iconsR
@@ -202,7 +203,9 @@ private fun OnboardingPagePreview() {
     FirefoxTheme {
         OnboardingPage(
             pageState = OnboardingPageState(
-                imageRes = R.drawable.ic_notification_permission,
+                // Removed to reduce APK size as part of https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/42386
+                // Set to something else to make the compiler happy
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 title = stringResource(
                     id = R.string.juno_onboarding_default_browser_title_nimbus_2,
                 ),
