@@ -26,7 +26,7 @@ features:
               title: onboarding_welcome_to_firefox
               body: onboarding_terms_of_service_sub_header_2
               ordering: 1
-              image-res: ic_firefox
+              image-res: mozac_lib_crash_notification
               primary-button-label: onboarding_term_of_service_agree_and_continue_button_label_2
               extra-data:
                 term-of-service-data:
@@ -113,7 +113,7 @@ features:
               title: onboarding_marketing_title
               body: onboarding_marketing_body
               ordering: 40
-              image-res: ic_onboarding_welcome
+              image-res: mozac_lib_crash_notification
               primary-button-label: onboarding_marketing_positive_button
               extra-data:
                 marketing-data:
