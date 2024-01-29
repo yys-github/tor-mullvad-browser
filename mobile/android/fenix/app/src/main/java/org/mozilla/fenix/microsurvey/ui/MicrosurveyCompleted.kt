@@ -62,7 +62,7 @@ fun MicrosurveyCompleted(
             Spacer(modifier = Modifier.height(50.dp))
 
             Image(
-                painter = painterResource(R.drawable.microsurvey_success),
+                painter = painterResource(R.drawable.mozac_lib_crash_notification),
                 contentDescription = null,
                 contentScale = ContentScale.None,
             )
