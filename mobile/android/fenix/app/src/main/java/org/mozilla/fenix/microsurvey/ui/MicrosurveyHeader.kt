@@ -54,11 +54,12 @@ fun MicrosurveyHeader(
                 .weight(1f, fill = false)
                 .padding(start = 32.dp),
         ) {
-            Image(
-                painter = painterResource(R.drawable.ic_firefox),
-                contentDescription = stringResource(id = R.string.microsurvey_app_icon_content_description),
-                modifier = Modifier.size(24.dp),
-            )
+//          Removed as part of tor-browser#42386
+//            Image(
+//                painter = painterResource(R.drawable.ic_firefox),
+//                contentDescription = stringResource(id = R.string.microsurvey_app_icon_content_description),
+//                modifier = Modifier.size(24.dp),
+//            )
             Spacer(modifier = Modifier.width(8.dp))
             Text(
                 text = title,
