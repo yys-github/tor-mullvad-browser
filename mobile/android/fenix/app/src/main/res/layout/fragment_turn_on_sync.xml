@@ -39,8 +39,9 @@
             android:scaleType="fitCenter"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title_sign_in"
-            app:srcCompat="@drawable/nova_onboarding_sync_qr" />
+            app:layout_constraintTop_toBottomOf="@id/title_sign_in" />
+        <!--Removed as part of tor-browser#42386-->
+        <!--app:srcCompat="@drawable/nova_onboarding_sync_qr"-->
 
         <TextView
             android:id="@+id/signInInstructions"

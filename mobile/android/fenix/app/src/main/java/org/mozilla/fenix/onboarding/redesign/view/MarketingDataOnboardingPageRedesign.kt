@@ -45,6 +45,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
 import mozilla.components.compose.base.button.FilledButton
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.LinkText
 import org.mozilla.fenix.compose.LinkTextState
@@ -212,7 +213,7 @@ private fun MarketingDataOnboardingPagePreview() {
     FirefoxTheme {
         MarketingDataOnboardingPageRedesign(
             state = OnboardingPageState(
-                imageRes = R.drawable.nova_onboarding_marketing,
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 title = stringResource(id = R.string.nova_onboarding_marketing_title),
                 description = "", // NB: not used in the redesign
                 primaryButton = Action(
