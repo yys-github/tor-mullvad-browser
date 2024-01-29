@@ -123,13 +123,6 @@ fun ResearchSurfaceSurvey(
                         modifier = Modifier.padding(horizontal = 16.dp),
                         horizontalAlignment = Alignment.CenterHorizontally,
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_firefox),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .height(112.dp)
-                                .width(108.dp),
-                        )
 
                         Spacer(modifier = Modifier.height(16.dp))
 

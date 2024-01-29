@@ -4,6 +4,7 @@
 
 package org.mozilla.fenix.onboarding.view
 
+import mozilla.components.lib.crash.R as crashR
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mozilla.fenix.R
@@ -13,7 +14,7 @@ class OnboardingMapperTest {
     @Test
     fun `GIVEN a default browser page WHEN mapToOnboardingPageState is called THEN creates the expected OnboardingPageState`() {
         val expected = OnboardingPageState(
-            imageRes = R.drawable.ic_onboarding_welcome,
+            imageRes = crashR.drawable.mozac_lib_crash_notification,
             title = "default browser title",
             description = "default browser body with link text",
             primaryButton = Action("default browser primary button text", unitLambda),
@@ -23,7 +24,7 @@ class OnboardingMapperTest {
 
         val onboardingPageUiData = OnboardingPageUiData(
             type = OnboardingPageUiData.Type.DEFAULT_BROWSER,
-            imageRes = R.drawable.ic_onboarding_welcome,
+            imageRes = crashR.drawable.mozac_lib_crash_notification,
             title = "default browser title",
             description = "default browser body with link text",
             primaryButtonLabel = "default browser primary button text",
@@ -52,7 +53,7 @@ class OnboardingMapperTest {
     @Test
     fun `GIVEN a sync page WHEN mapToOnboardingPageState is called THEN creates the expected OnboardingPageState`() {
         val expected = OnboardingPageState(
-            imageRes = R.drawable.ic_onboarding_sync,
+            imageRes = crashR.drawable.mozac_lib_crash_notification,
             title = "sync title",
             description = "sync body",
             primaryButton = Action("sync primary button text", unitLambda),
@@ -62,7 +63,7 @@ class OnboardingMapperTest {
 
         val onboardingPageUiData = OnboardingPageUiData(
             type = OnboardingPageUiData.Type.SYNC_SIGN_IN,
-            imageRes = R.drawable.ic_onboarding_sync,
+            imageRes = crashR.drawable.mozac_lib_crash_notification,
             title = "sync title",
             description = "sync body",
             primaryButtonLabel = "sync primary button text",
@@ -91,7 +92,7 @@ class OnboardingMapperTest {
     @Test
     fun `GIVEN a notification page WHEN mapToOnboardingPageState is called THEN creates the expected OnboardingPageState`() {
         val expected = OnboardingPageState(
-            imageRes = R.drawable.ic_notification_permission,
+            imageRes = crashR.drawable.mozac_lib_crash_notification,
             title = "notification title",
             description = "notification body",
             primaryButton = Action("notification primary button text", unitLambda),
@@ -101,7 +102,7 @@ class OnboardingMapperTest {
 
         val onboardingPageUiData = OnboardingPageUiData(
             type = OnboardingPageUiData.Type.NOTIFICATION_PERMISSION,
-            imageRes = R.drawable.ic_notification_permission,
+            imageRes = crashR.drawable.mozac_lib_crash_notification,
             title = "notification title",
             description = "notification body",
             primaryButtonLabel = "notification primary button text",
@@ -130,7 +131,7 @@ class OnboardingMapperTest {
     @Test
     fun `GIVEN an add search widget page WHEN mapToOnboardingPageState is called THEN creates the expected OnboardingPageState`() {
         val expected = OnboardingPageState(
-            imageRes = R.drawable.ic_onboarding_search_widget,
+            imageRes = crashR.drawable.mozac_lib_crash_notification,
             title = "add search widget title",
             description = "add search widget body with link text",
             primaryButton = Action("add search widget primary button text", unitLambda),
@@ -140,7 +141,7 @@ class OnboardingMapperTest {
 
         val onboardingPageUiData = OnboardingPageUiData(
             type = OnboardingPageUiData.Type.ADD_SEARCH_WIDGET,
-            imageRes = R.drawable.ic_onboarding_search_widget,
+            imageRes = crashR.drawable.mozac_lib_crash_notification,
             title = "add search widget title",
             description = "add search widget body with link text",
             primaryButtonLabel = "add search widget primary button text",
