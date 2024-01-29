@@ -7,6 +7,7 @@ package org.mozilla.fenix.iconpicker
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import mozilla.components.ui.colors.R as colorsR
 
@@ -29,7 +30,7 @@ import mozilla.components.ui.colors.R as colorsR
  */
 enum class AppIcon(
     val aliasSuffix: String,
-    @param:DrawableRes val iconForegroundId: Int = R.drawable.ic_firefox,
+    @param:DrawableRes val iconForegroundId: Int = crashR.drawable.mozac_lib_crash_notification,
     val iconBackground: IconBackground = IconBackground.Color(colorResId = colorsR.color.photonWhite),
     @param:StringRes val titleId: Int,
     @param:StringRes val subtitleId: Int? = null,
