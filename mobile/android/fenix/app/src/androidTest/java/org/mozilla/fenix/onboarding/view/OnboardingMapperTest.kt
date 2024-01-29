@@ -6,6 +6,7 @@ package org.mozilla.fenix.onboarding.view
 
 import io.mockk.every
 import io.mockk.mockk
+import mozilla.components.lib.crash.R as crashR
 import mozilla.components.service.nimbus.evalJexlSafe
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -156,7 +157,7 @@ class OnboardingMapperTest {
 
     @Test
     fun termsOfServiceData_toPageUiData_returnsConvertedPage() {
-        val imageRes = R.drawable.ic_firefox
+        val imageRes = crashR.drawable.mozac_lib_crash_notification
         val title = "Terms of service card title"
         val description = "Terms of service card body"
         val primaryButtonLabel = "onboarding card primary button text"
@@ -429,7 +430,7 @@ class OnboardingMapperTest {
 
 private val defaultBrowserPageUiData = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.DEFAULT_BROWSER,
-    imageRes = R.drawable.mozac_lib_crash_notification,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = "default browser title",
     description = "default browser body",
     primaryButtonLabel = "default browser primary button text",
@@ -437,7 +438,7 @@ private val defaultBrowserPageUiData = OnboardingPageUiData(
 )
 private val addSearchWidgetPageUiData = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.ADD_SEARCH_WIDGET,
-    imageRes = R.drawable.mozac_lib_crash_notification,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = "add search widget title",
     description = "add search widget body",
     primaryButtonLabel = "add search widget primary button text",
@@ -445,7 +446,7 @@ private val addSearchWidgetPageUiData = OnboardingPageUiData(
 )
 private val syncPageUiData = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.SYNC_SIGN_IN,
-    imageRes = R.drawable.mozac_lib_crash_notification,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = "sync title",
     description = "sync body",
     primaryButtonLabel = "sync primary button text",
@@ -468,7 +469,7 @@ private val toolbarPageUiData = OnboardingPageUiData(
 )
 private val notificationPageUiData = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.NOTIFICATION_PERMISSION,
-    imageRes = R.drawable.mozac_lib_crash_notification,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = "notification title",
     description = "notification body",
     primaryButtonLabel = "notification primary button text",
@@ -477,7 +478,7 @@ private val notificationPageUiData = OnboardingPageUiData(
 
 private val defaultBrowserCardData = OnboardingCardData(
     cardType = OnboardingCardType.DEFAULT_BROWSER,
-    imageRes = R.drawable.mozac_lib_crash_notification,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = StringHolder(null, "default browser title"),
     body = StringHolder(null, "default browser body"),
     primaryButtonLabel = StringHolder(null, "default browser primary button text"),
@@ -489,7 +490,7 @@ private val defaultBrowserCardData = OnboardingCardData(
 
 private val defaultBrowserCardDataNoDisqualifiers = OnboardingCardData(
     cardType = OnboardingCardType.DEFAULT_BROWSER,
-    imageRes = R.drawable.mozac_lib_crash_notification,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = StringHolder(null, "default browser title"),
     body = StringHolder(null, "default browser body"),
     primaryButtonLabel = StringHolder(null, "default browser primary button text"),
@@ -501,7 +502,7 @@ private val defaultBrowserCardDataNoDisqualifiers = OnboardingCardData(
 
 private val addSearchWidgetCardDataNoConditions = OnboardingCardData(
     cardType = OnboardingCardType.ADD_SEARCH_WIDGET,
-    imageRes = R.drawable.mozac_lib_crash_notification,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = StringHolder(null, "add search widget title"),
     body = StringHolder(null, "add search widget body"),
     primaryButtonLabel = StringHolder(null, "add search widget primary button text"),
@@ -513,7 +514,7 @@ private val addSearchWidgetCardDataNoConditions = OnboardingCardData(
 
 private val addSearchWidgetCardData = OnboardingCardData(
     cardType = OnboardingCardType.ADD_SEARCH_WIDGET,
-    imageRes = R.drawable.mozac_lib_crash_notification,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = StringHolder(null, "add search widget title"),
     body = StringHolder(null, "add search widget body"),
     primaryButtonLabel = StringHolder(null, "add search widget primary button text"),
@@ -523,7 +524,7 @@ private val addSearchWidgetCardData = OnboardingCardData(
 
 private val syncCardData = OnboardingCardData(
     cardType = OnboardingCardType.SYNC_SIGN_IN,
-    imageRes = R.drawable.mozac_lib_crash_notification,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = StringHolder(null, "sync title"),
     body = StringHolder(null, "sync body"),
     primaryButtonLabel = StringHolder(null, "sync primary button text"),
@@ -535,7 +536,7 @@ private val syncCardData = OnboardingCardData(
 
 private val notificationCardData = OnboardingCardData(
     cardType = OnboardingCardType.NOTIFICATION_PERMISSION,
-    imageRes = R.drawable.mozac_lib_crash_notification,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = StringHolder(null, "notification title"),
     body = StringHolder(null, "notification body"),
     primaryButtonLabel = StringHolder(null, "notification primary button text"),
