@@ -38,6 +38,7 @@ import mozilla.components.compose.base.LinkText
 import mozilla.components.compose.base.LinkTextState
 import mozilla.components.compose.base.button.FilledButton
 import mozilla.components.compose.base.button.OutlinedButton
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.termsofuse.experimentation.TermsOfUsePromptContent
 import org.mozilla.fenix.termsofuse.experimentation.getTreatmentA
@@ -159,7 +160,7 @@ private fun BottomSheetContent(
         }
 
         Image(
-            painter = painterResource(id = R.drawable.ic_firefox),
+            painter = painterResource(id = crashR.drawable.mozac_lib_crash_notification),
             contentDescription = null,
             modifier = Modifier
                 .size(36.dp)
