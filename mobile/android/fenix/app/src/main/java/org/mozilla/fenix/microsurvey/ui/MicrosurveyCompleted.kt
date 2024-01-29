@@ -28,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import mozilla.components.compose.base.annotation.FlexibleWindowPreview
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.theme.PreviewThemeProvider
@@ -63,7 +64,7 @@ fun MicrosurveyCompleted(
             Spacer(modifier = Modifier.height(50.dp))
 
             Image(
-                painter = painterResource(R.drawable.microsurvey_success),
+                painter = painterResource(crashR.drawable.mozac_lib_crash_notification),
                 contentDescription = null,
                 contentScale = ContentScale.None,
             )

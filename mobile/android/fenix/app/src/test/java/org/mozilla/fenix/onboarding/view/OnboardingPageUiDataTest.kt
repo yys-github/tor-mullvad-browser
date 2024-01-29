@@ -4,6 +4,7 @@
 
 package org.mozilla.fenix.onboarding.view
 
+import mozilla.components.lib.crash.R as crashR
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mozilla.fenix.R
@@ -53,7 +54,7 @@ class OnboardingPageUiDataTest {
 
 val defaultBrowserPageUiData = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.DEFAULT_BROWSER,
-    imageRes = R.drawable.ic_onboarding_welcome,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = "default browser title",
     description = "default browser body with link text",
     primaryButtonLabel = "default browser primary button text",
@@ -63,7 +64,7 @@ val defaultBrowserPageUiData = OnboardingPageUiData(
 
 val syncPageUiData = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.SYNC_SIGN_IN,
-    imageRes = R.drawable.ic_onboarding_sync,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = "sync title",
     description = "sync body",
     primaryButtonLabel = "sync primary button text",
@@ -73,7 +74,7 @@ val syncPageUiData = OnboardingPageUiData(
 
 val notificationPageUiData = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.NOTIFICATION_PERMISSION,
-    imageRes = R.drawable.ic_notification_permission,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = "notification title",
     description = "notification body",
     primaryButtonLabel = "notification primary button text",
