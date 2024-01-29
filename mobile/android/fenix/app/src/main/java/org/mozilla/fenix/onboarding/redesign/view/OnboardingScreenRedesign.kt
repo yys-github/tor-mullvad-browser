@@ -46,6 +46,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
+import mozilla.components.lib.crash.R as crashR
 import mozilla.components.lib.state.ext.observeAsComposableState
 import mozilla.components.support.base.log.logger.Logger
 import org.mozilla.fenix.R
@@ -618,7 +619,7 @@ private fun touPageUIData() = OnboardingPageUiData(
 @Composable
 private fun defaultBrowserPageUiData() = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.DEFAULT_BROWSER,
-    imageRes = R.drawable.ic_onboarding_welcome,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = stringResource(R.string.onboarding_redesign_set_default_browser_title),
     description = stringResource(R.string.onboarding_redesign_set_default_browser_body),
     primaryButtonLabel = stringResource(R.string.juno_onboarding_default_browser_positive_button),
@@ -628,7 +629,7 @@ private fun defaultBrowserPageUiData() = OnboardingPageUiData(
 @Composable
 private fun syncPageUiData() = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.SYNC_SIGN_IN,
-    imageRes = R.drawable.ic_onboarding_sync,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = stringResource(R.string.juno_onboarding_sign_in_title_2),
     description = stringResource(R.string.juno_onboarding_sign_in_description_3),
     primaryButtonLabel = stringResource(R.string.juno_onboarding_sign_in_positive_button),

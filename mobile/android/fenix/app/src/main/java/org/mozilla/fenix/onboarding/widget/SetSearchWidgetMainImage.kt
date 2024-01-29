@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.theme.FirefoxTheme
 
@@ -25,7 +26,7 @@ private val IMAGE_HEIGHT = 200.dp
 @Composable
 fun SetSearchWidgetMainImage() {
     Image(
-        painter = painterResource(R.drawable.ic_onboarding_search_widget),
+        painter = painterResource(crashR.drawable.mozac_lib_crash_notification),
         contentDescription = null, // Decorative only
         modifier = Modifier.height(IMAGE_HEIGHT),
     )

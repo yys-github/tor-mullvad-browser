@@ -13,6 +13,7 @@ import androidx.annotation.VisibleForTesting
 import androidx.core.content.ContextCompat
 import mozilla.components.browser.menu.BrowserMenu
 import mozilla.components.browser.menu.item.BrowserMenuImageText
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.ext.components
 
@@ -26,7 +27,7 @@ import org.mozilla.fenix.ext.components
  */
 class BrowserMenuSignIn(
     @param:ColorRes private val textColorResource: Int,
-    @DrawableRes imageResource: Int = R.drawable.ic_signed_out,
+    @DrawableRes imageResource: Int = crashR.drawable.mozac_lib_crash_notification,
     listener: () -> Unit = {},
 ) : BrowserMenuImageText(
     String(),
