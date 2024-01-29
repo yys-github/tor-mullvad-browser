@@ -257,7 +257,7 @@ private fun SyncedTabsErrorItem(
                 PrimaryButton(
                     text = it.buttonText,
                     modifier = Modifier.fillMaxWidth(),
-                    icon = painterResource(R.drawable.ic_sign_in),
+                    icon = painterResource(R.drawable.mozac_lib_crash_notification),
                     onClick = it.onClick,
                 )
             }
