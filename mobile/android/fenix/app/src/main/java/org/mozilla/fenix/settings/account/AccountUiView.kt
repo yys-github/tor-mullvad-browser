@@ -17,6 +17,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import mozilla.components.concept.fetch.Client
 import mozilla.components.concept.sync.Profile
+import mozilla.components.lib.crash.R as crashR
 import mozilla.components.service.fxa.manager.FxaAccountManager
 import mozilla.components.support.ktx.android.content.pixelSizeFor
 import mozilla.components.ui.icons.R as iconsR
