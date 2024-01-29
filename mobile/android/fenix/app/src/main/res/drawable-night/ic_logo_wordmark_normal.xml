@@ -1,5 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- This Source Code Form is subject to the terms of the Mozilla Public
-   - License, v. 2.0. If a copy of the MPL was not distributed with this
-   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
-<inset xmlns:android="http://schemas.android.com/apk/res/android" android:drawable="@drawable/ic_logo_wordmark_private"/>
+<!-- trivialise assets tb#44448 -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+  android:width="16dp"
+  android:height="16dp"
+  android:viewportWidth="16"
+  android:viewportHeight="16">
+
+  <path
+    android:fillColor="#FF0000"
+    android:pathData="M0 0, L0 16, L16 16, L16 0, Z" />
+</vector>
