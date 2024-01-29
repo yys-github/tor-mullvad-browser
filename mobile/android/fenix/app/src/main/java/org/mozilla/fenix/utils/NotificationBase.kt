@@ -10,6 +10,7 @@ import android.content.Context
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import org.mozilla.fenix.R
+import mozilla.components.ui.icons.R as iconsR
 
 /**
  * Create a [Notification] with default behaviour and styling.
@@ -25,7 +26,7 @@ fun createBaseNotification(
     bigTextStyle: Boolean = false,
 ): Notification {
     return NotificationCompat.Builder(context, channelId)
-        .setSmallIcon(R.drawable.ic_status_logo)
+        .setSmallIcon(iconsR.drawable.mozac_ic_extension_24)
         .setContentTitle(title)
         .setContentText(text)
         .setStyle(if (bigTextStyle) NotificationCompat.BigTextStyle().bigText(text) else null)

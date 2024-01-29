@@ -33,6 +33,7 @@ import mozilla.components.compose.base.LinkText
 import mozilla.components.compose.base.LinkTextState
 import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
 import mozilla.components.compose.base.button.FilledButton
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.theme.FirefoxTheme
 
@@ -210,7 +211,7 @@ private fun OnboardingPagePreview() {
                     lineThreeText = stringResource(id = R.string.onboarding_term_of_service_line_three),
                     lineThreeLinkText = stringResource(id = R.string.onboarding_term_of_service_line_three_link_text),
                 ),
-                imageRes = R.drawable.ic_firefox,
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 primaryButton = Action(
                     text = stringResource(
                         id = R.string.onboarding_term_of_service_agree_and_continue_button_label_2,

@@ -41,6 +41,7 @@ import mozilla.components.compose.base.LinkText
 import mozilla.components.compose.base.LinkTextState
 import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
 import mozilla.components.compose.base.button.FilledButton
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.nimbus.MarketingCardVariant
 import org.mozilla.fenix.theme.FirefoxTheme
@@ -182,7 +183,7 @@ private fun MarketingDataOnboardingPagePreview() {
     FirefoxTheme {
         MarketingDataOnboardingPage(
             state = OnboardingPageState(
-                imageRes = R.drawable.ic_onboarding_welcome,
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 title = stringResource(id = R.string.onboarding_marketing_title),
                 description = stringResource(id = R.string.onboarding_marketing_body),
                 primaryButton = Action(
