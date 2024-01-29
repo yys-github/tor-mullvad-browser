@@ -19,6 +19,7 @@ import mozilla.components.browser.state.selector.findCustomTab
 import mozilla.components.browser.state.state.ExternalAppType
 import mozilla.components.browser.state.store.BrowserStore
 import mozilla.components.feature.pwa.R as pwaR
+import mozilla.components.lib.crash.R as crashR
 import mozilla.components.support.base.android.NotificationsDelegate
 import mozilla.components.support.base.ids.SharedIdsHelper
 import mozilla.components.support.base.ids.cancel
@@ -53,7 +54,7 @@ class PoweredByNotification(
         with(applicationContext) {
             val appName = getString(R.string.app_name)
             return NotificationCompat.Builder(this, channelId)
-                .setSmallIcon(R.drawable.ic_status_logo)
+                .setSmallIcon(crashR.drawable.mozac_lib_crash_notification)
                 .setContentTitle(applicationContext.getString(R.string.browser_menu_powered_by2, appName))
                 .setBadgeIconType(BADGE_ICON_NONE)
                 .setColor(ContextCompat.getColor(this, R.color.primary_text_light_theme))

@@ -7,6 +7,7 @@ package org.mozilla.fenix.components.appstate.setup.checklist
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import mozilla.components.ui.icons.R as iconsR
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.nimbus.SetupChecklistType
 import org.mozilla.fenix.utils.Settings
@@ -131,7 +132,7 @@ private fun signInTask(isCompleted: Boolean) =
     ChecklistItem.Task(
         type = ChecklistItem.Task.Type.SIGN_IN,
         title = R.string.setup_checklist_task_account_sync,
-        icon = R.drawable.ic_fx_accounts_avatar,
+        icon = crashR.drawable.mozac_lib_crash_notification,
         isCompleted = isCompleted,
     )
 
