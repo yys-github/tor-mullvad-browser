@@ -25,7 +25,7 @@ features:
               card-type: terms-of-service
               ordering: 1
               title: onboarding_welcome_to_firefox
-              image-res: nova_onboarding_tou
+              image-res: ic_autoplay
               primary-button-label: nova_onboarding_continue_button
               extra-data:
                 term-of-service-data:
@@ -42,7 +42,7 @@ features:
               ordering: 10
               title: nova_onboarding_set_to_default_title_2
               body: nova_onboarding_set_to_default_subtitle
-              image-res: nova_onboarding_set_to_default
+              image-res: ic_autoplay
               primary-button-label: nova_onboarding_set_to_default_button
               secondary-button-label: nova_onboarding_negative_button
 
@@ -50,7 +50,7 @@ features:
               card-type: marketing-data
               ordering: 20
               title: nova_onboarding_marketing_title
-              image-res: nova_onboarding_marketing
+              image-res: ic_autoplay
               primary-button-label: nova_onboarding_continue_button
               secondary-button-label: nova_onboarding_marketing_secondary_button_text
               extra-data:
@@ -95,7 +95,7 @@ objects:
         type: Image
         description: The resource id of the image to be displayed.
         # This should never be defaulted.
-        default: ic_onboarding_welcome
+        default: ic_autoplay
       ordering:
         type: Int
         description: Used to sequence the cards.

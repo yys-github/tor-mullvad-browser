@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import mozilla.components.compose.base.button.FilledButton
 import mozilla.components.compose.base.button.OutlinedButton
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.ScrollIndicator
 import org.mozilla.fenix.theme.FirefoxTheme
@@ -204,7 +205,9 @@ private fun OnboardingPageSyncPreview() {
     FirefoxTheme {
         OnboardingPage(
             pageState = OnboardingPageState(
-                imageRes = R.drawable.nova_onboarding_sync,
+                // Removed to reduce APK size as part of tor-browser#42386
+                // Set to something else to make the compiler happy
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 title = stringResource(R.string.nova_onboarding_sync_title),
                 description = stringResource(R.string.nova_onboarding_sync_subtitle),
                 primaryButton = Action(
