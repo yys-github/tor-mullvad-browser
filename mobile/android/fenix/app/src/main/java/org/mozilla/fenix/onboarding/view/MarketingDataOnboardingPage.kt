@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
 import mozilla.components.compose.base.button.FilledButton
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.LinkText
 import org.mozilla.fenix.compose.LinkTextState
@@ -181,7 +182,7 @@ private fun MarketingDataOnboardingPagePreview() {
     FirefoxTheme {
         MarketingDataOnboardingPage(
             state = OnboardingPageState(
-                imageRes = R.drawable.ic_onboarding_welcome,
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 title = stringResource(id = R.string.onboarding_marketing_title),
                 description = stringResource(id = R.string.onboarding_marketing_body),
                 primaryButton = Action(
