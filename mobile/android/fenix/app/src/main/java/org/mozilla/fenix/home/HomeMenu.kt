@@ -21,6 +21,7 @@ import mozilla.components.browser.menu.item.BrowserMenuImageText
 import mozilla.components.concept.sync.AccountObserver
 import mozilla.components.concept.sync.AuthType
 import mozilla.components.concept.sync.OAuthAccount
+import mozilla.components.lib.crash.R as crashR
 import mozilla.components.support.ktx.android.content.getColorFromAttr
 import mozilla.telemetry.glean.private.NoExtras
 import org.mozilla.fenix.GleanMetrics.AppMenu
@@ -75,7 +76,7 @@ class HomeMenu(
     private val reconnectToSyncItem by lazy {
         BrowserMenuHighlightableItem(
             context.getString(R.string.sync_reconnect),
-            R.drawable.ic_sync_disconnected,
+            crashR.drawable.mozac_lib_crash_notification,
             iconTintColorResource = syncDisconnectedColor,
             textColorResource = primaryTextColor,
             highlight = BrowserMenuHighlight.HighPriority(
