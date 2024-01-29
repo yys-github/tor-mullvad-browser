@@ -152,7 +152,7 @@ class TopSiteItemViewHolder(
         } else {
             when (topSite.url) {
                 SupportUtils.POCKET_TRENDING_URL -> {
-                    binding.faviconImage.setImageDrawable(getDrawable(itemView.context, R.drawable.ic_pocket))
+                    binding.faviconImage.setImageDrawable(getDrawable(itemView.context, R.drawable.mozac_lib_crash_notification))
                 }
                 else -> {
                     itemView.context.components.core.icons.loadIntoView(binding.faviconImage, topSite.url)
