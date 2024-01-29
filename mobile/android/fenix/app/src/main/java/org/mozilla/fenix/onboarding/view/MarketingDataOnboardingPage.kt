@@ -182,7 +182,7 @@ private fun MarketingDataOnboardingPagePreview() {
     FirefoxTheme {
         MarketingDataOnboardingPage(
             state = OnboardingPageState(
-                imageRes = R.drawable.ic_onboarding_welcome,
+                imageRes = R.drawable.mozac_lib_crash_notification,
                 title = stringResource(id = R.string.onboarding_marketing_title),
                 description = stringResource(id = R.string.onboarding_marketing_body),
                 primaryButton = Action(
