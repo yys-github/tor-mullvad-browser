@@ -28,7 +28,7 @@ import org.mozilla.fenix.R
  */
 enum class AppIcon(
     val aliasSuffix: String,
-    @param:DrawableRes val iconForegroundId: Int = R.drawable.ic_firefox,
+    @param:DrawableRes val iconForegroundId: Int = R.drawable.mozac_lib_crash_notification,
     val iconBackground: IconBackground = IconBackground.Color(colorResId = R.color.photonWhite),
     @param:StringRes val titleId: Int,
     @param:StringRes val subtitleId: Int? = null,

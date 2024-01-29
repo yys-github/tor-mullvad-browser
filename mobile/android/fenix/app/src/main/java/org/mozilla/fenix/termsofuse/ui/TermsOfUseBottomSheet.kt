@@ -116,7 +116,7 @@ private fun BottomSheetContent(
             ),
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_firefox),
+            painter = painterResource(id = R.drawable.mozac_lib_crash_notification),
             contentDescription = null,
             modifier = Modifier
                 .size(36.dp)
