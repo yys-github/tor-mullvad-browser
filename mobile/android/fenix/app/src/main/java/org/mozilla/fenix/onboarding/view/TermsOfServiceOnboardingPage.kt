@@ -42,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import mozilla.components.compose.base.LinkText
 import mozilla.components.compose.base.LinkTextState
 import mozilla.components.compose.base.button.FilledButton
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.ScrollIndicator
 import org.mozilla.fenix.theme.FirefoxTheme
@@ -275,7 +276,7 @@ private fun OnboardingPagePreview() {
                     lineThreeText = stringResource(id = R.string.nova_onboarding_tou_body_line_3),
                     lineThreeLinkText = stringResource(id = R.string.nova_onboarding_tou_body_line_3_link_text),
                 ),
-                imageRes = R.drawable.nova_onboarding_tou,
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 primaryButton = Action(
                     text = stringResource(
                         id = R.string.nova_onboarding_continue_button,
