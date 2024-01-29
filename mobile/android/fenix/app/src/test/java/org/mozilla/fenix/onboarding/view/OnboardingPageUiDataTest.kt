@@ -53,7 +53,7 @@ class OnboardingPageUiDataTest {
 
 val defaultBrowserPageUiData = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.DEFAULT_BROWSER,
-    imageRes = R.drawable.ic_onboarding_welcome,
+    imageRes = R.drawable.mozac_lib_crash_notification,
     title = "default browser title",
     description = "default browser body with link text",
     primaryButtonLabel = "default browser primary button text",
@@ -63,7 +63,7 @@ val defaultBrowserPageUiData = OnboardingPageUiData(
 
 val syncPageUiData = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.SYNC_SIGN_IN,
-    imageRes = R.drawable.ic_onboarding_sync,
+    imageRes = R.drawable.mozac_lib_crash_notification,
     title = "sync title",
     description = "sync body",
     primaryButtonLabel = "sync primary button text",
@@ -73,7 +73,7 @@ val syncPageUiData = OnboardingPageUiData(
 
 val notificationPageUiData = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.NOTIFICATION_PERMISSION,
-    imageRes = R.drawable.ic_notification_permission,
+    imageRes = R.drawable.mozac_lib_crash_notification,
     title = "notification title",
     description = "notification body",
     primaryButtonLabel = "notification primary button text",
