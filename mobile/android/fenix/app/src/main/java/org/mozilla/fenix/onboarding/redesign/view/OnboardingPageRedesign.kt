@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import mozilla.components.compose.base.button.FilledButton
 import mozilla.components.compose.base.button.OutlinedButton
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.ScrollIndicator
 import org.mozilla.fenix.onboarding.view.Action
@@ -177,7 +178,7 @@ private fun OnboardingPageSetToDefaultPreview() {
     FirefoxTheme {
         OnboardingPageRedesign(
             pageState = OnboardingPageState(
-                imageRes = R.drawable.nova_onboarding_set_to_default,
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 title = stringResource(R.string.nova_onboarding_set_to_default_title_2),
                 description = stringResource(R.string.nova_onboarding_set_to_default_subtitle),
                 primaryButton = Action(
@@ -200,7 +201,7 @@ private fun OnboardingPageSyncPreview() {
     FirefoxTheme {
         OnboardingPageRedesign(
             pageState = OnboardingPageState(
-                imageRes = R.drawable.nova_onboarding_sync,
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 title = stringResource(R.string.nova_onboarding_sync_title),
                 description = stringResource(R.string.nova_onboarding_sync_subtitle),
                 primaryButton = Action(
@@ -223,7 +224,7 @@ private fun OnboardingPageNotificationPreview() {
     FirefoxTheme {
         OnboardingPageRedesign(
             pageState = OnboardingPageState(
-                imageRes = R.drawable.nova_onboarding_notifications,
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 title = stringResource(R.string.nova_onboarding_add_search_widget_title),
                 description = stringResource(R.string.nova_onboarding_add_search_widget_subtitle),
                 primaryButton = Action(
@@ -246,7 +247,7 @@ private fun OnboardingPageSearchWidgetPreview() {
     FirefoxTheme {
         OnboardingPageRedesign(
             pageState = OnboardingPageState(
-                imageRes = R.drawable.nova_onboarding_widget,
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 title = stringResource(R.string.nova_onboarding_add_search_widget_title),
                 description = stringResource(R.string.nova_onboarding_add_search_widget_subtitle),
                 primaryButton = Action(

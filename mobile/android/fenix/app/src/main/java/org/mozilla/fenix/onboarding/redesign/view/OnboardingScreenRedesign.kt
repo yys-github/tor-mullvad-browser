@@ -49,6 +49,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
+import mozilla.components.lib.crash.R as crashR
 import mozilla.components.lib.state.ext.observeAsComposableState
 import mozilla.components.support.base.log.logger.Logger
 import org.mozilla.fenix.R
@@ -698,7 +699,7 @@ private fun touPageUIData() = OnboardingPageUiData(
 @Composable
 private fun defaultBrowserPageUiData() = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.DEFAULT_BROWSER,
-    imageRes = R.drawable.ic_onboarding_welcome,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = stringResource(R.string.nova_onboarding_set_to_default_title_2),
     description = stringResource(R.string.nova_onboarding_set_to_default_subtitle),
     primaryButtonLabel = stringResource(R.string.nova_onboarding_set_to_default_button),
@@ -708,7 +709,7 @@ private fun defaultBrowserPageUiData() = OnboardingPageUiData(
 @Composable
 private fun syncPageUiData() = OnboardingPageUiData(
     type = OnboardingPageUiData.Type.SYNC_SIGN_IN,
-    imageRes = R.drawable.ic_onboarding_sync,
+    imageRes = crashR.drawable.mozac_lib_crash_notification,
     title = stringResource(R.string.nova_onboarding_sync_title),
     description = stringResource(R.string.nova_onboarding_sync_subtitle),
     primaryButtonLabel = stringResource(R.string.nova_onboarding_sync_button),
