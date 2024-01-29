@@ -19,6 +19,7 @@ import androidx.core.net.toUri
 import mozilla.components.concept.sync.Device
 import mozilla.components.concept.sync.TabData
 import mozilla.components.concept.sync.TabPrivacy
+import mozilla.components.lib.crash.R as crashR
 import mozilla.components.support.base.ids.SharedIdsHelper
 import mozilla.components.support.base.log.logger.Logger
 import org.mozilla.fenix.HomeActivity
@@ -114,7 +115,7 @@ class NotificationManager(
 
                     addExtras(Bundle().apply { putInt(TOTAL_TABS_CLOSED_EXTRA, totalCount) })
 
-                    setSmallIcon(R.drawable.ic_status_logo)
+                    setSmallIcon(crashR.drawable.mozac_lib_crash_notification)
                     setWhen(currentTimeMillis())
                     setAutoCancel(true)
                     setDefaults(Notification.DEFAULT_VIBRATE or Notification.DEFAULT_SOUND)
@@ -157,7 +158,7 @@ class NotificationManager(
 
             val builder =
                 NotificationCompat.Builder(context, RECEIVE_TABS_CHANNEL_ID)
-                    .setSmallIcon(R.drawable.ic_status_logo)
+                    .setSmallIcon(crashR.drawable.mozac_lib_crash_notification)
                     .setSendTabTitle(context, device, tab)
                     .setWhen(currentTimeMillis())
                     .setContentText(tab.url)
