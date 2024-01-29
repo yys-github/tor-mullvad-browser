@@ -37,6 +37,7 @@ import mozilla.components.compose.base.theme.PreviewThemeProvider
 import mozilla.components.compose.base.theme.Theme
 import mozilla.components.feature.addons.Addon
 import mozilla.components.ui.icons.R as iconsR
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.menu.MenuAccessPoint
 import org.mozilla.fenix.components.menu.MenuDialogTestTag.DESKTOP_SITE_OFF
@@ -323,7 +324,7 @@ private fun PoweredByFirefoxItem(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth(),
     ) {
         Image(
-            painter = painterResource(id = R.drawable.ic_firefox),
+            painter = painterResource(id = crashR.drawable.mozac_lib_crash_notification),
             contentDescription = null,
             modifier = Modifier.size(16.dp).align(Alignment.CenterVertically),
         )

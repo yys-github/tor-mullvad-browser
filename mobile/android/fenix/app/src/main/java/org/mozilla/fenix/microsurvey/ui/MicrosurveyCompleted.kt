@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import mozilla.components.compose.base.annotation.FlexibleWindowPreview
 import mozilla.components.compose.base.theme.PreviewThemeProvider
 import mozilla.components.compose.base.theme.Theme
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.theme.FirefoxTheme
 
@@ -53,7 +54,7 @@ fun MicrosurveyCompleted(backgroundColor: Color = MaterialTheme.colorScheme.surf
             Spacer(modifier = Modifier.height(50.dp))
 
             Image(
-                painter = painterResource(R.drawable.microsurvey_success),
+                painter = painterResource(crashR.drawable.mozac_lib_crash_notification),
                 contentDescription = null,
                 contentScale = ContentScale.None,
             )

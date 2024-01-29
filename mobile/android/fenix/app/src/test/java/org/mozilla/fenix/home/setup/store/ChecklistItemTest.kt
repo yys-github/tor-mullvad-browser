@@ -8,6 +8,7 @@ import androidx.annotation.StringRes
 import io.mockk.every
 import io.mockk.mockk
 import mozilla.components.ui.icons.R as iconsR
+import mozilla.components.lib.crash.R as crashR
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.mozilla.fenix.R
@@ -159,7 +160,7 @@ class ChecklistItemTest {
                 ChecklistItem.Task(
                     type = ChecklistItem.Task.Type.SIGN_IN,
                     title = R.string.setup_checklist_task_account_sync,
-                    icon = R.drawable.ic_fx_accounts_avatar,
+                    icon = crashR.drawable.mozac_lib_crash_notification,
                     isCompleted = isCompleted,
                 ),
             )
@@ -198,7 +199,7 @@ class ChecklistItemTest {
                             ChecklistItem.Task(
                                 type = ChecklistItem.Task.Type.SIGN_IN,
                                 title = R.string.setup_checklist_task_account_sync,
-                                icon = R.drawable.ic_fx_accounts_avatar,
+                                icon = crashR.drawable.mozac_lib_crash_notification,
                                 isCompleted = isCompleted,
                             ),
                         ),
@@ -276,7 +277,7 @@ class ChecklistItemTest {
                             ChecklistItem.Task(
                                 type = ChecklistItem.Task.Type.SIGN_IN,
                                 title = R.string.setup_checklist_task_account_sync,
-                                icon = R.drawable.ic_fx_accounts_avatar,
+                                icon = crashR.drawable.mozac_lib_crash_notification,
                                 isCompleted = isCompleted,
                             ),
                         ),

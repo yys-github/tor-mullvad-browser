@@ -51,6 +51,7 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import mozilla.components.compose.base.PagerIndicator
 import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
+import mozilla.components.lib.crash.R as crashR
 import mozilla.components.lib.state.ext.observeAsComposableState
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.appstate.AppAction
@@ -722,7 +723,9 @@ private fun touPageUIData() =
                 lineThreeText = stringResource(id = R.string.nova_onboarding_tou_body_line_3),
                 lineThreeLinkText = stringResource(id = R.string.nova_onboarding_tou_body_line_3_link_text),
             ),
-        imageRes = R.drawable.nova_onboarding_tou,
+        // Removed to reduce APK size as part of tor-browser#42386
+        // Set to something else to make the compiler happy
+        imageRes = crashR.drawable.mozac_lib_crash_notification,
         primaryButtonLabel = stringResource(id = R.string.nova_onboarding_continue_button),
     )
 
@@ -730,7 +733,9 @@ private fun touPageUIData() =
 private fun defaultBrowserPageUiData() =
     OnboardingPageUiData(
         type = OnboardingPageUiData.Type.DEFAULT_BROWSER,
-        imageRes = R.drawable.ic_onboarding_welcome,
+        // Removed to reduce APK size as part of tor-browser#42386
+        // Set to something else to make the compiler happy
+        imageRes = crashR.drawable.mozac_lib_crash_notification,
         title = stringResource(R.string.nova_onboarding_set_to_default_title_2),
         description = stringResource(R.string.nova_onboarding_set_to_default_subtitle),
         primaryButtonLabel = stringResource(R.string.nova_onboarding_set_to_default_button),
@@ -741,7 +746,7 @@ private fun defaultBrowserPageUiData() =
 private fun syncPageUiData() =
     OnboardingPageUiData(
         type = OnboardingPageUiData.Type.SYNC_SIGN_IN,
-        imageRes = R.drawable.ic_onboarding_sync,
+        imageRes = crashR.drawable.mozac_lib_crash_notification,
         title = stringResource(R.string.nova_onboarding_sync_title),
         description = stringResource(R.string.nova_onboarding_sync_subtitle),
         primaryButtonLabel = stringResource(R.string.nova_onboarding_sync_button),
@@ -752,7 +757,9 @@ private fun syncPageUiData() =
 private fun toolbarPlacementPageUiData() =
     OnboardingPageUiData(
         type = OnboardingPageUiData.Type.TOOLBAR_PLACEMENT,
-        imageRes = R.drawable.ic_onboarding_customize_toolbar,
+        // Removed to reduce APK size as part of tor-browser#42386
+        // Set to something else to make the compiler happy
+        imageRes = crashR.drawable.mozac_lib_crash_notification,
         title = stringResource(R.string.nova_onboarding_toolbar_selection_title),
         description = "", // Unused
         primaryButtonLabel = stringResource(R.string.nova_onboarding_continue_button),
