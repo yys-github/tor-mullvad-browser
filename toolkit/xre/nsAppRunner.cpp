@@ -289,6 +289,7 @@ static const char kPrefSetDefaultBrowserUserChoicePref[] =
 
 #if defined(XP_WIN)
 static const char kPrefThemeId[] = "extensions.activeThemeID";
+static const char kPrefResistFingerprinting[] = "privacy.resistFingerprinting";
 #  if defined(MOZ_DEFAULT_BROWSER_AGENT)
 static const char kPrefBrowserStartupBlankWindow[] =
     "browser.startup.blankWindow";
@@ -2314,8 +2315,9 @@ static void ReflectSkeletonUIPrefToRegistry(const char* aPref, void* aData) {
       hasShowProfileSelector ? 1 : 0, skeletonUIPref ? 1 : 0,
       startupBlankWindowPref ? 1 : 0, drawInTitlebar ? 1 : 0);
 
-  bool shouldBeEnabled = !hasShowProfileSelector && skeletonUIPref &&
-                         startupBlankWindowPref && drawInTitlebar;
+  bool shouldBeEnabled =
+      !hasShowProfileSelector && skeletonUIPref && startupBlankWindowPref &&
+      drawInTitlebar && !Preferences::GetBool(kPrefResistFingerprinting, false);
   SKELETON_LOG("ReflectSkeletonUIPrefToRegistry: shouldBeEnabled %d",
                shouldBeEnabled ? 1 : 0);
   if (shouldBeEnabled && Preferences::HasUserValue(kPrefThemeId)) {
