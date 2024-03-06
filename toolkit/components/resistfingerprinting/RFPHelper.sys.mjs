@@ -20,6 +20,10 @@ const kPrefLetterboxingVcenter =
   "privacy.resistFingerprinting.letterboxing.vcenter";
 const kPrefLetterboxingGradient =
   "privacy.resistFingerprinting.letterboxing.gradient";
+const kPrefLetterboxingDidForceSize =
+  "privacy.resistFingerprinting.letterboxing.didForceSize";
+const kPrefLetterboxingRememberSize =
+  "privacy.resistFingerprinting.letterboxing.rememberSize";
 
 const kTopicDOMWindowOpened = "domwindowopened";
 
@@ -143,6 +147,7 @@ class _RFPHelper {
   _handlePrefChanged(data) {
     switch (data) {
       case kPrefResistFingerprinting:
+        Services.prefs.clearUserPref(kPrefLetterboxingDidForceSize);
         this._handleResistFingerprintingChanged();
         break;
       case kPrefSpoofEnglish:
@@ -150,6 +155,8 @@ class _RFPHelper {
         this._handleSpoofEnglishChanged();
         break;
       case kPrefLetterboxing:
+        Services.prefs.clearUserPref(kPrefLetterboxingDidForceSize);
+      // fall-through
       case kPrefLetterboxingVcenter:
       case kPrefLetterboxingGradient:
         this._handleLetterboxingPrefChanged();
@@ -743,7 +750,10 @@ class _RFPHelper {
   }
 
   _fixRounding(aWindow) {
-    if (!this.rfpEnabled) {
+    if (
+      !this.rfpEnabled ||
+      Services.prefs.getBoolPref(kPrefLetterboxingRememberSize, false)
+    ) {
       return;
     }
 
