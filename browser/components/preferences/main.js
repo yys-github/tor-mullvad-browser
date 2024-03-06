@@ -7,6 +7,7 @@
 /** @import { PreferencesSettingsConfig } from "chrome://global/content/preferences/Preferences.mjs" */
 
 /* import-globals-from extensionControlled.js */
+/* import-globals-from letterboxing.js */
 /* import-globals-from preferences.js */
 /* import-globals-from /toolkit/mozapps/preferences/fontbuilder.js */
 /* import-globals-from /browser/base/content/aboutDialog-appUpdater.js */
@@ -2110,6 +2111,8 @@ var gMainPane = {
       ].map(ContextualIdentityService.formatContextLabel)
     );
 
+    gLetterboxingPrefs.init();
+
     // Notify observers that the UI is now ready
     Services.obs.notifyObservers(window, "main-pane-loaded");
 
@@ -3817,6 +3820,8 @@ var gMainPane = {
       this._translationsView.destroy();
       this._translationsView = null;
     }
+
+    gLetterboxingPrefs.destroy();
   },
 
   // nsISupports
