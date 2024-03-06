@@ -71,3 +71,8 @@ browser.jar:
    content/browser/preferences/widgets/update-information.css          (widgets/update-information/update-information.css)
    content/browser/preferences/widgets/update-state.mjs          (widgets/update-state/update-state.mjs)
    content/browser/preferences/widgets/update-state.css          (widgets/update-state/update-state.css)
+
+   content/browser/preferences/letterboxing.js
+   content/browser/preferences/letterboxing.css
+   content/browser/preferences/letterboxing-middle.svg
+   content/browser/preferences/letterboxing-top.svg
