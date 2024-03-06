@@ -1909,6 +1909,11 @@ BrowserGlue.prototype = {
         return false;
       }
 
+      // We don't want to mess up with RFP new window / letterboxing machinery.
+      if (Services.prefs.getBoolPref("privacy.resistFingerprinting", false)) {
+        return false;
+      }
+
       let width = getValue("width");
       let height = getValue("height");
 
