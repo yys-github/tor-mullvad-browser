@@ -1,0 +1,11 @@
+#letterboxingCategory.hide-all-letterboxing {
+  display: none;
+}
+
+.letterboxing-overview {
+  margin-block-end: var(--space-xxlarge);
+}
+
+.letterboxing-chooser-item.appearance-chooser-item {
+  flex: 0 1 200px;
+}
