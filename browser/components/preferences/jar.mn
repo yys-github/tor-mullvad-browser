@@ -54,3 +54,8 @@ browser.jar:
    content/browser/preferences/widgets/sync-device-name.mjs          (widgets/sync-device-name/sync-device-name.mjs)
    content/browser/preferences/widgets/sync-engines-list.mjs          (widgets/sync-engine-list/sync-engines-list.mjs)
    content/browser/preferences/widgets/sync-engines-list.css          (widgets/sync-engine-list/sync-engines-list.css)
+
+   content/browser/preferences/letterboxing.js
+   content/browser/preferences/letterboxing.css
+   content/browser/preferences/letterboxing-middle.svg
+   content/browser/preferences/letterboxing-top.svg

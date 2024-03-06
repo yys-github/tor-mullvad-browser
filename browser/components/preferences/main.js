@@ -8,6 +8,7 @@
 /** @import MozBoxGroup from 'chrome://global/content/elements/moz-box-group.mjs'; */
 
 /* import-globals-from extensionControlled.js */
+/* import-globals-from letterboxing.js */
 /* import-globals-from preferences.js */
 /* import-globals-from /toolkit/mozapps/preferences/fontbuilder.js */
 /* import-globals-from /browser/base/content/aboutDialog-appUpdater.js */
@@ -3659,6 +3660,8 @@ var gMainPane = {
 
     // Listen for window unload so we can remove our preference observers.
     window.addEventListener("unload", this);
+
+    gLetterboxingPrefs.init();
 
     // Notify observers that the UI is now ready
     Services.obs.notifyObservers(window, "main-pane-loaded");
