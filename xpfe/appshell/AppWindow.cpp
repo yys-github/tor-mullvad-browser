@@ -1033,8 +1033,9 @@ NS_IMETHODIMP AppWindow::GetAvailScreenSize(int32_t* aAvailWidth,
   return NS_OK;
 }
 
-// Rounds window size to 1000x1000, or, if there isn't enough available
-// screen space, to a multiple of 200x100.
+// Rounds window size to privacy.window.maxInnerWidth x
+// privacy.window.maxInnerWidth, or, if there isn't enough available screen
+// space, to a multiple of 200x100.
 NS_IMETHODIMP AppWindow::ForceRoundedDimensions() {
   if (mIsHiddenWindow) {
     return NS_OK;
@@ -1073,6 +1074,11 @@ NS_IMETHODIMP AppWindow::ForceRoundedDimensions() {
   LayoutDeviceIntSize targetSizeDev = RoundedToInt(targetSizeCSS * scale);
 
   SetPrimaryContentSize(targetSizeDev.width, targetSizeDev.height);
+
+  // Ensure we force initial rounded size at least once, as checked by
+  // nsContentUtils::ShouldRoundWindowSizeForResistingFingerprinting().
+  Preferences::SetBool("privacy.resistFingerprinting.letterboxing.didForceSize",
+                       true);
 
   return NS_OK;
 }
@@ -2467,7 +2473,8 @@ void AppWindow::SizeShell() {
           "if RFP is enabled we want to round the dimensions of the new"
           "new pop up window regardless of their origin",
           RFPTarget::RoundWindowSize) &&
-      windowType.EqualsLiteral("navigator:browser")) {
+      windowType.EqualsLiteral("navigator:browser") &&
+      nsContentUtils::ShouldRoundWindowSizeForResistingFingerprinting()) {
     // Once we've got primary content, force dimensions.
     if (mPrimaryContentShell || mPrimaryBrowserParent) {
       ForceRoundedDimensions();
