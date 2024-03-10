@@ -834,9 +834,17 @@ class _RFPHelper {
     return false;
   }
 
+  _onWindowDoubleClick(e) {
+    if (e.target.classList.contains("browserStack")) {
+      e.currentTarget.shrinkToLetterbox();
+    }
+  }
+
   _attachWindow(aWindow) {
     this._fixRounding(aWindow);
     aWindow.addEventListener("sizemodechange", windowResizeHandler);
+    aWindow.shrinkToLetterbox = this.shrinkToLetterbox;
+    aWindow.addEventListener("dblclick", this._onWindowDoubleClick);
     aWindow.gBrowser.addTabsProgressListener(this);
     aWindow.addEventListener("TabOpen", this);
     let resizeObserver = new aWindow.ResizeObserver(entries => {
@@ -1165,6 +1173,8 @@ class _RFPHelper {
       let browser = tab.linkedBrowser;
       this._resetContentSize(browser);
     }
+    aWindow.removeEventListener("dblclick", this._onWindowDoubleClick);
+    delete aWindow.shrinkToLetterbox;
     aWindow.removeEventListener("sizemodechange", windowResizeHandler);
 
     aWindow.removeEventListener("nativethemechange", this);
