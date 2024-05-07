@@ -683,6 +683,7 @@ var gMainPane = {
     initSettingGroup("fonts");
     initSettingGroup("browserLanguage");
     initSettingGroup("websiteLanguage");
+    initSettingGroup("websiteSpoofEnglish");
     initSettingGroup("browsing");
     initSettingGroup("keyboardAndScrolling");
     initSettingGroup("motionAndLink");
@@ -701,7 +702,7 @@ var gMainPane = {
       gMainPane.showBrowserLanguagesSubDialog({ search: false });
     });
 
-    setEventListener("chooseLanguage", "command", gMainPane.showLanguages);
+    // setEventListener("chooseLanguage", "command", gMainPane.showLanguages);
 
     // Initilize Application section.
 
