@@ -802,7 +802,23 @@ var gMainPane = {
       gMainPane.showBrowserLanguagesSubDialog({ search: false });
     });
 
-    setEventListener("chooseLanguage", "command", gMainPane.showLanguages);
+    // setEventListener("chooseLanguage", "command", gMainPane.showLanguages);
+    {
+      const spoofEnglish = document.getElementById("spoofEnglish");
+      const kPrefSpoofEnglish = "privacy.spoof_english";
+      const preference = Preferences.add({
+        id: kPrefSpoofEnglish,
+        type: "int",
+      });
+      const spoofEnglishChanged = () => {
+        spoofEnglish.checked = preference.value == 2;
+      };
+      spoofEnglishChanged();
+      preference.on("change", spoofEnglishChanged);
+      setEventListener("spoofEnglish", "command", () => {
+        preference.value = spoofEnglish.checked ? 2 : 1;
+      });
+    }
 
     // Initilize Application section.
 
