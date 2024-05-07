@@ -659,8 +659,21 @@ Preferences.addSetting({
 });
 
 Preferences.addSetting({
+  id: "websiteSpoofEnglish",
+  pref: "privacy.spoof_english",
+  get: val => {
+    return val == 2;
+  },
+  set: val => {
+    return val ? 2 : 1;
+  },
+});
+
+Preferences.addSetting({
   id: "websiteLanguageWrapper",
   deps: ["acceptLanguages"],
+  // Hide website language settings. tor-browser#41930.
+  visible: () => false,
   onUserReorder(event, deps) {
     const { draggedIndex, targetIndex } = event.detail;
 
@@ -929,6 +942,14 @@ SettingGroupManager.registerGroups({
             ],
           },
         ],
+      },
+    ],
+  },
+  websiteSpoofEnglish: {
+    items: [
+      {
+        id: "websiteSpoofEnglish",
+        l10nId: "languages-customize-spoof-english",
       },
     ],
   },
