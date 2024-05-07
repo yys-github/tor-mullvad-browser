@@ -832,7 +832,7 @@ var gMainPane = {
       gMainPane.showBrowserLanguagesSubDialog({ search: false });
     });
 
-    setEventListener("chooseLanguage", "command", gMainPane.showLanguages);
+    // setEventListener("chooseLanguage", "command", gMainPane.showLanguages);
 
     // Initilize Application section.
 
