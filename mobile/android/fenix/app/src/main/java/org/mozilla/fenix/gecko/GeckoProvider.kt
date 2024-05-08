@@ -17,6 +17,7 @@ import mozilla.components.lib.crash.handler.CrashHandlerService
 import mozilla.components.lib.crash.store.CrashAction
 import mozilla.components.service.sync.autofill.GeckoCreditCardsAddressesStorageDelegate
 import mozilla.components.service.sync.logins.GeckoLoginStorageDelegate
+import org.mozilla.fenix.BuildConfig
 import org.mozilla.fenix.Config
 import org.mozilla.fenix.components.appstate.AppAction
 import org.mozilla.fenix.ext.components
@@ -131,6 +132,7 @@ object GeckoProvider {
             .setSameDocumentNavigationOverridesLoadTypeForceDisable(
                 FxNimbus.features.sameDocumentNavigationOverridesLoadType.value().forceDisableUri,
             )
+            .supportedLocales(BuildConfig.SUPPORTED_LOCALE_ARRAY.toList())
             .build()
     }
 }
