@@ -43,6 +43,42 @@
           "default": "{link.color.@base}"
         }
       }
+    },
+    "tor": {
+      "light": { "value": "{color.accent.tor.light}" },
+      "dark": { "value": "{color.accent.tor.dark}" },
+      "@base": {
+        "value": {
+          "light": "{link.color.tor.light}",
+          "dark": "{link.color.tor.dark}",
+          "prefersContrast": "{link.color.@base}",
+          "forcedColors": "{link.color.@base}"
+        }
+      },
+      "hover": {
+        "light": { "value": "{color.accent.tor.hover.light}" },
+        "dark": { "value": "{color.accent.tor.hover.dark}" },
+        "@base": {
+          "value": {
+            "light": "{link.color.tor.hover.light}",
+            "dark": "{link.color.tor.hover.dark}",
+            "prefersContrast": "{link.color.hover}",
+            "forcedColors": "{link.color.hover}"
+          }
+        }
+      },
+      "active": {
+        "light": { "value": "{color.accent.tor.active.light}" },
+        "dark": { "value": "{color.accent.tor.active.dark}" },
+        "@base": {
+          "value": {
+            "light": "{link.color.tor.active.light}",
+            "dark": "{link.color.tor.active.dark}",
+            "prefersContrast": "{link.color.active}",
+            "forcedColors": "{link.color.active}"
+          }
+        }
+      }
     }
   },
   "focus": {
