@@ -94,9 +94,9 @@ const NOVA_STRUCTURAL_OVERRIDES = {
   "tab/loading/fill": "{color.accent.primary.@base}",
   "tab/outline/color": "transparent",
   "toolbar/field/border/color/focus": {
-    nativeTheme: "color-mix(in srgb, {focus.outline.color} 50%, transparent)",
-    default: "{focus.outline.color}",
-    prefersContrast: "{focus.outline.color}",
+    nativeTheme: "color-mix(in srgb, {focus.outline.color.@base} 50%, transparent)",
+    default: "{focus.outline.color.@base}",
+    prefersContrast: "{focus.outline.color.@base}",
   },
   // color-mix() on currentColor for nativeTheme can't be stored in Figma.
   "urlbar/box/background/color": {
