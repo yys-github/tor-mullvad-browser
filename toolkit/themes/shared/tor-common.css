@@ -1,0 +1,23 @@
+@namespace xul "http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul";
+
+/* Has a higher specificity than `button` and `button.primary`. */
+button.tor-button:is(*, .primary),
+xul|button.tor-button:is(*, [default]),
+.tor-button {
+  color: var(--button-text-color-tor);
+  background-color: var(--button-background-color-tor);
+}
+
+:is(button.tor-button:is(*, .primary), xul|button.tor-button:is(*, [default]), .tor-button):not([disabled]):hover {
+  color: var(--button-text-color-tor-hover);
+  background-color: var(--button-background-color-tor-hover);
+}
+
+:is(button.tor-button:is(*, .primary), xul|button.tor-button:is(*, [default]), .tor-button):not([disabled]):hover:active {
+  color: var(--button-text-color-tor-active);
+  background-color: var(--button-background-color-tor-active);
+}
+
+:is(button.tor-button:is(*, .primary), xul|button.tor-button:is(*, [default]), .tor-button):focus-visible {
+  outline-color: var(--focus-outline-color-tor);
+}
