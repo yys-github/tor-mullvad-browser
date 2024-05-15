@@ -1,12 +1,26 @@
 {
   "outline": {
     "@base": {
-      "value": "{focus.outline.width} solid {focus.outline.color}"
+      "value": "{focus.outline.width} solid {focus.outline.color.@base}"
     },
     "color": {
-      "value": {
-        "default": "{color.accent.primary.@base}",
-        "forcedColors": "{text.color.@base}"
+      "@base": {
+        "value": {
+          "default": "{color.accent.primary.@base}",
+          "forcedColors": "{text.color.@base}"
+        }
+      },
+      "tor": {
+        "light": { "value": "{color.accent.tor.light}" },
+        "dark": { "value": "{color.accent.tor.dark}" },
+        "@base": {
+          "value": {
+            "light": "{focus.outline.color.tor.light}",
+            "dark": "{focus.outline.color.tor.dark}",
+            "prefersContrast": "{focus.outline.color.@base}",
+            "forcedColors": "{focus.outline.color.@base}"
+          }
+        }
       }
     },
     "inset": {
