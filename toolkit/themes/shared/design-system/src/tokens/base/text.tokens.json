@@ -56,6 +56,18 @@
           }
         }
       }
+    },
+    "tor": {
+      "light": { "value": "{color.purple.60}" },
+      "dark": { "value": "{color.purple.20}" },
+      "@base": {
+        "value": {
+          "light": "{text.color.tor.light}",
+          "dark": "{text.color.tor.dark}",
+          "prefersContrast": "inherit",
+          "forcedColors": "inherit"
+        }
+      }
     }
   }
 }

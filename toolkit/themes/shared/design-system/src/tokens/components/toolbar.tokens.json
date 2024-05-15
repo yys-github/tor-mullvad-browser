@@ -15,8 +15,8 @@
         },
         "focus": {
           "value": {
-            "default": "color-mix(in srgb, {focus.outline.color} 50%, transparent)",
-            "prefersContrast": "{focus.outline.color}"
+            "default": "color-mix(in srgb, {focus.outline.color.@base} 50%, transparent)",
+            "prefersContrast": "{focus.outline.color.@base}"
           }
         }
       }
