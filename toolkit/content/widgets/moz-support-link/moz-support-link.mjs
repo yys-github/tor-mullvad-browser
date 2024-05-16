@@ -109,19 +109,7 @@ export default class MozSupportLink extends HTMLAnchorElement {
   #setHref() {
     let torManualPage = this.getAttribute("tor-manual-page");
     if (torManualPage) {
-      const [page, anchor] = torManualPage.split("_", 2);
-
-      let locale = Services.locale.appLocaleAsBCP47;
-      if (locale === "ja-JP-macos") {
-        // Convert quirk-locale to the locale used for tor project.
-        locale = "ja";
-      }
-
-      let href = `https://tb-manual.torproject.org/${locale}/${page}/`;
-      if (anchor) {
-        href = `${href}#${anchor}`;
-      }
-      this.href = href;
+      this.href = `about:manual#${torManualPage}`;
       return;
     }
     let supportPage = this.getAttribute("support-page") ?? "";
