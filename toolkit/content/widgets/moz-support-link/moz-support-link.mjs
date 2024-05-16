@@ -107,19 +107,7 @@ export default class MozSupportLink extends HTMLAnchorElement {
     const torManualPrefix = "tor-manual:";
     if (supportPage.startsWith(torManualPrefix)) {
       const torManualPage = supportPage.substring(torManualPrefix.length);
-      const [pages, anchor] = torManualPage.split("___", 2);
-
-      let locale = Services.locale.appLocaleAsBCP47;
-      if (locale === "ja-JP-macos") {
-        // Convert quirk-locale to the locale used for tor project.
-        locale = "ja";
-      }
-
-      let href = `https://support.torproject.org/${locale}/tor-browser/${pages.replace("__", "/")}/`;
-      if (anchor) {
-        href = `${href}#${anchor}`;
-      }
-      this.href = href;
+      this.href = `about:manual#${torManualPage}`;
       return;
     }
     // For base-browser we sometimes want to override firefox support links with
