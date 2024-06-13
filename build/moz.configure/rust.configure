@@ -309,7 +309,7 @@ def detect_rustc_target(host_or_target, arm_target, rust_supported_targets):
             if host_or_target.abi == "msvc":
                 suffix = "windows-msvc"
             elif host_or_target.abi == "mingw":
-                suffix = "windows-gnu"
+                suffix = "windows-gnullvm"
             narrowed = [
                 c for c in candidates if c.rust_target.endswith("-{}".format(suffix))
             ]
