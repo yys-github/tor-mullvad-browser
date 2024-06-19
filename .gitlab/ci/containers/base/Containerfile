@@ -1,0 +1,23 @@
+# This image is published in containers.torproject.org/tpo/applications/tor-browser/base
+#
+# Whenever there are changes to this file,
+# they are autopublished on merge to the tpo/applications/tor-browser repository.
+#
+# The image is updated roughly once a month when the tor-browser repository is rebased.
+
+FROM containers.torproject.org/tpo/tpa/base-images/python:trixie
+
+RUN apt-get update && apt-get install -y \
+        git \
+        xvfb
+
+RUN git clone --single-branch --depth 1 https://gitlab.torproject.org/tpo/applications/tor-browser.git
+
+# Bootstrap will download and install all dependencies required for building / linting / etc.
+RUN cd tor-browser && \
+    yes | MOZBUILD_STATE_PATH=/var/tmp/mozbuild ./mach bootstrap --application-choice "Tor Browser for Desktop" && \
+    cd ..
+
+RUN rm -rf tor-browser && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
