@@ -419,3 +419,5 @@ pref("xpinstall.signatures.required", true);
 
 pref("xpinstall.whitelist.add", "https://addons.mozilla.org");
 pref("xpinstall.whitelist.fileRequest", false);
+
+#include 000-tor-browser-android.js
