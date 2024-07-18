@@ -313,4 +313,6 @@ export default [
   "dom/tests/browser/page_bytecode_cache_json_module.html",
 
   "browser/app/profile/001-base-profile.js",
+  "browser/app/profile/000-tor-browser.js",
+  "mobile/android/app/000-tor-browser-android.js",
 ];
