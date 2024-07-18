@@ -138,6 +138,7 @@
 @BINPATH@/*/greprefs.js
 @BINPATH@/@PREF_DIR@/*/geckoview-prefs.js
 #endif # !MOZ_ANDROID_FAT_AAR_ARCHITECTURES
+@BINPATH@/@PREF_DIR@/000-tor-browser.js
 
 #ifdef MOZ_PREF_EXTENSIONS
 @BINPATH@/defaults/autoconfig/prefcalls.js
