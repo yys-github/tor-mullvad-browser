@@ -47,6 +47,8 @@ FINAL_TARGET_FILES.actors += [
     "ControllersChild.sys.mjs",
     "ControllersParent.sys.mjs",
     "ExtFindChild.sys.mjs",
+    "FilesFilterChild.sys.mjs",
+    "FilesFilterParent.sys.mjs",
     "FindBarChild.sys.mjs",
     "FindBarParent.sys.mjs",
     "FinderChild.sys.mjs",
