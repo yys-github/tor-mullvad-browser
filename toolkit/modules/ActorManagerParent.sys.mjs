@@ -351,6 +351,22 @@ let JSWINDOWACTORS = {
     safeForUntrustedWebProcess: true,
   },
 
+  FilesFilter: {
+    parent: {
+      esModuleURI: "moz-src:///toolkit/actors/FilesFilterParent.sys.mjs",
+    },
+
+    child: {
+      esModuleURI: "moz-src:///toolkit/actors/FilesFilterChild.sys.mjs",
+      events: {
+        drop: {},
+        paste: { capture: true },
+      },
+    },
+
+    allFrames: true,
+  },
+
   FindBar: {
     parent: {
       esModuleURI: "moz-src:///toolkit/actors/FindBarParent.sys.mjs",
