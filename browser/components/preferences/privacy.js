@@ -1961,7 +1961,8 @@ Preferences.addSetting({
     return (
       (AppConstants.platform == "win" || AppConstants.platform == "macosx") &&
       typeof Services.policies.getActivePolicies()?.Certificates
-        ?.ImportEnterpriseRoots == "undefined"
+        ?.ImportEnterpriseRoots == "undefined" &&
+      !AppConstants.BASE_BROWSER_VERSION
     );
   },
 });
