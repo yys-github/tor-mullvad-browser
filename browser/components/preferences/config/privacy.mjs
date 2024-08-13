@@ -3786,7 +3786,8 @@ Preferences.addSetting({
       (lazy.AppConstants.platform == "win" ||
         lazy.AppConstants.platform == "macosx") &&
       typeof Services.policies.getActivePolicies()?.Certificates
-        ?.ImportEnterpriseRoots == "undefined"
+        ?.ImportEnterpriseRoots == "undefined" &&
+      !AppConstants.BASE_BROWSER_VERSION
     );
   },
 });
