@@ -337,6 +337,10 @@ export class Downloader {
       fallbackToDump = false;
     }
 
+    avoidDownload = true;
+    fallbackToCache = true;
+    fallbackToDump = true;
+
     const dumpInfo = new LazyRecordAndBuffer(() =>
       this._readAttachmentDump(attachmentId)
     );
@@ -558,6 +562,8 @@ export class Downloader {
       attachment: { location, hash, size },
     } = record;
 
+    return (await this.#fetchAttachment(record)).buffer;
+    // eslint-disable-next-line no-unreachable
     const remoteFileUrl = (await this._baseAttachmentsURL()) + location;
 
     const { retries = 3, checkHash = true } = options;
