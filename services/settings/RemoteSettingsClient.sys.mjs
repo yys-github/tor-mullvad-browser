@@ -448,11 +448,19 @@ export class RemoteSettingsClient extends EventEmitter {
       order = "", // not sorted by default.
       dumpFallback = true,
       emptyListFallback = true,
-      forceSync = false,
       loadDumpIfNewer = true,
-      syncIfEmpty = true,
     } = options;
-    let { verifySignature = false } = options;
+
+    const hasLocalDump = await lazy.Utils.hasLocalDump(
+      this.bucketName,
+      this.collectionName
+    );
+    if (!hasLocalDump) {
+      return [];
+    }
+    const forceSync = false;
+    const syncIfEmpty = true;
+    let verifySignature = false;
 
     const hasParallelCall = !!this._importingPromise;
     let data;
@@ -647,6 +655,10 @@ export class RemoteSettingsClient extends EventEmitter {
    * @param {Object} options See #maybeSync() options.
    */
   async sync(options) {
+    if (AppConstants.BASE_BROWSER_VERSION) {
+      return;
+    }
+
     if (lazy.Utils.shouldSkipRemoteActivityDueToTests) {
       lazy.console.debug(`${this.identifier} Skip sync() due to tests.`);
       return;
@@ -730,7 +742,7 @@ export class RemoteSettingsClient extends EventEmitter {
     let thrownError = null;
     try {
       // If network is offline, we can't synchronize.
-      if (lazy.Utils.isOffline) {
+      if (!AppConstants.BASE_BROWSER_VERSION && lazy.Utils.isOffline) {
         throw new RemoteSettingsClient.NetworkOfflineError();
       }
 
@@ -1119,15 +1131,8 @@ export class RemoteSettingsClient extends EventEmitter {
   ) {
     const hasLocalData = localTimestamp !== null;
     const { retry = false } = options;
-    // On retry, we fully re-fetch the collection (no `?_since`).
-    const since = retry || !hasLocalData ? undefined : `"${localTimestamp}"`;
 
-    // Fetch collection metadata and list of changes from server.
-    lazy.console.debug(
-      `${this.identifier} Fetch changes from server (expected=${expectedTimestamp}, since=${since})`
-    );
-    const { metadata, remoteTimestamp, remoteRecords } =
-      await this._fetchChangeset(expectedTimestamp, since);
+    let metadata, remoteTimestamp;
 
     // We build a sync result, based on remote changes.
     const syncResult = {
@@ -1136,27 +1141,20 @@ export class RemoteSettingsClient extends EventEmitter {
       updated: [],
       deleted: [],
     };
-    // If data wasn't changed, return empty sync result.
-    // This can happen when we update the signature but not the data.
-    lazy.console.debug(
-      `${this.identifier} local timestamp: ${localTimestamp}, remote: ${remoteTimestamp}`
-    );
-    if (hasLocalData && remoteTimestamp < localTimestamp) {
-      lazy.console.debug(
-        `${this.identifier} No records to sync, local data is up-to-date`
-      );
+
+    try {
+      await this._importJSONDump();
+    } catch (e) {
       return syncResult;
     }
-
-    await this.db.importChanges(metadata, remoteTimestamp, remoteRecords, {
-      clear: retry,
-    });
 
     // Read the new local data, after updating.
     const newLocal = await this.db.list();
     const newRecords = newLocal.map(r => this._cleanLocalFields(r));
     // And verify the signature on what is now stored.
-    if (this.verifySignature) {
+    if (metadata === undefined) {
+      // When working only with dumps, we do not have signatures.
+    } else if (this.verifySignature) {
       try {
         await this.validateCollectionSignature(
           newRecords,
