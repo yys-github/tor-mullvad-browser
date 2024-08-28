@@ -20,6 +20,7 @@ ChromeUtils.defineESModuleGetters(this, {
   InitializationTracker: "resource://gre/modules/GeckoViewTelemetry.sys.mjs",
   RemoteSecuritySettings:
     "resource://gre/modules/psm/RemoteSecuritySettings.sys.mjs",
+  RemoteSettings: "resource://services-settings/remote-settings.sys.mjs",
   SafeBrowsing: "resource://gre/modules/SafeBrowsing.sys.mjs",
   CaptchaDetectionPingUtils:
     "moz-src:///toolkit/components/captchadetection/CaptchaDetectionPingUtils.sys.mjs",
@@ -833,6 +834,10 @@ function startup() {
       // submits the ping if it has data and has been about 24 hours since the
       // last submission.
       CaptchaDetectionPingUtils.init();
+    });
+
+    InitLater(() => {
+      RemoteSettings.pollChanges({ trigger: "timer" });
     });
 
     // This should always go last, since the idle tasks (except for the ones with
