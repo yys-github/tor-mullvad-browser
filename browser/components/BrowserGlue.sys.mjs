@@ -1372,6 +1372,11 @@ BrowserGlue.prototype = {
         this._addBreachesSyncHandler();
       }.bind(this),
 
+      function RemoteSettingsPollChanges() {
+        // Support clients that use the "sync" event or "remote-settings:changes-poll-end".
+        lazy.RemoteSettings.pollChanges({ trigger: "timer" });
+      },
+
       function searchBackgroundChecks() {
         lazy.SearchService.runBackgroundChecks();
       },
