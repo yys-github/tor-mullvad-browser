@@ -1353,6 +1353,11 @@ BrowserGlue.prototype = {
         lazy.RemoteSecuritySettings.init();
       },
 
+      function RemoteSettingsPollChanges() {
+        // Support clients that use the "sync" event or "remote-settings:changes-poll-end".
+        lazy.RemoteSettings.pollChanges({ trigger: "timer" });
+      },
+
       function searchBackgroundChecks() {
         Services.search.runBackgroundChecks();
       },
