@@ -2433,22 +2433,11 @@ export class SearchService {
   // This is prefixed with _ rather than # because it is
   // called in test_remove_engine_notification_box.js
   async _fetchEngineSelectorEngines() {
-    let searchEngineSelectorProperties = {
-      locale: Services.locale.appLocaleAsBCP47,
-      region: lazy.Region.home || "unknown",
-      channel: lazy.SearchUtils.MODIFIED_APP_CHANNEL,
-      experiment:
-        lazy.NimbusFeatures.searchConfiguration.getVariable("experiment") ?? "",
-      distroID: lazy.SearchUtils.distroID ?? "",
-    };
-
-    for (let [key, value] of Object.entries(searchEngineSelectorProperties)) {
-      this._settings.setMetaDataAttribute(key, value);
-    }
-
-    return this.#engineSelector.fetchEngineConfiguration(
-      searchEngineSelectorProperties
-    );
+    // tor-browser#43525: Check this still works.
+    const engines = await (
+      await fetch("chrome://global/content/search/torBrowserSearchEngines.json")
+    ).json();
+    return { engines, privateDefault: undefined };
   }
 
   #setDefaultFromSelector(refinedConfig) {
