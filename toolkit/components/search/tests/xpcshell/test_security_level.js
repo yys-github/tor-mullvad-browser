@@ -14,6 +14,8 @@ const { SearchService } = ChromeUtils.importESModule(
 
 const expectedURLs = {
   ddg: "https://html.duckduckgo.com/html?q=test",
+  "ddg-onion":
+    "https://duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion/html?q=test",
 };
 
 add_task(async function test_securityLevel() {
