@@ -5,6 +5,9 @@
   "ddg-noai": [
     { "url": "chrome://global/content/search/duckduckgo.ico", "imageSize": 32 }
   ],
+  "ddg-onion": [
+    { "url": "chrome://global/content/search/duckduckgo.ico", "imageSize": 32 }
+  ],
   "startpage": [
     {
       "url": "chrome://global/content/search/startpage-16.png",
@@ -14,5 +17,18 @@
       "url": "chrome://global/content/search/startpage-32.png",
       "imageSize": 32
     }
+  ],
+  "startpage-onion": [
+    {
+      "url": "chrome://global/content/search/startpage-16.png",
+      "imageSize": 16
+    },
+    {
+      "url": "chrome://global/content/search/startpage-32.png",
+      "imageSize": 32
+    }
+  ],
+  "wikipedia": [
+    { "url": "chrome://global/content/search/wikipedia.ico", "imageSize": 32 }
   ]
 }
