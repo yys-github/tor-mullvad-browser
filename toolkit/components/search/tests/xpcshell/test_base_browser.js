@@ -13,7 +13,12 @@
 const expectedURLs = {
   ddg: "https://duckduckgo.com/?q=test",
   "ddg-noai": "https://noai.duckduckgo.com/?q=test",
+  "ddg-onion":
+    "https://duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion/?q=test",
   startpage: "https://www.startpage.com/sp/search?q=test",
+  "startpage-onion":
+    "http://startpagel6srwcjlue4zgq3zevrujfaow726kjytqbbjyrswwmjzcqd.onion/sp/search?q=test",
+  wikipedia: "https://en.wikipedia.org/wiki/Special:Search?search=test",
 };
 const defaultEngine = "ddg";
 
