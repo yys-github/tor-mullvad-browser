@@ -1,0 +1,32 @@
+{
+  "ddg": [
+    {
+      "url": "chrome://global/content/search/duckduckgo.ico",
+      "imageSize": 16
+    }
+  ],
+  "ddg-onion": [
+    {
+      "url": "chrome://global/content/search/duckduckgo.ico",
+      "imageSize": 16
+    }
+  ],
+  "startpage": [
+    {
+      "url": "chrome://global/content/search/startpage.png",
+      "imageSize": 16
+    }
+  ],
+  "startpage-onion": [
+    {
+      "url": "chrome://global/content/search/startpage.png",
+      "imageSize": 16
+    }
+  ],
+  "wikipedia": [
+    {
+      "url": "chrome://global/content/search/wikipedia.ico",
+      "imageSize": 16
+    }
+  ]
+}
