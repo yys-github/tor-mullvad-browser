@@ -79,6 +79,8 @@ export const NON_SPLIT_ENGINE_IDS = [
   "engine-purpose",
   "engine-fr",
   "fixup_search",
+  "ddg-onion",
+  "startpage-onion",
 ];
 
 const TOPIC_LOCALES_CHANGE = "intl:app-locales-changed";
@@ -2519,23 +2521,9 @@ export class SearchService {
   // This is prefixed with _ rather than # because it is
   // called in test_remove_engine_notification_box.js
   async _fetchEngineSelectorEngines() {
-    let searchEngineSelectorProperties = {
-      locale: Services.locale.appLocaleAsBCP47,
-      region: lazy.Region.home || "unknown",
-      channel: lazy.SearchUtils.MODIFIED_APP_CHANNEL,
-      experiment:
-        lazy.NimbusFeatures.searchConfiguration.getVariable("experiment") ?? "",
-      distroID: lazy.SearchUtils.distroID ?? "",
-    };
-
-    for (let [key, value] of Object.entries(searchEngineSelectorProperties)) {
-      this._settings.setMetaDataAttribute(key, value);
-    }
-
-    let { engines, privateDefault } =
-      await this.#engineSelector.fetchEngineConfiguration(
-        searchEngineSelectorProperties
-      );
+    const engines = await (
+      await fetch("chrome://global/content/search/torBrowserSearchEngines.json")
+    ).json();
 
     for (let e of engines) {
       if (!e.webExtension) {
@@ -2566,7 +2554,7 @@ export class SearchService {
       e.webExtension.locale = locale;
     }
 
-    return { engines, privateDefault };
+    return { engines, privateDefault: undefined };
   }
 
   #setDefaultAndOrdersFromSelector(engines, privateDefault) {
