@@ -180,6 +180,7 @@ fun MainMenu(
     extensionsMenuItemDescription: String?,
     moreSettingsSubmenu: @Composable () -> Unit,
     extensionSubmenu: @Composable () -> Unit,
+    onNewCircuitButtonClick: () -> Unit,
 ) {
     MenuFrame(
         contentModifier = Modifier
@@ -311,6 +312,7 @@ fun MainMenu(
                 extensionsMenuItemDescription = extensionsMenuItemDescription,
                 moreSettingsSubmenu = moreSettingsSubmenu,
                 extensionSubmenu = extensionSubmenu,
+                onNewCircuitButtonClick = onNewCircuitButtonClick,
             )
         }
 
@@ -384,6 +386,7 @@ private fun ToolsAndActionsMenuGroup(
     extensionsMenuItemDescription: String?,
     moreSettingsSubmenu: @Composable () -> Unit,
     extensionSubmenu: @Composable () -> Unit,
+    onNewCircuitButtonClick: (() -> Unit)?,
 ) {
     MenuGroup {
         val labelId = R.string.browser_menu_desktop_site
@@ -400,6 +403,12 @@ private fun ToolsAndActionsMenuGroup(
             badgeBackgroundColor = MaterialTheme.colorScheme.surfaceContainerHighest
             menuItemState = if (isPdf) MenuItemState.DISABLED else MenuItemState.ENABLED
         }
+
+        MenuItem(
+            label = stringResource(R.string.library_new_circuit),
+            beforeIconPainter = painterResource(R.drawable.new_circuit),
+            onClick = onNewCircuitButtonClick,
+        )
 
         if (isBookmarked) {
             MenuItem(
@@ -790,6 +799,7 @@ private fun MenuDialogPreview(
                 onIPProtectionNavigate = {},
                 moreSettingsSubmenu = {},
                 extensionSubmenu = {},
+                onNewCircuitButtonClick = {},
             )
         }
     }
@@ -883,6 +893,7 @@ private fun MenuDialogPrivatePreview(
                         onWebExtensionMenuItemClick = {},
                     )
                 },
+                onNewCircuitButtonClick = {},
             )
         }
     }
