@@ -26,6 +26,23 @@ export class AboutTorChild extends JSWindowActorChild {
           new this.contentWindow.CustomEvent("L10nMutationsFinished")
         );
         break;
+      case "UserDismissedYEC":
+        // YEC banner was closed. Persist this for the rest of this session.
+        // See tor-browser#42188.
+        this.sendAsyncMessage("AboutTor:UserDismissedYEC");
+        break;
     }
+  }
+
+  receiveMessage(message) {
+    switch (message.name) {
+      case "AboutTor:DismissYEC": {
+        this.contentWindow.dispatchEvent(
+          new this.contentWindow.CustomEvent("DismissYEC")
+        );
+        break;
+      }
+    }
+    return undefined;
   }
 }

@@ -529,6 +529,7 @@ let JSWINDOWACTORS = {
         L10nMutationsFinished: {},
         SubmitSearchOnionize: { wantUntrusted: true },
         SurveyDismissed: { wantUntrusted: true },
+        UserDismissedYEC: { wantUntrusted: true },
       },
     },
 
