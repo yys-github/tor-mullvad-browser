@@ -73,6 +73,7 @@ interface ToolbarMenu {
         object Passwords : Item()
         object Downloads : Item()
         object NewTab : Item()
+        object NewTorCircuit : Item()
     }
 
     val menuBuilder: BrowserMenuBuilder
