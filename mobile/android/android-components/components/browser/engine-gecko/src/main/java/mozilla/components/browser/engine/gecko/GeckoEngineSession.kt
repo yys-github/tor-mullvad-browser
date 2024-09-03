@@ -1583,6 +1583,10 @@ class GeckoEngineSession(
         geckoSession.translationsSessionDelegate = GeckoTranslateSessionDelegate(this)
     }
 
+    fun newTorCircuit() {
+        geckoSession.newTorCircuit()
+    }
+
     companion object {
         internal const val PROGRESS_START = 25
         internal const val PROGRESS_STOP = 100

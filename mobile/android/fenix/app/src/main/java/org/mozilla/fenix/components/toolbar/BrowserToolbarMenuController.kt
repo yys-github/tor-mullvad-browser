@@ -14,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import mozilla.appservices.places.BookmarkRoot
+import mozilla.components.browser.engine.gecko.GeckoEngineSession
 import mozilla.components.browser.state.action.EngineAction
 import mozilla.components.browser.state.action.ShareResourceAction
 import mozilla.components.browser.state.ext.getUrl
@@ -450,6 +451,13 @@ class DefaultBrowserToolbarMenuController(
                     BrowserFragmentDirections.actionBrowserFragmentToTranslationsDialogFragment()
                 navController.navigateSafe(R.id.browserFragment, directions)
             }
+
+            ToolbarMenu.Item.NewTorCircuit -> {
+                currentSession?.let {
+                    sessionUseCases.reload.invoke(it.id)
+                    (it.engineState.engineSession as GeckoEngineSession).newTorCircuit()
+                }
+            }
         }
     }
 
@@ -602,6 +610,10 @@ class DefaultBrowserToolbarMenuController(
                     "translate",
                 ),
             )
+
+            ToolbarMenu.Item.NewTorCircuit -> {
+                /* Tor doesn't use telemetry and therefore this doesn't need to be implemented */
+            }
         }
     }
 
