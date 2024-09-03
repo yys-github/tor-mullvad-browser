@@ -92,6 +92,7 @@ class MainMenuTest {
                     onIPProtectionClick = {},
                     onIPProtectionNavigate = {},
                     onShareButtonClick = {},
+                    onNewCircuitButtonClick = {},
                     extensionsMenuItemDescription = null,
                     moreSettingsSubmenu = {},
                     extensionSubmenu = {},
