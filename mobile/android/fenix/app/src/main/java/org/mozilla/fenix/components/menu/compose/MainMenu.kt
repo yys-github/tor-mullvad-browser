@@ -175,6 +175,7 @@ fun MainMenu(
     extensionsMenuItemDescription: String?,
     moreSettingsSubmenu: @Composable () -> Unit,
     extensionSubmenu: @Composable () -> Unit,
+    onNewCircuitButtonClick: () -> Unit,
 ) {
     MenuFrame(
         contentModifier =
@@ -302,6 +303,7 @@ fun MainMenu(
                 extensionsMenuItemDescription = extensionsMenuItemDescription,
                 moreSettingsSubmenu = moreSettingsSubmenu,
                 extensionSubmenu = extensionSubmenu,
+                onNewCircuitButtonClick = onNewCircuitButtonClick,
             )
         }
 
@@ -378,6 +380,7 @@ private fun ToolsAndActionsMenuGroup(
     extensionsMenuItemDescription: String?,
     moreSettingsSubmenu: @Composable () -> Unit,
     extensionSubmenu: @Composable () -> Unit,
+    onNewCircuitButtonClick: (() -> Unit)?,
 ) {
     MenuGroup {
         val labelId = R.string.browser_menu_desktop_site
@@ -391,6 +394,12 @@ private fun ToolsAndActionsMenuGroup(
             badgeText = stringResource(id = R.string.browser_feature_desktop_site_off)
             menuItemState = if (isPdf) MenuItemState.DISABLED else MenuItemState.ENABLED
         }
+
+        MenuItem(
+            label = stringResource(R.string.library_new_circuit),
+            beforeIconPainter = painterResource(R.drawable.new_circuit),
+            onClick = onNewCircuitButtonClick,
+        )
 
         if (isBookmarked) {
             MenuItem(
@@ -764,6 +773,7 @@ private fun MenuDialogPreview(@PreviewParameter(PreviewThemeProvider::class) the
                 onIPProtectionNavigate = {},
                 moreSettingsSubmenu = {},
                 extensionSubmenu = {},
+                onNewCircuitButtonClick = {},
             )
         }
     }
@@ -855,6 +865,7 @@ private fun MenuDialogPrivatePreview(
                         onWebExtensionMenuItemClick = {},
                     )
                 },
+                onNewCircuitButtonClick = {},
             )
         }
     }
