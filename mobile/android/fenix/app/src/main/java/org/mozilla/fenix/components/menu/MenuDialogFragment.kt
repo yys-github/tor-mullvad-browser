@@ -129,6 +129,9 @@ import org.mozilla.fenix.utils.exitSubmenu
 import org.mozilla.fenix.webcompat.DefaultWebCompatReporterMoreInfoSender
 import org.mozilla.fenix.webcompat.middleware.DefaultWebCompatReporterRetrievalService
 
+import mozilla.components.browser.engine.gecko.GeckoEngineSession
+import android.util.Log
+
 private const val EXPANDED_OFFSET = 56
 private const val HIDING_FRICTION = 0.9f
 private const val PRIVATE_HOME_MENU_BACKGROUND_ALPHA = 100
@@ -751,6 +754,13 @@ class MenuDialogFragment : BottomSheetDialogFragment() {
                                                     )
                                                 },
                                             )
+                                        },
+                                        onNewCircuitButtonClick = {
+                                            components.core.store.state.selectedTab?.let {
+                                                (it.engineState.engineSession as GeckoEngineSession).newTorCircuit()
+                                                components.useCases.sessionUseCases.reload.invoke(it.id)
+                                                dismiss()
+                                            } ?: Log.e("MenuDialogFragment", "selectedTab was null, tab and tor circuit not refreshed")
                                         },
                                     )
                                 }
