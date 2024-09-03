@@ -326,3 +326,202 @@ body:not(.show-survey) #survey {
     --in-content-primary-button-background-active: var(--tor-button-background-color-active-dark);
   }
 }
+
+/* Year End Campaign (YEC). */
+body:not(.show-yec) #yec-banner {
+  display: none;
+}
+
+body.show-yec h1 {
+  /* Text of heading is still available to screen readers, but it does not
+   * contribute visually to the page or the body grid layout. */
+  position: absolute;
+  clip-path: inset(50%);
+}
+
+#yec-banner {
+  grid-area: heading;
+  border-radius: 8px;
+  border: 1px solid var(--in-content-box-border-color);
+  display: grid;
+  grid-template:
+    "yec-heading yec-image" auto
+    "yec-body yec-image" auto
+    "yec-matching yec-image" auto
+    "yec-donate yec-image" min-content
+    / 1fr min-content;
+  --yec-image-background: #1f0333;
+  /* Remove 1px from padding for border. */
+  padding-block: 55px 55px;
+  padding-inline: 47px 47px;
+  box-sizing: border-box;
+  max-width: 850px;
+  margin-block-end: 40px;
+  /* Position for the close button. */
+  position: relative;
+  gap: 0 24px;
+}
+
+#yec-image {
+  grid-area: yec-image;
+  align-self: center;
+  /* Center horizontally for small width layout. */
+  justify-self: center;
+  /* background color, padding and border radius only stands out when using a
+   * contrast or forced color theme. */
+  background-color: var(--yec-image-background);
+  border-radius: 8px;
+  padding: 4px;
+  height: 196px;
+  border: 1px solid transparent;
+  /* Remove border and padding from the layout size. These parts are only
+   * visible in contrast or forced color themes. */
+  margin: -5px;
+  /* Do not let forced colors ignore the background-color, which is needed to
+   * see the drawing. */
+  forced-color-adjust: none;
+}
+
+#yec-image:dir(rtl) {
+  transform: scaleX(-1);
+}
+
+#yec-heading {
+  grid-area: yec-heading;
+  margin-block: 0 16px;
+  font-size: 64px;
+  font-weight: 400;
+}
+
+#yec-body {
+  grid-area: yec-body;
+  margin-block: 0 12px;
+}
+
+#yec-body-highlight {
+  font-weight: 600;
+}
+
+#yec-matching {
+  grid-area: yec-matching;
+  margin-block: 0 32px;
+}
+
+#yec-donate-link {
+  grid-area: yec-donate;
+  justify-self: start;
+  /* Style like a button. */
+  font-weight: var(--button-font-weight);
+  color: var(--in-content-button-text-color);
+  border: 1px solid var(--in-content-button-border-color);
+  border-radius: 4px;
+  background-color: var(--in-content-button-background);
+  padding: var(--button-padding);
+  box-sizing: border-box;
+  min-height: var(--button-min-height);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+#yec-donate-link > * {
+  flex: 0 0 auto;
+}
+
+#yec-donate-link:hover {
+  background-color: var(--in-content-button-background-hover);
+  color: var(--in-content-button-text-color-hover);
+  border-color: var(--in-content-button-border-color-hover);
+}
+
+#yec-donate-link:hover:active {
+  background-color: var(--in-content-button-background-active);
+  color: var(--in-content-button-text-color-active);
+  border-color: var(--in-content-button-border-color-active);
+}
+
+#yec-donate-icon {
+  -moz-context-properties: fill;
+  fill: currentColor;
+}
+
+#yec-close {
+  position: absolute;
+  inset-block-start: 16px;
+  inset-inline-end: 16px;
+}
+
+@media (max-width: 768px) {
+  /* Small width layout. */
+  #yec-banner {
+    grid-template:
+      "yec-image" min-content
+      "yec-heading" auto
+      "yec-body" auto
+      "yec-matching" auto
+      "yec-donate" min-content
+      / 1fr;
+    padding-block: 31px 39px;
+    padding-inline: 15px;
+    /* Match max-width of the form. */
+    max-width: var(--form-max-width);
+    margin-block-end: 32px;
+  }
+
+  #yec-image {
+    height: 156px;
+  }
+
+  #yec-heading {
+    margin-block-start: 16px;
+    text-align: center;
+    text-wrap-style: balance;
+  }
+
+  #yec-heading {
+    font-size: 3.5rem;
+  }
+
+  #yec-matching {
+    margin-block-end: 16px;
+  }
+
+  #yec-donate-link {
+    justify-self: center;
+  }
+}
+
+@media ((prefers-contrast) or (forced-colors)) and (prefers-color-scheme: dark) {
+  #yec-image {
+    /* Give the dark image a light border to separate from background. */
+    border-color: var(--in-content-box-border-color);
+  }
+}
+
+@media not ((prefers-contrast) or (forced-colors)) {
+  #yec-banner {
+    border-color: transparent;
+    background-color: var(--yec-image-background);
+    --yec-text: #ffffff;
+    --yec-button-background: #b6e368;
+    --yec-button-background-hover: #d2f2a1;
+    --yec-button-background-active: #ecfcd8;
+    --yec-button-text: #15141A;
+    color: var(--yec-text);
+  }
+
+  #yec-body-highlight {
+    color: var(--yec-button-background);
+  }
+
+  #yec-donate-link {
+    --in-content-button-text-color: var(--yec-button-text);
+    --in-content-button-text-color-hover: var(--yec-button-text);
+    --in-content-button-text-color-active: var(--yec-button-text);
+    --in-content-button-background: var(--yec-button-background);
+    --in-content-button-background-hover: var(--yec-button-background-hover);
+    --in-content-button-background-active: var(--yec-button-background-active);
+  }
+}

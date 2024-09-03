@@ -33,6 +33,31 @@
     <script src="chrome://browser/content/abouttor/aboutTor.js"></script>
   </head>
   <body class="onion-pattern-background">
+    <!-- Year End Campaign (YEC). -->
+    <article id="yec-banner" aria-labelledby="yec-heading">
+      <img id="yec-image" alt="" />
+      <h2 id="yec-heading"></h2>
+      <p id="yec-body">
+        <b id="yec-body-highlight" data-l10n-name="highlight"></b>
+      </p>
+      <p id="yec-matching"></p>
+      <a id="yec-donate-link">
+        <span data-l10n-id="yec-donate-button"></span>
+        <img
+          id="yec-donate-icon"
+          alt=""
+          src="chrome://browser/content/abouttor/yec-heart.svg"
+        />
+      </a>
+      <moz-button
+        id="yec-close"
+        type="icon ghost"
+        class="close"
+        size="16"
+        iconSrc="chrome://global/skin/icons/close.svg"
+        data-l10n-id="yec-close-button"
+      ></moz-button>
+    </article>
     <h1>
       <img
         id="tor-browser-logo"
