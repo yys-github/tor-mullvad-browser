@@ -150,20 +150,6 @@ const MessageArea = {
         "shown-message"
       );
     }
-
-    // In the case where we set the update message, we are still waiting for the
-    // l10n message to complete. We wait until then before showing the content.
-    if (document.hasPendingL10nMutations) {
-      window.addEventListener(
-        "L10nMutationsFinished",
-        () => {
-          document.body.classList.add("initialized");
-        },
-        { once: true }
-      );
-    } else {
-      document.body.classList.add("initialized");
-    }
   },
 };
 
@@ -185,16 +171,16 @@ const SurveyArea = {
   /**
    * The date to start showing the survey.
    *
-   * @type {integer}
+   * @type {?integer}
    */
-  _startDate: Date.UTC(2025, 3, 14, 12), // 2025 April 14th, 12:00.
+  _startDate: null, // No survey date.
 
   /**
    * The date to stop showing the current survey.
    *
-   * @type {integer}
+   * @type {?integer}
    */
-  _endDate: Date.UTC(2025, 3, 28), // 2025 April 28th, 00:00.
+  _endDate: null, // No survey date.
 
   /**
    * The survey URL.
@@ -294,9 +280,40 @@ const SurveyArea = {
   ],
 
   /**
+   * Whether the area has been initialised.
+   *
+   * @type {boolean}
+   */
+  _initialized: false,
+
+  /**
+   * The app locale, or `null` whilst unset.
+   *
+   * @type {?string}
+   */
+  _locale: null,
+
+  /**
+   * Whether the banner should be shown.
+   *
+   * @type {boolean}
+   */
+  _shouldShow: false,
+
+  /**
+   * The survey element.
+   *
+   * @type {?Element}
+   */
+  _areaEl: null,
+
+  /**
    * Initialize the survey area.
    */
   init() {
+    this._initialized = true;
+
+    this._areaEl = document.getElementById("survey");
     document.getElementById("survey-launch").addEventListener("click", () => {
       const url = URL.parse(this._urlBase);
       if (!url || !this._localeData) {
@@ -312,15 +329,16 @@ const SurveyArea = {
     document.getElementById("survey-dismiss").addEventListener("click", () => {
       this._hide();
     });
+
+    this._update();
   },
 
   /**
    * Permanently hide this survey.
    */
   _hide() {
-    document.body.classList.remove("show-survey");
-    // Move focus to the search input.
-    document.getElementById("search-input").focus();
+    this._shouldShow = false;
+    this._update();
 
     dispatchEvent(
       new CustomEvent("SurveyDismissed", {
@@ -344,14 +362,29 @@ const SurveyArea = {
    */
   potentiallyShow(dismissVersion, isStable, appLocale) {
     const now = Date.now();
-    if (
-      now < this._startDate ||
-      now >= this._endDate ||
-      // The user has already dismissed this version of the survey before:
-      dismissVersion >= this._version ||
-      !isStable
-    ) {
-      // Don't show the survey.
+    this._shouldShow =
+      isStable &&
+      dismissVersion < this._version &&
+      this._startDate &&
+      now >= this._startDate &&
+      now < this._endDate;
+    this._locale = appLocale;
+    this._update();
+  },
+
+  /**
+   * Update the display.
+   */
+  _update() {
+    if (!this._initialized) {
+      return;
+    }
+    if (!this._shouldShow) {
+      if (this._areaEl.contains(document.activeElement)) {
+        // Move focus to the search input.
+        document.getElementById("search-input").focus();
+      }
+      document.body.classList.remove("show-survey");
       return;
     }
 
@@ -361,7 +394,7 @@ const SurveyArea = {
     // match the languages that the survey itself supports. This should match
     // the language of the survey when it is opened by the user.
     for (const localeData of this._localeDataSet) {
-      if (localeData.browserLocales.includes(appLocale)) {
+      if (localeData.browserLocales.includes(this._locale)) {
         this._localeData = localeData;
         break;
       }
@@ -388,10 +421,124 @@ const SurveyArea = {
   },
 };
 
+/**
+ * Area for the Year End Campaign (YEC).
+ * See tor-browser#42072.
+ */
+const YecArea = {
+  /**
+   * The epoch time to start showing the banner, if at all.
+   *
+   * @type {?integer}
+   */
+  _startDate: null, // No YEC is active.
+
+  /**
+   * The epoch time to stop showing the banner, if at all.
+   *
+   * @type {?integer}
+   */
+  _endDate: null, // No YEC is active.
+
+  /**
+   * Whether the area has been initialised.
+   *
+   * @type {boolean}
+   */
+  _initialized: false,
+
+  /**
+   * The app locale, or `null` whilst unset.
+   *
+   * @type {?string}
+   */
+  _locale: null,
+
+  /**
+   * Whether the banner should be shown.
+   *
+   * @type {boolean}
+   */
+  _shouldShow: false,
+
+  /**
+   * The banner element.
+   *
+   * @type {?Element}
+   */
+  _areaEl: null,
+
+  /**
+   * Initialize the widget.
+   */
+  init() {
+    this._initialized = true;
+
+    this._areaEl = document.getElementById("yec-banner");
+
+    document.getElementById("yec-close").addEventListener("click", () => {
+      this.dismiss();
+      dispatchEvent(new CustomEvent("UserDismissedYEC", { bubbles: true }));
+    });
+
+    this._update();
+  },
+
+  /**
+   * Close the banner.
+   */
+  dismiss() {
+    this._shouldShow = false;
+    this._update();
+  },
+
+  /**
+   * Possibly show the banner.
+   *
+   * @param {boolean} dismissYEC - Whether the user has dismissed YEC.
+   * @param {boolean} isStable - Whether this is a stable release.
+   * @param {string} appLocale - The app locale, as BCP47.
+   */
+  potentiallyShow(dismissYEC, isStable, appLocale) {
+    const now = Date.now();
+    this._shouldShow =
+      !dismissYEC &&
+      isStable &&
+      this._startDate &&
+      now >= this._startDate &&
+      now < this._endDate;
+    this._locale = appLocale;
+    this._update();
+  },
+
+  /**
+   * Update the visibility of the banner to reflect the new state.
+   */
+  _update() {
+    if (!this._initialized) {
+      return;
+    }
+    if (!this._shouldShow) {
+      if (this._areaEl.contains(document.activeElement)) {
+        document.documentElement.focus();
+      }
+      document.body.classList.remove("show-yec");
+      return;
+    }
+
+    const donateLink = document.getElementById("yec-donate-link");
+    const base = "https://www.torproject.org/donate";
+    donateLink.href = base;
+
+    document.body.classList.add("show-yec");
+  },
+};
+
 window.addEventListener("DOMContentLoaded", () => {
   SearchWidget.init();
   MessageArea.init();
   SurveyArea.init();
+  YecArea.init();
 });
 
 window.addEventListener("InitialData", event => {
@@ -402,8 +549,28 @@ window.addEventListener("InitialData", event => {
     messageData,
     surveyDismissVersion,
     appLocale,
+    dismissYEC,
   } = event.detail;
   SearchWidget.setOnionizeState(!!searchOnionize);
   MessageArea.setMessageData(messageData, !!isStable, !!torConnectEnabled);
   SurveyArea.potentiallyShow(surveyDismissVersion, isStable, appLocale);
+  YecArea.potentiallyShow(dismissYEC, isStable, appLocale);
+
+  // Wait to show the content when the l10n population has completed.
+  if (document.hasPendingL10nMutations) {
+    window.addEventListener(
+      "L10nMutationsFinished",
+      () => {
+        document.body.classList.add("initialized");
+      },
+      { once: true }
+    );
+  } else {
+    document.body.classList.add("initialized");
+  }
+});
+
+window.addEventListener("DismissYEC", () => {
+  // User closed the banner in another about:tor instance.
+  YecArea.dismiss();
 });
