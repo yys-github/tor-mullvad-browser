@@ -65,5 +65,7 @@ interface ToolbarMenu {
         object Passwords : Item()
         object Downloads : Item()
         object NewTab : Item()
+        // Remove once moz deletes this old UI (Toolbar Menu is being replaced by MainMenu)
+        object NewTorCircuit : Item()
     }
 }
