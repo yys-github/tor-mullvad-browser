@@ -427,17 +427,6 @@
         this.control.removeNotification(this);
       }
 
-      setAlertRole() {
-        // Wait a little for this to render before setting the role for more
-        // consistent alerts to screen readers.
-        this.removeAttribute("role");
-        window.requestAnimationFrame(() => {
-          window.requestAnimationFrame(() => {
-            this.setAttribute("role", "alert");
-          });
-        });
-      }
-
       handleEvent(e) {
         if (e.type == "click" && e.target.localName != "label") {
           return;
