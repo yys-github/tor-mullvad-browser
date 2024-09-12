@@ -713,18 +713,18 @@ SettingGroupManager.registerGroups({
     headingLevel: 2,
     iconSrc: "chrome://browser/skin/trending.svg",
     items: [
-      {
-        id: "cfrRecommendations",
-        l10nId: "browsing-cfr-recommendations",
-        supportPage: "extensionrecommendations",
-        subcategory: "cfraddons",
-      },
-      {
-        id: "cfrRecommendations-features",
-        l10nId: "browsing-cfr-features",
-        supportPage: "extensionrecommendations",
-        subcategory: "cfrfeatures",
-      },
+      // {
+      //   id: "cfrRecommendations",
+      //   l10nId: "browsing-cfr-recommendations",
+      //   supportPage: "extensionrecommendations",
+      //   subcategory: "cfraddons",
+      // },
+      // {
+      //   id: "cfrRecommendations-features",
+      //   l10nId: "browsing-cfr-features",
+      //   supportPage: "extensionrecommendations",
+      //   subcategory: "cfrfeatures",
+      // },
     ],
   },
   // Bug 2028609: the following sections are needed to ensure settings keep
