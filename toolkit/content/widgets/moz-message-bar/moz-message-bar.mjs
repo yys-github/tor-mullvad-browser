@@ -66,6 +66,7 @@ export default class MozMessageBar extends MozLitElement {
     messageL10nId: { type: String },
     messageL10nArgs: { type: String },
     role: { type: String, reflect: true },
+    useAlertRole: { type: Boolean },
   };
 
   constructor() {
@@ -126,6 +127,8 @@ export default class MozMessageBar extends MozLitElement {
      * @type {string}
      */
     this.role = "alert";
+
+    this.useAlertRole = true;
   }
 
   onActionSlotchange() {
@@ -167,6 +170,17 @@ export default class MozMessageBar extends MozLitElement {
     ></slot>`;
   }
 
+  setAlertRole() {
+    // Wait a little for this to render before setting the role for more
+    // consistent alerts to screen readers.
+    this.useAlertRole = false;
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        this.useAlertRole = true;
+      });
+    });
+  }
+
   iconTemplate() {
     let iconData = messageTypeToIconData[this.type];
     if (iconData) {
@@ -187,7 +201,9 @@ export default class MozMessageBar extends MozLitElement {
 
   headingTemplate() {
     if (this.heading) {
-      return html`<strong class="heading">${this.heading}</strong>`;
+      return html`
+        <strong id="heading" class="heading">${this.heading}</strong>
+      `;
     }
     return "";
   }
@@ -213,13 +229,18 @@ export default class MozMessageBar extends MozLitElement {
         rel="stylesheet"
         href="chrome://global/content/elements/moz-message-bar.css"
       />
-      <div class="container">
+      <div
+        class="container"
+        role=${ifDefined(this.useAlertRole ? "alert" : undefined)}
+        aria-labelledby=${this.heading ? "heading" : "content"}
+        aria-describedby=${ifDefined(this.heading ? "content" : undefined)}
+      >
         ${this.iconTemplate()}
         <div class="content">
           <div class="text-container">
             <div class="text-content">
               ${this.headingTemplate()}
-              <div>
+              <div id="content">
                 <slot name="message">
                   <span
                     id="message"
