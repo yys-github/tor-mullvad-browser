@@ -65,6 +65,7 @@ export default class MozMessageBar extends MozLitElement {
     supportPage: { type: String },
     messageL10nId: { type: String },
     messageL10nArgs: { type: String },
+    useAlertRole: { type: Boolean },
   };
 
   constructor() {
@@ -118,6 +119,8 @@ export default class MozMessageBar extends MozLitElement {
      * @type {string | undefined}
      */
     this.supportPage = undefined;
+
+    this.useAlertRole = true;
   }
 
   onActionSlotchange() {
@@ -130,11 +133,6 @@ export default class MozMessageBar extends MozLitElement {
       "has-link-after",
       !!this.supportLinkEls.length || !!this.supportPage
     );
-  }
-
-  connectedCallback() {
-    super.connectedCallback();
-    this.setAttribute("role", "alert");
   }
 
   disconnectedCallback() {
@@ -164,6 +162,17 @@ export default class MozMessageBar extends MozLitElement {
     ></slot>`;
   }
 
+  setAlertRole() {
+    // Wait a little for this to render before setting the role for more
+    // consistent alerts to screen readers.
+    this.useAlertRole = false;
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        this.useAlertRole = true;
+      });
+    });
+  }
+
   iconTemplate() {
     let iconData = messageTypeToIconData[this.type];
     if (iconData) {
@@ -184,7 +193,9 @@ export default class MozMessageBar extends MozLitElement {
 
   headingTemplate() {
     if (this.heading) {
-      return html`<strong class="heading">${this.heading}</strong>`;
+      return html`
+        <strong id="heading" class="heading">${this.heading}</strong>
+      `;
     }
     return "";
   }
@@ -210,13 +221,18 @@ export default class MozMessageBar extends MozLitElement {
         rel="stylesheet"
         href="chrome://global/content/elements/moz-message-bar.css"
       />
-      <div class="container">
+      <div
+        class="container"
+        role=${ifDefined(this.useAlertRole ? "alert" : undefined)}
+        aria-labelledby=${this.heading ? "heading" : "content"}
+        aria-describedby=${ifDefined(this.heading ? "content" : undefined)}
+      >
         <div class="content">
           <div class="text-container">
             ${this.iconTemplate()}
             <div class="text-content">
               ${this.headingTemplate()}
-              <div>
+              <div id="content">
                 <slot name="message">
                   <span
                     id="message"
