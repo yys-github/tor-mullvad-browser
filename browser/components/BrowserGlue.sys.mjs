@@ -102,7 +102,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   SessionStore: "resource:///modules/sessionstore/SessionStore.sys.mjs",
   ShellService: "resource:///modules/ShellService.sys.mjs",
   ShortcutUtils: "resource://gre/modules/ShortcutUtils.sys.mjs",
-  ShoppingUtils: "resource:///modules/ShoppingUtils.sys.mjs",
+  // Removed ShoppingUtils. tor-browser#42831.
   SpecialMessageActions:
     "resource://messaging-system/lib/SpecialMessageActions.sys.mjs",
   TRRRacer: "resource:///modules/TRRPerformance.sys.mjs",
@@ -419,20 +419,7 @@ let JSWINDOWACTORS = {
     matches: ["about:tabcrashed*"],
   },
 
-  AboutWelcomeShopping: {
-    parent: {
-      esModuleURI: "resource:///actors/AboutWelcomeParent.sys.mjs",
-    },
-    child: {
-      esModuleURI: "resource:///actors/AboutWelcomeChild.sys.mjs",
-      events: {
-        Update: {},
-      },
-    },
-    matches: ["about:shoppingsidebar"],
-    remoteTypes: ["privilegedabout"],
-    messageManagerGroups: ["shopping-sidebar", "browsers", "review-checker"],
-  },
+  // Removed AboutWelcomeShopping. tor-browser#42831.
 
   AboutWelcome: {
     parent: {
@@ -799,31 +786,6 @@ let JSWINDOWACTORS = {
     enablePreference: "accessibility.blockautorefresh",
   },
 
-  ReviewChecker: {
-    parent: {
-      esModuleURI: "resource:///actors/ReviewCheckerParent.sys.mjs",
-    },
-    child: {
-      esModuleURI: "resource:///actors/ReviewCheckerChild.sys.mjs",
-      events: {
-        ContentReady: { wantUntrusted: true },
-        PolledRequestMade: { wantUntrusted: true },
-        // This is added so the actor instantiates immediately and makes
-        // methods available to the page js on load.
-        DOMDocElementInserted: {},
-        ReportProductAvailable: { wantUntrusted: true },
-        AdClicked: { wantUntrusted: true },
-        AdImpression: { wantUntrusted: true },
-        DisableShopping: { wantUntrusted: true },
-        CloseShoppingSidebar: { wantUntrusted: true },
-      },
-    },
-    matches: ["about:shoppingsidebar"],
-    remoteTypes: ["privilegedabout"],
-    messageManagerGroups: ["review-checker", "browsers"],
-    enablePreference: "browser.shopping.experience2023.integratedSidebar",
-  },
-
   ScreenshotsComponent: {
     parent: {
       esModuleURI: "resource:///modules/ScreenshotsUtils.sys.mjs",
@@ -888,29 +850,7 @@ let JSWINDOWACTORS = {
     matches: ["about:studies*"],
   },
 
-  ShoppingSidebar: {
-    parent: {
-      esModuleURI: "resource:///actors/ShoppingSidebarParent.sys.mjs",
-    },
-    child: {
-      esModuleURI: "resource:///actors/ShoppingSidebarChild.sys.mjs",
-      events: {
-        ContentReady: { wantUntrusted: true },
-        PolledRequestMade: { wantUntrusted: true },
-        // This is added so the actor instantiates immediately and makes
-        // methods available to the page js on load.
-        DOMDocElementInserted: {},
-        ReportProductAvailable: { wantUntrusted: true },
-        AdClicked: { wantUntrusted: true },
-        AdImpression: { wantUntrusted: true },
-        DisableShopping: { wantUntrusted: true },
-      },
-    },
-    matches: ["about:shoppingsidebar"],
-    remoteTypes: ["privilegedabout"],
-    messageManagerGroups: ["shopping-sidebar", "browsers"],
-    enablePreference: "browser.shopping.experience2023.shoppingSidebar",
-  },
+  // Removed ShoppingSidebar. tor-browser#42831.
 
   SpeechDispatcher: {
     parent: {
@@ -2262,7 +2202,6 @@ BrowserGlue.prototype = {
       () => lazy.NewTabUtils.uninit(),
       () => lazy.Normandy.uninit(),
       () => lazy.RFPHelper.uninit(),
-      () => lazy.ShoppingUtils.uninit(),
       () => lazy.ASRouterNewTabHook.destroy(),
       () => {
         if (AppConstants.MOZ_UPDATER) {
@@ -3183,13 +3122,6 @@ BrowserGlue.prototype = {
           ),
         task: async () => {
           await lazy.DAPTelemetrySender.startup();
-        },
-      },
-
-      {
-        name: "ShoppingUtils.init",
-        task: () => {
-          lazy.ShoppingUtils.init();
         },
       },
 
