@@ -8,9 +8,7 @@
  * and provides APIs for sidebar extensions, etc.
  */
 
-var { ShoppingUtils } = ChromeUtils.importESModule(
-  "resource:///modules/ShoppingUtils.sys.mjs"
-);
+const { ShoppingUtils } = {};
 const { DeferredTask } = ChromeUtils.importESModule(
   "resource://gre/modules/DeferredTask.sys.mjs"
 );
