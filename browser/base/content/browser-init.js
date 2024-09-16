@@ -607,8 +607,6 @@ var gBrowserInit = {
 
     CaptivePortalWatcher.delayedStartup();
 
-    ShoppingSidebarManager.ensureInitialized();
-
     SelectableProfileService?.init();
 
     SessionStore.promiseAllWindowsRestored.then(() => {
