@@ -150,8 +150,6 @@
   "SearchUIUtils",
   "SessionStartup",
   "SessionStore",
-  "ShoppingSidebarParent",
-  "ShoppingSidebarManager",
   "ShortcutUtils",
   "SiteDataManager",
   "SitePermissions",

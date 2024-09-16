@@ -8,9 +8,7 @@
  * and provides APIs for sidebar extensions, etc.
  */
 
-var { ShoppingUtils } = ChromeUtils.importESModule(
-  "resource:///modules/ShoppingUtils.sys.mjs"
-);
+const ShoppingUtils = {};
 
 const defaultTools = {
   viewGenaiChatSidebar: "aichat",
