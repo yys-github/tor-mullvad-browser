@@ -650,8 +650,6 @@ var gBrowserInit = {
 
     CaptivePortalWatcher.delayedStartup();
 
-    ShoppingSidebarManager.ensureInitialized();
-
     if (Services.prefs.getBoolPref("browser.profiles.enabled", false)) {
       SelectableProfileService?.init();
     }
