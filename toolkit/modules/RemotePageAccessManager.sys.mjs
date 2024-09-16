@@ -262,26 +262,7 @@ export let RemotePageAccessManager = {
       ],
       RPMRecordGleanEvent: ["securityUiProtections"],
     },
-    "about:shoppingsidebar": {
-      RPMSetPref: [
-        "browser.shopping.experience2023.optedIn",
-        "browser.shopping.experience2023.active",
-        "browser.shopping.experience2023.ads.userEnabled",
-        "browser.shopping.experience2023.autoOpen.userEnabled",
-        "browser.shopping.experience2023.newPositionCard.hasSeen",
-        "browser.shopping.experience2023.sidebarClosedCount",
-        "browser.shopping.experience2023.showKeepSidebarClosedMessage",
-      ],
-      RPMGetFormatURLPref: ["app.support.baseURL"],
-      RPMGetIntPref: ["browser.shopping.experience2023.sidebarClosedCount"],
-      RPMGetBoolPref: [
-        "browser.shopping.experience2023.showKeepSidebarClosedMessage",
-        "sidebar.revamp",
-        "browser.shopping.experience2023.integratedSidebar",
-        "toolkit.shopping.experience2023.defr",
-        "browser.shopping.experience2023.newPositionCard.hasSeen",
-      ],
-    },
+    // Removed about:shoppingsidebar. tor-browser#42831.
     "about:tabcrashed": {
       RPMSendAsyncMessage: ["Load", "closeTab", "restoreTab", "restoreAll"],
       RPMAddMessageListener: ["*"],
