@@ -2013,6 +2013,12 @@ bool nsExternalAppHandler::IsDownloadSpam(nsIChannel* aChannel) {
   nsCOMPtr<nsIPermissionManager> permissionManager =
       mozilla::components::PermissionManager::Service();
   nsCOMPtr<nsIPrincipal> principal = loadInfo->TriggeringPrincipal();
+
+  // Always allow WebExtensions
+  if (principal && principal->SchemeIs("moz-extension")) {
+    return false;
+  }
+
   bool exactHostMatch = false;
   constexpr auto type = "automatic-download"_ns;
   nsCOMPtr<nsIPermission> permission;
