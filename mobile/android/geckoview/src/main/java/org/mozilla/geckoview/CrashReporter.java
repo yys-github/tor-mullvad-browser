@@ -155,6 +155,11 @@ public class CrashReporter {
       @NonNull final File minidumpFile,
       @NonNull final CrashAnnotations extras)
       throws IOException, URISyntaxException {
+    // tor-browser#42660: makeing a NOP
+    if (true) {
+      return GeckoResult.fromValue("0");
+    }
+
     Log.d(LOGTAG, "Sending crash report: " + minidumpFile.getPath());
 
     extras.sanitizeForReport();
