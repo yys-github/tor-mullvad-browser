@@ -143,3 +143,6 @@ LOCAL_INCLUDES += [
 #         TEST_DIRS += [
 #             'test/fuzztest'
 #     ]
+
+if CONFIG["OS_TARGET"] == "WINNT" and CONFIG["CC_TYPE"] == "clang":
+    OS_LIBS += ["pthread"]
