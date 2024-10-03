@@ -8,9 +8,9 @@
  *  be found in the AUTHORS file in the root of the source tree.
  */
 
-#include <DispatcherQueue.h>
+#include <dispatcherqueue.h>
 #include <windows.graphics.capture.interop.h>
-#include <windows.graphics.directX.direct3d11.interop.h>
+#include <windows.graphics.directx.direct3d11.interop.h>
 #include <windows.graphics.h>
 #include <wrl/client.h>
 #include <wrl/event.h>
@@ -253,9 +253,7 @@ HRESULT WgcCaptureSession::StartCapture(const DesktopCaptureOptions& options) {
 
   if (!options.prefer_cursor_embedded()) {
     ComPtr<ABI::Windows::Graphics::Capture::IGraphicsCaptureSession2> session2;
-    if (SUCCEEDED(session_->QueryInterface(
-            ABI::Windows::Graphics::Capture::IID_IGraphicsCaptureSession2,
-            &session2))) {
+    if (SUCCEEDED(session_->QueryInterface(IID_PPV_ARGS(&session2)))) {
       session2->put_IsCursorCaptureEnabled(false);
     }
   }
