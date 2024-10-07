@@ -450,8 +450,10 @@ void MPRISServiceHandler::InitIdentity() {
       do_GetService("@mozilla.org/xre/app-info;1", &rv);
   MOZ_ASSERT(NS_SUCCEEDED(rv));
 
+#ifndef BASE_BROWSER_VERSION
   rv = appInfo->GetVendor(mIdentity);
   MOZ_ASSERT(NS_SUCCEEDED(rv));
+#endif
 
   if (gAppData) {
     mDesktopEntry = gAppData->remotingName;
@@ -460,7 +462,9 @@ void MPRISServiceHandler::InitIdentity() {
     MOZ_ASSERT(NS_SUCCEEDED(rv));
   }
 
+#ifndef BASE_BROWSER_VERSION
   mIdentity.Append(' ');
+#endif
   mIdentity.Append(mDesktopEntry);
 
   // Compute the desktop entry name like nsAppRunner does for g_set_prgname
