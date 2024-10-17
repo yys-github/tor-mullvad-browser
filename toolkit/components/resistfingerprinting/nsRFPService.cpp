@@ -318,6 +318,13 @@ Maybe<bool> nsRFPService::HandleExceptionalRFPTargets(
   }
 #endif
 
+#ifdef ANDROID
+  if (aTarget == RFPTarget::FontVisibilityBaseSystem ||
+      aTarget == RFPTarget::FontVisibilityLangPack) {
+    return Some(false);
+  }
+#endif
+
   return Nothing();
 }
 
