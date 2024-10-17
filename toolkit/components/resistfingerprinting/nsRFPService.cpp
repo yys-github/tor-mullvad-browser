@@ -303,6 +303,13 @@ Maybe<bool> nsRFPService::HandleExeptionalRFPTargets(
                 StaticPrefs::privacy_spoof_english_DoNotUseDirectly() == 2);
   }
 
+#ifdef ANDROID
+  if (aTarget == RFPTarget::FontVisibilityBaseSystem ||
+      aTarget == RFPTarget::FontVisibilityLangPack) {
+    return Some(false);
+  }
+#endif
+
   return Nothing();
 }
 
