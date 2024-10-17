@@ -16820,6 +16820,12 @@ bool Document::RecomputeResistFingerprinting() {
 }
 
 bool Document::ShouldResistFingerprinting(RFPTarget aTarget) const {
+#ifdef ANDROID
+  if (aTarget == RFPTarget::FontVisibilityBaseSystem ||
+      aTarget == RFPTarget::FontVisibilityLangPack) {
+    return false;
+  }
+#endif
   return mShouldResistFingerprinting &&
          nsRFPService::IsRFPEnabledFor(this->IsInPrivateBrowsing(), aTarget,
                                        mOverriddenFingerprintingSettings);
