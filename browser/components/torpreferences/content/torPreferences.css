@@ -1058,12 +1058,39 @@ groupbox#torPreferences-bridges-group textarea {
 }
 
 /* Tor logs dialog */
-textarea#torPreferences-torDialog-textarea {
+#tor-log-table {
   flex: 1 0 auto;
-  font-family: monospace;
-  font-size: 0.8em;
-  white-space: pre;
   overflow: auto;
-  /* 10 lines */
   min-height: 20em;
+  height: 20em;
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-small);
+  margin-block-end: 4px;
+  border: 1px solid var(--in-content-box-border-color);
+  border-radius: var(--border-radius-small);
+  font-size: var(--font-size-small);
+}
+
+#tor-log-body,
+#tor-log-table tr {
+  display: contents;
+}
+
+#tor-log-table td {
+  flex: 0 0 auto;
+  padding: 0;
+}
+
+#tor-log-table td.time {
+  color: var(--text-color-deemphasized);
+  margin-block-end: var(--space-xsmall);
+}
+
+#tor-log-table td.message {
+  overflow-wrap: anywhere;
+}
+
+#tor-log-table tr:not(:last-of-type) td.message {
+  margin-block-end: var(--space-medium);
 }
