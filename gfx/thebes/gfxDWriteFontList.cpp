@@ -35,6 +35,7 @@
 #include "harfbuzz/hb.h"
 
 #include "StandardFonts-win10.inc"
+#include "StandardFonts-win10-bb.inc"
 
 using namespace mozilla;
 using namespace mozilla::gfx;
@@ -927,7 +928,9 @@ void gfxDWriteFontEntry::AddSizeOfIncludingThis(MallocSizeOf aMallocSizeOf,
 
 gfxDWriteFontList::gfxDWriteFontList() : mForceGDIClassicMaxFontSize(0.0) {
   CheckFamilyList(kBaseFonts);
+#ifndef BASE_BROWSER_VERSION
   CheckFamilyList(kLangPackFonts);
+#endif
 }
 
 // bug 602792 - CJK systems default to large CJK fonts which cause excessive
@@ -1168,9 +1171,11 @@ FontVisibility gfxDWriteFontList::GetVisibilityForFamily(
   if (FamilyInList(aName, kBaseFonts)) {
     return FontVisibility::Base;
   }
+#ifndef BASE_BROWSER_VERSION
   if (FamilyInList(aName, kLangPackFonts)) {
     return FontVisibility::LangPack;
   }
+#endif
   return FontVisibility::User;
 }
 
@@ -1179,8 +1184,10 @@ gfxDWriteFontList::GetFilteredPlatformFontLists() {
   nsTArray<std::pair<const char**, uint32_t>> fontLists;
 
   fontLists.AppendElement(std::make_pair(kBaseFonts, std::size(kBaseFonts)));
+#ifndef BASE_BROWSER_VERSION
   fontLists.AppendElement(
       std::make_pair(kLangPackFonts, std::size(kLangPackFonts)));
+#endif
 
   return fontLists;
 }
