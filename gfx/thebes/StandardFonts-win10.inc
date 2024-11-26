@@ -4,6 +4,8 @@
 
 #ifdef StandardFonts
 
+#  ifndef BASE_BROWSER_VERSION
+
 // List of standard font families installed as part of Windows 10
 // from https://docs.microsoft.com/en-us/typography/fonts/windows_10_font_list
 // TODO: check whether we need to list legacy styled family names like "...
@@ -209,6 +211,7 @@
     //  EXCLUDED "Rockwell Nova",  // Pan-European Supplemental Fonts - EXCLUDED
     //  "Verdana Pro",  // Pan-European Supplemental Fonts - EXCLUDED
 };
+#  endif
 
 struct FontSubstitute {
   const char* substituteName;
@@ -276,7 +279,7 @@ static const FontSubstitute kFontSubstitutes[] = {
 
 #endif
 
-#ifdef FontInclusionByLocaleRules
+#if defined(FontInclusionByLocaleRules) && !defined(BASE_BROWSER_VERSION)
 
 FONT_RULE("arabic typesetting", {"ar", MatchSetting::StartsWith},
           {"fa", MatchSetting::StartsWith})

@@ -28,9 +28,11 @@
 #include "nsString.h"
 #include "nsStringFwd.h"
 #include "nsXULAppAPI.h"
-#define StandardFonts
-#include "StandardFonts-linux.inc"
-#undef StandardFonts
+#ifndef BASE_BROWSER_VERSION
+#  define StandardFonts
+#  include "StandardFonts-linux.inc"
+#  undef StandardFonts
+#endif
 #include <cairo-ft.h>
 #include <dlfcn.h>
 #include <fontconfig/fcfreetype.h>
@@ -1549,12 +1551,14 @@ gfxFcPlatformFontList::gfxFcPlatformFontList()
       mFcSubstituteCache(64),
       mLastConfig(nullptr),
       mAlwaysUseFontconfigGenerics(true) {
+#ifndef BASE_BROWSER_VERSION
   CheckFamilyList(kBaseFonts_Ubuntu_22_04);
   CheckFamilyList(kLangFonts_Ubuntu_22_04);
   CheckFamilyList(kBaseFonts_Ubuntu_20_04);
   CheckFamilyList(kLangFonts_Ubuntu_20_04);
   CheckFamilyList(kBaseFonts_Fedora_39);
   CheckFamilyList(kBaseFonts_Fedora_38);
+#endif
   mLastConfig = FcConfigGetCurrent();
   if (XRE_IsParentProcess()) {
     // if the rescan interval is set, start the timer
@@ -1890,11 +1894,14 @@ using Device = nsIGfxInfo::FontVisibilityDeviceDetermination;
 static Device sFontVisibilityDevice = Device::Unassigned;
 
 void AssignFontVisibilityDevice() {
+  sFontVisibilityDevice = Device::Linux_Unknown;
+#ifndef BASE_BROWSER_VERSION
   if (sFontVisibilityDevice == Device::Unassigned) {
     nsCOMPtr<nsIGfxInfo> gfxInfo = components::GfxInfo::Service();
     NS_ENSURE_SUCCESS_VOID(
         gfxInfo->GetFontVisibilityDetermination(&sFontVisibilityDevice));
   }
+#endif
 }
 
 // Per family array of faces.
@@ -2206,6 +2213,7 @@ FontVisibility gfxFcPlatformFontList::GetVisibilityForFamily(
   AssignFontVisibilityDevice();
 
   switch (sFontVisibilityDevice) {
+#ifndef BASE_BROWSER_VERSION
     case Device::Linux_Ubuntu_any:
     case Device::Linux_Ubuntu_22:
       if (FamilyInList(aName, kBaseFonts_Ubuntu_22_04)) {
@@ -2244,7 +2252,7 @@ FontVisibility gfxFcPlatformFontList::GetVisibilityForFamily(
         return FontVisibility::Base;
       }
       return FontVisibility::User;
-
+#endif
     default:
       // We don't know how to categorize fonts on this system
       return FontVisibility::Unknown;
@@ -2257,6 +2265,7 @@ gfxFcPlatformFontList::GetFilteredPlatformFontLists() {
 
   nsTArray<std::pair<const char**, uint32_t>> fontLists;
 
+#ifndef BASE_BROWSER_VERSION
   switch (sFontVisibilityDevice) {
     case Device::Linux_Ubuntu_any:
     case Device::Linux_Ubuntu_22:
@@ -2292,6 +2301,7 @@ gfxFcPlatformFontList::GetFilteredPlatformFontLists() {
       // We don't know how to categorize fonts on this system
       break;
   }
+#endif
 
   return fontLists;
 }
