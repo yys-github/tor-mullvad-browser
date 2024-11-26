@@ -78,6 +78,9 @@
 ### **Sign and Tag**
 
 - [ ] Sign/Tag `HEAD` of the merged `mullvad-browser` branch:
-  - **Tag**: `mullvad-browser-$(ESR_VERSION)esr-$(BROWSER_MAJOR).$(BROWSER_MINOR)-1-build1`
-  - **Message**: `Tagging build1 for $(ESR_VERSION)esr-based stable`
+  - In **mullvad-browser.git**, checkout the new alpha `mullvad-browser` branch
+  - In **tor-browser-build.git**, run signing script:
+    ```bash
+    ./tools/browser/sign-tag.mullvadbrowser alpha build1
+    ```
   - [ ] Push tag to `upstream`
