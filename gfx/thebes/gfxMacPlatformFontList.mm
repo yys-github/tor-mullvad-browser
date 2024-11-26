@@ -45,7 +45,7 @@
 #include <time.h>
 #include <dlfcn.h>
 
-#include "StandardFonts-macos.inc"
+#include "StandardFonts-macos-bb.inc"
 
 using namespace mozilla;
 using namespace mozilla::gfx;
@@ -152,6 +152,9 @@ void gfxSingleFaceMacFontFamily::ReadOtherFamilyNames(
 
 gfxMacPlatformFontList::gfxMacPlatformFontList() : CoreTextFontList() {
   CheckFamilyList(kBaseFonts);
+#ifndef BASE_BROWSER_VERSION
+  CheckFamilyList(kBaseFonts_13_Higher);
+#endif
 
   // cache this in a static variable so that gfxMacFontFamily objects
   // don't have to repeatedly look it up
@@ -170,6 +173,12 @@ FontVisibility gfxMacPlatformFontList::GetVisibilityForFamily(
   if (FamilyInList(aName, kBaseFonts)) {
     return FontVisibility::Base;
   }
+#ifndef BASE_BROWSER_VERSION
+  if (GetFontVisibilityDevice() == Device::MacOS_13_plus &&
+      FamilyInList(aName, kBaseFonts_13_Higher)) {
+    return FontVisibility::Base;
+  }
+#endif
 #ifdef MOZ_BUNDLED_FONTS
   if (mBundledFamilies.Contains(aName)) {
     return FontVisibility::Base;
@@ -183,6 +192,13 @@ gfxMacPlatformFontList::GetFilteredPlatformFontLists() {
   nsTArray<std::pair<const char**, uint32_t>> fontLists;
 
   fontLists.AppendElement(std::make_pair(kBaseFonts, ArrayLength(kBaseFonts)));
+
+#ifndef BASE_BROWSER_VERSION
+  if (GetFontVisibilityDevice() == Device::MacOS_13_plus) {
+    fontLists.AppendElement(
+        std::make_pair(kBaseFonts_13_Higher, std::size(kBaseFonts_13_Higher)));
+  }
+#endif
 
   return fontLists;
 }
