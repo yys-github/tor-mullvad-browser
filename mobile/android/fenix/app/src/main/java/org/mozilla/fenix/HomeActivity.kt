@@ -1136,6 +1136,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorIn
                 view = binding.root,
             )
                 .setText(getString(R.string.connection_assist_connect_to_tor_before_opening_links))
+                .setAllCapsForActionButton(false)
                 .setAction(getString(R.string.connection_assist_connect_to_tor_before_opening_links_confirmation)) {
                     torConnectionAssistViewModel.handleConnect(searchTermOrURL)
                     if (navHost.navController.previousBackStackEntry?.destination?.id == R.id.torConnectionAssistFragment) {
