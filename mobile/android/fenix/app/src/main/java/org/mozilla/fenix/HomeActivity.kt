@@ -1183,6 +1183,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
                 view = binding.root,
             )
                 .setText(getString(R.string.connection_assist_connect_to_tor_before_opening_links))
+                .setAllCapsForActionButton(false)
                 .setAction(getString(R.string.connection_assist_connect_to_tor_before_opening_links_confirmation)) {
                     urlQuickLoadViewModel.urlToLoadAfterConnecting.value = searchTermOrURL
                     urlQuickLoadViewModel.maybeBeginBootstrap()
