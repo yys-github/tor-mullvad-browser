@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><!-- This Source Code Form is subject to the terms of the Mozilla Public
+   - License, v. 2.0. If a copy of the MPL was not distributed with this
+   - file, You can obtain one at http://mozilla.org/MPL/2.0/. -->
+<resources>
+    <!-- About content. The first parameter is the name of the application. (For example: Fenix) -->
+    <string name="tor_about_content">%1$s is produced by the Tor Project, a U.S.-based 501(c)(3) nonprofit.</string>
+
+    <!-- Preference link to donate to The Tor Project-->
+    <string name="preferences_donate">Donate to The Tor Project</string>
+    <!-- Preference for allowing screenshots to be taken in the app-->
+    <string name="preferences_allow_screenshots">Allow screenshots</string>
+
+    <string name="tor_bootstrap_connect">Connect</string>
+
+    <string name="tor_explore_privately">Explore. Privately.</string>
+
+    <string name="library_new_circuit">New circuit</string>
+
+    <string name="preferences_tor_connection_settings_title">Connection</string>
+    <string name="preferences_tor_network_settings_explanation">Tor Browser routes your traffic over the Tor network, run by thousands of volunteers around the world.</string>
+    <string name="preferences_tor_network_settings_bridge_config">Config Bridge</string>
+    <string name="preferences_tor_network_settings_bridge_config_description">Use a Bridge to connect to Tor</string>
+    <string name="preferences_tor_network_settings_bridge_config_explanation">Bridges are unlisted relays that make it more difficult to block connections to the Tor network. Because of how certain countries try to block Tor, certain bridges work in certain countries but not others.</string>
+    <string name="preferences_tor_network_settings_bridge_config_toggle">Use a Bridge</string>
+    <string name="preferences_tor_network_settings_bridge_config_toggle_description">Config a bridge to connect to Tor</string>
+    <!-- "obfs4" is a technical name, and likely should not be translated. -->
+    <string name="preferences_tor_network_settings_bridge_config_builtin_bridge_obfs4">obfs4</string>
+    <!-- "meek" is a technical name, and likely should not be translated. -->
+    <string name="preferences_tor_network_settings_bridge_config_builtin_bridge_meek">meek</string>
+    <!-- "Snowflake" is a proper noun for a type of Tor bridge, and likely should not be translated. -->
+    <string name="preferences_tor_network_settings_bridge_config_builtin_bridge_snowflake2">Snowflake</string>
+    <string name="preferences_tor_network_settings_bridge_config_user_provided_bridge">Provide a Bridge I know</string>
+    <string name="preferences_tor_network_settings_bridge_config_user_provided_bridge_description">Enter bridge information from a trusted source</string>
+    <string name="preferences_tor_network_settings_bridge_config_current_bridge">Current Configured Bridge: %s</string>
+    <string name="tor_network_settings_bridge_not_configured">Not Configured</string>
+    <string name="preferences_tor_logs">Tor Logs</string>
+    <string name="preferences_tor_logs_description">View and copy your Tor logs</string>
+
+    <string name="preferences_tor_security_level_options">Security Level</string>
+
+    <!-- Description of security levels. %s will be replaced with the localised application name, such as "Tor Browser". -->
+    <string name="tor_security_level_warning">You will need to restart %s to apply any changes. This will close all tabs.</string>
+    <string name="tor_security_level_standard">Standard</string>
+    <string name="tor_security_level_standard_current_level">Standard (current level)</string>
+    <string name="tor_security_level_standard_description">All Tor Browser and website features are enabled.</string>
+    <string name="tor_security_level_safer">Safer</string>
+    <string name="tor_security_level_safer_current_level">Safer (current level)</string>
+    <string name="tor_security_level_safer_description">Disable website features that are often dangerous, causing some sites to lose functionality.</string>
+    <string name="tor_security_level_safest">Safest</string>
+    <string name="tor_security_level_safest_current_level">Safest (current level)</string>
+    <string name="tor_security_level_safest_description">Only allow website features required for static sites and basic services. These changes affect images, media, and scripts.</string>
+    <string name="tor_security_level_save_and_restart_tor_browser">Save and restart</string>
+    <string name="tor_security_level_restarting">Restarting</string>
+
+    <string name="btn_cancel">Cancel</string>
+
+    <!-- Spoof locale to English -->
+    <string name="tor_spoof_english">Request English versions of web pages for enhanced privacy</string>
+
+    <!-- Connection assist. -->
+    <string name="connection_assist_tor_connect_title">Connect to Tor</string>
+    <!-- Connection assist. -->
+    <string name="tor_connect_automatically_label">Connect automatically</string>
+    <string name="connection_assist_always_connect_automatically_toggle_description">Always connect automatically</string>
+    <!-- Connection assist. -->
+    <string name="connection_assist_configure_connection_button">Configure connection…</string>
+
+    <!-- Connection assist. -->
+    <string name="connection_assist_connecting_title">Establishing a connection…</string>
+
+    <!-- Connection assist. -->
+    <string name="connection_assist_internet_error_title">We can’t reach the internet</string>
+    <!-- Connection assist. %1$s is connection_assist_internet_error_learn_more-->
+    <string name="connection_assist_internet_error_description">This could be due to a connection issue rather than Tor being blocked. Check your internet connection, proxy, and firewall settings before trying again. %1$s</string>
+    <!-- Connection assist. -->
+    <string name="connection_assist_internet_error_learn_more">Learn more</string>
+    <!-- Connection assist. -->
+    <string name="connection_assist_internet_error_try_again">Try again</string>
+
+    <!-- Connection assist. -->
+    <string name="connection_assist_trying_again_waiting_title">Trying again…</string>
+
+    <!-- Connection assist. -->
+    <string name="connection_assist_cant_connect_to_tor_title">We can’t connect to Tor directly</string>
+    <!-- Connection assist. %1$s is connection_assist_try_a_bridge_learn_more-->
+    <string name="connection_assist_try_a_bridge_description">Try connecting via a bridge instead. By providing your location, we can look up the bridge that’s most likely to unblock the internet in your country or region. %1$s</string>
+    <!-- Connection assist. -->
+    <string name="connection_assist_unblock_the_internet_in_country_or_region">Unblock the internet in:</string>
+    <!-- Connection assist. -->
+    <string name="connection_assist_automatic_country_detection">Automatic</string>
+    <!-- Connection assist, -->
+    <string name="connection_assist_select_country_or_region">Select country or region</string>
+    <!-- Connection assist. -->
+    <string name="connection_assist_try_a_bridge_button">Try a bridge</string>
+    <!-- Connection assist. -->
+    <string name="connection_assist_trying_a_bridge_title">Trying a bridge…</string>
+
+    <!-- Connection assist. -->
+    <string name="connection_assist_location_error_title">We couldn’t find your location</string>
+    <!-- Connection assist. %1$s is connection_assist_find_bridge_location_description, %2$s is connection_assist_select_country_try_again, %3$s is connection_assist_location_error_learn_more_link-->
+    <string name="connection_assist_location_error_description" translatable="false">%1$s %2$s %3$s</string>
+    <string name="connection_assist_find_bridge_location_description">To find a bridge that can unblock your internet, we need to know where you’re connecting from.</string>
+    <string name="connection_assist_select_country_try_again">Select your country or region and try again.</string>
+
+    <string name="connection_assist_location_error_learn_more_link">Learn more</string>
+
+    <!-- Connection assist. -->
+    <string name="connection_assist_location_check_title">We’re still having trouble connecting</string>
+
+    <!-- Connection assist. -->
+    <string name="connection_assist_last_try_title">Trying one more time…</string>
+
+    <!-- Connection assist. -->
+    <string name="connection_assist_final_error_title">We weren’t able to connect automatically</string>
+    <!-- Connection assist. %1$s is connection_assist_final_error_troubleshoot_connection_link. %2$s is connection_assist_final_error_learn_more_link-->
+    <string name="connection_assist_final_error_description1">Despite our best efforts, we weren’t able to connect to Tor. We recommend %1$s and adding a bridge manually instead. %2$s</string>
+    <!-- Connection assist. -->
+    <string name="connection_assist_final_error_troubleshoot_connection_link">troubleshooting your connection</string>
+    <!-- Connection assist. -->
+    <string name="connection_assist_final_error_learn_more_link">Learn more</string>
+    <!-- Connection assist. Description for a shown "Snackbar" (special popup notification) with an action to connect. -->
+    <string name="connection_assist_connect_to_tor_before_opening_links">Connect to Tor before opening links</string>
+    <!-- Connection assist. Confirmation button for a shown "Snackbar" (special popup notification). -->
+    <string name="connection_assist_connect_to_tor_before_opening_links_confirmation">CONNECT</string>
+    <!-- Connection assist. Content Description for back button. Button will start the connection assist process again -->
+    <string name="connection_assist_back_button_content_description_start_again">Start again</string>
+    <!-- Connection assist. This message is shown briefly after the connection to the Tor network completes. -->
+    <string name="connection_assist_bootstrap_succeeded_toast_message">Connected to Tor</string>
+
+    <!-- Notification title for closing browser tabs. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
+    <string name="notification_close_tor_browser_tabs">Close %s’s tabs?</string>
+    <!-- Notification body for closing browser tabs. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
+    <string name="notification_close_tor_browser_tabs_long">Tap or swipe this notification to close %s’s tabs</string>
+
+    <!-- Hide Tor Browser tabs authentication screen. Label for the primary action button to unlock private tabs. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
+    <string name="tor_authentication_unlock_private_tabs">Unlock %s tabs</string>
+    <!-- Authentication prompt title to enable the private tabs mode. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
+    <string name="tor_authentication_enable_lock">Enable %s tabs screen lock</string>
+    <!-- Authentication prompt title to disable the private tabs mode. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
+    <string name="tor_authentication_disable_lock">Disable %s tabs screen lock</string>
+    <!-- Label for a preference shown when the device supports screen lock (e.g., PIN, pattern, or password) but the user has not set one up. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
+    <string name="tor_authentication_lock_device_feature_disabled">Set up screen lock to hide %s tabs</string>
+    <!-- Title text for the contextual feature recommendation (CFR) suggesting the user enable a screen lock to protect Tor Browser tabs. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
+    <string name="tor_tab_cfr_title">Use screen lock to hide %s tabs?</string>
+
+    <!-- Preference title for using the screen lock to hide Tor Browser tabs. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
+    <string name="preferences_tor_lock_screen_title">Use screen lock to hide %s tabs</string>
+    <!-- Informs the user how to access the tabs when "Use screen lock to hide Tor Browser tabs" is enabled. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
+    <string name="preferences_tor_lock_screen_summary">View %s tabs with your fingerprint, PIN, or face unlock.</string>
+
+    <!-- Year End Campaign. Text on the "Donate Now" button that takes the user to the donation page. A small black heart image will be added to the "end" of the text but within the button. Here end" means to the right of the test for LTR and to the left of the text for RTL, android handles this. -->
+    <string name="donate_now_yec">Donate Now</string>
+    <!-- Year End Campaign. White text to be shown below the purple rectangle that the rest of the content is in. -->
+    <string name="no_donation_required_yec">Tor Browser for Android will always be free to use—no donation is required to use this app.</string>
+    <!-- Year End Campaign. Here "Close" is a verb, referring to closing the banner. This is used primarily for screen readers to give the small "x" button a name. -->
+    <string name="close_yec_button_description">Close</string>
+
+</resources>
