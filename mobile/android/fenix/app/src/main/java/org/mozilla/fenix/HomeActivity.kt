@@ -4,6 +4,7 @@
 
 package org.mozilla.fenix
 
+import android.annotation.SuppressLint
 import android.app.assist.AssistContent
 import android.app.PendingIntent
 import android.content.Context
@@ -685,6 +686,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
     /**
      * Handles intents received when the activity is open.
      */
+    @SuppressLint("MissingSuperCall") // super.onNewIntent is called in [onNewIntentInternal(intent)]
     final override fun onNewIntent(intent: Intent?) {
         if (intent?.action == ACTION_MAIN || components.torController.isConnected) {
             onNewIntentInternal(intent)
