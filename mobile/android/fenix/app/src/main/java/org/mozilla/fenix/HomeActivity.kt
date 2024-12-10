@@ -168,8 +168,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
 
     private var isToolbarInflated = false
 
-    private var isBeingRecreated = false
-
     private val webExtensionPopupObserver by lazy {
         WebExtensionPopupObserver(components.core.store, ::openPopup)
     }
@@ -634,7 +632,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             stopMediaSession()
         }
 
-        if (!isBeingRecreated && !(application as FenixApplication).isTerminating()) {
+        if (isFinishing && !(application as FenixApplication).isTerminating()) {
             // We assume the Activity is being destroyed because the user
             // swiped away the app on the Recent screen. When this happens,
             // we assume the user expects the entire Application is destroyed
@@ -660,8 +658,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         breadcrumb(
             message = "recreate()",
         )
-
-        isBeingRecreated = true
 
         super.recreate()
     }
