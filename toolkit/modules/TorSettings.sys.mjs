@@ -198,6 +198,14 @@ class TorSettingsImpl {
       allowed_ports: [],
     },
   };
+
+  /**
+   * Temporary bridge settings to apply instead of #settings.bridges.
+   *
+   * @type {?Object}
+   */
+  #temporaryBridgeSettings = null;
+
   /**
    * Accumulated errors from trying to set settings.
    *
@@ -713,6 +721,8 @@ class TorSettingsImpl {
       try {
         this.#allowUninitialized = true;
         this.#loadFromPrefs();
+        // We do not pass on the loaded settings to the TorProvider yet. Instead
+        // TorProvider will ask for these once it has initialised.
       } finally {
         this.#allowUninitialized = false;
         this.#notificationQueue.clear();
@@ -971,7 +981,7 @@ class TorSettingsImpl {
   async applySettings() {
     this.#checkIfInitialized();
     const provider = await lazy.TorProviderBuilder.build();
-    await provider.writeSettings(this.getSettings());
+    await provider.writeSettings();
   }
 
   /**
@@ -1073,12 +1083,20 @@ class TorSettingsImpl {
   /**
    * Get a copy of all our settings.
    *
+   * @param {boolean} [useTemporary=false] - Whether the returned settings
+   *   should use the temporary bridge settings, if any, instead.
+   *
    * @returns {object} A copy of the settings object
    */
-  getSettings() {
+  getSettings(useTemporary = false) {
     lazy.logger.debug("getSettings()");
     this.#checkIfInitialized();
-    return structuredClone(this.#settings);
+    const settings = structuredClone(this.#settings);
+    if (useTemporary && this.#temporaryBridgeSettings) {
+      // Override the bridge settings with our temporary ones.
+      settings.bridges = structuredClone(this.#temporaryBridgeSettings);
+    }
+    return settings;
   }
 
   /**
@@ -1096,6 +1114,83 @@ class TorSettingsImpl {
       types.unshift(this.#recommendedPT);
     }
     return types;
+  }
+
+  /**
+   * Apply some Moat bridges temporarily.
+   *
+   * These bridges will not yet be saved to settings.
+   *
+   * @param {MoatBridges} bridges - The bridges to apply.
+   */
+  async applyTemporaryBridges(bridges) {
+    this.#checkIfInitialized();
+
+    if (
+      bridges.source !== TorBridgeSource.BuiltIn &&
+      bridges.source !== TorBridgeSource.BridgeDB
+    ) {
+      throw new Error(`Invalid bridge source ${bridges.source}`);
+    }
+
+    const bridgeSettings = {
+      enabled: true,
+      source: bridges.source,
+    };
+
+    if (bridges.source === TorBridgeSource.BuiltIn) {
+      if (!bridges.builtin_type) {
+        throw Error("Missing a built-in type");
+      }
+      bridgeSettings.builtin_type = String(bridges.builtin_type);
+      const bridgeStrings = this.getBuiltinBridges(bridgeSettings.builtin_type);
+      if (!bridgeStrings.length) {
+        throw new Error(`No builtin bridges for type ${bridges.builtin_type}`);
+      }
+      bridgeSettings.bridge_strings = bridgeStrings;
+    } else {
+      // BridgeDB.
+      if (!bridges.bridge_strings?.length) {
+        throw new Error("Missing bridges strings");
+      }
+      // TODO: Can we safely verify the format of the bridge addresses sent from
+      // Moat?
+      bridgeSettings.bridge_strings = Array.from(bridges.bridge_strings, item =>
+        String(item)
+      );
+    }
+
+    // After checks are complete, we commit them.
+    this.#temporaryBridgeSettings = bridgeSettings;
+    await this.applySettings();
+  }
+
+  /**
+   * Save to current temporary bridges to be permanent instead.
+   */
+  async saveTemporaryBridges() {
+    this.#checkIfInitialized();
+    if (!this.#temporaryBridgeSettings) {
+      lazy.logger.warn("No temporary bridges to save");
+      return;
+    }
+    this.setSettings({ bridges: this.#temporaryBridgeSettings });
+    this.#temporaryBridgeSettings = null;
+    this.saveToPrefs();
+    await this.applySettings();
+  }
+
+  /**
+   * Clear the current temporary bridges.
+   */
+  async clearTemporaryBridges() {
+    this.#checkIfInitialized();
+    if (!this.#temporaryBridgeSettings) {
+      lazy.logger.debug("No temporary bridges to clear");
+      return;
+    }
+    this.#temporaryBridgeSettings = null;
+    await this.applySettings();
   }
 }
 

@@ -13,7 +13,6 @@ ChromeUtils.defineESModuleGetters(lazy, {
   DomainFrontRequestBuilder:
     "resource://gre/modules/DomainFrontedRequests.sys.mjs",
   TorBridgeSource: "resource://gre/modules/TorSettings.sys.mjs",
-  TorSettings: "resource://gre/modules/TorSettings.sys.mjs",
 });
 
 const TorLauncherPrefs = Object.freeze({
@@ -80,7 +79,7 @@ class InternetTestResponseListener {
  *
  * @property {number} source - The `TorBridgeSource` type.
  * @property {string} [builtin_type] - The built-in bridge type.
- * @property {string[]} bridge_strings - The bridge lines.
+ * @property {string[]} [bridge_strings] - The bridge lines.
  */
 
 /**
@@ -246,24 +245,17 @@ export class MoatRPC {
     switch (settings.bridges.source) {
       case "builtin":
         bridges.source = lazy.TorBridgeSource.BuiltIn;
-        bridges.builtin_type = settings.bridges.type;
-        // TorSettings will ignore strings for built-in bridges, and use the
-        // ones it already knows, instead. However, when we try these settings
-        // in the connect assist, we skip TorSettings. Therefore, we set the
-        // lines also here (the ones we already know, not the ones we receive
-        // from Moat). This needs TorSettings to be initialized, which by now
-        // should have already happened (this method is used only by TorConnect,
-        // that needs TorSettings to be initialized).
-        // In any case, getBuiltinBridges will throw if the data is not ready,
-        // yet.
-        bridges.bridge_strings = lazy.TorSettings.getBuiltinBridges(
-          settings.bridges.type
-        );
+        bridges.builtin_type = String(settings.bridges.type);
+        // Ignore the bridge_strings argument since we will use our built-in
+        // bridge strings instead.
         break;
       case "bridgedb":
         bridges.source = lazy.TorBridgeSource.BridgeDB;
-        if (settings.bridges.bridge_strings) {
-          bridges.bridge_strings = settings.bridges.bridge_strings;
+        if (settings.bridges.bridge_strings?.length) {
+          bridges.bridge_strings = Array.from(
+            settings.bridges.bridge_strings,
+            item => String(item)
+          );
         } else {
           throw new Error(
             "Received no bridge-strings for BridgeDB bridge source"
