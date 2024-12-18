@@ -216,6 +216,14 @@ class BootstrapAttempt {
   }
 
   /**
+   * Method to call just after the Bootstrapped stage is set in response to this
+   * bootstrap attempt.
+   */
+  postBootstrapped() {
+    // Nothing to do.
+  }
+
+  /**
    * Run the attempt.
    *
    * @param {ProgressCallback} progressCallback - The callback to invoke with
@@ -402,12 +410,6 @@ class AutoBootstrapAttempt {
    */
   #bridgesList = null;
   /**
-   * The last settings that have been applied to the TorProvider, if any.
-   *
-   * @type {?object}
-   */
-  #changedSetting = null;
-  /**
    * The detected region code returned by Moat, if any.
    *
    * @type {?string}
@@ -439,13 +441,8 @@ class AutoBootstrapAttempt {
         // Run cleanup before we resolve the promise to ensure two instances
         // of AutoBootstrapAttempt are not trying to change the settings at
         // the same time.
-        if (this.#changedSetting) {
-          if (arg.result === "complete") {
-            // Persist the current settings to preferences.
-            lazy.TorSettings.setSettings(this.#changedSetting);
-            lazy.TorSettings.saveToPrefs();
-          } // else, applySettings will restore the current settings.
-          await lazy.TorSettings.applySettings();
+        if (arg.result !== "complete") {
+          await lazy.TorSettings.clearTemporaryBridges();
         }
       } catch (error) {
         lazy.logger.error("Unexpected error in auto-bootstrap cleanup", error);
@@ -465,6 +462,15 @@ class AutoBootstrapAttempt {
     });
 
     return promise;
+  }
+
+  /**
+   * Method to call just after the Bootstrapped stage is set in response to this
+   * bootstrap attempt.
+   */
+  postBootstrapped() {
+    // Persist the current settings to preferences.
+    lazy.TorSettings.saveTemporaryBridges();
   }
 
   /**
@@ -617,14 +623,7 @@ class AutoBootstrapAttempt {
     // Another idea (maybe easier to implement) is to disable the settings
     // UI while *any* bootstrap is going on.
     // This is also documented in tor-browser#41921.
-    const provider = await lazy.TorProviderBuilder.build();
-    this.#changedSetting = { bridges: { enabled: true, ...bridges } };
-    // We need to merge with old settings, in case the user is using a proxy
-    // or is behind a firewall.
-    await provider.writeSettings({
-      ...lazy.TorSettings.getSettings(),
-      ...this.#changedSetting,
-    });
+    await lazy.TorSettings.applyTemporaryBridges(bridges);
 
     if (this.#cancelled || this.#resolved) {
       return;
@@ -1460,6 +1459,12 @@ export const TorConnect = {
       }
       this._setStage(TorConnectStage.Bootstrapped);
       Services.obs.notifyObservers(null, TorConnectTopics.BootstrapComplete);
+
+      // Now call the postBootstrapped method. We do this after changing the
+      // stage to ensure that AutoBootstrapAttempt.postBootstrapped call to
+      // saveTemporaryBridges does not trigger SettingsChanged too early and
+      // cancel itself.
+      bootstrapAttempt.postBootstrapped();
       return;
     }
 
