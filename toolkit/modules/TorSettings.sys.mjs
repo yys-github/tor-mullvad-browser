@@ -422,7 +422,7 @@ class TorSettingsImpl {
    * not contradict each other.
    */
   #cleanupSettings() {
-    this.freezeNotifications();
+    this.#freezeNotifications();
     try {
       if (this.bridges.source === TorBridgeSource.Invalid) {
         this.bridges.enabled = false;
@@ -449,7 +449,7 @@ class TorSettingsImpl {
         this.firewall.allowed_ports = [];
       }
     } finally {
-      this.thawNotifications();
+      this.#thawNotifications();
     }
   }
 
@@ -488,7 +488,7 @@ class TorSettingsImpl {
    * changes you make with a `try` block and call thawNotifications in the
    * `finally` block.
    */
-  freezeNotifications() {
+  #freezeNotifications() {
     this.#freezeNotificationsCount++;
   }
   /**
@@ -497,7 +497,7 @@ class TorSettingsImpl {
    * Note, if some other method has also frozen the notifications, this will
    * only release them once it has also called this method.
    */
-  thawNotifications() {
+  #thawNotifications() {
     this.#freezeNotificationsCount--;
     this.#tryNotification();
   }
@@ -571,7 +571,7 @@ class TorSettingsImpl {
                 this.#checkIfInitialized();
               }
               const prevVal = this.#settings[groupname][name];
-              this.freezeNotifications();
+              this.#freezeNotifications();
               try {
                 if (transform) {
                   val = transform(val, addError);
@@ -589,7 +589,7 @@ class TorSettingsImpl {
               } catch (e) {
                 addError(e.message);
               } finally {
-                this.thawNotifications();
+                this.#thawNotifications();
               }
             },
       });
@@ -717,7 +717,7 @@ class TorSettingsImpl {
       Services.prefs.getBoolPref(TorSettingsPrefs.enabled, false)
     ) {
       // Do not want notifications for initially loaded prefs.
-      this.freezeNotifications();
+      this.#freezeNotifications();
       try {
         this.#allowUninitialized = true;
         this.#loadFromPrefs();
@@ -726,7 +726,7 @@ class TorSettingsImpl {
       } finally {
         this.#allowUninitialized = false;
         this.#notificationQueue.clear();
-        this.thawNotifications();
+        this.#thawNotifications();
       }
     }
 
@@ -755,7 +755,7 @@ class TorSettingsImpl {
           // source. But we do pass on the changes to TorProvider.
           // FIXME: This can compete with TorConnect to reach TorProvider.
           // tor-browser#42316
-          this.applySettings();
+          this.#applySettings();
         }
         break;
     }
@@ -876,7 +876,7 @@ class TorSettingsImpl {
   /**
    * Save our settings to prefs.
    */
-  saveToPrefs() {
+  #saveToPrefs() {
     lazy.logger.debug("saveToPrefs()");
 
     this.#checkIfInitialized();
@@ -968,8 +968,6 @@ class TorSettingsImpl {
 
     // all tor settings now stored in prefs :)
     Services.prefs.setBoolPref(TorSettingsPrefs.enabled, true);
-
-    return this;
   }
 
   /**
@@ -978,23 +976,28 @@ class TorSettingsImpl {
    * Even though this introduces a circular depdency, it makes the API nicer for
    * frontend consumers.
    */
-  async applySettings() {
+  async #applySettings() {
     this.#checkIfInitialized();
     const provider = await lazy.TorProviderBuilder.build();
     await provider.writeSettings();
   }
 
   /**
-   * Set blocks of settings at once from an object.
+   * Change the Tor settings in use.
    *
-   * It is possible to set all settings, or only some sections (e.g., only
-   * bridges), but if a key is present, its settings must make sense (e.g., if
-   * bridges are enabled, a valid source must be provided).
+   * It is possible to set all settings, or only some sections:
    *
-   * @param {object} settings The settings object to set
+   * + quickstart.enabled can be set individually.
+   * + bridges.enabled can be set individually.
+   * + bridges.source can be set with a corresponding bridge specification for
+   *   the source (bridge_strings, lox_id, builtin_type).
+   * + proxy settings can be set as a group.
+   * + firewall settings can be set a group.
+   *
+   * @param {object} settings - The settings object to set.
    */
-  setSettings(settings) {
-    lazy.logger.debug("setSettings()");
+  async changeSettings(settings) {
+    lazy.logger.debug("changeSettings()", settings);
     this.#checkIfInitialized();
 
     const backup = this.getSettings();
@@ -1003,38 +1006,39 @@ class TorSettingsImpl {
     this.#settingErrors = [];
 
     // Hold off on lots of notifications until all settings are changed.
-    this.freezeNotifications();
+    this.#freezeNotifications();
     try {
-      if ("quickstart" in settings) {
+      if ("quickstart" in settings && "enabled" in settings.quickstart) {
         this.quickstart.enabled = !!settings.quickstart.enabled;
       }
 
       if ("bridges" in settings) {
-        this.bridges.enabled = !!settings.bridges.enabled;
-        // Currently, disabling bridges in the UI does not remove the lines,
-        // because we call only the `enabled` setter.
-        // So, if the bridge source is undefined but bridges are disabled,
-        // do not force Invalid. Instead, keep the current source.
-        if (this.bridges.enabled || settings.bridges.source !== undefined) {
-          this.bridges.source = settings.bridges.source;
+        if ("enabled" in settings.bridges) {
+          this.bridges.enabled = !!settings.bridges.enabled;
         }
-        switch (settings.bridges.source) {
-          case TorBridgeSource.BridgeDB:
-          case TorBridgeSource.UserProvided:
-            this.bridges.bridge_strings = settings.bridges.bridge_strings;
-            break;
-          case TorBridgeSource.BuiltIn:
-            this.bridges.builtin_type = settings.bridges.builtin_type;
-            break;
-          case TorBridgeSource.Lox:
-            this.bridges.lox_id = settings.bridges.lox_id;
-            break;
-          case TorBridgeSource.Invalid:
-            break;
+        if ("source" in settings.bridges) {
+          this.bridges.source = settings.bridges.source;
+          switch (settings.bridges.source) {
+            case TorBridgeSource.BridgeDB:
+            case TorBridgeSource.UserProvided:
+              this.bridges.bridge_strings = settings.bridges.bridge_strings;
+              break;
+            case TorBridgeSource.BuiltIn:
+              this.bridges.builtin_type = settings.bridges.builtin_type;
+              break;
+            case TorBridgeSource.Lox:
+              this.bridges.lox_id = settings.bridges.lox_id;
+              break;
+            case TorBridgeSource.Invalid:
+              break;
+            case undefined:
+              break;
+          }
         }
       }
 
       if ("proxy" in settings) {
+        // proxy settings have to be set as a group.
         this.proxy.enabled = !!settings.proxy.enabled;
         if (this.proxy.enabled) {
           this.proxy.type = settings.proxy.type;
@@ -1046,6 +1050,7 @@ class TorSettingsImpl {
       }
 
       if ("firewall" in settings) {
+        // firewall settings have to be set as a group.
         this.firewall.enabled = !!settings.firewall.enabled;
         if (this.firewall.enabled) {
           this.firewall.allowed_ports = settings.firewall.allowed_ports;
@@ -1057,27 +1062,33 @@ class TorSettingsImpl {
       if (this.#settingErrors.length) {
         throw Error(this.#settingErrors.join("; "));
       }
+      this.#saveToPrefs();
     } catch (ex) {
       // Restore the old settings without any new notifications generated from
       // the above code.
-      // NOTE: Since this code is not async, it should not be possible for
-      // some other call to TorSettings to change anything whilst we are
-      // in this context (other than lower down in this call stack), so it is
-      // safe to discard all changes to settings and notifications.
+      // NOTE: Since the code that changes #settings is not async, it should not
+      // be possible for some other call to TorSettings to change anything
+      // whilst we are in this context (other than lower down in this call
+      // stack), so it is safe to discard all changes to settings and
+      // notifications.
       this.#settings = backup;
       this.#notificationQueue.clear();
       for (const notification of backupNotifications) {
         this.#notificationQueue.add(notification);
       }
 
-      lazy.logger.error("setSettings failed", ex);
+      throw ex;
     } finally {
-      this.thawNotifications();
+      this.#thawNotifications();
       // Stop collecting errors.
       this.#settingErrors = null;
     }
 
     lazy.logger.debug("setSettings result", this.#settings);
+
+    // After we have sent out the notifications for the changed settings and
+    // saved the preferences we send the new settings to TorProvider.
+    await this.#applySettings();
   }
 
   /**
@@ -1162,7 +1173,7 @@ class TorSettingsImpl {
 
     // After checks are complete, we commit them.
     this.#temporaryBridgeSettings = bridgeSettings;
-    await this.applySettings();
+    await this.#applySettings();
   }
 
   /**
@@ -1174,10 +1185,9 @@ class TorSettingsImpl {
       lazy.logger.warn("No temporary bridges to save");
       return;
     }
-    this.setSettings({ bridges: this.#temporaryBridgeSettings });
+    const bridgeSettings = this.#temporaryBridgeSettings;
     this.#temporaryBridgeSettings = null;
-    this.saveToPrefs();
-    await this.applySettings();
+    await this.changeSettings({ bridges: bridgeSettings });
   }
 
   /**
@@ -1190,7 +1200,7 @@ class TorSettingsImpl {
       return;
     }
     this.#temporaryBridgeSettings = null;
-    await this.applySettings();
+    await this.#applySettings();
   }
 }
 
