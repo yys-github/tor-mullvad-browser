@@ -80,7 +80,7 @@ class TorControllerGV(
         set(value) {
             getTorSettings()?.let {
                 it.quickstart = value
-                getTorIntegration().setSettings(it, true, true)
+                getTorIntegration().setSettings(it)
             }
         }
 
@@ -110,7 +110,7 @@ class TorControllerGV(
             getTorSettings()?.let {
                 if (!value || it.bridgesSource != BridgeSource.Invalid) {
                     it.bridgesEnabled = value
-                    getTorIntegration().setSettings(it, true, true)
+                    getTorIntegration().setSettings(it)
                 }
             }
         }
@@ -150,7 +150,7 @@ class TorControllerGV(
                     }
                     it.bridgesBuiltinType = bbt
                 }
-                getTorIntegration().setSettings(it, true, true)
+                getTorIntegration().setSettings(it)
             }
         }
 
@@ -175,7 +175,7 @@ class TorControllerGV(
                 val  userProvidedLines: Array<String> = value?.split("\n")?.filter { it.length > 4 }?.toTypedArray() ?: arrayOf<String>()
                 it.bridgesSource = BridgeSource.UserProvided
                 it.bridgeBridgeStrings = userProvidedLines
-                getTorIntegration().setSettings(it, true, true)
+                getTorIntegration().setSettings(it)
             }
         }
 
