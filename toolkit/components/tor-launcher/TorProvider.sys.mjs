@@ -227,7 +227,7 @@ export class TorProvider {
     if (this.ownsTorDaemon) {
       try {
         await lazy.TorSettings.initializedPromise;
-        await this.writeSettings(lazy.TorSettings.getSettings());
+        await this.writeSettings();
       } catch (e) {
         logger.warn(
           "Failed to initialize TorSettings or to write our initial settings. Continuing the initialization anyway.",
@@ -269,11 +269,13 @@ export class TorProvider {
   /**
    * Send settings to the tor daemon.
    *
-   * @param {object} settings A settings object, as returned by
-   * TorSettings.getSettings(). This allow to try settings without passing
-   * through TorSettings.
+   * This should only be called internally or by the TorSettings module.
    */
-  async writeSettings(settings) {
+  async writeSettings() {
+    // Fetch the current settings.
+    // We set the useTemporary parameter since we want to apply temporary
+    // bridges if they are available.
+    const settings = lazy.TorSettings.getSettings(true);
     logger.debug("TorProvider.writeSettings", settings);
     const torSettings = new Map();
 
