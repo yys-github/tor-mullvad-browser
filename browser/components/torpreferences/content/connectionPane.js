@@ -97,33 +97,6 @@ const Lox = {
 */
 
 /**
- * Make changes to TorSettings and save them.
- *
- * Bulk changes will be frozen together.
- *
- * @param {Function} changes - Method to apply changes to TorSettings.
- */
-async function setTorSettings(changes) {
-  if (!TorSettings.initialized) {
-    log.warning("Ignoring changes to uninitialized TorSettings");
-    return;
-  }
-  TorSettings.freezeNotifications();
-  try {
-    changes();
-    // This will trigger TorSettings.#cleanupSettings()
-    TorSettings.saveToPrefs();
-    try {
-      await TorSettings.applySettings();
-    } catch (e) {
-      console.error("Failed to apply Tor settings", e);
-    }
-  } finally {
-    TorSettings.thawNotifications();
-  }
-}
-
-/**
  * Get the ID/fingerprint of the bridge used in the most recent Tor circuit.
  *
  * @returns {string?} - The bridge ID or null if a bridge with an id was not
@@ -757,6 +730,7 @@ const gBridgeGrid = {
       });
     removeItem.addEventListener("click", () => {
       const bridgeLine = row.bridgeLine;
+      const source = TorSettings.bridges.source;
       const strings = TorSettings.bridges.bridge_strings;
       const index = strings.indexOf(bridgeLine);
       if (index === -1) {
@@ -764,8 +738,8 @@ const gBridgeGrid = {
       }
       strings.splice(index, 1);
 
-      setTorSettings(() => {
-        TorSettings.bridges.bridge_strings = strings;
+      TorSettings.changeSettings({
+        bridges: { source, bridge_strings: strings },
       });
     });
   },
@@ -1829,8 +1803,8 @@ const gBridgeSettings = {
       if (!this._haveBridges) {
         return;
       }
-      setTorSettings(() => {
-        TorSettings.bridges.enabled = this._toggleButton.pressed;
+      TorSettings.changeSettings({
+        bridges: { enabled: this._toggleButton.pressed },
       });
     });
 
@@ -2215,10 +2189,10 @@ const gBridgeSettings = {
           return;
         }
 
-        setTorSettings(() => {
+        TorSettings.changeSettings({
           // This should always have the side effect of disabling bridges as
           // well.
-          TorSettings.bridges.source = TorBridgeSource.Invalid;
+          bridges: { source: TorBridgeSource.Invalid },
         });
       });
 
@@ -2319,10 +2293,12 @@ const gBridgeSettings = {
         if (!result.type) {
           return null;
         }
-        return setTorSettings(() => {
-          TorSettings.bridges.enabled = true;
-          TorSettings.bridges.source = TorBridgeSource.BuiltIn;
-          TorSettings.bridges.builtin_type = result.type;
+        return TorSettings.changeSettings({
+          bridges: {
+            enabled: true,
+            source: TorBridgeSource.BuiltIn,
+            builtin_type: result.type,
+          },
         });
       }
     );
@@ -2339,10 +2315,12 @@ const gBridgeSettings = {
         if (!result.bridges?.length) {
           return null;
         }
-        return setTorSettings(() => {
-          TorSettings.bridges.enabled = true;
-          TorSettings.bridges.source = TorBridgeSource.BridgeDB;
-          TorSettings.bridges.bridge_strings = result.bridges.join("\n");
+        return TorSettings.changeSettings({
+          bridges: {
+            enabled: true,
+            source: TorBridgeSource.BridgeDB,
+            bridge_strings: result.bridges.join("\n"),
+          },
         });
       }
     );
@@ -2363,16 +2341,15 @@ const gBridgeSettings = {
         if (!loxId && !result.addresses?.length) {
           return null;
         }
-        return setTorSettings(() => {
-          TorSettings.bridges.enabled = true;
-          if (loxId) {
-            TorSettings.bridges.source = TorBridgeSource.Lox;
-            TorSettings.bridges.lox_id = loxId;
-          } else {
-            TorSettings.bridges.source = TorBridgeSource.UserProvided;
-            TorSettings.bridges.bridge_strings = result.addresses;
-          }
-        });
+        const bridges = { enabled: true };
+        if (loxId) {
+          bridges.source = TorBridgeSource.Lox;
+          bridges.lox_id = loxId;
+        } else {
+          bridges.source = TorBridgeSource.UserProvided;
+          bridges.bridge_strings = result.addresses;
+        }
+        return TorSettings.changeSettings({ bridges });
       }
     );
   },
@@ -2586,9 +2563,9 @@ const gConnectionPane = (function () {
         "torPreferences-quickstart-toggle"
       );
       this._enableQuickstartCheckbox.addEventListener("command", () => {
-        const checked = this._enableQuickstartCheckbox.checked;
-        TorSettings.quickstart.enabled = checked;
-        TorSettings.saveToPrefs().applySettings();
+        TorSettings.changeSettings({
+          quickstart: { enabled: this._enableQuickstartCheckbox.checked },
+        });
       });
       this._enableQuickstartCheckbox.checked = TorSettings.quickstart.enabled;
       Services.obs.addObserver(this, TorSettingsTopics.SettingsChanged);
