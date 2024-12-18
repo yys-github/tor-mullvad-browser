@@ -74,6 +74,25 @@ class InternetTestResponseListener {
 }
 
 /**
+ * @typedef {Object} MoatBridges
+ *
+ * Bridge settings that can be passed to TorSettings.bridges.
+ *
+ * @property {number} source - The `TorBridgeSource` type.
+ * @property {string} [builtin_type] - The built-in bridge type.
+ * @property {string[]} bridge_strings - The bridge lines.
+ */
+
+/**
+ * @typedef {Object} MoatSettings
+ *
+ * The settings returned by Moat.
+ *
+ * @property {MoatBridges[]} bridgesList - The list of bridges found.
+ * @property {string} [country] - The detected country (region).
+ */
+
+/**
  * Constructs JSON objects and sends requests over Moat.
  * The documentation about the JSON schemas to use are available at
  * https://gitlab.torproject.org/tpo/anti-censorship/rdsys/-/blob/main/doc/moat.md.
@@ -213,20 +232,21 @@ export class MoatRPC {
     return { bridges, qrcode: qrcodeImg };
   }
 
-  // Convert received settings object to format used by TorSettings module.
-  #fixupSettings(settings) {
+  /**
+   * Extract bridges from the received Moat settings object.
+   *
+   * @param {Object} settings - The received settings.
+   * @return {MoatBridge} The extracted bridges.
+   */
+  #extractBridges(settings) {
     if (!("bridges" in settings)) {
       throw new Error("Expected to find `bridges` in the settings object.");
     }
-    const retval = {
-      bridges: {
-        enabled: true,
-      },
-    };
+    const bridges = {};
     switch (settings.bridges.source) {
       case "builtin":
-        retval.bridges.source = lazy.TorBridgeSource.BuiltIn;
-        retval.bridges.builtin_type = settings.bridges.type;
+        bridges.source = lazy.TorBridgeSource.BuiltIn;
+        bridges.builtin_type = settings.bridges.type;
         // TorSettings will ignore strings for built-in bridges, and use the
         // ones it already knows, instead. However, when we try these settings
         // in the connect assist, we skip TorSettings. Therefore, we set the
@@ -236,14 +256,14 @@ export class MoatRPC {
         // that needs TorSettings to be initialized).
         // In any case, getBuiltinBridges will throw if the data is not ready,
         // yet.
-        retval.bridges.bridge_strings = lazy.TorSettings.getBuiltinBridges(
+        bridges.bridge_strings = lazy.TorSettings.getBuiltinBridges(
           settings.bridges.type
         );
         break;
       case "bridgedb":
-        retval.bridges.source = lazy.TorBridgeSource.BridgeDB;
+        bridges.source = lazy.TorBridgeSource.BridgeDB;
         if (settings.bridges.bridge_strings) {
-          retval.bridges.bridge_strings = settings.bridges.bridge_strings;
+          bridges.bridge_strings = settings.bridges.bridge_strings;
         } else {
           throw new Error(
             "Received no bridge-strings for BridgeDB bridge source"
@@ -255,37 +275,38 @@ export class MoatRPC {
           `Unexpected bridge source '${settings.bridges.source}'`
         );
     }
-    return retval;
+    return bridges;
   }
 
-  // Converts a list of settings objects received from BridgeDB to a list of
-  // settings objects understood by the TorSettings module.
-  // In the event of error, returns an empty list.
-  #fixupSettingsList(settingsList) {
-    const retval = [];
+  /**
+   * Extract a list of bridges from the received Moat settings object.
+   *
+   * @param {Object} settings - The received settings.
+   * @return {MoatBridge[]} The list of extracted bridges.
+   */
+  #extractBridgesList(settingsList) {
+    const bridgesList = [];
     for (const settings of settingsList) {
       try {
-        retval.push(this.#fixupSettings(settings));
+        bridgesList.push(this.#extractBridges(settings));
       } catch (ex) {
         log.error(ex);
       }
     }
-    return retval;
+    return bridgesList;
   }
 
-  // Request tor settings for the user optionally based on their location
-  // (derived from their IP). Takes the following parameters:
-  // - transports: optional, an array of transports available to the client; if
-  //   empty (or not given) returns settings using all working transports known
-  //   to the server
-  // - country: optional, an ISO 3166-1 alpha-2 country code to request settings
-  //   for; if not provided the country is determined by the user's IP address
-  //
-  // Returns an object with the detected country code and an array of settings
-  // in a format that can be passed to the TorSettings module. This array might
-  // be empty if the country has no associated settings.
-  // If the server cannot determine the user's country (and no country code is
-  // provided), then null is returned instead of the object.
+  /**
+   * Request tor settings for the user optionally based on their location
+   * (derived from their IP). Takes the following parameters:
+   *
+   * @param {string[]} transports - A list of transports we support.
+   * @param {?string} country - The region to request bridges for, as an
+   *   ISO 3166-1 alpha-2 region code, or `null` to have the server
+   *   automatically determine the region.
+   * @returns {?MoatSettings} - The returned settings from the server, or `null`
+   *   if the region could not be determined by the server.
+   */
   async circumvention_settings(transports, country) {
     const args = {
       transports: transports ? transports : [],
@@ -306,7 +327,7 @@ export class MoatRPC {
 
       throw new Error(`MoatRPC: ${detail} (${code})`);
     } else if ("settings" in response) {
-      settings.settings = this.#fixupSettingsList(response.settings);
+      settings.bridgesList = this.#extractBridgesList(response.settings);
     }
     if ("country" in response) {
       settings.country = response.country;
@@ -349,14 +370,12 @@ export class MoatRPC {
     return map;
   }
 
-  // Request a copy of the defaul/fallback bridge settings, takes the following
-  // parameters:
-  // - transports: optional, an array of transports available to the client; if
-  //   empty (or not given) returns settings using all working transports known
-  //   to the server
-  //
-  // returns an array of settings objects in roughly the same format as the
-  // _settings object on the TorSettings module
+  /**
+   * Request a copy of the default/fallback bridge settings.
+   *
+   * @param {string[]} transports - A list of transports we support.
+   * @returns {MoatBridges[]} - The list of bridges found.
+   */
   async circumvention_defaults(transports) {
     const args = {
       transports: transports ? transports : [],
@@ -367,7 +386,7 @@ export class MoatRPC {
       const detail = response.errors[0].detail;
       throw new Error(`MoatRPC: ${detail} (${code})`);
     } else if ("settings" in response) {
-      return this.#fixupSettingsList(response.settings);
+      return this.#extractBridgesList(response.settings);
     }
     return [];
   }
