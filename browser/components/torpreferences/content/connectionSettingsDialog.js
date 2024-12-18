@@ -270,33 +270,34 @@ const gConnectionSettingsDialog = {
     const port = this._proxyPortTextbox.value;
     const username = this._proxyUsernameTextbox.value;
     const password = this._proxyPasswordTextbox.value;
+    const settings = { proxy: {}, firewall: {} };
     switch (type) {
       case TorProxyType.Invalid:
-        TorSettings.proxy.enabled = false;
+        settings.proxy.enabled = false;
         break;
       case TorProxyType.Socks4:
-        TorSettings.proxy.enabled = true;
-        TorSettings.proxy.type = type;
-        TorSettings.proxy.address = address;
-        TorSettings.proxy.port = port;
-        TorSettings.proxy.username = "";
-        TorSettings.proxy.password = "";
+        settings.proxy.enabled = true;
+        settings.proxy.type = type;
+        settings.proxy.address = address;
+        settings.proxy.port = port;
+        settings.proxy.username = "";
+        settings.proxy.password = "";
         break;
       case TorProxyType.Socks5:
-        TorSettings.proxy.enabled = true;
-        TorSettings.proxy.type = type;
-        TorSettings.proxy.address = address;
-        TorSettings.proxy.port = port;
-        TorSettings.proxy.username = username;
-        TorSettings.proxy.password = password;
+        settings.proxy.enabled = true;
+        settings.proxy.type = type;
+        settings.proxy.address = address;
+        settings.proxy.port = port;
+        settings.proxy.username = username;
+        settings.proxy.password = password;
         break;
       case TorProxyType.HTTPS:
-        TorSettings.proxy.enabled = true;
-        TorSettings.proxy.type = type;
-        TorSettings.proxy.address = address;
-        TorSettings.proxy.port = port;
-        TorSettings.proxy.username = username;
-        TorSettings.proxy.password = password;
+        settings.proxy.enabled = true;
+        settings.proxy.type = type;
+        settings.proxy.address = address;
+        settings.proxy.port = port;
+        settings.proxy.username = username;
+        settings.proxy.password = password;
         break;
     }
 
@@ -304,16 +305,15 @@ const gConnectionSettingsDialog = {
       ? this._allowedPortsTextbox.value
       : "";
     if (portListString) {
-      TorSettings.firewall.enabled = true;
-      TorSettings.firewall.allowed_ports = portListString;
+      settings.firewall.enabled = true;
+      settings.firewall.allowed_ports = portListString;
     } else {
-      TorSettings.firewall.enabled = false;
+      settings.firewall.enabled = false;
     }
 
-    TorSettings.saveToPrefs();
     // FIXME: What if this fails? Should we prevent the dialog to close and show
     // an error?
-    TorSettings.applySettings();
+    TorSettings.changeSettings(settings);
   },
 };
 
