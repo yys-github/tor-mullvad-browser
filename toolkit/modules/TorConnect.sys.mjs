@@ -103,11 +103,12 @@ export const TorConnectTopics = Object.freeze({
  *   failing bootstrap.
  * @property {integer} [options.simulateDelay] - The delay in microseconds to
  *   apply to simulated bootstraps.
- * @property {object} [options.simulateMoatResponse] - Simulate a Moat response
- *   for circumvention settings. Should include a "settings" property, and
- *   optionally a "country" property. You may add a "simulateCensorship"
- *   property to some of the settings to make only their bootstrap attempts
- *   fail.
+ * @property {MoatSettings} [options.simulateMoatResponse] - Simulate a Moat
+ *   response for circumvention settings. Should include a "bridgesList"
+ *   property, and optionally a "country" property. The "bridgesList" property
+ *   should be an Array of MoatBridges objects that match the bridge settings
+ *   accepted by TorSettings.bridges, plus you may add a "simulateCensorship"
+ *   property to make only their bootstrap attempts fail.
  * @property {boolean} [options.testInternet] - Whether to also test the
  *   internet connection.
  * @property {boolean} [options.simulateOffline] - Whether to simulate an
@@ -395,11 +396,11 @@ class AutoBootstrapAttempt {
    */
   #cancelledPromise = null;
   /**
-   * The found settings from Moat.
+   * The list of bridge configurations from Moat.
    *
-   * @type {?object[]}
+   * @type {?MoatBridges[]}
    */
-  #settings = null;
+  #bridgesList = null;
   /**
    * The last settings that have been applied to the TorProvider, if any.
    *
@@ -477,12 +478,12 @@ class AutoBootstrapAttempt {
    * @param {BootstrapOptions} options - Options to apply to the bootstrap.
    */
   async #runInternal(progressCallback, options) {
-    await this.#fetchSettings(options);
+    await this.#fetchBridges(options);
     if (this.#cancelled || this.#resolved) {
       return;
     }
 
-    if (!this.#settings?.length) {
+    if (!this.#bridgesList?.length) {
       this.#resolveRun({
         error: new TorConnectError(
           options.regionCode === "automatic" && !this.detectedRegion
@@ -493,14 +494,14 @@ class AutoBootstrapAttempt {
     }
 
     // Apply each of our settings and try to bootstrap with each.
-    for (const [index, currentSetting] of this.#settings.entries()) {
+    for (const [index, bridges] of this.#bridgesList.entries()) {
       lazy.logger.info(
         `Attempting Bootstrap with configuration ${index + 1}/${
-          this.#settings.length
+          this.#bridgesList.length
         }`
       );
 
-      await this.#trySetting(currentSetting, progressCallback, options);
+      await this.#tryBridges(bridges, progressCallback, options);
 
       if (this.#cancelled || this.#resolved) {
         return;
@@ -518,7 +519,7 @@ class AutoBootstrapAttempt {
    *
    * @param {BootstrapOptions} options - Options to apply to the bootstrap.
    */
-  async #fetchSettings(options) {
+  async #fetchBridges(options) {
     if (options.simulateMoatResponse) {
       await Promise.race([
         new Promise(res => setTimeout(res, options.simulateDelay || 0)),
@@ -530,7 +531,7 @@ class AutoBootstrapAttempt {
       }
 
       this.detectedRegion = options.simulateMoatResponse.country || null;
-      this.#settings = options.simulateMoatResponse.settings ?? null;
+      this.#bridgesList = options.simulateMoatResponse.bridgesList ?? null;
 
       return;
     }
@@ -564,16 +565,16 @@ class AutoBootstrapAttempt {
 
       this.detectedRegion = maybeSettings?.country || null;
 
-      if (maybeSettings?.settings?.length) {
-        this.#settings = maybeSettings.settings;
+      if (maybeSettings?.bridgesList?.length) {
+        this.#bridgesList = maybeSettings.bridgesList;
       } else {
         // Keep consistency with the other call.
-        this.#settings = await Promise.race([
+        this.#bridgesList = await Promise.race([
           moat.circumvention_defaults([
             ...lazy.TorSettings.builtinBridgeTypes,
             "vanilla",
           ]),
-          // This might set this.#settings to undefined.
+          // This might set this.#bridgesList to undefined.
           this.#cancelledPromise,
         ]);
       }
@@ -586,21 +587,21 @@ class AutoBootstrapAttempt {
   /**
    * Try to apply the settings we fetched.
    *
-   * @param {object} setting - The setting to try.
+   * @param {MoatBridges} bridges - The bridges to try.
    * @param {ProgressCallback} progressCallback - The callback to invoke with
    *   the bootstrap progress.
    * @param {BootstrapOptions} options - Options to apply to the bootstrap.
    */
-  async #trySetting(setting, progressCallback, options) {
+  async #tryBridges(bridges, progressCallback, options) {
     if (this.#cancelled || this.#resolved) {
       return;
     }
 
-    if (options.simulateMoatResponse && setting.simulateCensorship) {
+    if (options.simulateMoatResponse && bridges.simulateCensorship) {
       // Move the simulateCensorship option to the options for the next
       // BootstrapAttempt.
-      setting = structuredClone(setting);
-      delete setting.simulateCensorship;
+      bridges = structuredClone(bridges);
+      delete bridges.simulateCensorship;
       options = { ...options, simulateCensorship: true };
     }
 
@@ -617,12 +618,12 @@ class AutoBootstrapAttempt {
     // UI while *any* bootstrap is going on.
     // This is also documented in tor-browser#41921.
     const provider = await lazy.TorProviderBuilder.build();
-    this.#changedSetting = setting;
+    this.#changedSetting = { bridges: { enabled: true, ...bridges } };
     // We need to merge with old settings, in case the user is using a proxy
     // or is behind a firewall.
     await provider.writeSettings({
       ...lazy.TorSettings.getSettings(),
-      ...setting,
+      ...this.#changedSetting,
     });
 
     if (this.#cancelled || this.#resolved) {
@@ -642,7 +643,7 @@ class AutoBootstrapAttempt {
         error instanceof TorConnectError &&
         error.code === TorConnectError.BootstrapError
       ) {
-        lazy.logger.info("TorConnect setting failed", setting, error);
+        lazy.logger.info("TorConnect setting failed", bridges, error);
         // Try with the next settings.
         // NOTE: We do not restore the user settings in between these runs.
         // Instead we wait for #resolveRun callback to do so.
