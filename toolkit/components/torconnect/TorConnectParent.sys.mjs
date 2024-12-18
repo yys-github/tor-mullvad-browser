@@ -104,8 +104,7 @@ export class TorConnectParent extends JSWindowActorParent {
         // If there are multiple home pages, just load the first one.
         return Promise.resolve(TorConnect.fixupURIs(lazy.HomePage.get())[0]);
       case "torconnect:set-quickstart":
-        TorSettings.quickstart.enabled = message.data;
-        TorSettings.saveToPrefs().applySettings();
+        TorSettings.changeSettings({ quickstart: { enabled: message.data } });
         break;
       case "torconnect:open-tor-preferences":
         this.browsingContext.top.embedderElement.ownerGlobal.openPreferences(
