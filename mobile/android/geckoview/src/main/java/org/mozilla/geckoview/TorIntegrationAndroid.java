@@ -48,8 +48,6 @@ public class TorIntegrationAndroid implements BundleEventListener {
   // Events we emit
   private static final String EVENT_SETTINGS_GET = "GeckoView:Tor:SettingsGet";
   private static final String EVENT_SETTINGS_SET = "GeckoView:Tor:SettingsSet";
-  private static final String EVENT_SETTINGS_APPLY = "GeckoView:Tor:SettingsApply";
-  private static final String EVENT_SETTINGS_SAVE = "GeckoView:Tor:SettingsSave";
   private static final String EVENT_BOOTSTRAP_BEGIN = "GeckoView:Tor:BootstrapBegin";
   private static final String EVENT_BOOTSTRAP_BEGIN_AUTO = "GeckoView:Tor:BootstrapBeginAuto";
   private static final String EVENT_BOOTSTRAP_CANCEL = "GeckoView:Tor:BootstrapCancel";
@@ -194,7 +192,7 @@ public class TorIntegrationAndroid implements BundleEventListener {
     protected void onPostExecute(TorSettings torSettings) {
       mSettings = torSettings;
       if (TorLegacyAndroidSettings.unmigrated()) {
-        setSettings(mSettings, true, true);
+        setSettings(mSettings);
         TorLegacyAndroidSettings.setMigrated();
       }
     }
@@ -657,10 +655,10 @@ public class TorIntegrationAndroid implements BundleEventListener {
     return mSettings;
   }
 
-  public void setSettings(final TorSettings settings, boolean save, boolean apply) {
+  public void setSettings(final TorSettings settings) {
     mSettings = settings;
 
-    emitSetSettings(settings, save, apply)
+    emitSetSettings(settings)
         .then(
             new GeckoResult.OnValueListener<Void, Void>() {
               public GeckoResult<Void> onValue(Void v) {
@@ -677,20 +675,10 @@ public class TorIntegrationAndroid implements BundleEventListener {
   }
 
   private @NonNull GeckoResult<Void> emitSetSettings(
-      final TorSettings settings, boolean save, boolean apply) {
-    GeckoBundle bundle = new GeckoBundle(3);
-    bundle.putBoolean("save", save);
-    bundle.putBoolean("apply", apply);
+      final TorSettings settings) {
+    GeckoBundle bundle = new GeckoBundle(1);
     bundle.putBundle("settings", settings.asGeckoBundle());
     return EventDispatcher.getInstance().queryVoid(EVENT_SETTINGS_SET, bundle);
-  }
-
-  public @NonNull GeckoResult<Void> applySettings() {
-    return EventDispatcher.getInstance().queryVoid(EVENT_SETTINGS_APPLY);
-  }
-
-  public @NonNull GeckoResult<Void> saveSettings() {
-    return EventDispatcher.getInstance().queryVoid(EVENT_SETTINGS_SAVE);
   }
 
   public @NonNull GeckoResult<Void> beginBootstrap() {
