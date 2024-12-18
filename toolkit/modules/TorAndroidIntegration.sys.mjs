@@ -36,8 +36,6 @@ const ListenedEvents = Object.freeze({
   settingsGet: "GeckoView:Tor:SettingsGet",
   // The data is passed directly to TorSettings.
   settingsSet: "GeckoView:Tor:SettingsSet",
-  settingsApply: "GeckoView:Tor:SettingsApply",
-  settingsSave: "GeckoView:Tor:SettingsSave",
   bootstrapBegin: "GeckoView:Tor:BootstrapBegin",
   // Optionally takes a countryCode, as data.countryCode.
   bootstrapBeginAuto: "GeckoView:Tor:BootstrapBeginAuto",
@@ -145,20 +143,10 @@ class TorAndroidIntegrationImpl {
           callback?.onSuccess(lazy.TorSettings.getSettings());
           return;
         case ListenedEvents.settingsSet:
-          // This does not throw, so we do not have any way to report the error!
-          lazy.TorSettings.setSettings(data.settings);
-          if (data.save) {
-            lazy.TorSettings.saveToPrefs();
-          }
-          if (data.apply) {
-            await lazy.TorSettings.applySettings();
-          }
-          break;
-        case ListenedEvents.settingsApply:
-          await lazy.TorSettings.applySettings();
-          break;
-        case ListenedEvents.settingsSave:
-          await lazy.TorSettings.saveToPrefs();
+          // TODO: Handle setting throw? This can throw if data.settings is
+          // incorrectly formatted, but more like it can throw when the settings
+          // fail to be passed onto the TorProvider. tor-browser#43405.
+          await lazy.TorSettings.changeSettings(data.settings);
           break;
         case ListenedEvents.bootstrapBegin:
           lazy.TorConnect.beginBootstrapping();
