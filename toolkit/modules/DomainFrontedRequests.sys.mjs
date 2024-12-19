@@ -130,7 +130,7 @@ class MeekTransport {
         TOR_PT_CLIENT_TRANSPORTS: meekTransport,
       };
       if (lazy.TorSettings.proxy.enabled) {
-        envAdditions.TOR_PT_PROXY = lazy.TorSettings.proxy.uri;
+        envAdditions.TOR_PT_PROXY = lazy.TorSettings.proxyUri;
       }
 
       const opts = {
