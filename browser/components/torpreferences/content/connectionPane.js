@@ -2319,7 +2319,7 @@ const gBridgeSettings = {
           bridges: {
             enabled: true,
             source: TorBridgeSource.BridgeDB,
-            bridge_strings: result.bridges.join("\n"),
+            bridge_strings: result.bridges,
           },
         });
       }
