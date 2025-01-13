@@ -27,10 +27,8 @@ export const TorSettingsTopics = Object.freeze({
 
 /* Prefs used to store settings in TorBrowser prefs */
 const TorSettingsPrefs = Object.freeze({
-  quickstart: {
-    /* bool: does tor connect automatically on launch */
-    enabled: "torbrowser.settings.quickstart.enabled",
-  },
+  // NOTE: torbrowser.settings.quickstart.enabled used to be managed by
+  // TorSettings but was moved to TorConnect.quickstart in tor-browser#41921.
   bridges: {
     /* bool:  does tor use bridges */
     enabled: "torbrowser.settings.bridges.enabled",
@@ -173,9 +171,6 @@ class TorSettingsImpl {
    * @type {object}
    */
   #settings = {
-    quickstart: {
-      enabled: false,
-    },
     bridges: {
       /**
        * Whether the bridges are enabled or not.
@@ -579,11 +574,6 @@ class TorSettingsImpl {
   #loadFromPrefs() {
     lazy.logger.debug("loadFromPrefs()");
 
-    /* Quickstart */
-    this.#settings.quickstart.enabled = Services.prefs.getBoolPref(
-      TorSettingsPrefs.quickstart.enabled,
-      false
-    );
     /* Bridges */
     const bridges = {};
     bridges.enabled = Services.prefs.getBoolPref(
@@ -691,11 +681,6 @@ class TorSettingsImpl {
 
     this.#checkIfInitialized();
 
-    /* Quickstart */
-    Services.prefs.setBoolPref(
-      TorSettingsPrefs.quickstart.enabled,
-      this.#settings.quickstart.enabled
-    );
     /* Bridges */
     Services.prefs.setBoolPref(
       TorSettingsPrefs.bridges.enabled,
@@ -928,7 +913,6 @@ class TorSettingsImpl {
    *
    * It is possible to set all settings, or only some sections:
    *
-   * + quickstart.enabled can be set individually.
    * + bridges.enabled can be set individually.
    * + bridges.source can be set with a corresponding bridge specification for
    *   the source (bridge_strings, lox_id, builtin_type).
@@ -967,14 +951,6 @@ class TorSettingsImpl {
       completeSettings[group][prop] = value;
       changes.push(`${group}.${prop}`);
     };
-
-    if ("quickstart" in newValues && "enabled" in newValues.quickstart) {
-      changeSetting(
-        "quickstart",
-        "enabled",
-        Boolean(newValues.quickstart.enabled)
-      );
-    }
 
     if ("bridges" in newValues) {
       if ("source" in newValues.bridges) {
@@ -1048,11 +1024,7 @@ class TorSettingsImpl {
     // saved the preferences we send the new settings to TorProvider.
     // Some properties are unread by TorProvider. So if only these values change
     // there is no need to re-apply the settings.
-    const unreadProps = [
-      "quickstart.enabled",
-      "bridges.builtin_type",
-      "bridges.lox_id",
-    ];
+    const unreadProps = ["bridges.builtin_type", "bridges.lox_id"];
     const shouldApply = changes.some(prop => !unreadProps.includes(prop));
     if (shouldApply) {
       await this.#applySettings(true);
