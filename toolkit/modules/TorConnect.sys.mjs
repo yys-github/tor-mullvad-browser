@@ -10,7 +10,6 @@ ChromeUtils.defineESModuleGetters(lazy, {
   BrowserWindowTracker: "resource:///modules/BrowserWindowTracker.sys.mjs",
   MoatRPC: "resource://gre/modules/Moat.sys.mjs",
   TorBootstrapRequest: "resource://gre/modules/TorBootstrapRequest.sys.mjs",
-  TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
   TorProviderTopics: "resource://gre/modules/TorProviderBuilder.sys.mjs",
   TorLauncherUtil: "resource://gre/modules/TorLauncherUtil.sys.mjs",
   TorSettings: "resource://gre/modules/TorSettings.sys.mjs",
@@ -436,15 +435,23 @@ class AutoBootstrapAttempt {
         return;
       }
       this.#resolved = true;
-      try {
-        // Run cleanup before we resolve the promise to ensure two instances
-        // of AutoBootstrapAttempt are not trying to change the settings at
-        // the same time.
-        if (arg.result !== "complete") {
-          await lazy.TorSettings.clearTemporaryBridges();
+
+      if (lazy.TorSettings.initialized) {
+        // If not initialized, then we won't have applied any settings.
+        try {
+          // Run cleanup before we resolve the promise to ensure two instances
+          // of AutoBootstrapAttempt are not trying to change the settings at
+          // the same time.
+          if (arg.result !== "complete") {
+            // Should do nothing if we never called applyTemporaryBridges.
+            await lazy.TorSettings.clearTemporaryBridges();
+          }
+        } catch (error) {
+          lazy.logger.error(
+            "Unexpected error in auto-bootstrap cleanup",
+            error
+          );
         }
-      } catch (error) {
-        lazy.logger.error("Unexpected error in auto-bootstrap cleanup", error);
       }
       if (arg.error) {
         reject(arg.error);
@@ -483,6 +490,16 @@ class AutoBootstrapAttempt {
    * @param {BootstrapOptions} options - Options to apply to the bootstrap.
    */
   async #runInternal(progressCallback, options) {
+    // Wait for TorSettings to be initialised, which is used for the
+    // AutoBootstrapping set up.
+    await Promise.race([
+      lazy.TorSettings.initializedPromise,
+      this.#cancelledPromise,
+    ]);
+    if (this.#cancelled || this.#resolved) {
+      return;
+    }
+
     await this.#fetchBridges(options);
     if (this.#cancelled || this.#resolved) {
       return;
@@ -1016,19 +1033,20 @@ export const TorConnect = {
       lazy.logger.debug(`Observing topic '${addTopic}'`);
     };
 
-    // Wait for TorSettings, as we will need it.
-    // We will wait for a TorProvider only after TorSettings is ready,
-    // because the TorProviderBuilder initialization might not have finished
-    // at this point, and TorSettings initialization is a prerequisite for
-    // having a provider.
-    // So, we prefer initializing TorConnect as soon as possible, so that
-    // the UI will be able to detect it is in the Initializing state and act
-    // consequently.
-    lazy.TorSettings.initializedPromise.then(() => this._settingsInitialized());
-
     // register the Tor topics we always care about
     observeTopic(lazy.TorProviderTopics.ProcessExited);
     observeTopic(lazy.TorProviderTopics.HasWarnOrErr);
+
+    // NOTE: At this point, _requestedStage should still be `null`.
+    this._setStage(TorConnectStage.Start);
+    if (
+      // Quickstart setting is enabled.
+      this.quickstart &&
+      // And the previous bootstrap attempt must have succeeded.
+      !Services.prefs.getBoolPref(TorConnectPrefs.prompt_at_startup, true)
+    ) {
+      this.beginBootstrapping();
+    }
   },
 
   async observe(subject, topic) {
@@ -1055,26 +1073,6 @@ export const TorConnect = {
       default:
         // ignore
         break;
-    }
-  },
-
-  async _settingsInitialized() {
-    // TODO: Handle failures here, instead of the prompt to restart the
-    // daemon when it exits (tor-browser#21053, tor-browser#41921).
-    await lazy.TorProviderBuilder.build();
-
-    lazy.logger.debug("The TorProvider is ready, changing state.");
-    // NOTE: If the tor process exits before this point, then
-    // shouldQuickStart would be `false`.
-    // NOTE: At this point, _requestedStage should still be `null`.
-    this._setStage(TorConnectStage.Start);
-    if (
-      // Quickstart setting is enabled.
-      this.quickstart &&
-      // And the previous bootstrap attempt must have succeeded.
-      !Services.prefs.getBoolPref(TorConnectPrefs.prompt_at_startup, true)
-    ) {
-      this.beginBootstrapping();
     }
   },
 
