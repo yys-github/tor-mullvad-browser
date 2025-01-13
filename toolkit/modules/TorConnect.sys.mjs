@@ -22,6 +22,7 @@ const TorConnectPrefs = Object.freeze({
   log_level: "torbrowser.bootstrap.log_level",
   /* prompt_at_startup now controls whether the quickstart can trigger. */
   prompt_at_startup: "extensions.torlauncher.prompt_at_startup",
+  quickstart: "torbrowser.settings.quickstart.enabled",
 });
 
 export const TorConnectState = Object.freeze({
@@ -80,6 +81,7 @@ export const TorConnectTopics = Object.freeze({
   StageChange: "torconnect:stage-change",
   // TODO: Remove torconnect:state-change when pages have switched to stage.
   StateChange: "torconnect:state-change",
+  QuickstartChange: "torconnect:quickstart-change",
   BootstrapProgress: "torconnect:bootstrap-progress",
   BootstrapComplete: "torconnect:bootstrap-complete",
   // TODO: Remove torconnect:error when pages have switched to stage.
@@ -1066,8 +1068,12 @@ export const TorConnect = {
     // shouldQuickStart would be `false`.
     // NOTE: At this point, _requestedStage should still be `null`.
     this._setStage(TorConnectStage.Start);
-    if (this.shouldQuickStart) {
-      // Quickstart
+    if (
+      // Quickstart setting is enabled.
+      this.quickstart &&
+      // And the previous bootstrap attempt must have succeeded.
+      !Services.prefs.getBoolPref(TorConnectPrefs.prompt_at_startup, true)
+    ) {
       this.beginBootstrapping();
     }
   },
@@ -1120,6 +1126,25 @@ export const TorConnect = {
     return lazy.TorLauncherUtil.shouldStartAndOwnTor;
   },
 
+  /**
+   * Whether bootstrapping can begin immediately once Tor Browser has been
+   * opened.
+   *
+   * @type {boolean}
+   */
+  get quickstart() {
+    return Services.prefs.getBoolPref(TorConnectPrefs.quickstart, false);
+  },
+
+  set quickstart(enabled) {
+    enabled = Boolean(enabled);
+    if (enabled === this.quickstart) {
+      return;
+    }
+    Services.prefs.setBoolPref(TorConnectPrefs.quickstart, enabled);
+    Services.obs.notifyObservers(null, TorConnectTopics.QuickstartChange);
+  },
+
   get shouldShowTorConnect() {
     // TorBrowser must control the daemon
     return (
@@ -1160,15 +1185,6 @@ export const TorConnect = {
       this._stageName === TorConnectStage.ChooseRegion ||
       this._stageName === TorConnectStage.RegionNotFound ||
       this._stageName === TorConnectStage.ConfirmRegion
-    );
-  },
-
-  get shouldQuickStart() {
-    // quickstart must be enabled
-    return (
-      lazy.TorSettings.quickstart.enabled &&
-      // and the previous bootstrap attempt must have succeeded
-      !Services.prefs.getBoolPref(TorConnectPrefs.prompt_at_startup, true)
     );
   },
 
