@@ -5,10 +5,6 @@ import {
   TorConnect,
   TorConnectTopics,
 } from "resource://gre/modules/TorConnect.sys.mjs";
-import {
-  TorSettings,
-  TorSettingsTopics,
-} from "resource://gre/modules/TorSettings.sys.mjs";
 
 const lazy = {};
 
@@ -47,15 +43,10 @@ export class TorConnectParent extends JSWindowActorParent {
           case TorConnectTopics.BootstrapProgress:
             self.sendAsyncMessage("torconnect:bootstrap-progress", obj);
             break;
-          case TorSettingsTopics.SettingsChanged:
-            if (!obj.changes.includes("quickstart.enabled")) {
-              break;
-            }
-          // eslint-disable-next-lined no-fallthrough
-          case TorSettingsTopics.Ready:
+          case TorConnectTopics.QuickstartChange:
             self.sendAsyncMessage(
-              "torconnect:quickstart-changed",
-              TorSettings.quickstart.enabled
+              "torconnect:quickstart-change",
+              TorConnect.quickstart
             );
             break;
         }
@@ -70,10 +61,9 @@ export class TorConnectParent extends JSWindowActorParent {
       this.torConnectObserver,
       TorConnectTopics.BootstrapProgress
     );
-    Services.obs.addObserver(this.torConnectObserver, TorSettingsTopics.Ready);
     Services.obs.addObserver(
       this.torConnectObserver,
-      TorSettingsTopics.SettingsChanged
+      TorConnectTopics.QuickstartChange
     );
   }
 
@@ -88,11 +78,7 @@ export class TorConnectParent extends JSWindowActorParent {
     );
     Services.obs.removeObserver(
       this.torConnectObserver,
-      TorSettingsTopics.Ready
-    );
-    Services.obs.removeObserver(
-      this.torConnectObserver,
-      TorSettingsTopics.SettingsChanged
+      TorConnectTopics.QuickstartChange
     );
   }
 
@@ -104,7 +90,7 @@ export class TorConnectParent extends JSWindowActorParent {
         // If there are multiple home pages, just load the first one.
         return Promise.resolve(TorConnect.fixupURIs(lazy.HomePage.get())[0]);
       case "torconnect:set-quickstart":
-        TorSettings.changeSettings({ quickstart: { enabled: message.data } });
+        TorConnect.quickstart = message.data;
         break;
       case "torconnect:open-tor-preferences":
         this.browsingContext.top.embedderElement.ownerGlobal.openPreferences(
@@ -133,31 +119,16 @@ export class TorConnectParent extends JSWindowActorParent {
       case "torconnect:cancel-bootstrapping":
         TorConnect.cancelBootstrapping();
         break;
-      case "torconnect:get-init-args": {
+      case "torconnect:get-init-args":
         // Called on AboutTorConnect.init(), pass down all state data it needs
         // to init.
-
-        let quickstartEnabled = false;
-
-        // Workaround for a race condition, but we should fix it asap.
-        // about:torconnect is loaded before TorSettings is actually initialized.
-        // The getter might throw and the page not loaded correctly as a result.
-        // Silence any warning for now, but we should really fix it.
-        // See also tor-browser#41921.
-        try {
-          quickstartEnabled = TorSettings.quickstart.enabled;
-        } catch (e) {
-          // Do not throw.
-        }
-
         return {
           TorStrings,
           Direction: Services.locale.isAppLocaleRTL ? "rtl" : "ltr",
           CountryNames: TorConnect.countryNames,
           stage: TorConnect.stage,
-          quickstartEnabled,
+          quickstartEnabled: TorConnect.quickstart,
         };
-      }
       case "torconnect:get-country-codes":
         return TorConnect.getCountryCodes();
     }
