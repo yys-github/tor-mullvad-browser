@@ -4,9 +4,8 @@ const { TorSettings, TorBridgeSource } = ChromeUtils.importESModule(
   "resource://gre/modules/TorSettings.sys.mjs"
 );
 
-const { TorConnect, TorConnectTopics } = ChromeUtils.importESModule(
-  "resource://gre/modules/TorConnect.sys.mjs"
-);
+const { TorConnect, TorConnectStage, TorConnectTopics } =
+  ChromeUtils.importESModule("resource://gre/modules/TorConnect.sys.mjs");
 
 const gBuiltinBridgeDialog = {
   init() {
@@ -96,7 +95,7 @@ const gBuiltinBridgeDialog = {
   },
 
   onAcceptStateChange() {
-    const connect = TorConnect.canBeginBootstrap;
+    const connect = TorConnect.stageName !== TorConnectStage.Bootstrapped;
     this._result.connect = connect;
     this._acceptButton.setAttribute(
       "data-l10n-id",

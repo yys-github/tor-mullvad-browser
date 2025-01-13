@@ -3,9 +3,8 @@
 const { TorSettings, TorBridgeSource, validateBridgeLines } =
   ChromeUtils.importESModule("resource://gre/modules/TorSettings.sys.mjs");
 
-const { TorConnect, TorConnectTopics } = ChromeUtils.importESModule(
-  "resource://gre/modules/TorConnect.sys.mjs"
-);
+const { TorConnect, TorConnectStage, TorConnectTopics } =
+  ChromeUtils.importESModule("resource://gre/modules/TorConnect.sys.mjs");
 
 const { TorParsers } = ChromeUtils.importESModule(
   "resource://gre/modules/TorParsers.sys.mjs"
@@ -190,7 +189,7 @@ const gProvideBridgeDialog = {
         "user-provide-bridge-dialog-next-button"
       );
     } else {
-      connect = TorConnect.canBeginBootstrap;
+      connect = TorConnect.stageName !== TorConnectStage.Bootstrapped;
       this._acceptButton.setAttribute(
         "data-l10n-id",
         connect ? "bridge-dialog-button-connect" : "bridge-dialog-button-accept"
