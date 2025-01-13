@@ -953,6 +953,7 @@ class TorSettingsImpl {
     };
 
     if ("bridges" in newValues) {
+      const changesLength = changes.length;
       if ("source" in newValues.bridges) {
         this.#fixupBridgeSettings(newValues.bridges);
         changeSetting("bridges", "source", newValues.bridges.source);
@@ -981,6 +982,19 @@ class TorSettingsImpl {
       }
       if ("enabled" in newValues.bridges) {
         changeSetting("bridges", "enabled", newValues.bridges.enabled);
+      }
+
+      if (this.#temporaryBridgeSettings && changes.length !== changesLength) {
+        // A change in the bridges settings.
+        // We want to clear the temporary bridge settings to ensure that they
+        // cannot be used to overwrite these user-provided settings.
+        // See tor-browser#41921.
+        // NOTE: This should also trigger TorConnect to cancel any ongoing
+        // AutoBootstrap that would have otherwise used these settings.
+        this.#temporaryBridgeSettings = null;
+        lazy.logger.warn(
+          "Cleared temporary bridges since bridge settings were changed"
+        );
       }
     }
 
