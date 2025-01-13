@@ -13,6 +13,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   TorProviderTopics: "resource://gre/modules/TorProviderBuilder.sys.mjs",
   TorLauncherUtil: "resource://gre/modules/TorLauncherUtil.sys.mjs",
   TorSettings: "resource://gre/modules/TorSettings.sys.mjs",
+  TorSettingsTopics: "resource://gre/modules/TorSettings.sys.mjs",
 });
 
 const TorConnectPrefs = Object.freeze({
@@ -629,16 +630,6 @@ class AutoBootstrapAttempt {
 
     // Send the new settings directly to the provider. We will save them only
     // if the bootstrap succeeds.
-    // FIXME: We should somehow signal TorSettings users that we have set
-    // custom settings, and they should not apply theirs until we are done
-    // with trying ours.
-    // Otherwise, the new settings provided by the user while we were
-    // bootstrapping could be the ones that cause the bootstrap to succeed,
-    // but we overwrite them (unless we backup the original settings, and then
-    // save our new settings only if they have not changed).
-    // Another idea (maybe easier to implement) is to disable the settings
-    // UI while *any* bootstrap is going on.
-    // This is also documented in tor-browser#41921.
     await lazy.TorSettings.applyTemporaryBridges(bridges);
 
     if (this.#cancelled || this.#resolved) {
@@ -1036,6 +1027,7 @@ export const TorConnect = {
     // register the Tor topics we always care about
     observeTopic(lazy.TorProviderTopics.ProcessExited);
     observeTopic(lazy.TorProviderTopics.HasWarnOrErr);
+    observeTopic(lazy.TorSettingsTopics.SettingsChanged);
 
     // NOTE: At this point, _requestedStage should still be `null`.
     this._setStage(TorConnectStage.Start);
@@ -1070,8 +1062,32 @@ export const TorConnect = {
         Services.prefs.setBoolPref(TorConnectPrefs.prompt_at_startup, true);
         this._makeStageRequest(TorConnectStage.Start, true);
         break;
-      default:
-        // ignore
+      case lazy.TorSettingsTopics.SettingsChanged:
+        if (
+          this._stageName !== TorConnectStage.Bootstrapped &&
+          this._stageName !== TorConnectStage.Loading &&
+          this._stageName !== TorConnectStage.Start &&
+          subject.wrappedJSObject.changes.some(propertyName =>
+            propertyName.startsWith("bridges.")
+          )
+        ) {
+          // A change in bridge settings before we are bootstrapped, we reset
+          // the stage to Start to:
+          // + Cancel any ongoing bootstrap attempt. In particular, we
+          //   definitely do not want to continue with an auto-bootstrap's
+          //   temporary bridges if the settings have changed.
+          // + Reset the UI to be ready for normal bootstrapping in case the
+          //   user returns to about:torconnect.
+          // See tor-browser#41921.
+          // NOTE: We do not reset in response to a change in the quickstart,
+          // firewall or proxy settings.
+          lazy.logger.warn(
+            "Resetting to Start stage since bridge settings changed"
+          );
+          // Rather than cancel and return to the pre-bootstrap stage, we
+          // explicitly cancel and return to the start stage.
+          this._makeStageRequest(TorConnectStage.Start);
+        }
         break;
     }
   },
