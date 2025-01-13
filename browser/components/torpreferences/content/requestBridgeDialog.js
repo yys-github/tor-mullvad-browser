@@ -4,9 +4,8 @@ const { BridgeDB } = ChromeUtils.importESModule(
   "resource://gre/modules/BridgeDB.sys.mjs"
 );
 
-const { TorConnect, TorConnectTopics } = ChromeUtils.importESModule(
-  "resource://gre/modules/TorConnect.sys.mjs"
-);
+const { TorConnect, TorConnectStage, TorConnectTopics } =
+  ChromeUtils.importESModule("resource://gre/modules/TorConnect.sys.mjs");
 
 const log = console.createInstance({
   maxLogLevel: "Warn",
@@ -102,7 +101,7 @@ const gRequestBridgeDialog = {
   },
 
   onAcceptStateChange() {
-    const connect = TorConnect.canBeginBootstrap;
+    const connect = TorConnect.stageName !== TorConnectStage.Bootstrapped;
     this._result.connect = connect;
     this._submitButton.setAttribute(
       "data-l10n-id",
