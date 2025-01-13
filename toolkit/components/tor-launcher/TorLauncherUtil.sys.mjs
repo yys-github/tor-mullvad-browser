@@ -17,8 +17,6 @@ const kPropBundleURI = "chrome://torbutton/locale/torlauncher.properties";
 const kPropNamePrefix = "torlauncher.";
 const kIPCDirPrefName = "extensions.torlauncher.tmp_ipc_dir";
 
-let gStringBundle = null;
-
 /**
  * This class allows to lookup for the paths of the various files that are
  * needed or can be used with the tor daemon, such as its configuration, the
@@ -332,7 +330,7 @@ class TorFile {
   }
 }
 
-export const TorLauncherUtil = Object.freeze({
+export const TorLauncherUtil = {
   get isAndroid() {
     return Services.appinfo.OS === "Android";
   },
@@ -417,6 +415,8 @@ export const TorLauncherUtil = Object.freeze({
     return this.showConfirm(null, s, defaultBtnLabel, cancelBtnLabel);
   },
 
+  _stringBundle: null,
+
   // Localized Strings
   // TODO: Switch to fluent also these ones.
 
@@ -424,6 +424,9 @@ export const TorLauncherUtil = Object.freeze({
   getLocalizedString(aStringName) {
     if (!aStringName) {
       return aStringName;
+    }
+    if (!this._stringBundle) {
+      this._stringBundle = Services.strings.createBundle(kPropBundleURI);
     }
     try {
       const key = kPropNamePrefix + aStringName;
@@ -587,7 +590,12 @@ export const TorLauncherUtil = Object.freeze({
     Services.prefs.savePrefFile(null);
   },
 
-  get shouldStartAndOwnTor() {
+  /**
+   * Determine the current value for whether we should start and own Tor.
+   *
+   * @returns {boolean} Whether we should start and own Tor.
+   */
+  _getShouldStartAndOwnTor() {
     const kPrefStartTor = "extensions.torlauncher.start_tor";
     try {
       const kBrowserToolboxPort = "MOZ_BROWSER_TOOLBOX_PORT";
@@ -608,6 +616,29 @@ export const TorLauncherUtil = Object.freeze({
       }
     } catch (e) {}
     return Services.prefs.getBoolPref(kPrefStartTor, true);
+  },
+
+  /**
+   * Cached value for shouldStartAndOwnTor, or `null` if not yet initialised.
+   *
+   * @type {boolean}
+   */
+  _shouldStartAndOwnTor: null,
+
+  /**
+   * Whether we should start and own Tor.
+   *
+   * The value should be constant per-session.
+   *
+   * @type {boolean}
+   */
+  get shouldStartAndOwnTor() {
+    // Do not want this value to change within the same session, so always used
+    // the cached valued if it is available.
+    if (this._shouldStartAndOwnTor === null) {
+      this._shouldStartAndOwnTor = this._getShouldStartAndOwnTor();
+    }
+    return this._shouldStartAndOwnTor;
   },
 
   get shouldShowNetworkSettings() {
@@ -668,11 +699,4 @@ export const TorLauncherUtil = Object.freeze({
       console.warn("Could not remove the IPC directory", e);
     }
   },
-
-  get _stringBundle() {
-    if (!gStringBundle) {
-      gStringBundle = Services.strings.createBundle(kPropBundleURI);
-    }
-    return gStringBundle;
-  },
-});
+};
