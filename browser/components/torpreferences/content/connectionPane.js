@@ -2257,6 +2257,8 @@ const gBridgeSettings = {
           }
 
           // Wait until the settings are applied before bootstrapping.
+          // NOTE: Saving the settings should also cancel any existing bootstrap
+          // attempt first. See tor-browser#41921.
           savedSettings.then(() => {
             // The bridge dialog button is "connect" when Tor is not
             // bootstrapped, so do the connect.
