@@ -27,8 +27,6 @@ export const TorSettingsTopics = Object.freeze({
 
 /* Prefs used to store settings in TorBrowser prefs */
 const TorSettingsPrefs = Object.freeze({
-  /* bool: are we pulling tor settings from the preferences */
-  enabled: "torbrowser.settings.enabled",
   quickstart: {
     /* bool: does tor connect automatically on launch */
     enabled: "torbrowser.settings.quickstart.enabled",
@@ -246,6 +244,13 @@ class TorSettingsImpl {
   #builtinBridges = {};
 
   /**
+   * A promise that resolves once we are initialized, or throws if there was an
+   * initialization error.
+   *
+   * @type {Promise}
+   */
+  #initializedPromise;
+  /**
    * Resolve callback of the initializedPromise.
    */
   #initComplete;
@@ -261,8 +266,29 @@ class TorSettingsImpl {
    */
   #initialized = false;
 
+  /**
+   * Whether uninit cleanup has been called.
+   *
+   * @type {boolean}
+   */
+  #uninitCalled = false;
+
+  /**
+   * Whether Lox was initialized.
+   *
+   * @type {boolean}
+   */
+  #initializedLox = false;
+
+  /**
+   * Whether observers were initialized.
+   *
+   * @type {boolean}
+   */
+  #initializedObservers = false;
+
   constructor() {
-    this.initializedPromise = new Promise((resolve, reject) => {
+    this.#initializedPromise = new Promise((resolve, reject) => {
       this.#initComplete = resolve;
       this.#initFailed = reject;
     });
@@ -379,11 +405,21 @@ class TorSettingsImpl {
   }
 
   /**
+   * Whether this module is enabled.
+   *
+   * @type {boolean}
+   */
+  get enabled() {
+    return lazy.TorLauncherUtil.shouldStartAndOwnTor;
+  }
+
+  /**
    * Load or init our settings.
    */
   async init() {
     if (this.#initialized) {
       lazy.logger.warn("Called init twice.");
+      await this.#initializedPromise;
       return;
     }
     try {
@@ -402,6 +438,11 @@ class TorSettingsImpl {
    * it easier to update initializatedPromise.
    */
   async #initInternal() {
+    if (!this.enabled || this.#uninitCalled) {
+      // Nothing to do.
+      return;
+    }
+
     try {
       const req = await fetch("chrome://global/content/pt_config.json");
       const config = await req.json();
@@ -419,26 +460,37 @@ class TorSettingsImpl {
       lazy.logger.error("Could not load the built-in PT config.", e);
     }
 
+    // `uninit` may have been called whilst we awaited pt_config.
+    if (this.#uninitCalled) {
+      lazy.logger.warn("unint was called before init completed.");
+      return;
+    }
+
     // Initialize this before loading from prefs because we need Lox initialized
     // before any calls to Lox.getBridges().
     if (!lazy.TorLauncherUtil.isAndroid) {
       try {
+        // Set as initialized before calling to ensure it is cleaned up by our
+        // `uninit` method.
+        this.#initializedLox = true;
         await lazy.Lox.init();
       } catch (e) {
         lazy.logger.error("Could not initialize Lox.", e);
       }
     }
 
-    if (
-      lazy.TorLauncherUtil.shouldStartAndOwnTor &&
-      Services.prefs.getBoolPref(TorSettingsPrefs.enabled, false)
-    ) {
-      this.#loadFromPrefs();
-      // We do not pass on the loaded settings to the TorProvider yet. Instead
-      // TorProvider will ask for these once it has initialised.
+    // `uninit` may have been called whilst we awaited Lox.init.
+    if (this.#uninitCalled) {
+      lazy.logger.warn("unint was called before init completed.");
+      return;
     }
 
+    this.#loadFromPrefs();
+    // We do not pass on the loaded settings to the TorProvider yet. Instead
+    // TorProvider will ask for these once it has initialised.
+
     Services.obs.addObserver(this, lazy.LoxTopics.UpdateBridges);
+    this.#initializedObservers = true;
 
     lazy.logger.info("Ready");
   }
@@ -447,8 +499,22 @@ class TorSettingsImpl {
    * Unload or uninit our settings.
    */
   async uninit() {
-    Services.obs.removeObserver(this, lazy.LoxTopics.UpdateBridges);
-    await lazy.Lox.uninit();
+    if (this.#uninitCalled) {
+      lazy.logger.warn("Called uninit twice");
+      return;
+    }
+
+    this.#uninitCalled = true;
+    // NOTE: We do not reset #initialized to false because we want it to remain
+    // in place for external callers, and we do not want `#initInternal` to be
+    // re-entered.
+
+    if (this.#initializedObservers) {
+      Services.obs.removeObserver(this, lazy.LoxTopics.UpdateBridges);
+    }
+    if (this.#initializedLox) {
+      await lazy.Lox.uninit();
+    }
   }
 
   observe(subject, topic) {
@@ -473,10 +539,13 @@ class TorSettingsImpl {
   }
 
   /**
-   * Check whether the object has been successfully initialized, and throw if
-   * it has not.
+   * Check whether the module is enabled and successfully initialized, and throw
+   * if it is not.
    */
   #checkIfInitialized() {
+    if (!this.enabled) {
+      throw new Error("TorSettings is not enabled");
+    }
     if (!this.#initialized) {
       lazy.logger.trace("Not initialized code path.");
       throw new Error(
@@ -492,6 +561,16 @@ class TorSettingsImpl {
    */
   get initialized() {
     return this.#initialized;
+  }
+
+  /**
+   * A promise that resolves once we are initialized, or throws if there was an
+   * initialization error.
+   *
+   * @type {Promise}
+   */
+  get initializedPromise() {
+    return this.#initializedPromise;
   }
 
   /**
@@ -701,9 +780,6 @@ class TorSettingsImpl {
     } else {
       Services.prefs.clearUserPref(TorSettingsPrefs.firewall.allowed_ports);
     }
-
-    // all tor settings now stored in prefs :)
-    Services.prefs.setBoolPref(TorSettingsPrefs.enabled, true);
   }
 
   /**
