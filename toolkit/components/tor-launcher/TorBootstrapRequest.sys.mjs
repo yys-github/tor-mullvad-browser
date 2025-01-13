@@ -90,6 +90,11 @@ export class TorBootstrapRequest {
       // Wait for bootstrapping to begin and maybe handle error.
       // Notice that we do not resolve the promise here in case of success, but
       // we do it from the BootstrapStatus observer.
+      // NOTE: After TorProviderBuilder.build resolves, TorProvider.init will
+      // have completed. In particular, assuming no errors, the TorSettings will
+      // have been initialised and passed on to the provider via
+      // TorProvider.writeSettings. Therefore we should be safe to immediately
+      // call `connect` using the latest user settings.
       lazy.TorProviderBuilder.build()
         .then(provider => provider.connect())
         .catch(err => {
