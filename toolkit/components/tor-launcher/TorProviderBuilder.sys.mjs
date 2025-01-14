@@ -54,14 +54,15 @@ export class TorProviderBuilder {
 
   /**
    * Initialize the provider of choice.
-   * Even though initialization is asynchronous, we do not expect the caller to
-   * await this method. The reason is that any call to build() will wait the
-   * initialization anyway (and re-throw any initialization error).
    */
-  static async init() {
+  static init() {
     switch (this.providerType) {
       case TorProviders.tor:
-        await this.#initTorProvider();
+        // Even though initialization of the initial TorProvider is
+        // asynchronous, we do not expect the caller to await it. The reason is
+        // that any call to build() will wait the initialization anyway (and
+        // re-throw any initialization error).
+        this.#initTorProvider();
         break;
       case TorProviders.none:
         lazy.TorLauncherUtil.setProxyConfiguration(
@@ -74,7 +75,12 @@ export class TorProviderBuilder {
     }
   }
 
-  static async #initTorProvider() {
+  /**
+   * Replace #provider with a new instance.
+   *
+   * @returns {Promise<TorProvider>} The new instance.
+   */
+  static #initTorProvider() {
     if (!this.#exitObserver) {
       this.#exitObserver = this.#torExited.bind(this);
       Services.obs.addObserver(
@@ -83,18 +89,39 @@ export class TorProviderBuilder {
       );
     }
 
+    // NOTE: We need to ensure that the #provider is set as soon
+    // TorProviderBuilder.init is called.
+    // I.e. it should be safe to call
+    //   TorProviderBuilder.init();
+    //   TorProviderBuilder.build();
+    // without any await.
+    //
+    // Therefore, we await the oldProvider within the Promise rather than make
+    // #initTorProvider async.
+    //
+    // In particular, this is needed by TorConnect when the user has selected
+    // quickstart, in which case `TorConnect.init` will immediately request the
+    // provider. See tor-browser#41921.
+    this.#provider = this.#replaceTorProvider(this.#provider);
+    return this.#provider;
+  }
+
+  /**
+   * Replace a TorProvider instance. Resolves once the TorProvider is
+   * initialised.
+   *
+   * @param {Promise<TorProvider>?} oldProvider - The previous's provider's
+   *   promise, if any.
+   * @returns {TorProvider} The new TorProvider instance.
+   */
+  static async #replaceTorProvider(oldProvider) {
     try {
-      const old = await this.#provider;
-      old?.uninit();
+      // Uninitialise the old TorProvider, if there is any.
+      (await oldProvider)?.uninit();
     } catch {}
-    this.#provider = new Promise((resolve, reject) => {
-      const provider = new lazy.TorProvider();
-      provider
-        .init()
-        .then(() => resolve(provider))
-        .catch(reject);
-    });
-    await this.#provider;
+    const provider = new lazy.TorProvider();
+    await provider.init();
+    return provider;
   }
 
   static uninit() {
