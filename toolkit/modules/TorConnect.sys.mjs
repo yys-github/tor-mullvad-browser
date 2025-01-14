@@ -16,15 +16,12 @@ ChromeUtils.defineESModuleGetters(lazy, {
   TorSettings: "resource://gre/modules/TorSettings.sys.mjs",
 });
 
-/* Relevant prefs used by tor-launcher */
-const TorLauncherPrefs = Object.freeze({
-  prompt_at_startup: "extensions.torlauncher.prompt_at_startup",
-});
-
 const TorConnectPrefs = Object.freeze({
   censorship_level: "torbrowser.debug.censorship_level",
   allow_internet_test: "torbrowser.bootstrap.allow_internet_test",
   log_level: "torbrowser.bootstrap.log_level",
+  /* prompt_at_startup now controls whether the quickstart can trigger. */
+  prompt_at_startup: "extensions.torlauncher.prompt_at_startup",
 });
 
 export const TorConnectState = Object.freeze({
@@ -1050,7 +1047,7 @@ export const TorConnect = {
         lazy.logger.info("Starting again since the tor process exited");
         // Treat a failure as a possibly broken configuration.
         // So, prevent quickstart at the next start.
-        Services.prefs.setBoolPref(TorLauncherPrefs.prompt_at_startup, true);
+        Services.prefs.setBoolPref(TorConnectPrefs.prompt_at_startup, true);
         this._makeStageRequest(TorConnectStage.Start, true);
         break;
       default:
@@ -1171,7 +1168,7 @@ export const TorConnect = {
     return (
       lazy.TorSettings.quickstart.enabled &&
       // and the previous bootstrap attempt must have succeeded
-      !Services.prefs.getBoolPref(TorLauncherPrefs.prompt_at_startup, true)
+      !Services.prefs.getBoolPref(TorConnectPrefs.prompt_at_startup, true)
     );
   },
 
@@ -1451,6 +1448,8 @@ export const TorConnect = {
       this._tryAgain = false;
       this._potentiallyBlocked = false;
       this._errorDetails = null;
+      // Re-enable quickstart for future sessions.
+      Services.prefs.setBoolPref(TorConnectPrefs.prompt_at_startup, false);
 
       if (requestedStage) {
         lazy.logger.warn(
@@ -1491,6 +1490,8 @@ export const TorConnect = {
 
       this._tryAgain = true;
       this._potentiallyBlocked = true;
+      // Disable quickstart until we have a successful bootstrap.
+      Services.prefs.setBoolPref(TorConnectPrefs.prompt_at_startup, true);
 
       this._signalError(error);
 
