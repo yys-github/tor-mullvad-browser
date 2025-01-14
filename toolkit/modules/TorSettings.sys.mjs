@@ -711,10 +711,15 @@ class TorSettingsImpl {
    *
    * Even though this introduces a circular depdency, it makes the API nicer for
    * frontend consumers.
+   *
+   * @param {boolean} flush - Whether to also flush the settings to disk.
    */
-  async #applySettings() {
+  async #applySettings(flush) {
     const provider = await lazy.TorProviderBuilder.build();
     await provider.writeSettings();
+    if (flush) {
+      provider.flushSettings();
+    }
   }
 
   /**
@@ -974,7 +979,7 @@ class TorSettingsImpl {
     ];
     const shouldApply = changes.some(prop => !unreadProps.includes(prop));
     if (shouldApply) {
-      await this.#applySettings();
+      await this.#applySettings(true);
     }
   }
 
@@ -1042,7 +1047,8 @@ class TorSettingsImpl {
 
     // After checks are complete, we commit them.
     this.#temporaryBridgeSettings = bridgeSettings;
-    await this.#applySettings();
+    // Do not flush the temporary bridge settings until they are saved.
+    await this.#applySettings(false);
   }
 
   /**
