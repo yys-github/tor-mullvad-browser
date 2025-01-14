@@ -49,3 +49,15 @@ startup-test-linux:
     - ./mach python .gitlab/ci/jobs/startup-test/startup-test.py --platform linux --arch x86_64 --browser $BROWSER
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
+
+startup-test-android:
+  extends: .with-local-repo-bash
+  image: $IMAGE_PATH
+  stage: startup-test
+  interruptible: true
+  tags:
+    -  firefox
+  script:
+    - ./mach python .gitlab/ci/jobs/startup-test/startup-test-android.py --devices "Samsung Galaxy S23-13.0, Samsung Galaxy S8-7.0" --tests org.mozilla.fenix.LaunchTest
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "schedule"
