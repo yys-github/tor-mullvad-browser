@@ -334,6 +334,15 @@ export class TorProvider {
     }
 
     logger.debug("Mapped settings object", settings, torSettings);
+
+    // Send settings to the tor process.
+    // NOTE: Since everything up to this point has been non-async, the order in
+    // which TorProvider.writeSettings is called should match the order in which
+    // the configuration is passed onto setConf. In turn, TorControlPort.setConf
+    // should similarly ensure that the configuration reaches the tor process in
+    // the same order.
+    // In particular, we do not want a race where an earlier call to
+    // TorProvider.writeSettings can be delayed and override a later call.
     await this.#controller.setConf(Array.from(torSettings));
   }
 
