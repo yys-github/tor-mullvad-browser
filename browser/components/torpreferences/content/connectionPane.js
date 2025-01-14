@@ -2545,19 +2545,6 @@ const gConnectionPane = (function () {
 
     // populate xul with strings and cache the relevant elements
     _populateXUL() {
-      // saves tor settings to disk when navigate away from about:preferences
-      window.addEventListener("blur", async () => {
-        try {
-          // Build a new provider each time because this might be called also
-          // when closing the browser (if about:preferences was open), maybe
-          // when the provider was already uninitialized.
-          const provider = await TorProviderBuilder.build();
-          provider.flushSettings();
-        } catch (e) {
-          console.warn("Could not save the tor settings.", e);
-        }
-      });
-
       // Quickstart
       this._enableQuickstartCheckbox = document.getElementById(
         "torPreferences-quickstart-toggle"
