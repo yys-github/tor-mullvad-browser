@@ -70,7 +70,6 @@ const Preferences = Object.freeze({
   ControlHost: "extensions.torlauncher.control_host",
   ControlPort: "extensions.torlauncher.control_port",
   MaxLogEntries: "extensions.torlauncher.max_tor_log_entries",
-  PromptAtStartup: "extensions.torlauncher.prompt_at_startup",
 });
 
 /* Config Keys used to configure tor daemon */
@@ -962,11 +961,6 @@ export class TorProvider {
 
     if (statusObj.PROGRESS === 100) {
       this.#isBootstrapDone = true;
-      try {
-        Services.prefs.setBoolPref(Preferences.PromptAtStartup, false);
-      } catch (e) {
-        logger.warn(`Cannot set ${Preferences.PromptAtStartup}`, e);
-      }
       return;
     }
 
@@ -988,11 +982,6 @@ export class TorProvider {
    * @param {object} statusObj The bootstrap status object with the error
    */
   #notifyBootstrapError(statusObj) {
-    try {
-      Services.prefs.setBoolPref(Preferences.PromptAtStartup, true);
-    } catch (e) {
-      logger.warn(`Cannot set ${Preferences.PromptAtStartup}`, e);
-    }
     logger.error("Tor bootstrap error", statusObj);
 
     if (
