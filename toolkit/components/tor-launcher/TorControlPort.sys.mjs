@@ -364,6 +364,9 @@ export class TorController {
   /**
    * The commands that need to be run or receive a response.
    *
+   * NOTE: This must be in the order with the last requested command at the end
+   * of the queue.
+   *
    * @type {Command[]}
    */
   #commandQueue = [];
@@ -947,6 +950,10 @@ export class TorController {
    * values will be automatically unrolled.
    */
   async setConf(values) {
+    // NOTE: This is an async method. It must ensure that sequential calls to
+    // this method do not race against each other. I.e. the last call to this
+    // method must always be the last in #commandQueue. Otherwise a delayed
+    // earlier call could overwrite the configuration of a later call.
     const args = values
       .flatMap(([key, value]) => {
         if (value === undefined || value === null) {
