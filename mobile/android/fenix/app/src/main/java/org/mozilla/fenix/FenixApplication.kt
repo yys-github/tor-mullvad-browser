@@ -194,7 +194,6 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
 
     fun terminate() {
         onTerminate()
-        System.exit(0)
     }
 
     override fun onTerminate() {
