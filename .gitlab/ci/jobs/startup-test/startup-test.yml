@@ -11,7 +11,7 @@
 #     - x86-win11
 #   script:
 #     - ./mach python testing/mozbase/setup_development.py
-#     - ./mach python .gitlab/ci/jobs/startup-test/startup-test.py --platform windows --arch x86_64 --browser tor
+#     - ./mach python .gitlab/ci/jobs/startup-test/startup-test.py --platform windows --arch x86_64 --browser $BROWSER
 #   rules:
 #     - if: $CI_PIPELINE_SOURCE == "schedule"
 
@@ -28,7 +28,7 @@
 #     -  x86-macos
 #   script:
 #     - ./mach python testing/mozbase/setup_development.py
-#     - ./mach python .gitlab/ci/jobs/startup-test/startup-test.py --platform macos --arch x86_64 --browser tor
+#     - ./mach python .gitlab/ci/jobs/startup-test/startup-test.py --platform macos --arch x86_64 --browser $BROWSER
 #   rules:
 #     - if: $CI_PIPELINE_SOURCE == "schedule"
 
@@ -46,6 +46,6 @@ startup-test-linux:
     - Xvfb :99 -screen 0 1400x900x24 &
     - export DISPLAY=:99
     - ./mach python testing/mozbase/setup_development.py
-    - ./mach python .gitlab/ci/jobs/startup-test/startup-test.py --platform linux --arch x86_64 --browser tor
+    - ./mach python .gitlab/ci/jobs/startup-test/startup-test.py --platform linux --arch x86_64 --browser $BROWSER
   rules:
     - if: $CI_PIPELINE_SOURCE == "schedule"
