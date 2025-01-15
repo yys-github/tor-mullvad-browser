@@ -169,8 +169,9 @@ public class TorIntegrationAndroid implements BundleEventListener {
     } else if (EVENT_TOR_LOGS.equals(event)) {
       String msg = message.getString("message");
       String type = message.getString("logType");
+      String timestamp = message.getString("timestamp");
       for (TorLogListener listener : mLogListeners) {
-        listener.onLog(type, msg);
+        listener.onLog(type, msg, timestamp);
       }
     }
   }
@@ -636,7 +637,7 @@ public class TorIntegrationAndroid implements BundleEventListener {
   }
 
   public interface TorLogListener {
-    void onLog(String logType, String message);
+    void onLog(String logType, String message, String timestamp);
   }
 
   private @NonNull void reloadSettings() {
