@@ -2550,12 +2550,10 @@ const gConnectionPane = (function () {
         "torPreferences-quickstart-toggle"
       );
       this._enableQuickstartCheckbox.addEventListener("command", () => {
-        TorSettings.changeSettings({
-          quickstart: { enabled: this._enableQuickstartCheckbox.checked },
-        });
+        TorConnect.quickstart = this._enableQuickstartCheckbox.checked;
       });
-      this._enableQuickstartCheckbox.checked = TorSettings.quickstart.enabled;
-      Services.obs.addObserver(this, TorSettingsTopics.SettingsChanged);
+      this._enableQuickstartCheckbox.checked = TorConnect.quickstart;
+      Services.obs.addObserver(this, TorConnectTopics.QuickstartChange);
 
       // Location
       {
@@ -2667,7 +2665,7 @@ const gConnectionPane = (function () {
       gBridgeSettings.init();
       gNetworkStatus.init();
 
-      TorSettings.initializedPromise.then(() => this._populateXUL());
+      this._populateXUL();
 
       const onUnload = () => {
         window.removeEventListener("unload", onUnload);
@@ -2681,7 +2679,7 @@ const gConnectionPane = (function () {
       gNetworkStatus.uninit();
 
       // unregister our observer topics
-      Services.obs.removeObserver(this, TorSettingsTopics.SettingsChanged);
+      Services.obs.removeObserver(this, TorConnectTopics.QuickstartChange);
       Services.obs.removeObserver(this, TorConnectTopics.StageChange);
     },
 
@@ -2696,12 +2694,8 @@ const gConnectionPane = (function () {
 
     observe(subject, topic) {
       switch (topic) {
-        // triggered when a TorSettings param has changed
-        case TorSettingsTopics.SettingsChanged: {
-          if (subject.wrappedJSObject.changes.includes("quickstart.enabled")) {
-            this._enableQuickstartCheckbox.checked =
-              TorSettings.quickstart.enabled;
-          }
+        case TorConnectTopics.QuickstartChange: {
+          this._enableQuickstartCheckbox.checked = TorConnect.quickstart;
           break;
         }
         // triggered when tor connect state changes and we may
@@ -2713,7 +2707,10 @@ const gConnectionPane = (function () {
       }
     },
 
-    onAdvancedSettings() {
+    async onAdvancedSettings() {
+      // Ensure TorSettings is complete before loading the dialog, which reads
+      // from TorSettings.
+      await TorSettings.initializedPromise;
       gSubDialog.open(
         "chrome://browser/content/torpreferences/connectionSettingsDialog.xhtml",
         { features: "resizable=yes" }
