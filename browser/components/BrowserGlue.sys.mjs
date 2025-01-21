@@ -4822,7 +4822,9 @@ BrowserGlue.prototype = {
     //            YouTube search engines (tor-browser#41835).
     // Version 5: Tor Browser 14.0a5: Clear user preference for CFR settings
     //            since we hid the UI (tor-browser#43118).
-    const TBB_MIGRATION_VERSION = 5;
+    // Version 6: Tor Browser 14.5a3: Clear preference for TorSettings that is
+    //            no longer used (tor-browser#41921).
+    const TBB_MIGRATION_VERSION = 6;
     const MIGRATION_PREF = "torbrowser.migration.version";
 
     // If we decide to force updating users to pass through any version
@@ -4902,6 +4904,10 @@ BrowserGlue.prototype = {
       ]) {
         Services.prefs.clearUserPref(pref);
       }
+    }
+
+    if (currentVersion < 6) {
+      Services.prefs.clearUserPref("torbrowser.settings.enabled");
     }
 
     Services.prefs.setIntPref(MIGRATION_PREF, TBB_MIGRATION_VERSION);
