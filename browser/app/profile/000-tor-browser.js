@@ -61,6 +61,31 @@ pref("browser.startup.homepage", "about:tor");
 // tor-browser#40701: Add new download warning
 pref("browser.download.showTorWarning", true);
 
+
+// Tor connection setting preferences.
+
+pref("torbrowser.settings.quickstart.enabled", false);
+pref("torbrowser.settings.bridges.enabled", false);
+// TorBridgeSource. Initially TorBridgeSource.Invalid = -1.
+pref("torbrowser.settings.bridges.source", -1);
+pref("torbrowser.settings.bridges.lox_id", "");
+// obfs4|meek-azure|snowflake|etc.
+pref("torbrowser.settings.bridges.builtin_type", "");
+// torbrowser.settings.bridges.bridge_strings.0
+// torbrowser.settings.bridges.bridge_strings.1
+// etc hold the bridge lines.
+pref("torbrowser.settings.proxy.enabled", false);
+// TorProxyType. Initially TorProxyType.Invalid = -1.
+pref("torbrowser.settings.proxy.type", -1);
+pref("torbrowser.settings.proxy.address", "");
+pref("torbrowser.settings.proxy.port", 0);
+pref("torbrowser.settings.proxy.username", "");
+pref("torbrowser.settings.proxy.password", "");
+pref("torbrowser.settings.firewall.enabled", false);
+// comma-delimited list of port numbers.
+pref("torbrowser.settings.firewall.allowed_ports", "");
+
+
 // This pref specifies an ad-hoc "version" for various pref update hacks we need to do
 pref("extensions.torbutton.pref_fixup_version", 0);
 
