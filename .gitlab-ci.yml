@@ -2,6 +2,7 @@ stages:
   - update-container-images
   - lint
   - startup-test
+  - update-translations
 
 variables:
   IMAGE_PATH: containers.torproject.org/tpo/applications/tor-browser/base:latest
