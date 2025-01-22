@@ -97,6 +97,7 @@ class TorAndroidIntegrationImpl {
   #getAllSettings() {
     const settings = lazy.TorSettings.getSettings();
     settings.quickstart = { enabled: lazy.TorConnect.quickstart };
+    return settings;
   }
 
   observe(subj, topic) {
