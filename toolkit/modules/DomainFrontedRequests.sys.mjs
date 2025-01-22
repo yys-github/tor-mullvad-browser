@@ -378,6 +378,15 @@ export class DomainFrontRequestResponseError extends Error {
 }
 
 /**
+ * Thrown when the caller cancels the request.
+ */
+export class DomainFrontRequestCancelledError extends Error {
+  constructor(url) {
+    super(`Cancelled request to ${url}`);
+  }
+}
+
+/**
  * Callback object to promisify the XPCOM request.
  */
 class ResponseListener {
@@ -397,8 +406,12 @@ class ResponseListener {
     });
   }
 
-  // callers wait on this for final response
-  response() {
+  /**
+   * A promise that resolves to the response body from the request.
+   *
+   * @type {Promise<string>}
+   */
+  get response() {
     return this.#responsePromise;
   }
 
@@ -530,24 +543,74 @@ export class DomainFrontRequestBuilder {
    * @param {string} args.method The request method.
    * @param {string} args.body The request body.
    * @param {string} args.contentType The "Content-Type" header to set.
-   * @returns {string} The response body.
+   * @param {AbortSignal} [signal] args.signal An optional means of cancelling
+   *   the request early. Will throw DomainFrontRequestCancelledError if
+   *   aborted.
+   * @returns {Promise<string>} A promise that resolves to the response body.
    */
-  async buildRequest(url, args) {
-    const ch = this.buildHttpHandler(url);
+  buildRequest(url, args) {
+    // Pre-fetch the argument values from `args` so the caller cannot change the
+    // parameters mid-call.
+    const { body, method, contentType, signal } = args;
+    let cancel = null;
+    const promise = new Promise((resolve, reject) => {
+      if (signal?.aborted) {
+        // Unexpected, cancel immediately.
+        reject(new DomainFrontRequestCancelledError(url));
+        return;
+      }
 
-    const inStream = Cc["@mozilla.org/io/string-input-stream;1"].createInstance(
-      Ci.nsIStringInputStream
-    );
-    inStream.setData(args.body, args.body.length);
-    const upChannel = ch.QueryInterface(Ci.nsIUploadChannel);
-    upChannel.setUploadStream(inStream, args.contentType, args.body.length);
-    ch.requestMethod = args.method;
+      let ch = null;
 
-    // Make request
-    const listener = new ResponseListener();
-    await ch.asyncOpen(listener, ch);
+      if (signal) {
+        cancel = () => {
+          // Reject prior to calling cancel, since we want to ignore any error
+          // responses from ResponseListener.
+          // NOTE: In principle we could let ResponseListener throw this error
+          // when it receives NS_ERROR_ABORT, but that would rely on mozilla
+          // never calling this error either.
+          reject(new DomainFrontRequestCancelledError(url));
+          ch?.cancel(Cr.NS_ERROR_ABORT);
+        };
+        signal.addEventListener("abort", cancel);
+      }
 
-    // wait for response
-    return listener.response();
+      ch = this.buildHttpHandler(url);
+
+      const inStream = Cc[
+        "@mozilla.org/io/string-input-stream;1"
+      ].createInstance(Ci.nsIStringInputStream);
+      inStream.setData(body, body.length);
+      const upChannel = ch.QueryInterface(Ci.nsIUploadChannel);
+      upChannel.setUploadStream(inStream, contentType, body.length);
+      ch.requestMethod = method;
+
+      // Make request
+      const listener = new ResponseListener();
+      ch.asyncOpen(listener);
+      listener.response.then(
+        body => {
+          resolve(body);
+        },
+        error => {
+          reject(error);
+        }
+      );
+    });
+    // Clean up. Do not return this `Promise.finally` since the caller should
+    // not depend on it.
+    // We pre-catch and suppress all errors for this `.finally` to stop the
+    // errors from being duplicated in the console log.
+    promise
+      .catch(() => {})
+      .finally(() => {
+        // Remove the callback for the AbortSignal so that it doesn't hold onto
+        // our channel reference if the caller continues to hold a reference to
+        // AbortSignal.
+        if (cancel) {
+          signal.removeEventListener("abort", cancel);
+        }
+      });
+    return promise;
   }
 }
