@@ -5,12 +5,14 @@
 const lazy = {};
 
 const log = console.createInstance({
-  maxLogLevel: "Warn",
   prefix: "Moat",
+  maxLogLevelPref: "browser.torMoat.loglevel",
 });
 
 ChromeUtils.defineESModuleGetters(lazy, {
   DomainFrontRequestBuilder:
+    "resource://gre/modules/DomainFrontedRequests.sys.mjs",
+  DomainFrontRequestCancelledError:
     "resource://gre/modules/DomainFrontedRequests.sys.mjs",
   TorBridgeSource: "resource://gre/modules/TorSettings.sys.mjs",
 });
@@ -92,6 +94,19 @@ class InternetTestResponseListener {
  */
 
 /**
+ * @typedef {Object} CaptchaChallenge
+ *
+ * The details for a captcha challenge.
+ *
+ * @property {string} transport - The transport type selected by the Moat
+ *   server.
+ * @property {string} image - A base64 encoded jpeg with the captcha to
+ *   complete.
+ * @property {string} challenge - A nonce/cookie string associated with this
+ * request.
+ */
+
+/**
  * Constructs JSON objects and sends requests over Moat.
  * The documentation about the JSON schemas to use are available at
  * https://gitlab.torproject.org/tpo/anti-censorship/rdsys/-/blob/main/doc/moat.md.
@@ -122,17 +137,51 @@ export class MoatRPC {
     this.#requestBuilder = null;
   }
 
-  async #makeRequest(procedure, args) {
+  /**
+   * @typedef {Object} MoatResult
+   *
+   * The result of a Moat request.
+   *
+   * @property {any} response - The parsed JSON response from the Moat server,
+   *   or `undefined` if the request was cancelled.
+   * @property {boolean} cancelled - Whether the request was cancelled.
+   */
+
+  /**
+   * Make a request to Moat.
+   *
+   * @param {string} procedure - The name of the procedure.
+   * @param {object} args - The arguments to pass in as a JSON string.
+   * @param {AbortSignal} [abortSignal] - An optional signal to be able to abort
+   * the request early.
+   * @returns {MoatResult} - The result of the request.
+   */
+  async #makeRequest(procedure, args, abortSignal) {
     const procedureURIString = `${Services.prefs.getStringPref(
       TorLauncherPrefs.moat_service
     )}/${procedure}`;
-    return JSON.parse(
-      await this.#requestBuilder.buildRequest(procedureURIString, {
-        method: "POST",
-        contentType: "application/vnd.api+json",
-        body: JSON.stringify(args),
-      })
-    );
+    log.info(`Making request to ${procedureURIString}:`, args);
+    let response = undefined;
+    let cancelled = false;
+    try {
+      response = JSON.parse(
+        await this.#requestBuilder.buildRequest(procedureURIString, {
+          method: "POST",
+          contentType: "application/vnd.api+json",
+          body: JSON.stringify(args),
+          signal: abortSignal,
+        })
+      );
+      log.info(`Response to ${procedureURIString}:`, response);
+    } catch (e) {
+      if (abortSignal && e instanceof lazy.DomainFrontRequestCancelledError) {
+        log.info(`Request to ${procedureURIString} cancelled`);
+        cancelled = true;
+      } else {
+        throw e;
+      }
+    }
+    return { response, cancelled };
   }
 
   async testInternetConnection() {
@@ -147,15 +196,16 @@ export class MoatRPC {
     return listener.status;
   }
 
-  // Receive a CAPTCHA challenge, takes the following parameters:
-  // - transports: array of transport strings available to us eg: ["obfs4", "meek"]
-  //
-  // returns an object with the following fields:
-  // - transport: a transport string the moat server decides it will send you selected
-  //   from the list of provided transports
-  // - image: a base64 encoded jpeg with the captcha to complete
-  // - challenge: a nonce/cookie string associated with this request
-  async fetch(transports) {
+  /**
+   * Request a CAPTCHA challenge.
+   *
+   * @param {string[]} transports - List of transport strings available to us
+   *   eg: ["obfs4", "meek"].
+   * @param {AbortSignal} abortSignal - A signal to abort the request early.
+   * @returns {?CaptchaChallenge} - The captcha challenge, or `null` if the
+   *   request was aborted by the caller.
+   */
+  async fetch(transports, abortSignal) {
     if (
       // ensure this is an array
       Array.isArray(transports) &&
@@ -173,7 +223,15 @@ export class MoatRPC {
           },
         ],
       };
-      const response = await this.#makeRequest("fetch", args);
+      const { response, cancelled } = await this.#makeRequest(
+        "fetch",
+        args,
+        abortSignal
+      );
+      if (cancelled) {
+        return null;
+      }
+
       if ("errors" in response) {
         const code = response.errors[0].code;
         const detail = response.errors[0].detail;
@@ -189,18 +247,17 @@ export class MoatRPC {
     throw new Error("MoatRPC: fetch() expects a non-empty array of strings");
   }
 
-  // Submit an answer for a CAPTCHA challenge and get back bridges, takes the following
-  // parameters:
-  // - transport: the transport string associated with a previous fetch request
-  // - challenge: the nonce string associated with the fetch request
-  // - solution: solution to the CAPTCHA associated with the fetch request
-  // - qrcode: true|false whether we want to get back a qrcode containing the bridge strings
-  //
-  // returns an object with the following fields:
-  // - bridges: an array of bridge line strings
-  // - qrcode: base64 encoded jpeg of bridges if requested, otherwise null
-  // if the provided solution is incorrect, returns an empty object
-  async check(transport, challenge, solution, qrcode) {
+  /**
+   * Submit an answer for a previous CAPTCHA fetch to get bridges.
+   *
+   * @param {string} transport - The transport associated with the fetch.
+   * @param {string} challenge - The nonce string associated with the fetch.
+   * @param {string} solution - The solution to the CAPTCHA.
+   * @param {AbortSignal} abortSignal - A signal to abort the request early.
+   * @returns {?string[]} - The bridge lines for a correct solution, or `null`
+   *   if the solution was incorrect or the request was aborted by the caller.
+   */
+  async check(transport, challenge, solution, abortSignal) {
     const args = {
       data: [
         {
@@ -210,25 +267,30 @@ export class MoatRPC {
           transport,
           challenge,
           solution,
-          qrcode: qrcode ? "true" : "false",
+          qrcode: "false",
         },
       ],
     };
-    const response = await this.#makeRequest("check", args);
+    const { response, cancelled } = await this.#makeRequest(
+      "check",
+      args,
+      abortSignal
+    );
+    if (cancelled) {
+      return null;
+    }
+
     if ("errors" in response) {
       const code = response.errors[0].code;
       const detail = response.errors[0].detail;
       if (code == 419 && detail === "The CAPTCHA solution was incorrect.") {
-        return {};
+        return null;
       }
 
       throw new Error(`MoatRPC: ${detail} (${code})`);
     }
 
-    const bridges = response.data[0].bridges;
-    const qrcodeImg = qrcode ? response.data[0].qrcode : null;
-
-    return { bridges, qrcode: qrcodeImg };
+    return response.data[0].bridges;
   }
 
   /**
@@ -296,15 +358,24 @@ export class MoatRPC {
    * @param {?string} country - The region to request bridges for, as an
    *   ISO 3166-1 alpha-2 region code, or `null` to have the server
    *   automatically determine the region.
+   * @param {AbortSignal} abortSignal - A signal to abort the request early.
    * @returns {?MoatSettings} - The returned settings from the server, or `null`
-   *   if the region could not be determined by the server.
+   *   if the region could not be determined by the server or the caller
+   *   cancelled the request.
    */
-  async circumvention_settings(transports, country) {
+  async circumvention_settings(transports, country, abortSignal) {
     const args = {
       transports: transports ? transports : [],
       country,
     };
-    const response = await this.#makeRequest("circumvention/settings", args);
+    const { response, cancelled } = await this.#makeRequest(
+      "circumvention/settings",
+      args,
+      abortSignal
+    );
+    if (cancelled) {
+      return null;
+    }
     let settings = {};
     if ("errors" in response) {
       const code = response.errors[0].code;
@@ -334,7 +405,11 @@ export class MoatRPC {
   // settings for.
   async circumvention_countries() {
     const args = {};
-    return this.#makeRequest("circumvention/countries", args);
+    const { response } = await this.#makeRequest(
+      "circumvention/countries",
+      args
+    );
+    return response;
   }
 
   // Request a copy of the builtin bridges, takes the following parameters:
@@ -347,7 +422,7 @@ export class MoatRPC {
     const args = {
       transports: transports ? transports : [],
     };
-    const response = await this.#makeRequest("circumvention/builtin", args);
+    const { response } = await this.#makeRequest("circumvention/builtin", args);
     if ("errors" in response) {
       const code = response.errors[0].code;
       const detail = response.errors[0].detail;
@@ -366,13 +441,22 @@ export class MoatRPC {
    * Request a copy of the default/fallback bridge settings.
    *
    * @param {string[]} transports - A list of transports we support.
-   * @returns {MoatBridges[]} - The list of bridges found.
+   * @param {AbortSignal} abortSignal - A signal to abort the request early.
+   * @returns {?MoatBridges[]} - The list of bridges found, or `null` if the
+   *   caller cancelled the request.
    */
-  async circumvention_defaults(transports) {
+  async circumvention_defaults(transports, abortSignal) {
     const args = {
       transports: transports ? transports : [],
     };
-    const response = await this.#makeRequest("circumvention/defaults", args);
+    const { response, cancelled } = await this.#makeRequest(
+      "circumvention/defaults",
+      args,
+      abortSignal
+    );
+    if (cancelled) {
+      return null;
+    }
     if ("errors" in response) {
       const code = response.errors[0].code;
       const detail = response.errors[0].detail;
