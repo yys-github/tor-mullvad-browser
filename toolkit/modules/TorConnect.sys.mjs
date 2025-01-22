@@ -570,6 +570,7 @@ class AutoBootstrapAttempt {
         return;
       }
 
+      let moatAbortController = new AbortController();
       // For now, throw any errors we receive from the backend, except when it
       // was unable to detect user's country/region.
       // If we use specialized error objects, we could pass the original errors
@@ -577,11 +578,20 @@ class AutoBootstrapAttempt {
       const maybeSettings = await Promise.race([
         moat.circumvention_settings(
           [...lazy.TorSettings.builtinBridgeTypes, "vanilla"],
-          options.regionCode === "automatic" ? null : options.regionCode
+          options.regionCode === "automatic" ? null : options.regionCode,
+          moatAbortController.signal
         ),
         // This might set maybeSettings to undefined.
         this.#cancelledPromise,
       ]);
+      if (this.#cancelled) {
+        // Ended early due to being cancelled. Abort the ongoing Moat request so
+        // that it does not continue unnecessarily in the background.
+        // NOTE: We do not care about circumvention_settings return value or
+        // errors at this point. Nor do we need to await its return. We just
+        // want it to resolve quickly.
+        moatAbortController.abort();
+      }
       if (this.#cancelled || this.#resolved) {
         return;
       }
@@ -591,15 +601,25 @@ class AutoBootstrapAttempt {
       if (maybeSettings?.bridgesList?.length) {
         this.#bridgesList = maybeSettings.bridgesList;
       } else {
+        // In principle we could reuse the existing moatAbortController
+        // instance, since its abort method has not been called. But it is
+        // cleaner to use a new instance to avoid triggering any potential
+        // lingering callbacks attached to the AbortSignal.
+        moatAbortController = new AbortController();
         // Keep consistency with the other call.
         this.#bridgesList = await Promise.race([
-          moat.circumvention_defaults([
-            ...lazy.TorSettings.builtinBridgeTypes,
-            "vanilla",
-          ]),
+          moat.circumvention_defaults(
+            [...lazy.TorSettings.builtinBridgeTypes, "vanilla"],
+            moatAbortController.signal
+          ),
           // This might set this.#bridgesList to undefined.
           this.#cancelledPromise,
         ]);
+        if (this.#cancelled) {
+          // Ended early due to being cancelled. Abort the ongoing Moat request
+          // so that it does not continue in the background.
+          moatAbortController.abort();
+        }
       }
     } finally {
       // Do not await the uninit.
