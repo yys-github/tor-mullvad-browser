@@ -119,6 +119,9 @@ const gRequestBridgeDialog = {
   },
 
   _setcaptchaImage(uri) {
+    if (!uri) {
+      return;
+    }
     if (uri != this._captchaImage.src) {
       this._captchaImage.src = uri;
       this._dialogHeader.setAttribute(
