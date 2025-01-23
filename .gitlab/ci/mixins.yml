@@ -12,7 +12,12 @@
           exit 1
       fi
     - echo "Fetching from remote branch ${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
-    - git fetch origin "${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"
+    - |
+      if ! git fetch origin "${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"; then
+            echo -e "\e[31mFetching failed for branch ${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME} from $CI_REPOSITORY_URL.\e[0m"
+            echo "Attempting to fetch the merge request branch, assuming this pipeline is not running in a fork."
+            git fetch origin "merge-requests/${CI_MERGE_REQUEST_IID}/head"
+      fi
     - git checkout origin/${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}
 
 .with-local-repo-pwsh:
@@ -33,5 +38,10 @@
           exit 1
       }
     - Write-Output "Fetching from remote branch $branchName"
-    - git fetch origin $branchName
+    - |
+      if (! git fetch origin $branchName) {
+        Write-Output "Fetching failed for branch $branchName from $env:CI_REPOSITORY_URL."
+        Write-Output "Attempting to fetch the merge request branch, assuming this pipeline is not running in a fork."
+        git fetch origin "merge-requests/$env:CI_MERGE_REQUEST_IID/head"
+      }
     - git checkout origin/$branchName
