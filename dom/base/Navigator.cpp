@@ -2112,7 +2112,7 @@ nsresult Navigator::GetUserAgent(nsPIDOMWindowInner* aWindow,
   // specific OS version, etc.
   if (shouldResistFingerprinting) {
     nsAutoCString spoofedUA;
-    nsRFPService::GetSpoofedUserAgent(spoofedUA, false);
+    nsRFPService::GetSpoofedUserAgent(spoofedUA);
     CopyASCIItoUTF16(spoofedUA, aUserAgent);
     return NS_OK;
   }
