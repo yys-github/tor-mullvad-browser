@@ -155,7 +155,7 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler {
         binding.titleDescription.visibility =
             if (screen.titleDescriptionVisible) View.VISIBLE else View.GONE
         if (screen.learnMoreStringResource != null && screen.internetErrorDescription != null) {
-            val learnMore: String = getString(screen.learnMoreStringResource)
+            val learnMore: String = "" // getString(screen.learnMoreStringResource) tor-browser#43198 uncomment and add back once we have the "Learn more" screens for relevant pages
             val internetErrorDescription: String =
                 if (screen.internetErrorDescription1 == null) {
                     getString(
