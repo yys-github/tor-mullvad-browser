@@ -382,4 +382,5 @@
     <color name="connect_button_purple">#9059FF</color>
     <color name="configure_connection_button_white">#E1E0E7</color>
     <color name="warning_yellow">#FFA436</color>
+    <color name="progress_background_tint">#55148C</color>
 </resources>
