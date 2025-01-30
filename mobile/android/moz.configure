@@ -231,8 +231,9 @@ def check_host_bin_prog(var, prog, toolchain=None):
             )
 
 
-check_host_bin_prog("EMBEDDED_UNIFFI_BINDGEN", "embedded-uniffi-bindgen")
-check_host_bin_prog("NIMBUS_FML", "nimbus-fml")
+# tb-44669 - this was added in rebase 148 to make android compile but tracking potentially better fix
+#check_host_bin_prog("EMBEDDED_UNIFFI_BINDGEN", "embedded-uniffi-bindgen")
+#check_host_bin_prog("NIMBUS_FML", "nimbus-fml")
 
 project_flag(
     "MOZ_ANDROID_NETWORK_STATE",
