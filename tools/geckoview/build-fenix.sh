@@ -6,6 +6,8 @@ VARIANT=$3
 
 source android-env.sh
 
+export NIMBUS_FML=$DEV_ROOT/mobile/android/fenix/app/nimbus-fml
+
 cd $DEV_ROOT/mobile/android/fenix
 MOZCONFIG=mozconfig-android-$ARCH $GRADLE_HOME/bin/gradle --no-daemon -Dorg.gradle.jvmargs=-Xmx20g -PdisableOptimization assemble$VARIANT
 tools/tba-sign-devbuilds.sh
