@@ -35,6 +35,7 @@ fun PrefBranch.toBrowserPrefBranch(): Branch {
     return when (this) {
         PrefBranch.DEFAULT -> Branch.DEFAULT
         PrefBranch.USER -> Branch.USER
+        PrefBranch.__NOOP -> Branch.DEFAULT
     }
 }
 
