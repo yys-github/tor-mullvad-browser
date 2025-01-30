@@ -55,6 +55,9 @@ sealed class DeviceCommandIncoming {
  * Outgoing device commands (ie, targeted at other devices.)
  */
 sealed class DeviceCommandOutgoing {
+    /** A command to do nothing */
+    class Noop() : DeviceCommandOutgoing()
+
     /** A command to open a tab on another device */
     class SendTab(val title: String, val url: String) : DeviceCommandOutgoing()
 
