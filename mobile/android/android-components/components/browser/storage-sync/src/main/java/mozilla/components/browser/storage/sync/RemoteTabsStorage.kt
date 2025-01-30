@@ -161,6 +161,7 @@ class RemoteTabsCommandQueue(
             .groupBy {
                 when (it.command) {
                     is RemoteCommand.CloseTab -> PendingCommandGroup.Key.CloseTab(it.deviceId)
+                    is RemoteCommand.__NOOP -> PendingCommandGroup.Key.Noop(it.deviceId)
                     // Add `is ... ->` branches for future pending commands here...
                 }.asAnyKey
             }
@@ -181,6 +182,13 @@ class RemoteTabsCommandQueue(
                                     providerCommand.url
                                 },
                             ),
+                            pendingCommands = pendingCommands,
+                        )
+                    }
+                    is PendingCommandGroup.Key.Noop -> {
+                        PendingCommandGroup(
+                            deviceId = key.deviceId,
+                            command = DeviceCommandOutgoing.Noop(),
                             pendingCommands = pendingCommands,
                         )
                     }
@@ -279,6 +287,7 @@ class RemoteTabsCommandQueue(
 
         sealed interface Key {
             data class CloseTab(val deviceId: String) : Key
+            data class Noop(val deviceId: String) : Key
             // Add data classes for future pending command grouping keys here...
 
             /** Returns this grouping key as a type-erased [Key]. */
