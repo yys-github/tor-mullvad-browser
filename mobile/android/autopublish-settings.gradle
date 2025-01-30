@@ -30,6 +30,7 @@ def rootLocalProperties = new File(gradle.mozconfig.topsrcdir, "local.properties
 [
     "autoPublish.application-services.dir",
     "autoPublish.glean.dir",
+    "uniffiBindgenNoop.executable",
 ].each { key ->
     def relativeOrAbsolutePath = rootLocalProperties."$key"
     if (relativeOrAbsolutePath != null) {
@@ -40,6 +41,10 @@ def rootLocalProperties = new File(gradle.mozconfig.topsrcdir, "local.properties
 
 gradle.settingsEvaluated {
     if (gradle.hasProperty("localProperties.autoPublish.application-services.dir")) {
+        if (!gradle.hasProperty("localProperties.uniffiBindgenNoop.executable")) {
+            throw new GradleException("Set uniffiBindgenNoop.executable to your local.properties in order to auto publish application-services.")
+        }
+
         def appServicesLocalPath = gradle."localProperties.autoPublish.application-services.dir"
         logger.lifecycle("settings.gradle> Enabling automatic publication of application-services from: $appServicesLocalPath")
         // Windows can't execute .py files directly, so we assume a "manually installed" python,
@@ -48,13 +53,17 @@ gradle.settingsEvaluated {
         if (System.properties["os.name"].toLowerCase().contains("windows")) {
             publishAppServicesCmd << "py";
         }
-        publishAppServicesCmd << "./automation/publish_to_maven_local_if_modified.py";
+        publishAppServicesCmd << "./automation/publish_to_maven_local_if_modified.py" << gradle."localProperties.uniffiBindgenNoop.executable";
         runCmd(publishAppServicesCmd, appServicesLocalPath, "Published application-services for local development.", false)
     } else {
         logger.lifecycle("settings.gradle> Disabled auto-publication of application-services. Enable it by settings 'autoPublish.application-services.dir' in local.properties")
     }
 
     if (gradle.hasProperty("localProperties.autoPublish.glean.dir")) {
+        if (!gradle.hasProperty("localProperties.uniffiBindgenNoop.executable")) {
+            throw new GradleException("Set uniffiBindgenNoop.executable to your local.properties in order to auto publish glean.")
+        }
+
         def gleanLocalPath = gradle."localProperties.autoPublish.glean.dir"
         logger.lifecycle("settings.gradle> Enabling automatic publication of Glean from: $gleanLocalPath")
         // As above, hacks to execute .py files on Windows.
@@ -62,7 +71,10 @@ gradle.settingsEvaluated {
         if (System.properties["os.name"].toLowerCase().contains("windows")) {
             publishGleanCmd << "py";
         }
-        publishGleanCmd << "./build-scripts/publish_to_maven_local_if_modified.py";
+
+        // We do not have a fork of Glean. In order for this to work, on your local
+        // copy of the Glean repo, modify this python script to accept and use the uniffi-bindgen path.
+        publishGleanCmd << "./build-scripts/publish_to_maven_local_if_modified.py" << gradle."localProperties.uniffiBindgenNoop.executable";
         runCmd(publishGleanCmd, gleanLocalPath, "Published Glean for local development.", false)
     } else {
         logger.lifecycle("settings.gradle> Disabled auto-publication of Glean. Enable it by settings 'autoPublish.glean.dir' in local.properties")
