@@ -28,6 +28,11 @@ import java.net.URI
 import java.security.MessageDigest
 import javax.inject.Inject
 
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+
 /**
  * A task that fetches a prebuilt `nimbus-fml` binary for the current platform.
  *
@@ -113,6 +118,17 @@ abstract class NimbusAssembleToolsTask : DefaultTask() {
 
     @TaskAction
     fun assembleTools() {
+        var nimbusFml = System.getenv("NIMBUS_FML") ?: ""
+        if (nimbusFml == "") {
+            nimbusFml = System.getProperty("nimbusFml", "")
+        }
+        if (nimbusFml != "") {
+            val source = File(nimbusFml).toPath()
+            val dest = fmlBinary.get().asFile.toPath()
+            Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING)
+            return
+        }
+
         val binaryFile = fmlBinary.get().asFile
         val archiveFileObj = archiveFile.get().asFile
         val hashFileObj = hashFile.get().asFile
