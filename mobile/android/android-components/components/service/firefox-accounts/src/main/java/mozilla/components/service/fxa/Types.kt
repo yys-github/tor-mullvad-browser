@@ -131,7 +131,7 @@ internal fun RustDeviceType.into(): DeviceType {
         RustDeviceType.TABLET -> DeviceType.TABLET
         RustDeviceType.TV -> DeviceType.TV
         RustDeviceType.VR -> DeviceType.VR
-        RustDeviceType.UNKNOWN -> DeviceType.UNKNOWN
+        else-> DeviceType.UNKNOWN
     }
 }
 
@@ -168,7 +168,7 @@ fun DeviceCapability.into(): RustDeviceCapability {
 fun RustDeviceCapability.into(): DeviceCapability {
     return when (this) {
         RustDeviceCapability.SEND_TAB -> DeviceCapability.SEND_TAB
-        RustDeviceCapability.CLOSE_TABS -> DeviceCapability.CLOSE_TABS
+        else -> DeviceCapability.CLOSE_TABS
     }
 }
 
@@ -255,7 +255,7 @@ fun AccountEvent.into(): mozilla.components.concept.sync.AccountEvent {
                 deviceId = this.deviceId,
                 isLocalDevice = this.isLocalDevice,
             )
-        is AccountEvent.Unknown -> mozilla.components.concept.sync.AccountEvent.Unknown
+        else -> mozilla.components.concept.sync.AccountEvent.Unknown
     }
 }
 
@@ -263,6 +263,7 @@ fun IncomingDeviceCommand.into(): mozilla.components.concept.sync.DeviceCommandI
     return when (this) {
         is IncomingDeviceCommand.TabReceived -> this.into()
         is IncomingDeviceCommand.TabsClosed -> this.into()
+        is IncomingDeviceCommand.__NOOP -> this.into()
     }
 }
 

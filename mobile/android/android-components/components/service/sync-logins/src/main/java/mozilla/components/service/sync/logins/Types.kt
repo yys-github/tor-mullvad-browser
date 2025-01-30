@@ -35,6 +35,7 @@ fun mozilla.appservices.logins.Login.toLogin() = Login(
 fun mozilla.appservices.logins.BulkResultEntry.toLoginResult() = when (this) {
     is BulkResultEntry.Success -> Result.success(this.login.toLogin())
     is BulkResultEntry.Error -> Result.failure(BulkInsertionError(this.message))
+    else -> Result.failure(BulkInsertionError("noop"))
 }
 
 /**

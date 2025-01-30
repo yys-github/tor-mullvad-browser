@@ -88,9 +88,18 @@ class SettingsPlugin : Plugin<Settings> {
         AUTO_PUBLISH_CONFIGS.forEach { config ->
             val propertyKey = "localProperties.autoPublish.${config.propertyName}.dir"
             if (extraProperties.has(propertyKey)) {
+                if (!extraProperties.has("localProperties.uniffiBindgenNoop.executable")) {
+                    if (config.propertyName == "application-services" || config.propertyName == "glean") {
+                        throw GradleException("Set uniffiBindgenNoop.executable to your local.properties in order to auto publish ${config.propertyName}.")
+                    }
+                }
                 val localPath = extraProperties[propertyKey] as String
                 logger.lifecycle("SettingsPlugin> Enabling automatic publication of ${config.displayName} from: $localPath")
-                val publishCmd = buildPythonCommand(config.publishScript)
+                // If you need to use a custom fork of Glean you will need to modify the following python script
+                // to account for your local copy and utilize a local uniffi-bindgen path
+                // For more see https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/blob/main/projects/glean/use-uniffi-noop.diff?ref_type=heads
+                val publishCmd = buildPythonCommand(config.publishScript) + extraProperties["localProperties.uniffiBindgenNoop.executable"] as String
+
                 runCmd(settings, publishCmd, localPath, "Published ${config.displayName} for local development.")
             } else {
                 logger.lifecycle("SettingsPlugin> Disabled auto-publication of ${config.displayName}. Enable it by settings 'autoPublish.${config.propertyName}.dir' in local.properties")
