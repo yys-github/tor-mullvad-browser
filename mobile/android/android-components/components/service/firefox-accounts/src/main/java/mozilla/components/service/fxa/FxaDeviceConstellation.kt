@@ -195,8 +195,10 @@ class FxaDeviceConstellation(
                         is RustCloseTabsResult.Ok -> Result.success(true)
                         is RustCloseTabsResult.TabsNotClosed ->
                             Result.failure(SendCommandException.TabsNotClosed(closeTabsResult.urls))
+                        is RustCloseTabsResult.__NOOP -> Result.success(false)
                     }
                 }
+                is DeviceCommandOutgoing.Noop -> Result.success(false)
             }
             val errors: List<Throwable> = SyncTelemetry.processFxaTelemetry(account.gatherTelemetry())
             for (error in errors) {
