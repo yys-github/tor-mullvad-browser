@@ -201,7 +201,7 @@ def mozconfigFile = mozconfigEnv ? new File(mozconfigEnv) : null
 def mozconfigContents = mozconfigFile ? readFileContents(mozconfigFile) : ""
 
 // Extract autoPublish paths from local.properties for local substitution builds
-["autoPublish.application-services.dir", "autoPublish.glean.dir"].each { key ->
+["autoPublish.application-services.dir", "autoPublish.glean.dir", "uniffiBindgenNoop.executable"].each { key ->
     def relativeOrAbsolutePath = localProperties.getProperty(key)
     if (relativeOrAbsolutePath != null) {
         def autoPublishDir = new File(topsrcdir).toPath().resolve(relativeOrAbsolutePath)
