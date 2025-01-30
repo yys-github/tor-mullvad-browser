@@ -40,7 +40,7 @@ abstract class ApplicationServicesVersionSource : ValueSource<String, Applicatio
         val versionRegex = Regex("""val VERSION = "([^"]+)"""")
         val matchResult = versionRegex.find(content)
             ?: throw GradleException("Could not determine application-services version from ${appServicesFile.absolutePath}")
-        return matchResult.groupValues[1]
+        return matchResult.groupValues[1].replace("-TORBROWSER", "")
     }
 }
 
