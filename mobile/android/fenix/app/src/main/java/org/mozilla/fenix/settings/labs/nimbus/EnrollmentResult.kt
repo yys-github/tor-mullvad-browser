@@ -33,6 +33,7 @@ internal fun FirefoxLabsEnrollStatus.toEnrollmentResult(): EnrollmentResult = wh
     FirefoxLabsEnrollStatus.NOT_FIREFOX_LABS_OPT_IN -> EnrollmentResult.Invalid
     FirefoxLabsEnrollStatus.FEATURE_CONFLICT -> EnrollmentResult.Failed
     FirefoxLabsEnrollStatus.ERROR -> EnrollmentResult.Failed
+    FirefoxLabsEnrollStatus.__NOOP -> EnrollmentResult.Invalid
 }
 
 /**
@@ -44,4 +45,5 @@ internal fun FirefoxLabsUnenrollStatus.toEnrollmentResult(): EnrollmentResult = 
     FirefoxLabsUnenrollStatus.NO_EXPERIMENT -> EnrollmentResult.Invalid
     FirefoxLabsUnenrollStatus.NOT_FIREFOX_LABS_OPT_IN -> EnrollmentResult.Invalid
     FirefoxLabsUnenrollStatus.ERROR -> EnrollmentResult.Failed
+    FirefoxLabsUnenrollStatus.__NOOP -> EnrollmentResult.Invalid
 }
