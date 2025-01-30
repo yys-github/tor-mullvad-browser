@@ -34,7 +34,7 @@ abstract class ApplicationServicesVersionSource implements ValueSource<String, A
         def versionLine = appServicesFile.readLines().find { it.startsWith("val VERSION = ") }
         if (versionLine) {
             // Extract version from: val VERSION = "143.20250816050436"
-            return versionLine.split('"')[1]
+            return versionLine.split('"')[1].replace("-TORBROWSER", "")
         }
         throw new GradleException("Could not determine application-services version from ${appServicesFile.absolutePath}")
     }

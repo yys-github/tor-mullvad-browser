@@ -473,6 +473,9 @@ internal class WorkManagerSyncWorker(
 
         // Finally, declare success, failure or request a retry based on 'sync status'.
         return when (syncResult.status) {
+            ServiceStatus.__NOOP -> {
+                Result.success()
+            }
             // Happy case.
             ServiceStatus.OK -> {
                 // Worker should set the "last-synced" timestamp, and since we have a single timestamp,
