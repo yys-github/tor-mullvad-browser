@@ -274,3 +274,17 @@ gitGraph:
     ./tools/browser/sign-tag.torbrowser rapid build1
     ```
   - [ ] Push tag to `upstream`
+
+### **Create and Tag base-browser `-2` branch**
+- [ ] Find the last commit in the merged `-2` `tor-browser` branch with a `BB XXXXX...` subject
+- [ ] Create new branch from this commit
+  - Branch name in the form: `base-browser-$(NIGHTLY_VERSION)-$(BROWSER_VERSION)-2`
+  - **Example**: `base-browser-130.0a1-15.0-2`
+- [ ] Push branch to `upstream`
+- [ ] Sign/Tag latest `HEAD` of the merged `base-browser` branch:
+  - In **tor-browser.git**, checkout the `-2` rapid `tor-browser` branch
+  - In **tor-browser-build.git**, run signing script:
+    ```bash
+    ./tools/browser/sign-tag.basebrowser rapid build1 ${COMMIT}
+    ```
+  - [ ] Push tag to `upstream`
