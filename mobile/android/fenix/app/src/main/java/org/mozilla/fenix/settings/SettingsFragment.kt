@@ -13,7 +13,6 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -65,18 +64,14 @@ import org.mozilla.fenix.ext.openSetDefaultBrowserOption
 import org.mozilla.fenix.ext.requireComponents
 import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.ext.showToolbar
-import org.mozilla.fenix.gecko.GeckoProvider
 import org.mozilla.fenix.nimbus.FxNimbus
 import org.mozilla.fenix.perf.ProfilerViewModel
 import org.mozilla.fenix.settings.account.AccountUiView
 import org.mozilla.fenix.snackbar.FenixSnackbarDelegate
 import org.mozilla.fenix.snackbar.SnackbarBinding
-import org.mozilla.fenix.tor.QuickStartPreference
 import org.mozilla.fenix.tor.SecurityLevel
-import org.mozilla.fenix.tor.TorBridgeTransportConfig
-import org.mozilla.fenix.tor.TorEvents
+import org.mozilla.fenix.tor.QuickstartViewModel
 import org.mozilla.fenix.utils.Settings
-import org.mozilla.geckoview.BuildConfig
 import kotlin.system.exitProcess
 import org.mozilla.fenix.GleanMetrics.Settings as SettingsMetrics
 
@@ -88,6 +83,8 @@ class SettingsFragment : PreferenceFragmentCompat() {
     private lateinit var addonFilePicker: AddonFilePicker
     private val profilerViewModel: ProfilerViewModel by activityViewModels()
     private val snackbarBinding = ViewBoundFeatureWrapper<SnackbarBinding>()
+
+    private val quickstartViewModel: QuickstartViewModel by activityViewModels()
 
     @VisibleForTesting
     internal val accountObserver = object : AccountObserver {
@@ -788,10 +785,12 @@ class SettingsFragment : PreferenceFragmentCompat() {
             }
         }
 
-        requirePreference<QuickStartPreference>(R.string.pref_key_quick_start).apply {
+        requirePreference<SwitchPreference>(R.string.pref_key_quick_start).apply {
+            isChecked = quickstartViewModel.quickstart().value == true
             setOnPreferenceClickListener {
-                context.components.torController.quickstart = !context.components.torController.quickstart
-                updateSwitch()
+                quickstartViewModel.quickstartSet(
+                    isChecked,
+                )
                 true
             }
         }
