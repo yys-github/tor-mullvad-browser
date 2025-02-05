@@ -73,17 +73,6 @@ class TorControllerGV(
     override val isBootstrapped get() = isTorBootstrapped
     override val isConnected get() = (_lastKnownStatus.value.isStarted() && !isTorRestarting)
 
-    override var quickstart: Boolean
-        get() {
-            return getTorSettings()?.quickstart ?: false
-        }
-        set(value) {
-            getTorSettings()?.let {
-                it.quickstart = value
-                getTorIntegration().setSettings(it)
-            }
-        }
-
     private fun getTorIntegration(): TorIntegrationAndroid {
         return (context.components.core.engine as GeckoEngine).getTorIntegrationController()
     }

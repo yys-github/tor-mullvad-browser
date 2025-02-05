@@ -40,7 +40,6 @@ interface TorController: TorEvents {
     var bridgesEnabled: Boolean
     var bridgeTransport: TorBridgeTransportConfig
     var userProvidedBridges: String?
-    var quickstart: Boolean
 
     fun start()
     fun stop()
