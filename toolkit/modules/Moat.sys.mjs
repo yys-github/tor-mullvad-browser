@@ -24,57 +24,6 @@ const TorLauncherPrefs = Object.freeze({
 });
 
 /**
- * A special response listener that collects the received headers.
- */
-class InternetTestResponseListener {
-  #promise;
-  #resolve;
-  #reject;
-  constructor() {
-    this.#promise = new Promise((resolve, reject) => {
-      this.#resolve = resolve;
-      this.#reject = reject;
-    });
-  }
-
-  // callers wait on this for final response
-  get status() {
-    return this.#promise;
-  }
-
-  onStartRequest() {}
-
-  // resolve or reject our Promise
-  onStopRequest(request, status) {
-    try {
-      const statuses = {
-        components: status,
-        successful: Components.isSuccessCode(status),
-      };
-      try {
-        if (statuses.successful) {
-          statuses.http = request.responseStatus;
-          statuses.date = request.getResponseHeader("Date");
-        }
-      } catch (err) {
-        console.warn(
-          "Successful request, but could not get the HTTP status or date",
-          err
-        );
-      }
-      this.#resolve(statuses);
-    } catch (err) {
-      this.#reject(err);
-    }
-  }
-
-  onDataAvailable() {
-    // We do not care of the actual data, as long as we have a successful
-    // connection
-  }
-}
-
-/**
  * @typedef {Object} MoatBridges
  *
  * Bridge settings that can be passed to TorSettings.bridges.
@@ -182,18 +131,6 @@ export class MoatRPC {
       }
     }
     return { response, cancelled };
-  }
-
-  async testInternetConnection() {
-    const uri = `${Services.prefs.getStringPref(
-      TorLauncherPrefs.moat_service
-    )}/circumvention/countries`;
-    const ch = this.#requestBuilder.buildHttpHandler(uri);
-    ch.requestMethod = "HEAD";
-
-    const listener = new InternetTestResponseListener();
-    ch.asyncOpen(listener, ch);
-    return listener.status;
   }
 
   /**
