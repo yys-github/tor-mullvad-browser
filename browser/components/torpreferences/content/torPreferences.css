@@ -90,24 +90,12 @@ button.spoof-button-disabled {
   }
 }
 
-.network-status-live-area {
-  display: contents;
-}
-
 .network-status-label {
   font-weight: bold;
   margin-inline-end: 0.75em;
 }
 
-.network-status-loading-icon {
-  margin-inline-end: 0.5em;
-}
-
-#network-status-internet-area:not(.status-loading) .network-status-loading-icon {
-  display: none;
-}
-
-.network-status-result:not(:empty) {
+.network-status-result {
   margin-inline-end: 0.75em;
 }
 

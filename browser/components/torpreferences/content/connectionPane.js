@@ -22,12 +22,8 @@ const { TorProviderBuilder, TorProviderTopics } = ChromeUtils.importESModule(
   "resource://gre/modules/TorProviderBuilder.sys.mjs"
 );
 
-const { TorConnect, TorConnectTopics, TorConnectStage, TorCensorshipLevel } =
+const { InternetStatus, TorConnect, TorConnectTopics, TorConnectStage } =
   ChromeUtils.importESModule("resource://gre/modules/TorConnect.sys.mjs");
-
-const { MoatRPC } = ChromeUtils.importESModule(
-  "resource://gre/modules/Moat.sys.mjs"
-);
 
 const { QRCode } = ChromeUtils.importESModule(
   "resource://gre/modules/QRCode.sys.mjs"
@@ -2371,12 +2367,6 @@ const gNetworkStatus = {
     this._internetResultEl = this._internetAreaEl.querySelector(
       ".network-status-result"
     );
-    this._internetTestButton = document.getElementById(
-      "network-status-internet-test-button"
-    );
-    this._internetTestButton.addEventListener("click", () => {
-      this._startInternetTest();
-    });
 
     this._torAreaEl = document.getElementById("network-status-tor-area");
     this._torResultEl = this._torAreaEl.querySelector(".network-status-result");
@@ -2387,10 +2377,11 @@ const gNetworkStatus = {
       TorConnect.openTorConnect({ beginBootstrapping: "soft" });
     });
 
-    this._updateInternetStatus("unknown");
+    this._updateInternetStatus();
     this._updateTorConnectionStatus();
 
     Services.obs.addObserver(this, TorConnectTopics.StageChange);
+    Services.obs.addObserver(this, TorConnectTopics.InternetStatusChange);
   },
 
   /**
@@ -2398,98 +2389,42 @@ const gNetworkStatus = {
    */
   uninit() {
     Services.obs.removeObserver(this, TorConnectTopics.StageChange);
+    Services.obs.removeObserver(this, TorConnectTopics.InternetStatusChange);
   },
 
   observe(subject, topic) {
     switch (topic) {
       // triggered when tor connect state changes and we may
       // need to update the messagebox
-      case TorConnectTopics.StageChange: {
+      case TorConnectTopics.StageChange:
         this._updateTorConnectionStatus();
         break;
-      }
-    }
-  },
-
-  /**
-   * Whether the test should be disabled.
-   *
-   * @type {boolean}
-   */
-  _internetTestDisabled: false,
-  /**
-   * Start the internet test.
-   */
-  async _startInternetTest() {
-    if (this._internetTestDisabled) {
-      return;
-    }
-    this._internetTestDisabled = true;
-    // We use "aria-disabled" rather than the "disabled" attribute so that the
-    // button can remain focusable during the test.
-    // TODO: Replace with moz-button when it handles this for us. See
-    // tor-browser#43275.
-    this._internetTestButton.setAttribute("aria-disabled", "true");
-    this._internetTestButton.classList.add("spoof-button-disabled");
-    this._internetTestButton.tabIndex = -1;
-    try {
-      this._updateInternetStatus("testing");
-      const mrpc = new MoatRPC();
-      let status = null;
-      try {
-        await mrpc.init();
-        status = await mrpc.testInternetConnection();
-      } catch (err) {
-        log.error("Error while checking the Internet connection", err);
-      } finally {
-        mrpc.uninit();
-      }
-      if (status) {
-        this._updateInternetStatus(status.successful ? "online" : "offline");
-      } else {
-        this._updateInternetStatus("unknown");
-      }
-    } finally {
-      this._internetTestButton.removeAttribute("aria-disabled");
-      this._internetTestButton.classList.remove("spoof-button-disabled");
-      this._internetTestButton.tabIndex = 0;
-      this._internetTestDisabled = false;
+      case TorConnectTopics.InternetStatusChange:
+        this._updateInternetStatus();
+        break;
     }
   },
 
   /**
    * Update the shown internet status.
-   *
-   * @param {string} stateName - The name of the state to show.
    */
-  _updateInternetStatus(stateName) {
+  _updateInternetStatus() {
     let l10nId;
-    switch (stateName) {
-      case "testing":
-        l10nId = "tor-connection-internet-status-testing";
-        break;
-      case "offline":
+    let isOffline = false;
+    switch (TorConnect.internetStatus) {
+      case InternetStatus.Offline:
         l10nId = "tor-connection-internet-status-offline";
+        isOffline = true;
         break;
-      case "online":
+      case InternetStatus.Online:
         l10nId = "tor-connection-internet-status-online";
         break;
+      default:
+        l10nId = "tor-connection-internet-status-unknown";
+        break;
     }
-    if (l10nId) {
-      this._internetResultEl.setAttribute("data-l10n-id", l10nId);
-    } else {
-      this._internetResultEl.removeAttribute("data-l10n-id");
-      this._internetResultEl.textContent = "";
-    }
-
-    this._internetAreaEl.classList.toggle(
-      "status-loading",
-      stateName === "testing"
-    );
-    this._internetAreaEl.classList.toggle(
-      "status-offline",
-      stateName === "offline"
-    );
+    this._internetResultEl.setAttribute("data-l10n-id", l10nId);
+    this._internetAreaEl.classList.toggle("status-offline", isOffline);
   },
 
   /**
