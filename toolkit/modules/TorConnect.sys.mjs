@@ -16,9 +16,16 @@ ChromeUtils.defineESModuleGetters(lazy, {
   TorSettingsTopics: "resource://gre/modules/TorSettings.sys.mjs",
 });
 
+ChromeUtils.defineLazyGetter(lazy, "NetworkLinkService", () => {
+  return Cc["@mozilla.org/network/network-link-service;1"].getService(
+    Ci.nsINetworkLinkService
+  );
+});
+
+const NETWORK_LINK_TOPIC = "network:link-status-changed";
+
 const TorConnectPrefs = Object.freeze({
   censorship_level: "torbrowser.debug.censorship_level",
-  allow_internet_test: "torbrowser.bootstrap.allow_internet_test",
   log_level: "torbrowser.bootstrap.log_level",
   /* prompt_at_startup now controls whether the quickstart can trigger. */
   prompt_at_startup: "extensions.torlauncher.prompt_at_startup",
@@ -82,6 +89,7 @@ export const TorConnectTopics = Object.freeze({
   // TODO: Remove torconnect:state-change when pages have switched to stage.
   StateChange: "torconnect:state-change",
   QuickstartChange: "torconnect:quickstart-change",
+  InternetStatusChange: "torconnect:internet-status-change",
   BootstrapProgress: "torconnect:bootstrap-progress",
   BootstrapComplete: "torconnect:bootstrap-complete",
   // TODO: Remove torconnect:error when pages have switched to stage.
@@ -108,10 +116,6 @@ export const TorConnectTopics = Object.freeze({
  *   should be an Array of MoatBridges objects that match the bridge settings
  *   accepted by TorSettings.bridges, plus you may add a "simulateCensorship"
  *   property to make only their bootstrap attempts fail.
- * @property {boolean} [options.testInternet] - Whether to also test the
- *   internet connection.
- * @property {boolean} [options.simulateOffline] - Whether to simulate an
- *   offline test result. This will not cause the bootstrap to fail.
  * @property {string} [options.regionCode] - The region code to use to fetch
  *   auto-bootstrap settings, or "automatic" to automatically choose the region.
  */
@@ -141,18 +145,6 @@ class BootstrapAttempt {
    * @type {?TorBootstrapRequest}
    */
   #bootstrap = null;
-  /**
-   * The error returned by the bootstrap request, if any.
-   *
-   * @type {?Error}
-   */
-  #bootstrapError = null;
-  /**
-   * The ongoing internet test, if any.
-   *
-   * @type {?InternetTest}
-   */
-  #internetTest = null;
   /**
    * The method to call to complete the `run` promise.
    *
@@ -192,13 +184,6 @@ class BootstrapAttempt {
         return;
       }
       this.#resolved = true;
-      try {
-        // Should be ok to call this twice in the case where we "cancel" the
-        // bootstrap.
-        this.#internetTest?.cancel();
-      } catch (error) {
-        lazy.logger.error("Unexpected error in bootstrap cleanup", error);
-      }
       if (arg.error) {
         reject(arg.error);
       } else {
@@ -259,35 +244,7 @@ class BootstrapAttempt {
       this.#resolveRun({ result: "complete" });
     };
     this.#bootstrap.onbootstraperror = error => {
-      if (this.#bootstrapError) {
-        lazy.logger.warn("Another bootstrap error", error);
-        return;
-      }
-      // We have to wait for the Internet test to finish before sending the
-      // bootstrap error
-      this.#bootstrapError = error;
-      this.#maybeTransitionToError();
-    };
-    if (options.testInternet) {
-      this.#internetTest = new InternetTest(options.simulateOffline);
-      this.#internetTest.onResult = () => {
-        this.#maybeTransitionToError();
-      };
-      this.#internetTest.onError = () => {
-        this.#maybeTransitionToError();
-      };
-    }
-
-    this.#bootstrap.bootstrap();
-  }
-
-  /**
-   * Callback for when we get a new bootstrap error or a change in the internet
-   * status.
-   */
-  #maybeTransitionToError() {
-    if (this.#resolved || this.#cancelled) {
-      if (this.#bootstrapError) {
+      if (this.#resolved || this.#cancelled) {
         // We ignore this error since it occurred after cancelling (by the
         // user), or we have already resolved. We assume the error is just a
         // side effect of the cancelling.
@@ -295,45 +252,16 @@ class BootstrapAttempt {
         // "Building circuits: Establishing a Tor circuit failed".
         // TODO: Maybe move this logic deeper in the process to know when to
         // filter out such errors triggered by cancelling.
-        lazy.logger.warn("Post-complete error.", this.#bootstrapError);
+        lazy.logger.warn("Post-complete bootstrap error.", error);
+        return;
       }
-      return;
-    }
 
-    if (
-      this.#internetTest &&
-      this.#internetTest.status === InternetStatus.Unknown &&
-      this.#internetTest.error === null &&
-      this.#internetTest.enabled
-    ) {
-      // We have been called by a failed bootstrap, but the internet test has
-      // not run yet - force it to run immediately!
-      this.#internetTest.test();
-      // Return from this call, because the Internet test's callback will call
-      // us again.
-      return;
-    }
-    // Do not transition to "offline" until we are sure that also the bootstrap
-    // failed, in case Moat is down but the bootstrap can proceed anyway.
-    if (!this.#bootstrapError) {
-      return;
-    }
-    if (this.#internetTest?.status === InternetStatus.Offline) {
-      if (this.#bootstrapError) {
-        lazy.logger.info(
-          "Ignoring bootstrap error since offline.",
-          this.#bootstrapError
-        );
-      }
-      this.#resolveRun({ result: "offline" });
-      return;
-    }
-    this.#resolveRun({
-      error: new TorConnectError(
-        TorConnectError.BootstrapError,
-        this.#bootstrapError
-      ),
-    });
+      this.#resolveRun({
+        error: new TorConnectError(TorConnectError.BootstrapError, error),
+      });
+    };
+
+    this.#bootstrap.bootstrap();
   }
 
   /**
@@ -355,7 +283,6 @@ class BootstrapAttempt {
     // cancelled. In particular, there is a small chance that the bootstrap
     // completes, in which case we want to be able to resolve with a success
     // instead.
-    this.#internetTest?.cancel();
     await this.#bootstrap?.cancel();
     this.#resolveRun({ result: "cancelled" });
   }
@@ -729,117 +656,6 @@ export const InternetStatus = Object.freeze({
   Online: 1,
 });
 
-class InternetTest {
-  #enabled;
-  #status = InternetStatus.Unknown;
-  #error = null;
-  #pending = false;
-  #canceled = false;
-  #timeout = 0;
-  #simulateOffline = false;
-
-  constructor(simulateOffline) {
-    this.#simulateOffline = simulateOffline;
-
-    this.#enabled = Services.prefs.getBoolPref(
-      TorConnectPrefs.allow_internet_test,
-      true
-    );
-    if (this.#enabled) {
-      this.#timeout = setTimeout(() => {
-        this.#timeout = 0;
-        this.test();
-      }, this.#timeoutRand());
-    }
-    this.onResult = _online => {};
-    this.onError = _error => {};
-  }
-
-  /**
-   * Perform the internet test.
-   *
-   * While this is an async method, the callers are not expected to await it,
-   * as we are also using callbacks.
-   */
-  async test() {
-    if (this.#pending || !this.#enabled) {
-      return;
-    }
-    this.cancel();
-    this.#pending = true;
-    this.#canceled = false;
-
-    lazy.logger.info("Starting the Internet test");
-
-    if (this.#simulateOffline) {
-      await new Promise(res => setTimeout(res, 500));
-
-      this.#status = InternetStatus.Offline;
-
-      if (this.#canceled) {
-        return;
-      }
-      this.onResult(this.#status);
-      return;
-    }
-
-    const mrpc = new lazy.MoatRPC();
-    try {
-      await mrpc.init();
-      const status = await mrpc.testInternetConnection();
-      this.#status = status.successful
-        ? InternetStatus.Online
-        : InternetStatus.Offline;
-      // TODO: We could consume the date we got from the HTTP request to detect
-      // big clock skews that might prevent a successfull bootstrap.
-      lazy.logger.info(`Performed Internet test, outcome ${this.#status}`);
-    } catch (err) {
-      lazy.logger.error("Error while checking the Internet connection", err);
-      this.#error = err;
-      this.#pending = false;
-    } finally {
-      mrpc.uninit();
-    }
-
-    if (this.#canceled) {
-      return;
-    }
-    if (this.#error) {
-      this.onError(this.#error);
-    } else {
-      this.onResult(this.#status);
-    }
-  }
-
-  cancel() {
-    this.#canceled = true;
-    if (this.#timeout) {
-      clearTimeout(this.#timeout);
-      this.#timeout = 0;
-    }
-  }
-
-  get status() {
-    return this.#status;
-  }
-
-  get error() {
-    return this.#error;
-  }
-
-  get enabled() {
-    return this.#enabled;
-  }
-
-  // We randomize the Internet test timeout to make fingerprinting it harder, at
-  // least a little bit...
-  #timeoutRand() {
-    const offset = 30000;
-    const randRange = 5000;
-    return offset + randRange * (Math.random() * 2 - 1);
-  }
-}
-
 export const TorConnectStage = Object.freeze({
   Disabled: "Disabled",
   Loading: "Loading",
@@ -902,6 +718,13 @@ export const TorConnect = {
    * @type {BootstrapOptions}
    */
   simulateBootstrapOptions: {},
+
+  /**
+   * Whether to simulate being offline.
+   *
+   * @type {boolean}
+   */
+  simulateOffline: false,
 
   /**
    * The name of the current stage the user is in.
@@ -1004,10 +827,6 @@ export const TorConnect = {
     })()
   ),
 
-  // This is used as a helper to make the state of about:torconnect persistent
-  // during a session, but TorConnect does not use this data at all.
-  _uiState: {},
-
   /**
    * The status of the most recent bootstrap attempt.
    *
@@ -1029,6 +848,36 @@ export const TorConnect = {
     );
   },
 
+  /**
+   * The current internet status. One of the InternetStatus values.
+   *
+   * @type {integer}
+   */
+  _internetStatus: InternetStatus.Unknown,
+
+  get internetStatus() {
+    return this._internetStatus;
+  },
+
+  /**
+   * Update the _internetStatus value.
+   */
+  _updateInternetStatus() {
+    let newStatus;
+    if (lazy.NetworkLinkService.linkStatusKnown) {
+      newStatus = lazy.NetworkLinkService.isLinkUp
+        ? InternetStatus.Online
+        : InternetStatus.Offline;
+    } else {
+      newStatus = InternetStatus.Unknown;
+    }
+    if (newStatus === this._internetStatus) {
+      return;
+    }
+    this._internetStatus = newStatus;
+    Services.obs.notifyObservers(null, TorConnectTopics.InternetStatusChange);
+  },
+
   // init should be called by TorStartupService
   init() {
     lazy.logger.debug("TorConnect.init()");
@@ -1048,6 +897,9 @@ export const TorConnect = {
     observeTopic(lazy.TorProviderTopics.ProcessExited);
     observeTopic(lazy.TorProviderTopics.HasWarnOrErr);
     observeTopic(lazy.TorSettingsTopics.SettingsChanged);
+    observeTopic(NETWORK_LINK_TOPIC);
+
+    this._updateInternetStatus();
 
     // NOTE: At this point, _requestedStage should still be `null`.
     this._setStage(TorConnectStage.Start);
@@ -1108,6 +960,9 @@ export const TorConnect = {
           // explicitly cancel and return to the start stage.
           this._makeStageRequest(TorConnectStage.Start);
         }
+        break;
+      case NETWORK_LINK_TOPIC:
+        this._updateInternetStatus();
         break;
     }
   },
@@ -1330,9 +1185,6 @@ export const TorConnect = {
       bootstrapOptions.simulateDelay =
         this.simulateBootstrapOptions.simulateDelay;
     }
-    if (this.simulateBootstrapOptions.simulateOffline) {
-      bootstrapOptions.simulateOffline = true;
-    }
     if (this.simulateBootstrapOptions.simulateMoatResponse) {
       bootstrapOptions.simulateMoatResponse =
         this.simulateBootstrapOptions.simulateMoatResponse;
@@ -1446,12 +1298,6 @@ export const TorConnect = {
       ? new AutoBootstrapAttempt()
       : new BootstrapAttempt();
 
-    if (!regionCode) {
-      // Only test internet for the first bootstrap attempt.
-      // TODO: Remove this since we do not have user consent. tor-browser#42605.
-      bootstrapOptions.testInternet = true;
-    }
-
     this._addSimulateOptions(bootstrapOptions, regionCode);
 
     // NOTE: The only `await` in this method is for `bootstrapAttempt.run`.
@@ -1523,22 +1369,27 @@ export const TorConnect = {
       return;
     }
 
-    if (
-      result === "offline" &&
-      (beginStage === TorConnectStage.Start ||
-        beginStage === TorConnectStage.Offline)
-    ) {
-      this._tryAgain = true;
-      this._signalError(new TorConnectError(TorConnectError.Offline));
-
-      this._setStage(TorConnectStage.Offline);
-      return;
-    }
-
     if (error) {
       lazy.logger.info("Bootstrap attempt error", error);
-
       this._tryAgain = true;
+
+      if (
+        (beginStage === TorConnectStage.Start ||
+          beginStage === TorConnectStage.Offline) &&
+        (this.internetStatus === InternetStatus.Offline || this.simulateOffline)
+      ) {
+        // If we are currently offline, we assume the bootstrap error is caused
+        // by a general internet connection problem, so we show an "Offline"
+        // stage instead.
+        // NOTE: In principle, we may determine that we are offline prior to the
+        // bootstrap being thrown, but we do not want to cancel a bootstrap
+        // attempt prematurely in case the offline state is intermittent or
+        // incorrect.
+        this._signalError(new TorConnectError(TorConnectError.Offline));
+        this._setStage(TorConnectStage.Offline);
+        return;
+      }
+
       this._potentiallyBlocked = true;
       // Disable quickstart until we have a successful bootstrap.
       Services.prefs.setBoolPref(TorConnectPrefs.prompt_at_startup, true);
