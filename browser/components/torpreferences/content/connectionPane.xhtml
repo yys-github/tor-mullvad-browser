@@ -31,27 +31,15 @@
       aria-labelledby="network-status-internet-area-label"
     >
       <html:img alt="" class="network-status-icon" />
-      <!-- Use an aria-live area to announce "Internet: Online" or
-         - "Internet: Offline". We only expect this to change when triggered by
-         - the user clicking the "Test" button, so shouldn't occur unexpectedly.
-         -->
-      <html:div
-        class="network-status-live-area"
-        aria-live="polite"
-        aria-atomic="true"
-      >
-        <html:span
-          id="network-status-internet-area-label"
-          class="network-status-label"
-          data-l10n-id="tor-connection-internet-status-label"
-        ></html:span>
-        <img alt="" class="network-status-loading-icon tor-loading-icon" />
-        <html:span class="network-status-result"></html:span>
-      </html:div>
-      <html:button
-        id="network-status-internet-test-button"
-        data-l10n-id="tor-connection-internet-status-test-button"
-      ></html:button>
+      <!-- NOTE: We do not wrap the label and status ("Internet: Offline", etc)
+         - in an aria-live area because it may be too noisey and may not be
+         - important to the user. -->
+      <html:span
+        id="network-status-internet-area-label"
+        class="network-status-label"
+        data-l10n-id="tor-connection-internet-status-label"
+      ></html:span>
+      <html:span class="network-status-result"></html:span>
     </html:div>
     <html:div
       id="network-status-tor-area"
@@ -60,8 +48,8 @@
       aria-labelledby="network-status-tor-area-label"
     >
       <html:img alt="" class="network-status-icon" />
-      <!-- NOTE: Unlike #network-status-internet-area, we do not wrap the label
-         - and status ("Tor network: Not connected", etc) in an aria-live area.
+      <!-- NOTE: We do not wrap the label and status
+         - ("Tor network: Not connected", etc) in an aria-live area.
          - This is not likely to change whilst this page has focus.
          - Moreover, the status is already present in the torconnect status bar
          - in the window tab bar. -->
