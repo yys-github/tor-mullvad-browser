@@ -101,8 +101,6 @@ public class TorSettings {
 
   public boolean enabled = true;
 
-  public boolean quickstart = false;
-
   // bridges section
   public boolean bridgesEnabled = false;
   public BridgeSource bridgesSource = BridgeSource.Invalid;
@@ -125,7 +123,6 @@ public class TorSettings {
 
   public TorSettings(GeckoBundle bundle) {
     try {
-      GeckoBundle qs = bundle.getBundle("quickstart");
       GeckoBundle bridges = bundle.getBundle("bridges");
       GeckoBundle proxy = bundle.getBundle("proxy");
       GeckoBundle firewall = bundle.getBundle("firewall");
@@ -134,8 +131,6 @@ public class TorSettings {
       bridgesSource = BridgeSource.fromInt(bridges.getInt("source"));
       bridgesBuiltinType = BridgeBuiltinType.fromString(bridges.getString("builtin_type"));
       bridgeBridgeStrings = bridges.getStringArray("bridge_strings");
-
-      quickstart = qs.getBoolean("enabled");
 
       firewallEnabled = firewall.getBoolean("enabled");
       firewallAllowedPorts = firewall.getIntArray("allowed_ports");
@@ -156,7 +151,6 @@ public class TorSettings {
   public GeckoBundle asGeckoBundle() {
     GeckoBundle bundle = new GeckoBundle();
 
-    GeckoBundle qs = new GeckoBundle();
     GeckoBundle bridges = new GeckoBundle();
     GeckoBundle proxy = new GeckoBundle();
     GeckoBundle firewall = new GeckoBundle();
@@ -165,8 +159,6 @@ public class TorSettings {
     bridges.putInt("source", bridgesSource.toInt());
     bridges.putString("builtin_type", bridgesBuiltinType.toString());
     bridges.putStringArray("bridge_strings", bridgeBridgeStrings);
-
-    qs.putBoolean("enabled", quickstart);
 
     firewall.putBoolean("enabled", firewallEnabled);
     firewall.putIntArray("allowed_ports", firewallAllowedPorts);
@@ -178,7 +170,6 @@ public class TorSettings {
     proxy.putInt("port", proxyPort);
     proxy.putInt("type", proxyType.toInt());
 
-    bundle.putBundle("quickstart", qs);
     bundle.putBundle("bridges", bridges);
     bundle.putBundle("proxy", proxy);
     bundle.putBundle("firewall", firewall);
