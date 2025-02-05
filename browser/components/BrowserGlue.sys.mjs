@@ -4824,6 +4824,7 @@ BrowserGlue.prototype = {
     //            since we hid the UI (tor-browser#43118).
     // Version 6: Tor Browser 14.5a3: Clear preference for TorSettings that is
     //            no longer used (tor-browser#41921).
+    //            Drop unused TorConnect setting (tor-browser#43462).
     const TBB_MIGRATION_VERSION = 6;
     const MIGRATION_PREF = "torbrowser.migration.version";
 
@@ -4908,6 +4909,7 @@ BrowserGlue.prototype = {
 
     if (currentVersion < 6) {
       Services.prefs.clearUserPref("torbrowser.settings.enabled");
+      Services.prefs.clearUserPref("torbrowser.bootstrap.allow_internet_test");
     }
 
     Services.prefs.setIntPref(MIGRATION_PREF, TBB_MIGRATION_VERSION);
