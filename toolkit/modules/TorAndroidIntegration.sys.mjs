@@ -41,12 +41,19 @@ const ListenedEvents = Object.freeze({
   bootstrapBeginAuto: "GeckoView:Tor:BootstrapBeginAuto",
   bootstrapCancel: "GeckoView:Tor:BootstrapCancel",
   bootstrapGetState: "GeckoView:Tor:BootstrapGetState",
+  quickstartGet: "GeckoView:Tor:QuickstartGet",
+  quickstartSet: "GeckoView:Tor:QuickstartSet",
 });
 
 class TorAndroidIntegrationImpl {
   #initialized = false;
 
-  async init() {
+  /**
+   * Register our listeners.
+   * We want this function to block GeckoView initialization, so it should not be
+   * async. Any async task should be moved to #deferredInit, instead.
+   */
+  init() {
     if (this.#initialized) {
       logger.warn("Something tried to initilize us again.");
       return;
@@ -74,30 +81,20 @@ class TorAndroidIntegrationImpl {
     // by TorProviderBuilder.init.
     lazy.TorProviderBuilder.firstWindowLoaded();
 
+    this.#deferredInit();
+  }
+
+  /**
+   * Perform our init tasks that should not block the initialization of
+   * GeckoView. This function will not be awaited, so errors can only be logged.
+   */
+  async #deferredInit() {
     try {
       await lazy.TorSettings.init();
       await lazy.TorConnect.init();
     } catch (e) {
       logger.error("Cannot initialize TorSettings or TorConnect", e);
     }
-  }
-
-  /**
-   * Combine the current TorSettings settings with the TorConnect settings.
-   *
-   * @returns {object} The TorSettings in an object, which also has a
-   *   `quickstart.enabled` property.
-   */
-  // This is added for backward compatibility with TorSettings.getSettings prior
-  // to tor-browser#41921, when it used to control the quickstart setting.
-  // TODO: Have android separate out the request for TorConnect.quickstart. In
-  // principle, this would allow android tor connect UI to be loaded before
-  // TorSettings has initialized (the SettingsReady signal), similar to desktop.
-  // See tor-browser#43408.
-  #getAllSettings() {
-    const settings = lazy.TorSettings.getSettings();
-    settings.quickstart = { enabled: lazy.TorConnect.quickstart };
-    return settings;
   }
 
   observe(subj, topic) {
@@ -142,7 +139,7 @@ class TorAndroidIntegrationImpl {
       case lazy.TorSettingsTopics.Ready:
         lazy.EventDispatcher.instance.sendRequest({
           type: EmittedEvents.settingsReady,
-          settings: this.#getAllSettings(),
+          settings: lazy.TorSettings.getSettings(),
         });
         break;
       case lazy.TorSettingsTopics.SettingsChanged:
@@ -151,20 +148,7 @@ class TorAndroidIntegrationImpl {
         lazy.EventDispatcher.instance.sendRequest({
           type: EmittedEvents.settingsChanged,
           changes: subj.wrappedJSObject.changes ?? [],
-          settings: this.#getAllSettings(),
-        });
-        break;
-      case lazy.TorConnectTopics.QuickstartChange:
-        // We also include the TorSettings, and a `changes` Array similar to
-        // SettingsChanged signal. This is for backward compatibility with
-        // TorSettings.getSettings prior to tor-browser#41921, when it used to
-        // control the quickstart setting.
-        // TODO: Have android separate out the request for TorConnect.quickstart.
-        // See tor-browser#43408.
-        lazy.EventDispatcher.instance.sendRequest({
-          type: EmittedEvents.settingsChanged,
-          changes: ["quickstart.enabled"],
-          settings: this.#getAllSettings(),
+          settings: lazy.TorSettings.getSettings(),
         });
         break;
     }
@@ -175,19 +159,9 @@ class TorAndroidIntegrationImpl {
     try {
       switch (event) {
         case ListenedEvents.settingsGet:
-          callback?.onSuccess(this.#getAllSettings());
+          callback?.onSuccess(lazy.TorSettings.getSettings());
           return;
         case ListenedEvents.settingsSet:
-          // TODO: Set quickstart via a separate event. See tor-browser#43408.
-          // NOTE: Currently this may trigger GeckoView:Tor:SettingsChanged
-          // twice: once for quickstart.enabled, and again for the other
-          // settings.
-          if (
-            "quickstart" in data.settings &&
-            "enabled" in data.settings.quickstart
-          ) {
-            lazy.TorConnect.quickstart = data.settings.quickstart.enabled;
-          }
           // TODO: Handle setting throw? This can throw if data.settings is
           // incorrectly formatted, but more like it can throw when the settings
           // fail to be passed onto the TorProvider. tor-browser#43405.
@@ -211,6 +185,12 @@ class TorAndroidIntegrationImpl {
           return;
         // TODO: Expose TorConnect.startAgain() to allow users to begin
         // from the start again.
+        case ListenedEvents.quickstartGet:
+          callback?.onSuccess(lazy.TorConnect.quickstart);
+          return;
+        case ListenedEvents.quickstartSet:
+          lazy.TorConnect.quickstart = data.enabled;
+          break;
       }
       callback?.onSuccess();
     } catch (e) {
