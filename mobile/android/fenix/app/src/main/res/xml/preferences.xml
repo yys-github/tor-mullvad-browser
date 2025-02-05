@@ -176,7 +176,7 @@
             android:title="@string/preferences_tor_network_settings_bridge_config"
             android:summary="@string/preferences_tor_network_settings_bridge_config_description" />
 
-        <org.mozilla.fenix.tor.QuickStartPreference
+        <SwitchPreference
             android:key="@string/pref_key_quick_start"
             android:summary="@string/connection_assist_always_connect_automatically_toggle_description"
             android:title="@string/tor_bootstrap_quick_start_label"
