@@ -27,13 +27,6 @@ class TorConnectionAssistViewModel(
     private val _torConnectScreen = MutableStateFlow(ConnectAssistUiState.Splash)
     internal val torConnectScreen: StateFlow<ConnectAssistUiState> = _torConnectScreen
 
-    private val _quickStartToggle = MutableLiveData<Boolean>() // don't initialize with quickstart off the bat
-    fun quickstartToggle(): LiveData<Boolean?> {
-        _quickStartToggle.value = _torController.quickstart // quickstart isn't ready until torSettings is ready
-        return _quickStartToggle
-    }
-
-
     private val _shouldOpenHome = MutableLiveData(false)
     fun shouldOpenHome(): LiveData<Boolean> {
         return _shouldOpenHome
@@ -64,11 +57,6 @@ class TorConnectionAssistViewModel(
                 lifecycleScope = lifecycleScope,
             )
         }
-    }
-
-    fun handleQuickstartChecked(checked: Boolean) {
-        _torController.quickstart = checked
-        _quickStartToggle.value = checked
     }
 
     fun handleButton1Pressed(
