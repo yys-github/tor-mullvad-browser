@@ -24,9 +24,6 @@ public class TorLegacyAndroidSettings {
     // always true, tor is enabled in TB
     settings.enabled = true;
 
-    // firefox-android disconnected quick start a while ago so it's untracked
-    settings.quickstart = false;
-
     settings.bridgesEnabled = Prefs.bridgesEnabled();
 
     // tor-android-service CustomTorInstaller.java
