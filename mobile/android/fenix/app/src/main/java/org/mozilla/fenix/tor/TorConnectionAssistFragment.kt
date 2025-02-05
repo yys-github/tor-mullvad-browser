@@ -20,6 +20,7 @@ import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -37,6 +38,8 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler {
     private val viewModel: TorConnectionAssistViewModel by activityViewModels()
     private var _binding: FragmentTorConnectionAssistBinding? = null
     private val binding get() = _binding!!
+
+    private val quickstartViewModel: QuickstartViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -78,10 +81,10 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler {
             setProgressBarCompat(progress)
         }
 
-        viewModel.quickstartToggle().observe(
+        quickstartViewModel.quickstart().observe(
             viewLifecycleOwner,
         ) {
-            binding.quickstartSwitch.isChecked = it == true
+            binding.quickstartSwitch.isChecked = it
         }
 
         viewModel.shouldOpenHome().observe(
@@ -185,9 +188,8 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler {
     private fun setQuickStart(screen: ConnectAssistUiState) {
         binding.quickstartSwitch.visibility =
             if (screen.quickstartSwitchVisible) View.VISIBLE else View.GONE
-        binding.quickstartSwitch.isChecked = viewModel.quickstartToggle().value == true
         binding.quickstartSwitch.setOnCheckedChangeListener { _, isChecked ->
-            viewModel.handleQuickstartChecked(isChecked)
+            quickstartViewModel.quickstartSet(isChecked)
         }
     }
 
