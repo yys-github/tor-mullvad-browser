@@ -52,6 +52,8 @@ public class TorIntegrationAndroid implements BundleEventListener {
   private static final String EVENT_BOOTSTRAP_BEGIN_AUTO = "GeckoView:Tor:BootstrapBeginAuto";
   private static final String EVENT_BOOTSTRAP_CANCEL = "GeckoView:Tor:BootstrapCancel";
   private static final String EVENT_BOOTSTRAP_GET_STATE = "GeckoView:Tor:BootstrapGetState";
+  private static final String EVENT_QUICKSTART_GET = "GeckoView:Tor:QuickstartGet";
+  private static final String EVENT_QUICKSTART_SET = "GeckoView:Tor:QuickstartSet";
 
   private static final String CONTROL_PORT_FILE = "/control-ipc";
   private static final String SOCKS_FILE = "/socks-ipc";
@@ -680,6 +682,23 @@ public class TorIntegrationAndroid implements BundleEventListener {
     GeckoBundle bundle = new GeckoBundle(1);
     bundle.putBundle("settings", settings.asGeckoBundle());
     return EventDispatcher.getInstance().queryVoid(EVENT_SETTINGS_SET, bundle);
+  }
+
+  public interface QuickstartGetter {
+    void onValue(boolean enabled);
+  }
+
+  public void quickstartGet(QuickstartGetter quickstartGetter) {
+    EventDispatcher.getInstance().queryBoolean(EVENT_QUICKSTART_GET).then(enabled -> {
+      quickstartGetter.onValue(Boolean.TRUE.equals(enabled));
+      return new GeckoResult<Void>();
+    });
+  }
+
+  public @NonNull GeckoResult<Void> quickstartSet(boolean enabled) {
+    final GeckoBundle bundle = new GeckoBundle(1);
+    bundle.putBoolean("enabled", enabled);
+    return EventDispatcher.getInstance().queryVoid(EVENT_QUICKSTART_SET, bundle);
   }
 
   public @NonNull GeckoResult<Void> beginBootstrap() {
