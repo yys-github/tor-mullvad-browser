@@ -65,19 +65,15 @@ tor-connection-quickstart-checkbox =
 # Prefix before the internet connection status.
 # "Internet" is not a proper noun, but is capitalized because it is the start of a sentence.
 tor-connection-internet-status-label = Internet:
-# Button to test the internet connection.
-# Here "Test" is a verb, as in "test the internet connection".
-# Uses sentence case in English (US).
-tor-connection-internet-status-test-button = Test
-# Shown when testing the internet status.
-# Uses sentence case in English (US).
-tor-connection-internet-status-testing = Testing…
 # Shown when the user is connected to the internet.
 # Uses sentence case in English (US).
 tor-connection-internet-status-online = Online
 # Shown when the user is not connected to the internet.
 # Uses sentence case in English (US).
 tor-connection-internet-status-offline = Offline
+# Shown when the user has an unknown internet connection status.
+# Uses sentence case in English (US).
+tor-connection-internet-status-unknown = Unknown status
 
 # Prefix before the Tor network connection status.
 # Uses sentence case in English (US).
