@@ -10,6 +10,7 @@ import android.net.Uri
 import androidx.annotation.VisibleForTesting
 import androidx.annotation.VisibleForTesting.Companion.PRIVATE
 import androidx.core.view.isVisible
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import kotlinx.coroutines.CoroutineScope
@@ -1187,7 +1188,15 @@ class PromptFeature private constructor(
         emitPromptDismissedFact(promptName = promptRequest::class.simpleName.ifNullOrEmpty { "" })
     }
 
+    @VisibleForTesting
+    internal fun redirectDialogFragmentIsActive() =
+        (fragmentManager.findFragmentByTag("SHOULD_OPEN_APP_LINK_PROMPT_DIALOG") as? DialogFragment) != null
+
     private fun canShowThisPrompt(promptRequest: PromptRequest): Boolean {
+        if (redirectDialogFragmentIsActive()) {
+            return false
+        }
+
         return when (promptRequest) {
             is SingleChoice,
             is MultipleChoice,
