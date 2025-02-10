@@ -17,12 +17,48 @@
       {
         "name": "brand.ftl",
         "where": ["browser/branding/tb-release", "toolkit/torbutton"],
+        "branding": {
+          "versions": [
+            {
+              "name": "Alpha",
+              "suffix": "_alpha",
+              "where": ["browser/branding/tb-alpha"]
+            },
+            {
+              "name": "Nightly",
+              "suffix": "_nightly",
+              "where": ["browser/branding/tb-nightly"]
+            }
+          ],
+          "ids": [
+            "-brand-short-name",
+            "-brand-full-name"
+          ]
+        },
         "branch": "tor-browser",
         "directory": "branding"
       },
       {
         "name": "brand.properties",
         "where": ["browser/branding/tb-release", "toolkit/torbutton"],
+        "branding": {
+          "versions": [
+            {
+              "name": "Alpha",
+              "suffix": "_alpha",
+              "where": ["browser/branding/tb-alpha"]
+            },
+            {
+              "name": "Nightly",
+              "suffix": "_nightly",
+              "where": ["browser/branding/tb-nightly"]
+            }
+          ],
+          "ids": [
+            "brandShortName",
+            "brandFullName"
+          ]
+        },
         "branch": "tor-browser"
       },
       { "name": "tor-browser.ftl", "branch": "tor-browser" },
