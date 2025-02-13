@@ -4,6 +4,7 @@
  * You can obtain one at https://mozilla.org/MPL/2.0/. */
 
 import { XPCOMUtils } from "resource://gre/modules/XPCOMUtils.sys.mjs";
+import { AppConstants } from "resource://gre/modules/AppConstants.sys.mjs";
 import * as constants from "resource://gre/modules/RFPTargetConstants.sys.mjs";
 
 const kPrefResistFingerprinting = "privacy.resistFingerprinting";
@@ -519,22 +520,23 @@ class _RFPHelper {
     }
   }
 
+  stepping(aDimension, aIsWidth) {
+    if (aDimension <= 500) {
+      return 50;
+    } else if (aDimension <= 1600) {
+      return aIsWidth ? 200 : 100;
+    }
+    return 200;
+  }
+
   /**
    * Given a width or height, rounds it with the proper stepping.
    */
   steppedSize(aDimension, aIsWidth = false) {
-    let stepping;
     if (aDimension <= 50) {
       return aDimension;
-    } else if (aDimension <= 500) {
-      stepping = 50;
-    } else if (aDimension <= 1600) {
-      stepping = aIsWidth ? 200 : 100;
-    } else {
-      stepping = 200;
     }
-
-    return aDimension - (aDimension % stepping);
+    return aDimension - (aDimension % this.stepping(aDimension, aIsWidth));
   }
 
   /**
@@ -806,6 +808,7 @@ class _RFPHelper {
   }
 
   _attachWindow(aWindow) {
+    this._fixRounding(aWindow);
     aWindow.addEventListener("sizemodechange", windowResizeHandler);
     aWindow.shrinkToLetterbox = this.shrinkToLetterbox;
     aWindow.addEventListener("dblclick", this._onWindowDoubleClick);
@@ -863,6 +866,49 @@ class _RFPHelper {
       },
       { once: true }
     );
+  }
+
+  _fixRounding(aWindow) {
+    if (!this.rfpEnabled) {
+      return;
+    }
+
+    // tor-browser#43205: in case of subpixels, new windows might have a wrong
+    // size because of platform-specific bugs (e.g., Bug 1947439 on Windows).
+    const contentContainer = aWindow.document.getElementById("browser");
+    const rect = contentContainer.getBoundingClientRect();
+    const steppingWidth = this.stepping(rect.width, true);
+    const steppingHeight = this.stepping(rect.height, false);
+    const deltaWidth =
+      rect.width - steppingWidth * Math.round(rect.width / steppingWidth);
+    const deltaHeight =
+      rect.height - steppingHeight * Math.round(rect.height / steppingHeight);
+
+    // It seems that under X11, a window cannot have all the possible (integer)
+    // sizes (see the videos on tor-browser#43205 and Bug 1947439)...
+    // We observed this behavior with 1.25 scaling, but we could not find
+    // where it happens exactly, so this code might be wrong.
+    // On the same system, this problem does not happen with Wayland.
+    if (AppConstants.platform === "linux") {
+      let targetWidth = aWindow.outerWidth - deltaWidth;
+      let targetHeight = aWindow.outerHeight - deltaHeight;
+      const x11Size = s =>
+        Math.floor(
+          // This first rounding is done by Gecko, rather than X11.
+          Math.round(s * aWindow.devicePixelRatio) / aWindow.devicePixelRatio
+        );
+      const x11Width = x11Size(targetWidth);
+      const x11Height = x11Size(targetHeight);
+      if (x11Width < targetWidth) {
+        targetWidth = x11Width + 2;
+      }
+      if (x11Height < targetHeight) {
+        targetHeight = x11Height + 2;
+      }
+      aWindow.resizeTo(targetWidth, targetHeight);
+    } else {
+      aWindow.resizeBy(deltaWidth, deltaHeight);
+    }
   }
 
   getTargets() {
