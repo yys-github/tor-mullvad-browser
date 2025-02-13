@@ -69,16 +69,19 @@
   <!-- Quickstart -->
   <groupbox data-category="paneConnection" hidden="true">
     <label>
-      <html:h2 data-l10n-id="tor-connection-quickstart-heading"></html:h2>
+      <html:h2 data-l10n-id="tor-connection-automatic-heading"></html:h2>
     </label>
     <description
       class="description-deemphasized"
       flex="1"
-      data-l10n-id="tor-connection-quickstart-description"
+      data-l10n-id="tor-connection-automatic-description"
     />
-    <checkbox
-      id="torPreferences-quickstart-toggle"
+    <html:moz-toggle
+      id="tor-connection-quickstart-toggle"
+      class="tor-toggle"
+      label-align-after=""
       data-l10n-id="tor-connection-quickstart-checkbox"
+      data-l10n-attrs="label"
     />
   </groupbox>
 
@@ -141,6 +144,7 @@
     </hbox>
     <html:moz-toggle
       id="tor-bridges-enabled-toggle"
+      class="tor-toggle"
       label-align-after=""
       data-l10n-id="tor-bridges-use-bridges"
       data-l10n-attrs="label"
