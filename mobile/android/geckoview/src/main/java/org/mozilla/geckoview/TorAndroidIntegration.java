@@ -29,8 +29,8 @@ import org.mozilla.gecko.util.EventCallback;
 import org.mozilla.gecko.util.GeckoBundle;
 import org.mozilla.geckoview.androidlegacysettings.TorLegacyAndroidSettings;
 
-public class TorIntegrationAndroid implements BundleEventListener {
-  private static final String TAG = "TorIntegrationAndroid";
+public class TorAndroidIntegration implements BundleEventListener {
+  private static final String TAG = "TorAndroidIntegration";
 
   // Events we listen to
   private static final String EVENT_TOR_START = "GeckoView:Tor:StartTor";
@@ -88,7 +88,7 @@ public class TorIntegrationAndroid implements BundleEventListener {
    */
   private TorSettings mSettings = null;
 
-  /* package */ TorIntegrationAndroid(Context context) {
+  /* package */ TorAndroidIntegration(Context context) {
     mLibraryDir = context.getApplicationInfo().nativeLibraryDir;
     mCacheDir = context.getCacheDir().getAbsolutePath();
     mIpcDirectory = mCacheDir + "/tor-private";
@@ -269,7 +269,7 @@ public class TorIntegrationAndroid implements BundleEventListener {
     public void run() {
       cleanIpcDirectory();
 
-      final String ipcDir = TorIntegrationAndroid.this.mIpcDirectory;
+      final String ipcDir = TorAndroidIntegration.this.mIpcDirectory;
       final ArrayList<String> args = new ArrayList<>();
       args.add(mLibraryDir + "/libTor.so");
       args.add("DisableNetwork");
@@ -354,7 +354,7 @@ public class TorIntegrationAndroid implements BundleEventListener {
     }
 
     private void cleanIpcDirectory() {
-      File directory = new File(TorIntegrationAndroid.this.mIpcDirectory);
+      File directory = new File(TorAndroidIntegration.this.mIpcDirectory);
       if (!directory.isDirectory()) {
         if (!directory.mkdirs()) {
           Log.e(TAG, "Failed to create the IPC directory.");
