@@ -34,6 +34,11 @@ button.spoof-button-disabled {
   }
 }
 
+.tor-toggle {
+  margin-block: 16px;
+  width: max-content;
+}
+
 /* Status */
 
 #network-status-internet-area {
@@ -199,11 +204,6 @@ button.spoof-button-disabled {
 .bridge-status-badge.bridge-status-none .bridge-status-icon {
   /* Hide the icon. */
   display: none;
-}
-
-#tor-bridges-enabled-toggle {
-  margin-block: 16px;
-  width: max-content;
 }
 
 #tor-bridges-update-area {
