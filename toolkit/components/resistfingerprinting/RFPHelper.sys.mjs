@@ -22,6 +22,8 @@ const kPrefLetterboxingGradient =
   "privacy.resistFingerprinting.letterboxing.gradient";
 const kPrefLetterboxingDidForceSize =
   "privacy.resistFingerprinting.letterboxing.didForceSize";
+const kPrefLetterboxingRememberSize =
+  "privacy.resistFingerprinting.letterboxing.rememberSize";
 
 const kTopicDOMWindowOpened = "domwindowopened";
 
@@ -748,7 +750,10 @@ class _RFPHelper {
   }
 
   _fixRounding(aWindow) {
-    if (!this.rfpEnabled) {
+    if (
+      !this.rfpEnabled ||
+      Services.prefs.getBoolPref(kPrefLetterboxingRememberSize, false)
+    ) {
       return;
     }
 
