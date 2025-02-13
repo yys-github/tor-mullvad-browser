@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import mozilla.components.browser.engine.gecko.GeckoEngine
 import org.mozilla.fenix.ext.components
-import org.mozilla.geckoview.TorIntegrationAndroid
-import org.mozilla.geckoview.TorIntegrationAndroid.BootstrapStateChangeListener
-import org.mozilla.geckoview.TorIntegrationAndroid.TorLogListener
+import org.mozilla.geckoview.TorAndroidIntegration
+import org.mozilla.geckoview.TorAndroidIntegration.BootstrapStateChangeListener
+import org.mozilla.geckoview.TorAndroidIntegration.TorLogListener
 import org.mozilla.geckoview.TorSettings
 import org.mozilla.geckoview.TorSettings.BridgeBuiltinType
 import org.mozilla.geckoview.TorSettings.BridgeSource
@@ -73,7 +73,7 @@ class TorControllerGV(
     override val isBootstrapped get() = isTorBootstrapped
     override val isConnected get() = (_lastKnownStatus.value.isStarted() && !isTorRestarting)
 
-    private fun getTorIntegration(): TorIntegrationAndroid {
+    private fun getTorIntegration(): TorAndroidIntegration {
         return (context.components.core.engine as GeckoEngine).getTorIntegrationController()
     }
 
