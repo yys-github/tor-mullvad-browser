@@ -47,7 +47,7 @@ if [ "$os" = "unsupported" ] || [ "$arch" = "unsupported" ]; then
 	exit 2
 fi
 
-app_services="$(find "$TOR_BROWSER_BUILD/out/application-services" -name 'application-services*.tar.zst' -print | sort | tail -1)"
+app_services="$(ls -1t "$TOR_BROWSER_BUILD/out/application-services/"application-services*.tar.zst | head -1)"
 mkdir -p "$GRADLE_MAVEN_REPOSITORIES/org/mozilla"
 if [ -f "$app_services" ]; then
 	tar -C /tmp -xf "$app_services"
@@ -67,14 +67,14 @@ if [ -f "$app_services" ]; then
 		unzip -d /tmp/nimbus-fml /tmp/nimbus-fml.zip
 		nimbus_fml="$(find "/tmp/nimbus-fml/" -name 'nimbus-fml*' | grep "$arch-$os")"
 		echo "Using nimbus-fml binary: $nimbus_fml"
-		cp $nimbus_fml app/
+		cp $nimbus_fml tools/
 
 		rm -rf /tmp/nimbus-fml
 		rm /tmp/nimbus-fml.zip
 	else
-		cp /tmp/application-services/nimbus-fml app/
+		cp /tmp/application-services/nimbus-fml tools/
 	fi
-	chmod +x app/nimbus-fml
+	chmod +x tools/nimbus-fml
 
 	rm -rf /tmp/application-services
 else
