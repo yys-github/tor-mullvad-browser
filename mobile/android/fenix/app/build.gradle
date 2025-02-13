@@ -330,12 +330,15 @@ android.applicationVariants.configureEach { variant ->
     def isDebugOrDCD = isDebug || isDataCollectionDisabled
     def useReleaseVersioning = variant.buildType.buildConfigFields['USE_RELEASE_VERSIONING']?.value ?: false
 
+    System.setProperty("nimbusFml", rootProject.projectDir.toPath().resolve("tools").resolve("nimbus-fml").toAbsolutePath().toString())
+
     println("----------------------------------------------")
     println("Variant name:      " + variant.name)
     println("Application ID:    " + [variant.applicationId, variant.buildType.applicationIdSuffix].findAll().join())
     println("Build type:        " + variant.buildType.name)
     println("Flavor:            " + variant.flavorName)
     println("Telemetry enabled: " + !isDebugOrDCD)
+    println("nimbusFml:         " + System.getProperty("nimbusFml"))
 
     if (useReleaseVersioning) {
         // The Google Play Store does not allow multiple APKs for the same app that all have the
