@@ -2486,18 +2486,18 @@ const gConnectionPane = (function () {
 
   const retval = {
     // cached frequently accessed DOM elements
-    _enableQuickstartCheckbox: null,
+    _enableQuickstartToggle: null,
 
     // populate xul with strings and cache the relevant elements
     _populateXUL() {
       // Quickstart
-      this._enableQuickstartCheckbox = document.getElementById(
-        "torPreferences-quickstart-toggle"
+      this._enableQuickstartToggle = document.getElementById(
+        "tor-connection-quickstart-toggle"
       );
-      this._enableQuickstartCheckbox.addEventListener("command", () => {
-        TorConnect.quickstart = this._enableQuickstartCheckbox.checked;
+      this._enableQuickstartToggle.addEventListener("toggle", () => {
+        TorConnect.quickstart = this._enableQuickstartToggle.pressed;
       });
-      this._enableQuickstartCheckbox.checked = TorConnect.quickstart;
+      this._enableQuickstartToggle.pressed = TorConnect.quickstart;
       Services.obs.addObserver(this, TorConnectTopics.QuickstartChange);
 
       // Location
@@ -2643,7 +2643,7 @@ const gConnectionPane = (function () {
     observe(subject, topic) {
       switch (topic) {
         case TorConnectTopics.QuickstartChange: {
-          this._enableQuickstartCheckbox.checked = TorConnect.quickstart;
+          this._enableQuickstartToggle.pressed = TorConnect.quickstart;
           break;
         }
         // triggered when tor connect state changes and we may
