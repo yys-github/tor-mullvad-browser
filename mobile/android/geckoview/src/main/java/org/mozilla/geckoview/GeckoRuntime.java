@@ -238,7 +238,7 @@ public final class GeckoRuntime implements Parcelable {
   private final ProfilerController mProfilerController;
   private final GeckoScreenChangeListener mScreenChangeListener;
 
-  private TorIntegrationAndroid mTorIntegration;
+  private TorAndroidIntegration mTorIntegration;
 
   private GeckoRuntime() {
     mWebExtensionController = new WebExtensionController(this);
@@ -489,7 +489,7 @@ public final class GeckoRuntime implements Parcelable {
       mScreenChangeListener.enable();
     }
 
-    mTorIntegration = new TorIntegrationAndroid(context);
+    mTorIntegration = new TorAndroidIntegration(context);
 
     mProfilerController.addMarker(
         "GeckoView Initialization START", mProfilerController.getProfilerTime());
@@ -1009,7 +1009,7 @@ public final class GeckoRuntime implements Parcelable {
    * Get the Tor integration controller for this runtime.
    */
   @UiThread
-  public @NonNull TorIntegrationAndroid getTorIntegrationController() {
+  public @NonNull TorAndroidIntegration getTorIntegrationController() {
     return mTorIntegration;
   }
 
