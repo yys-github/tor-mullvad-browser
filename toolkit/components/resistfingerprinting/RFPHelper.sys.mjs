@@ -393,7 +393,7 @@ class _RFPHelper {
   steppedSize(aDimension, aIsWidth = false) {
     let stepping;
     if (aDimension <= 50) {
-      return 0;
+      return aDimension;
     } else if (aDimension <= 500) {
       stepping = 50;
     } else if (aDimension <= 1600) {
