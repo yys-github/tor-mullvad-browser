@@ -156,7 +156,7 @@ import mozilla.components.browser.engine.gecko.GeckoEngine
 import org.mozilla.fenix.components.FenixSnackbar
 import org.mozilla.fenix.home.HomeFragment
 import org.mozilla.fenix.tor.TorConnectionAssistViewModel
-import org.mozilla.geckoview.TorIntegrationAndroid
+import org.mozilla.geckoview.TorAndroidIntegration
 
 /**
  * The main activity of the application. The application is primarily a single Activity (this one)
@@ -165,7 +165,7 @@ import org.mozilla.geckoview.TorIntegrationAndroid
  * - browser screen
  */
 @SuppressWarnings("TooManyFunctions", "LargeClass", "LongMethod")
-open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorIntegrationAndroid.BootstrapStateChangeListener {
+open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAndroidIntegration.BootstrapStateChangeListener {
     private lateinit var binding: ActivityHomeBinding
     lateinit var themeManager: ThemeManager
     lateinit var browsingModeManager: BrowsingModeManager
