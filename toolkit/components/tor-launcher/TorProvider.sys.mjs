@@ -512,14 +512,12 @@ export class TorProvider {
   }
 
   /**
-   * Returns captured log message as a text string (one message per line).
+   * Returns captured log messages.
    *
-   * @returns {string} The logs we collected from the tor daemon so far
+   * @returns {LogEntry[]} The logs we collected from the tor daemon so far.
    */
   getLog() {
-    return this.#logs
-      .map(logObj => `${logObj.timestamp} [${logObj.type}] ${logObj.msg}`)
-      .join(TorLauncherUtil.isWindows ? "\r\n" : "\n");
+    return structuredClone(this.#logs);
   }
 
   /**
