@@ -423,6 +423,9 @@ tor-view-log-button = View log…
 # "log" is a noun, referring to the recorded text output of the Tor process.
 tor-log-dialog-title =
     .title = Tor log
+# The screen-reader name for the Tor log table. Should match the dialog title.
+tor-log-dialog-table =
+    .aria-label = { tor-log-dialog-title.title }
 # "log" is a noun, referring to the recorded text output of the Tor process.
 tor-log-dialog-copy-button =
     .label = Copy Tor log to clipboard
