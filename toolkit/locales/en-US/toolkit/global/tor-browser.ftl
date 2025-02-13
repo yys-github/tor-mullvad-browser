@@ -56,9 +56,8 @@ tor-connection-settings-category =
 # -brand-short-name refers to 'Tor Browser', localized.
 tor-connection-overview = { -brand-short-name } routes your traffic over the Tor Network, run by thousands of volunteers around the world.
 tor-connection-browser-learn-more-link = Learn more
-tor-connection-quickstart-heading = Quickstart
-# -brand-short-name refers to 'Tor Browser', localized.
-tor-connection-quickstart-description = Quickstart connects { -brand-short-name } to the Tor Network automatically when launched, based on your last used connection settings.
+tor-connection-automatic-heading = Connect automatically
+tor-connection-automatic-description = Automatically connect to the Tor network at launch using your current connection settings.
 tor-connection-quickstart-checkbox =
     .label = Always connect automatically
 
