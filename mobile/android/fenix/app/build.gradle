@@ -315,6 +315,8 @@ android.applicationVariants.configureEach { variant ->
     if (project.hasProperty("disableTor")) {
         disableTor = project.getProperty("disableTor")
     }
+    System.setProperty("nimbusFml", rootProject.projectDir.toPath().resolve("tools").resolve("nimbus-fml").toAbsolutePath().toString())
+
 
     println("----------------------------------------------")
     println("Variant name:      " + variant.name)
@@ -323,6 +325,7 @@ android.applicationVariants.configureEach { variant ->
     println("Flavor:            " + variant.flavorName)
     println("Telemetry enabled: " + !isDebugOrDCD)
     println("Tor is disabled:   " + disableTor)
+    println("nimbusFml:        " + System.getProperty("nimbusFml"))
 
     buildConfigField "boolean", "DISABLE_TOR", "$disableTor"
 
