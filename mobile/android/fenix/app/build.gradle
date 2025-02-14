@@ -315,8 +315,7 @@ android.applicationVariants.configureEach { variant ->
     if (project.hasProperty("disableTor")) {
         disableTor = project.getProperty("disableTor")
     }
-    System.setProperty("nimbusFml", rootProject.projectDir.toPath().resolve("tools").resolve("nimbus-fml").toAbsolutePath().toString())
-
+    System.setProperty("nimbusFml", "${topsrcdir}/mobile/android/tools/nimbus-fml")
 
     println("----------------------------------------------")
     println("Variant name:      " + variant.name)
