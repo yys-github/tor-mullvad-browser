@@ -5625,7 +5625,11 @@ nsresult XREMain::XRE_mainRun() {
 
     if (!AppShutdown::IsInOrBeyond(ShutdownPhase::AppShutdownConfirmed)) {
 #ifdef XP_MACOSX
-      if (!BackgroundTasks::IsBackgroundTaskMode()) {
+      bool isBackgroundTaskMode = false;
+#  ifdef MOZ_BACKGROUNDTASKS
+      isBackgroundTaskMode = BackgroundTasks::IsBackgroundTaskMode();
+#  endif
+      if (!isBackgroundTaskMode) {
         rv = appStartup->CreateHiddenWindow();
         NS_ENSURE_SUCCESS(rv, NS_ERROR_FAILURE);
       }
