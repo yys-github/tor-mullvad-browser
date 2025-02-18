@@ -4,8 +4,6 @@
 
 const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
-  TorLauncherUtil:
-    "moz-src:///toolkit/components/tor-launcher/TorLauncherUtil.sys.mjs",
   TorProvider: "moz-src:///toolkit/components/tor-launcher/TorProvider.sys.mjs",
   TorProviderMock:
     "moz-src:///toolkit/components/tor-launcher/TorProviderMock.sys.mjs",
@@ -279,8 +277,6 @@ export class TorProviderBuilder {
       TorProviderTopics.ProviderStateChanged,
       provider.state
     );
-
-    this.#promptProviderState(false);
   }
 
   /**
@@ -398,85 +394,6 @@ export class TorProviderBuilder {
   static replace() {
     this.#checkActive();
     this.#replaceProvider();
-  }
-
-  // TODO: Remove firstWindowLoaded, #uiReady, #prompting, #promptProviderState
-  // and use TorConnect instead. tor-browser#43570.
-  /**
-   * Check if the provider has been succesfully initialized when the first
-   * browser window is shown.
-   * This is a workaround we need because ideally we would like the tor process
-   * to start as soon as possible, to avoid delays in the about:torconnect page,
-   * but we should modify TorConnect and about:torconnect to handle this case
-   * there with a better UX.
-   */
-  static firstWindowLoaded() {
-    this.#promptProviderState(true);
-  }
-
-  /**
-   * Tell whether the browser UI is ready.
-   * We ignore any errors until it is because we cannot show them.
-   *
-   * @type {boolean}
-   */
-  static #uiReady = false;
-
-  /**
-   * Whether we are prompting the user for a restart of the provider.
-   *
-   * @type {boolean}
-   */
-  static #prompting = false;
-
-  /**
-   * Prompt the user to restart the provider, if this is necessary.
-   *
-   * @param {boolean} uiReady - Whether this is being called for the first time
-   *   when the UI is ready.
-   */
-  static async #promptProviderState(uiReady) {
-    if (uiReady) {
-      this.#uiReady = true;
-    }
-    if (this.#providerData.provider.state === TorProviderState.Running) {
-      // Nothing to wait for.
-      return;
-    }
-    if (!this.#uiReady) {
-      lazy.logger.warn(
-        "Seen exit, but not doing anything because the UI is not ready yet."
-      );
-      return;
-    }
-    if (this.#prompting) {
-      // Already prompting, so don't duplicate.
-      return;
-    }
-
-    this.#prompting = true;
-    let waitForInit = uiReady;
-    let retry = true;
-    try {
-      while (retry) {
-        if (waitForInit) {
-          try {
-            await this.#providerData.initPromise;
-          } catch {}
-        }
-        if (
-          this.#providerData.provider.state === TorProviderState.Stopped &&
-          lazy.TorLauncherUtil.showRestartPrompt(uiReady)
-        ) {
-          waitForInit = true;
-          this.replace();
-        } else {
-          retry = false;
-        }
-      }
-    } finally {
-      this.#prompting = false;
-    }
   }
 
   /**
