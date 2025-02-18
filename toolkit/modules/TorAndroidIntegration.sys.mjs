@@ -98,11 +98,6 @@ class TorAndroidIntegrationImpl {
     lazy.TorConnect.init();
 
     lazy.TorDomainIsolator.init();
-
-    // On Android immediately call firstWindowLoaded. This should be safe to
-    // call since it will await the initialisation of the TorProvider set up
-    // by TorProviderBuilder.init.
-    lazy.TorProviderBuilder.firstWindowLoaded();
   }
 
   observe(subj, topic) {
