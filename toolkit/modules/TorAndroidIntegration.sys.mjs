@@ -7,6 +7,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
   EventDispatcher: "resource://gre/modules/Messaging.sys.mjs",
   TorConnect: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
   TorConnectTopics: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  TorDomainIsolator:
+    "moz-src:///toolkit/components/tor-launcher/TorDomainIsolator.sys.mjs",
   TorSettingsTopics: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
   TorProviderBuilder:
     "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
@@ -58,7 +60,7 @@ class TorAndroidIntegrationImpl {
   /**
    * Register our listeners.
    * We want this function to block GeckoView initialization, so it should not be
-   * async. Any async task should be moved to #deferredInit, instead.
+   * async.
    */
   init() {
     if (this.#initialized) {
@@ -82,26 +84,21 @@ class TorAndroidIntegrationImpl {
       Services.obs.addObserver(this, lazy.TorSettingsTopics[topic]);
     }
 
+    // Match the initialisation order from desktop's TorStartupService.
+    lazy.TorSettings.init().catch(error => {
+      logger.error("Cannot initailize TorSettings", error);
+    });
+
     lazy.TorProviderBuilder.init();
+
+    lazy.TorConnect.init();
+
+    lazy.TorDomainIsolator.init();
+
     // On Android immediately call firstWindowLoaded. This should be safe to
     // call since it will await the initialisation of the TorProvider set up
     // by TorProviderBuilder.init.
     lazy.TorProviderBuilder.firstWindowLoaded();
-
-    this.#deferredInit();
-  }
-
-  /**
-   * Perform our init tasks that should not block the initialization of
-   * GeckoView. This function will not be awaited, so errors can only be logged.
-   */
-  async #deferredInit() {
-    try {
-      await lazy.TorSettings.init();
-      await lazy.TorConnect.init();
-    } catch (e) {
-      logger.error("Cannot initialize TorSettings or TorConnect", e);
-    }
   }
 
   observe(subj, topic) {
