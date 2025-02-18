@@ -15,8 +15,6 @@ ChromeUtils.defineESModuleGetters(lazy, {
     "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
 });
 
-const kPropBundleURI = "chrome://torbutton/locale/torlauncher.properties";
-const kPropNamePrefix = "torlauncher.";
 const kIPCDirPrefName = "extensions.torlauncher.tmp_ipc_dir";
 
 /**
@@ -372,86 +370,6 @@ export const TorLauncherUtil = {
   isPathRelative(path) {
     const re = this.isWindows ? /^([A-Za-z]:|\\)\\/ : /^\//;
     return !re.test(path);
-  },
-
-  // Returns true if user confirms; false if not.
-  showConfirm(aParentWindow, aMsg, aDefaultButtonLabel, aCancelButtonLabel) {
-    if (!aParentWindow) {
-      aParentWindow = Services.wm.getMostRecentWindow("navigator:browser");
-    }
-
-    const ps = Services.prompt;
-    const title = this.getLocalizedString("error_title");
-    const btnFlags =
-      ps.BUTTON_POS_0 * ps.BUTTON_TITLE_IS_STRING +
-      ps.BUTTON_POS_0_DEFAULT +
-      ps.BUTTON_POS_1 * ps.BUTTON_TITLE_IS_STRING;
-
-    const notUsed = { value: false };
-    const btnIndex = ps.confirmEx(
-      aParentWindow,
-      title,
-      aMsg,
-      btnFlags,
-      aDefaultButtonLabel,
-      aCancelButtonLabel,
-      null,
-      null,
-      notUsed
-    );
-    return btnIndex === 0;
-  },
-
-  /**
-   * Ask the user whether they desire to restart tor.
-   *
-   * @param {boolean} initError If we could connect to the control port at
-   * least once and we are showing this prompt because the tor process exited
-   * suddenly, we will display a different message
-   * @returns {boolean} true if the user asked to restart tor
-   */
-  showRestartPrompt(initError) {
-    let s;
-    if (initError) {
-      const key = "tor_exited_during_startup";
-      s = this.getLocalizedString(key);
-    } else {
-      // tor exited suddenly, so configuration should be okay
-      s =
-        this.getLocalizedString("tor_exited") +
-        "\n\n" +
-        this.getLocalizedString("tor_exited2");
-    }
-    const defaultBtnLabel = this.getLocalizedString("restart_tor");
-    let cancelBtnLabel = "OK";
-    try {
-      const kSysBundleURI = "chrome://global/locale/commonDialogs.properties";
-      const sysBundle = Services.strings.createBundle(kSysBundleURI);
-      cancelBtnLabel = sysBundle.GetStringFromName(cancelBtnLabel);
-    } catch (e) {
-      console.warn("Could not localize the cancel button", e);
-    }
-    return this.showConfirm(null, s, defaultBtnLabel, cancelBtnLabel);
-  },
-
-  _stringBundle: null,
-
-  // Localized Strings
-  // TODO: Switch to fluent also these ones.
-
-  // "torlauncher." is prepended to aStringName.
-  getLocalizedString(aStringName) {
-    if (!aStringName) {
-      return aStringName;
-    }
-    if (!this._stringBundle) {
-      this._stringBundle = Services.strings.createBundle(kPropBundleURI);
-    }
-    try {
-      const key = kPropNamePrefix + aStringName;
-      return this._stringBundle.GetStringFromName(key);
-    } catch (e) {}
-    return aStringName;
   },
 
   /**
