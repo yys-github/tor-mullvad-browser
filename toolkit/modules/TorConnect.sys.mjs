@@ -10,6 +10,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
   MoatRPC: "moz-src:///toolkit/modules/Moat.sys.mjs",
   TorBootstrapRequest:
     "moz-src:///toolkit/components/tor-launcher/TorBootstrapRequest.sys.mjs",
+  TorProviderBuilder:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
   TorProviderState:
     "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
   TorProviderTopics:
@@ -81,11 +83,28 @@ ChromeUtils.defineLazyGetter(lazy, "logger", () =>
 
 /* Topics Notified by the TorConnect module */
 export const TorConnectTopics = Object.freeze({
+  // Fired when the stage changes.
+  // The stage name from `TorConnectStage` is passed as the event subject.
   StageChange: "torconnect:stage-change",
+  // Fired when the `TorConnect.quickstart` value changes.
   QuickstartChange: "torconnect:quickstart-change",
+  // Fired when the `TorConnect.internetStatus` changes.
   InternetStatusChange: "torconnect:internet-status-change",
+  // Fired when the `TorConnect.stage.providerStatus` changes.
+  // NOTE: The state of the provider may switch to `TorProviderState.Stopped`
+  // prior to `TorConnect` entering the stage `TorConnectStage.ProviderStopped`
+  // because a stage switch can be delayed. A consumer should always show the
+  // current `TorConnect` stage as the highest priority, and only react to this
+  // event when we are already in the `TorConnectStage.ProviderStopped` stage.
+  // The `ProviderStatus` object is passed as the event subject.
+  ProviderStatusChange: "torconnect:provider-status-change",
+  // Fired when the list of region names returned by `TorConnect.getRegionNames`
+  // may have changed.
   RegionNamesChange: "torconnect:region-names-change",
+  // Fired when the `TorConnect.stage.bootstrapStatus` may have changed.
+  // The `BootstrapStatus` object is passed as the event subject.
   BootstrapProgress: "torconnect:bootstrap-progress",
+  // Fired when we enter the `TorConnectStage.Bootstrapped` stage.
   BootstrapComplete: "torconnect:bootstrap-complete",
 });
 
@@ -655,6 +674,7 @@ export const InternetStatus = Object.freeze({
 export const TorConnectStage = Object.freeze({
   Disabled: "Disabled",
   Loading: "Loading",
+  ProviderStopped: "ProviderStopped",
   Start: "Start",
   Bootstrapping: "Bootstrapping",
   Offline: "Offline",
@@ -689,6 +709,8 @@ export const TorConnectStage = Object.freeze({
  *   have reached an error stage at some point before being bootstrapped.
  * @property {BootstrappingStatus} bootstrappingStatus - The current
  *   bootstrapping status.
+ * @property {ProviderStatus} providerStatus - The current status of the Tor
+ *   provider.
  */
 
 /**
@@ -712,6 +734,19 @@ export const TorConnectStage = Object.freeze({
  * @property {string} message - The error message.
  * @property {?string} phase - The bootstrapping phase that failed.
  * @property {?string} reason - The bootstrapping failure reason.
+ */
+
+/**
+ * @typedef {object} ProviderStatus
+ *
+ * The status of the current Tor provider.
+ *
+ * @property {string} state - The current `TorProviderState` state of the
+ *   provider.
+ * @property {boolean} maybeConfigIssue - Whether we suspect that a
+ *   configuration issue (conflicting tor process or a mis-config) *may* have
+ *   caused the provider to be stopped. This is a *soft* indicator for UI
+ *   purposes to show additional debugging advice that might resolve the issue.
  */
 
 export const TorConnect = {
@@ -801,6 +836,52 @@ export const TorConnect = {
   _potentiallyBlocked: false,
 
   /**
+   * The current `TorProviderState` state. `null` whilst we wait for
+   * `TorProviderBuilder.settled` to return.
+   *
+   * @type {?string}
+   */
+  _providerKnownState: null,
+
+  /**
+   * The current `TorProviderState` state. Whilst we wait for
+   * `TorProviderBuilder.settled` to return with the true state, we will assume
+   * that the provider is in the `TorProviderState.Running` state, as would be
+   * expected under normal circumstances.
+   */
+  get _providerState() {
+    return this._providerKnownState ?? lazy.TorProviderState.Running;
+  },
+
+  /**
+   * Convenience property for detecting when a provider is running.
+   *
+   * @type {boolean}
+   */
+  get _providerRunning() {
+    return this._providerState === lazy.TorProviderState.Running;
+  },
+
+  /**
+   * Whether we suspect a config issue cause the provider to fail.
+   *
+   * @type {boolean}
+   */
+  _maybeConfigIssue: false,
+
+  /**
+   * The latest provider status information for consumers.
+   *
+   * @returns {ProviderStatus} - The provider status.
+   */
+  _providerStatus() {
+    return {
+      state: this._providerState,
+      maybeConfigIssue: this._maybeConfigIssue,
+    };
+  },
+
+  /**
    * Get a summary of the current user stage.
    *
    * @type {ConnectStage}
@@ -822,6 +903,7 @@ export const TorConnect = {
       tryAgain: this._tryAgain,
       potentiallyBlocked: this._potentiallyBlocked,
       bootstrappingStatus: structuredClone(this._bootstrappingStatus),
+      providerStatus: this._providerStatus(),
     };
   },
 
@@ -928,6 +1010,23 @@ export const TorConnect = {
 
     this._updateInternetStatus();
 
+    // Do not await the `TorProviderBuilder` initialisation before we move to
+    // the Start stage so that the UI can load quickly. We presume it will not
+    // fail, but will switch to `ProviderStopped` if necessary.
+    lazy.TorProviderBuilder.settled().then(() => {
+      // NOTE: Assuming `TorConnect` is the only consumer of
+      // `TorProviderBuilder` that will replace the provider, then the current
+      // provider should be the *first* provider.
+      const state = lazy.TorProviderBuilder.currentState();
+      lazy.logger.debug(`Init state: ${state}`);
+      this._setProviderState(state, true);
+    });
+
+    if (!this._providerRunning) {
+      // Promise resolved immediately, and failed. Should have already requested
+      // the ProviderStopped stage.
+      return;
+    }
     // NOTE: At this point, _requestedStage should still be `null`.
     this._setStage(TorConnectStage.Start);
     if (
@@ -955,19 +1054,13 @@ export const TorConnect = {
         }
         break;
       case lazy.TorProviderTopics.ProviderStateChanged:
-        if (data !== lazy.TorProviderState.Stopped) {
-          break;
-        }
-        lazy.logger.info("Starting again since the tor process exited");
-        // Treat a failure as a possibly broken configuration.
-        // So, prevent quickstart at the next start.
-        Services.prefs.setBoolPref(TorConnectPrefs.prompt_at_startup, true);
-        this._makeStageRequest(TorConnectStage.Start, true);
+        this._setProviderState(data, false);
         break;
       case lazy.TorSettingsTopics.SettingsChanged:
         if (
           this._stageName !== TorConnectStage.Bootstrapped &&
           this._stageName !== TorConnectStage.Loading &&
+          this._stageName !== TorConnectStage.ProviderStopped &&
           this._stageName !== TorConnectStage.Start &&
           subject.wrappedJSObject.changes.some(propertyName =>
             propertyName.startsWith("bridges.")
@@ -1009,8 +1102,19 @@ export const TorConnect = {
    * @param {string} name - The name of the stage to move to.
    */
   _setStage(name) {
+    if (this._stageName === TorConnectStage.Disabled) {
+      throw new Error(`Trying to set the stage to ${name} when disabled`);
+    }
     if (this._bootstrapAttempt) {
       throw new Error(`Trying to set the stage to ${name} during a bootstrap`);
+    }
+    if (!this._providerRunning && name !== TorConnectStage.ProviderStopped) {
+      if (!lazy.TorLauncherUtil.isAndroid) {
+        // TODO: Remove Android exception.
+        throw new Error(
+          `Trying to set the stage to ${name} when provider is not running`
+        );
+      }
     }
 
     lazy.logger.info(`Entering stage ${name}`);
@@ -1211,6 +1315,13 @@ export const TorConnect = {
       return false;
     }
 
+    if (!this._providerRunning) {
+      lazy.logger.warn(
+        `Tor provider is not running. Ignoring request with ${regionCode}.`
+      );
+      return false;
+    }
+
     const currentStage = this._stageName;
 
     if (regionCode) {
@@ -1315,7 +1426,7 @@ export const TorConnect = {
       this._defaultRegion = bootstrapAttempt.detectedRegion;
     }
 
-    if (result === "complete") {
+    if (result === "complete" && this._providerRunning) {
       // Reset tryAgain, potentiallyBlocked and errorDetails in case the tor
       // process exists later on.
       this._tryAgain = false;
@@ -1351,15 +1462,10 @@ export const TorConnect = {
       this._tryAgain = true;
 
       if (error instanceof lazy.TorProviderInitError) {
-        // Treat like TorProviderTopics.ProviderStateChanged. We expect a user
-        // notification when this happens.
-        // Treat a failure as a possibly broken configuration.
-        // So, prevent quickstart at the next start.
-        Services.prefs.setBoolPref(TorConnectPrefs.prompt_at_startup, true);
-        lazy.logger.info(
-          "Starting again since the tor provider failed to initialise"
-        );
-        this._setStage(TorConnectStage.Start);
+        // Unexpected. We expect TorProviderTopics.ProviderStateChanged to have
+        // already been called. I.e. the requestStage should be set.
+        lazy.logger.error("Unexpected TorProviderInitError");
+        this._setProviderState(lazy.TorProviderBuilder.currentState(), false);
         return;
       }
 
@@ -1489,14 +1595,27 @@ export const TorConnect = {
       lazy.logger.warn(`Cannot move to ${stage} when bootstrapped`);
       return;
     }
-    if (this._stageName === TorConnectStage.Loading) {
-      if (stage === TorConnectStage.Start) {
-        // Will transition to "Start" stage when loading completes.
-        lazy.logger.info("Still in the Loading stage");
-      } else {
-        lazy.logger.warn(`Cannot move to ${stage} when Loading`);
+    if (!this._providerRunning && stage !== TorConnectStage.ProviderStopped) {
+      if (!lazy.TorLauncherUtil.isAndroid) {
+        // TODO: Remove Android exception.
+        lazy.logger.warn(
+          `Cannot move to ${stage} when provider is not running`
+        );
+        return;
       }
-      return;
+    }
+    if (this._stageName === TorConnectStage.Loading) {
+      if (stage === TorConnectStage.ProviderStopped) {
+        lazy.logger.info("Skipping straight from Loading to ProviderStopped");
+      } else {
+        if (stage === TorConnectStage.Start) {
+          // Will transition to "Start" stage when loading completes.
+          lazy.logger.info("Still in the Loading stage");
+        } else {
+          lazy.logger.warn(`Cannot move to ${stage} when Loading`);
+        }
+        return;
+      }
     }
 
     if (!this._bootstrapAttempt) {
@@ -1517,6 +1636,116 @@ export const TorConnect = {
     // Move to stage *after* bootstrap completes.
     this._requestedStage = stage;
     this._bootstrapAttempt?.cancel();
+  },
+
+  /**
+   * Called when the current Tor provider's state changes.
+   *
+   * @param {string} state - The `TorProviderState` we are now in.
+   * @param {boolean} initialState - Whether this is the initial provider's
+   *   state.
+   */
+  _setProviderState(state, initialState) {
+    if (this._providerKnownState === null && !initialState) {
+      // Wait for `TorProviderBuilder.settled` to return first.
+      // We stick to the assumed status for the time being.
+      return;
+    }
+
+    const wasRunning = this._providerRunning;
+    const prevState = this._providerState;
+    this._providerKnownState = state;
+
+    if (prevState === state) {
+      // No change in state.
+      // NOTE: If this is the initial state, then `prevState` will be
+      // `TorProviderState.Running`, in which case this will *not* notify
+      // consumers if the initial state is also `Running`.
+      return;
+    }
+
+    if (this._providerRunning) {
+      // As soon as we get a provider that is running (has not immediately
+      // exited), from now on we will no longer *suspect* that a configuration
+      // issue (conflicting tor process, or a mis-config) *could* cause a tor
+      // provider to stop. I.e. if we ever re-enter the "Stopped" or "Starting"
+      // state, `maybeConfigIssue` will remain `false`.
+      //
+      // This is because we assume that the browser's established tor process
+      // can not be killed by the spawning of a new conflicting non-browser tor
+      // process, and any changes in the configuration (via files or otherwise)
+      // mid session won't be read by the existing process.
+      //
+      // NOTE: In principle, if the browser tor process is killed for some other
+      // reason, in the interim there is a time period where the configuration
+      // could change or a new non-browser tor process is spawned that could
+      // conflict, which may prevent any *new* browser tor process from
+      // starting. I.e. the cause of failure switches from non-config issue to
+      // a config issue. However, such a scenario is deemed unlikely, and the
+      // consequences of not accounting for it are very mild since
+      // `maybeConfigIssue` is only soft hint for the debugging UI.
+      this._maybeConfigIssue = false;
+      if (!wasRunning) {
+        // Return to the Start stage to re-try a bootstrap.
+        this._makeStageRequest(TorConnectStage.Start);
+      }
+    } else {
+      if (initialState) {
+        // This is the first time we learn the provider state. If the first
+        // provider is not running after initialisation, then we *suspect* that
+        // there *could* be a conflict with another tor process. E.g. an
+        // existing tor process is already using the ports we want to use, so
+        // the browser's tor provider will fail at initialisation.
+        this._maybeConfigIssue = true;
+      }
+      if (wasRunning) {
+        // Transitioning from the Running state to a non-Running state.
+
+        // Prevent quickstart firing at the next startup until we have another
+        // successful bootstrap.
+        Services.prefs.setBoolPref(TorConnectPrefs.prompt_at_startup, true);
+        // We request the ProviderStopped stage, which may take some time to
+        // reach if we need to cancel the current bootstrap first.
+        // But other methods should take into account that _providerRunning is now
+        // `false` to early return and guarantee that we enter this
+        // ProviderStopped stage.
+        if (lazy.TorLauncherUtil.isAndroid) {
+          // TODO: Remove this Android path when android supports the
+          // `ProviderStopped` stage.
+          this._makeStageRequest(TorConnectStage.Start, true);
+        } else {
+          this._makeStageRequest(TorConnectStage.ProviderStopped, true);
+        }
+      }
+    }
+
+    const providerStatus = this._providerStatus();
+    lazy.logger.debug("New provider status", providerStatus);
+    Services.obs.notifyObservers(
+      providerStatus,
+      TorConnectTopics.ProviderStatusChange
+    );
+  },
+
+  /**
+   * Restart the Tor provider after it has stopped.
+   */
+  restartProvider() {
+    lazy.logger.debug("Request to restart Tor provider");
+    this._ensureEnabled();
+
+    if (this._stageName !== TorConnectStage.ProviderStopped) {
+      lazy.logger.warn(
+        `Cannot restart the provider in stage ${this._stageName}`
+      );
+      return;
+    }
+    if (this._providerState === lazy.TorProviderState.Starting) {
+      lazy.logger.warn("Already restarting the Tor provider");
+      return;
+    }
+
+    lazy.TorProviderBuilder.replace();
   },
 
   /**
