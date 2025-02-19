@@ -134,6 +134,8 @@ class AboutTorConnect {
       "full-regions-option-group"
     ),
     tryBridgeButton: document.querySelector(this.selectors.buttons.tryBridge),
+    restartProviderButton: document.getElementById("restart-provider-button"),
+    restartProviderFailed: document.getElementById("restart-provider-failed"),
   });
 
   /**
@@ -418,6 +420,10 @@ class AboutTorConnect {
         console.warn("Page opened whilst loading");
         isLoaded = false;
         break;
+      case "ProviderStopped":
+        this.hideBreadcrumbs();
+        this.updateProviderStatus(stage.providerStatus, true);
+        break;
       case "Start":
         this.showStart(stage.tryAgain, stage.potentiallyBlocked);
         if (focusConnect) {
@@ -477,6 +483,157 @@ class AboutTorConnect {
     pageEl.classList.add("show-stage");
     document.body.classList.toggle("loaded", isLoaded);
     moveFocus.focus();
+  }
+
+  /**
+   * The stored data for the `ProviderStopped` page content. `null` whilst
+   * uninitialized.
+   *
+   * @type {object}
+   */
+  _providerStoppedData = null;
+
+  /**
+   * Called whenever the tor provider status may have changed. Only relevant in
+   * the `ProviderStopped` stage.
+   *
+   * @param {ProviderStatus} providerStatus - The latest provider status.
+   * @param {boolean} enteringStage - Whether this is being called because we
+   *   have just entered the `ProviderStopped` stage as the initial stage of the
+   *   page, or transitioning from another stage.
+   */
+  updateProviderStatus(providerStatus, enteringStage) {
+    if (this.shownStage !== "ProviderStopped") {
+      // Ignore.
+      return;
+    }
+    if (enteringStage) {
+      // Reset the data:
+      // + When entering the stage.
+      // + When opening the page in this initial stage.
+      this._providerStoppedData = {
+        // Set to `null` to make sure we don't early exit below.
+        isRestarting: null,
+        forceShowRestarting: false,
+        canShowFailedAlert: false,
+        // We set the maybeConfigIssue when entering the stage, but do not attempt
+        // to update it between failed attempts.
+        maybeConfigIssue: providerStatus.maybeConfigIssue,
+      };
+    }
+
+    // We show the UI as restarting if the state is not "Stopped", which
+    // includes both "Starting" and "Running". In the latter case (which is
+    // unexpected) we still want to show the state as loading before we enter a
+    // different shownStage.
+    const restarting = providerStatus.state !== "Stopped";
+
+    const data = this._providerStoppedData;
+
+    if (restarting === data.isRestarting) {
+      // No change in the recorded state. Don't change the UI or adjust any
+      // timeouts.
+      return;
+    }
+
+    data.isRestarting = restarting;
+    if (restarting) {
+      // Whilst we remain in this `ProviderStopped` stage, we will now show the
+      // failed alert when we re-enter the "Stopped" state.
+      data.canShowFailedAlert = true;
+
+      if (!data.forceShowRestarting) {
+        // Force the restarting UI to show for at least a certain amount of
+        // time. Even if we fail early, we continue to show the restarting UI
+        // for a short time to make sure the user has enough time to visually
+        // see the restarting UI before we return to the error state.
+        data.forceShowRestarting = true;
+        setTimeout(() => {
+          if (
+            data !== this._providerStoppedData ||
+            this.shownStage !== "ProviderStopped"
+          ) {
+            // We left or re-entered this stage whilst waiting. Do nothing.
+            return;
+          }
+          data.forceShowRestarting = false;
+          this.updateProviderStoppedContent();
+        }, 1000);
+      }
+      // Else, we already have a pending timeout.
+      // E.g., consider the following timeline, where "R" represents entering
+      // the "Starting" state, "S" represents entering the "Stopped" state,
+      // "T0" represents the start of the forcedShowRestarting timeout, and "T1"
+      // represents the completion:
+      //
+      // |--------------+-----+-----+-----+----+------------------>
+      // S0             R0    S1    R1    S2
+      //                T0                     T1
+      // |--stopped UI--|--restarting UI-------|--stopped UI-------
+      //
+      //
+      // Similarly with S2 delayed:
+      //
+      // |--------------+-----+-----+----------+----+------------->
+      // S0             R0    S1    R1              S2
+      //                T0                     T1
+      // |--stopped UI--|--restarting UI------------|--stopped UI--
+      //
+      //
+      // I.e. we restart once (R0) which starts the timeout. Then we stop (S1) and
+      // restart (R1) again (though unlikely, this could happen if the user
+      // opens another `about:torconnect` tab after S1 and presses the restart
+      // button). Rather than create a new timeout, which would delay the
+      // restart display for even longer, we maintain the current one.
+    }
+
+    this.updateProviderStoppedContent();
+  }
+
+  /**
+   * Whether we are currently *showing* the tor provider as restarting in the
+   * UI.
+   *
+   * @type {boolean}
+   */
+  restartingProvider = false;
+
+  /**
+   * Called to update the page content for the `ProviderStopped` stage.
+   */
+  updateProviderStoppedContent() {
+    const {
+      isRestarting,
+      forceShowRestarting,
+      canShowFailedAlert,
+      maybeConfigIssue,
+    } = this._providerStoppedData;
+
+    // Hide any of the debugging information related to configuration issues if
+    // we do not suspect that this could be the cause.
+    document.body.classList.toggle(
+      "hide-provider-config-debugging",
+      !maybeConfigIssue
+    );
+
+    const showRestarting = isRestarting || forceShowRestarting;
+    this.elements.restartProviderFailed.hidden =
+      showRestarting || !canShowFailedAlert;
+
+    this.restartingProvider = showRestarting;
+    // The button is functionally disabled, but can still keep focus.
+    // TODO: tor-browser#45050. Disabled attribute is waiting on bugzilla bug
+    // 1927727.
+    // this.elements.restartProviderButton.disabled = showRestarting;
+    this.elements.restartProviderButton.iconSrc = showRestarting
+      ? "chrome://global/skin/icons/loading.svg"
+      : null;
+    document.l10n.setAttributes(
+      this.elements.restartProviderButton,
+      showRestarting
+        ? "tor-connect-tor-not-working-restarting-button"
+        : "tor-connect-tor-not-working-restart-button"
+    );
   }
 
   updateBootstrappingStatus(data) {
@@ -816,6 +973,14 @@ class AboutTorConnect {
       RPMSendAsyncMessage("torconnect:restart");
     });
 
+    this.elements.restartProviderButton.addEventListener("click", () => {
+      if (this.restartingProvider) {
+        // Ignore clicks whilst the button is shown as "Restarting".
+        return;
+      }
+      RPMSendAsyncMessage("torconnect:restart-provider");
+    });
+
     this.elements.configureButton.textContent =
       TorStrings.torConnect.torConfigure;
     this.elements.configureButton.addEventListener("click", () => {
@@ -895,6 +1060,9 @@ class AboutTorConnect {
     // TorConnectParent feeds us state blobs to we use to update our UI
     RPMAddMessageListener("torconnect:stage-change", ({ data }) => {
       this.updateStage(data);
+    });
+    RPMAddMessageListener("torconnect:provider-status-change", ({ data }) => {
+      this.updateProviderStatus(data, false);
     });
     RPMAddMessageListener("torconnect:bootstrap-progress", ({ data }) => {
       this.updateBootstrappingStatus(data);
