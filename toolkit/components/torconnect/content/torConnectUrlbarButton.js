@@ -105,7 +105,7 @@ var gTorConnectUrlbarButton = {
    * Begin the tor connection bootstrapping process.
    */
   connect() {
-    TorConnect.openTorConnect({ beginBootstrapping: "soft" });
+    TorConnectParent.open({ beginBootstrapping: "soft" });
   },
 
   /**
