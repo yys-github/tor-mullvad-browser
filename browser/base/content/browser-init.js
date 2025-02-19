@@ -980,14 +980,9 @@ var gBrowserInit = {
 
       // if using TorConnect, convert these uris to redirects
       if (TorConnect.shouldShowTorConnect) {
-        return Promise.resolve(uri).then(aUri => {
-          if (aUri == null) {
-            aUri = [];
-          }
-
-          aUri = TorConnect.getURIsToLoad(aUri);
-          return aUri;
-        });
+        return Promise.resolve(uri).then(aUri =>
+          TorConnectParent.getURIsToLoad(aUri ?? [])
+        );
       }
       return uri;
     })());
