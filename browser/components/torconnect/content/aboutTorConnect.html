@@ -15,11 +15,21 @@
       href="chrome://browser/content/torconnect/aboutTorConnect.css"
     />
 
+    <link rel="localization" href="branding/brand.ftl" />
     <link rel="localization" href="toolkit/global/tor-browser.ftl" />
+    <link rel="localization" href="toolkit/global/mozSupportLink.ftl" />
 
     <script
       type="module"
+      src="chrome://global/content/elements/moz-button.mjs"
+    ></script>
+    <script
+      type="module"
       src="chrome://global/content/elements/moz-toggle.mjs"
+    ></script>
+    <script
+      type="module"
+      src="chrome://global/content/elements/moz-support-link.mjs"
     ></script>
   </head>
   <body class="onion-pattern-background">
@@ -49,6 +59,86 @@
         <span id="try-bridge-icon" class="breadcrumb-icon"></span>
         <span class="breadcrumb-label"></span>
       </span>
+    </div>
+    <div class="torconnect-stage-content" data-stage-name="ProviderStopped">
+      <img class="torconnect-icon assist-icon" alt="" />
+      <h1
+        class="torconnect-heading"
+        tabindex="-1"
+        data-l10n-id="tor-connect-tor-not-working-heading"
+      ></h1>
+      <div class="torconnect-text-container">
+        <p data-l10n-id="tor-connect-tor-not-working-intro"></p>
+        <p
+          class="torconnect-list-intro"
+          data-l10n-id="tor-connect-tor-not-working-cause-intro"
+        ></p>
+        <ul>
+          <li
+            class="provider-config-debugging"
+            data-l10n-id="tor-connect-tor-not-working-cause-applications"
+          ></li>
+          <li
+            class="provider-config-debugging"
+            data-l10n-id="tor-connect-tor-not-working-cause-files"
+          ></li>
+          <li
+            class="provider-config-debugging"
+            data-l10n-id="tor-connect-tor-not-working-cause-other"
+          ></li>
+          <li
+            class="provider-generic-debugging"
+            data-l10n-id="tor-connect-tor-not-working-cause-generic"
+          ></li>
+        </ul>
+        <p
+          class="torconnect-list-intro"
+          data-l10n-id="tor-connect-tor-not-working-resolve-intro"
+        ></p>
+        <ul>
+          <li
+            class="provider-config-debugging"
+            data-l10n-id="tor-connect-tor-not-working-resolve-applications"
+          ></li>
+          <li
+            class="provider-config-debugging"
+            data-l10n-id="tor-connect-tor-not-working-resolve-files"
+          ></li>
+          <li
+            class="provider-config-debugging"
+            data-l10n-id="tor-connect-tor-not-working-resolve-restart-long"
+          ></li>
+          <li
+            class="provider-generic-debugging"
+            data-l10n-id="tor-connect-tor-not-working-resolve-restart-short"
+          ></li>
+        </ul>
+        <p data-l10n-id="tor-connect-tor-not-working-support">
+          <a
+            is="moz-support-link"
+            data-l10n-name="support-link"
+            support-page="tor-manual:get-in-touch__bug-or-feedback"
+          >
+          </a>
+        </p>
+        <a
+          is="moz-support-link"
+          support-page="tor-manual:encountering-issues__troubleshooting"
+        ></a>
+      </div>
+      <div class="torconnect-controls-container">
+        <div id="restart-provider-failed" role="alert">
+          <img id="restart-provider-failed-icon" alt="" />
+          <span
+            data-l10n-id="tor-connect-tor-not-working-restarting-failed"
+          ></span>
+        </div>
+        <moz-button
+          id="restart-provider-button"
+          type="primary"
+          data-l10n-id="tor-connect-tor-not-working-restart-button"
+        ></moz-button>
+      </div>
     </div>
     <div id="connectPageContainer" class="torconnect-stage-content">
       <img id="tor-connect-icon" class="torconnect-icon" alt="" />

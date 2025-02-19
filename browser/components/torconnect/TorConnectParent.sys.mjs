@@ -3,6 +3,7 @@
 import { TorStrings } from "moz-src:///toolkit/modules/TorStrings.sys.mjs";
 import {
   TorConnect,
+  TorConnectStage,
   TorConnectTopics,
 } from "moz-src:///toolkit/modules/TorConnect.sys.mjs";
 
@@ -26,9 +27,7 @@ and a particular about:torconnect page
  * It adapts and relays the messages from and to the TorConnect module.
  */
 export class TorConnectParent extends JSWindowActorParent {
-  constructor(...args) {
-    super(...args);
-
+  actorCreated() {
     const self = this;
 
     // JSWindowActiveParent derived objects cannot observe directly, so create a
@@ -43,6 +42,9 @@ export class TorConnectParent extends JSWindowActorParent {
         switch (topic) {
           case TorConnectTopics.StageChange:
             self.sendAsyncMessage("torconnect:stage-change", obj);
+            break;
+          case TorConnectTopics.ProviderStatusChange:
+            self.sendAsyncMessage("torconnect:provider-status-change", obj);
             break;
           case TorConnectTopics.BootstrapProgress:
             self.sendAsyncMessage("torconnect:bootstrap-progress", obj);
@@ -63,6 +65,10 @@ export class TorConnectParent extends JSWindowActorParent {
     Services.obs.addObserver(
       this.torConnectObserver,
       TorConnectTopics.StageChange
+    );
+    Services.obs.addObserver(
+      this.torConnectObserver,
+      TorConnectTopics.ProviderStatusChange
     );
     Services.obs.addObserver(
       this.torConnectObserver,
@@ -123,6 +129,9 @@ export class TorConnectParent extends JSWindowActorParent {
         Services.startup.quit(
           Ci.nsIAppStartup.eRestart | Ci.nsIAppStartup.eAttemptQuit
         );
+        break;
+      case "torconnect:restart-provider":
+        TorConnect.restartProvider();
         break;
       case "torconnect:start-again":
         TorConnect.startAgain();
@@ -267,3 +276,13 @@ export class TorConnectParent extends JSWindowActorParent {
     );
   }
 }
+
+Services.obs.addObserver((_subject, topic) => {
+  if (topic !== TorConnectTopics.StageChange) {
+    return;
+  }
+  if (TorConnect.stageName === TorConnectStage.ProviderStopped) {
+    // Make sure we have an open tab to show the ProviderStopped stage.
+    TorConnectParent.open();
+  }
+}, TorConnectTopics.StageChange);
