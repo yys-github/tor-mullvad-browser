@@ -25,6 +25,10 @@ const { TorProviderBuilder, TorProviderTopics } = ChromeUtils.importESModule(
 const { InternetStatus, TorConnect, TorConnectTopics, TorConnectStage } =
   ChromeUtils.importESModule("resource://gre/modules/TorConnect.sys.mjs");
 
+const { TorConnectParent } = ChromeUtils.importESModule(
+  "resource://gre/actors/TorConnectParent.sys.mjs"
+);
+
 const { QRCode } = ChromeUtils.importESModule(
   "resource://gre/modules/QRCode.sys.mjs"
 );
@@ -2265,7 +2269,7 @@ const gBridgeSettings = {
 
             // Start Bootstrapping, which should use the configured bridges.
             // NOTE: We do this regardless of any previous TorConnect Error.
-            TorConnect.openTorConnect({ beginBootstrapping: "hard" });
+            TorConnectParent.open({ beginBootstrapping: "hard" });
           });
         },
         // closedCallback should be called after gSubDialog has already
@@ -2378,7 +2382,7 @@ const gNetworkStatus = {
       "network-status-tor-connect-button"
     );
     this._torConnectButton.addEventListener("click", () => {
-      TorConnect.openTorConnect({ beginBootstrapping: "soft" });
+      TorConnectParent.open({ beginBootstrapping: "soft" });
     });
 
     this._updateInternetStatus();
@@ -2517,7 +2521,10 @@ const gConnectionPane = (function () {
           TorStrings.settings.bridgeChooseForMe
         );
         chooseForMe.addEventListener("command", () => {
-          TorConnect.openTorConnect({
+          if (!location.value) {
+            return;
+          }
+          TorConnectParent.open({
             beginBootstrapping: "hard",
             regionCode: location.value,
           });
