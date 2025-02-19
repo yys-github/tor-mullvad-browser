@@ -7,7 +7,6 @@ import { setTimeout, clearTimeout } from "resource://gre/modules/Timer.sys.mjs";
 const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
-  BrowserWindowTracker: "resource:///modules/BrowserWindowTracker.sys.mjs",
   MoatRPC: "resource://gre/modules/Moat.sys.mjs",
   TorBootstrapRequest: "resource://gre/modules/TorBootstrapRequest.sys.mjs",
   TorProviderTopics: "resource://gre/modules/TorProviderBuilder.sys.mjs",
@@ -1534,47 +1533,6 @@ export const TorConnect = {
     Further external commands and helper methods
    */
 
-  /**
-   * Open the "about:torconnect" tab.
-   *
-   * Bootstrapping or AutoBootstrapping can also be automatically triggered at
-   * the same time, if the current state allows for it.
-   *
-   * Bootstrapping will not be triggered if the connection is
-   * potentially blocked.
-   *
-   * @param {object} [options] - extra options.
-   * @property {"soft"|"hard"} [options.beginBootstrapping] - Whether to try and
-   *   begin bootstrapping. "soft" will only trigger the bootstrap if we are not
-   *   `potentiallyBlocked`. "hard" will try begin the bootstrap regardless.
-   * @property {string} [options.regionCode] - A region to pass in for
-   *   auto-bootstrapping.
-   */
-  openTorConnect(options) {
-    // FIXME: Should we move this to the about:torconnect actor?
-    const win = lazy.BrowserWindowTracker.getTopWindow();
-    win.switchToTabHavingURI("about:torconnect", true, {
-      ignoreQueryString: true,
-    });
-
-    if (!options?.beginBootstrapping || !this.canBeginBootstrap) {
-      return;
-    }
-
-    if (options.beginBootstrapping === "hard") {
-      if (this.canBeginAutoBootstrap && !options.regionCode) {
-        // Treat as an addition startAgain request to first move back to the
-        // "Start" stage before bootstrapping.
-        this.startAgain();
-      }
-    } else if (this.potentiallyBlocked) {
-      // Do not trigger the bootstrap if we have ever had an error.
-      return;
-    }
-
-    this.beginBootstrapping(options.regionCode);
-  },
-
   async getCountryCodes() {
     // Difference with the getter: this is to be called by TorConnectParent, and
     // downloads the country codes if they are not already in cache.
@@ -1591,65 +1549,5 @@ export const TorConnect = {
       mrpc.uninit();
     }
     return this._countryCodes;
-  },
-
-  getRedirectURL(url) {
-    return `about:torconnect?redirect=${encodeURIComponent(url)}`;
-  },
-
-  /**
-   * Convert the given object into a list of valid URIs.
-   *
-   * The object is either from the user's homepage preference (which may
-   * contain multiple domains separated by "|") or uris passed to the browser
-   * via command-line.
-   *
-   * @param {string|string[]} uriVariant - The string to extract uris from.
-   *
-   * @return {string[]} - The array of uris found.
-   */
-  fixupURIs(uriVariant) {
-    let uriArray;
-    if (typeof uriVariant === "string") {
-      uriArray = uriVariant.split("|");
-    } else if (
-      Array.isArray(uriVariant) &&
-      uriVariant.every(entry => typeof entry === "string")
-    ) {
-      uriArray = uriVariant;
-    } else {
-      // about:tor as safe fallback
-      lazy.logger.error(
-        `Received unknown variant '${JSON.stringify(uriVariant)}'`
-      );
-      uriArray = ["about:tor"];
-    }
-
-    // Attempt to convert user-supplied string to a uri, fallback to
-    // about:tor if cannot convert to valid uri object
-    return uriArray.map(
-      uriString =>
-        Services.uriFixup.getFixupURIInfo(
-          uriString,
-          Ci.nsIURIFixup.FIXUP_FLAG_NONE
-        ).preferredURI?.spec ?? "about:tor"
-    );
-  },
-
-  // called from browser.js on browser startup, passed in either the user's homepage(s)
-  // or uris passed via command-line; we want to replace them with about:torconnect uris
-  // which redirect after bootstrapping
-  getURIsToLoad(uriVariant) {
-    const uris = this.fixupURIs(uriVariant);
-    const localUriRx = /^(file:\/\/\/|moz-extension:)/;
-    lazy.logger.debug(
-      `Will load after bootstrap => [${uris
-        .filter(uri => !localUriRx.test(uri))
-        .join(", ")}]`
-    );
-
-    return uris.map(uri =>
-      localUriRx.test(uri) ? uri : this.getRedirectURL(uri)
-    );
   },
 };
