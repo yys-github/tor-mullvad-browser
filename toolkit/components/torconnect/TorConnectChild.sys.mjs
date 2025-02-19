@@ -55,8 +55,8 @@ export class TorConnectChild extends RemotePageChild {
       } else {
         console.error(`Scheme is not allowed "${redirect}"`);
       }
-    } catch {
-      console.error(`Invalid redirect URL "${redirect}"`);
+    } catch (e) {
+      console.error(`Invalid redirect URL "${redirect}"`, e);
     }
 
     // Replace the destination to prevent "about:torconnect" entering the
