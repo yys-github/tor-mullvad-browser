@@ -282,6 +282,7 @@ export let RemotePageAccessManager = {
     "about:torconnect": {
       RPMAddMessageListener: [
         "torconnect:stage-change",
+        "torconnect:provider-status-change",
         "torconnect:bootstrap-progress",
         "torconnect:quickstart-change",
         "torconnect:region-names-change",
@@ -293,10 +294,12 @@ export let RemotePageAccessManager = {
         "torconnect:set-quickstart",
         "torconnect:view-tor-logs",
         "torconnect:restart",
+        "torconnect:restart-provider",
         "torconnect:start-again",
         "torconnect:choose-region",
       ],
       RPMSendQuery: ["torconnect:get-init-args", "torconnect:get-regions"],
+      RPMGetFormatURLPref: ["app.support.baseURL"],
     },
     "about:welcome": {
       RPMSendAsyncMessage: ["ActivityStream:ContentToMain"],
