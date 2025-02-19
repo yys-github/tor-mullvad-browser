@@ -235,40 +235,57 @@ form#locationDropdown select {
   stroke: var(--icon-color);
   /* Make non-interactive (non-draggable). */
   pointer-events: none;
-}
 
-.torconnect-icon.offline-icon {
-  content: url("chrome://browser/content/torconnect/network-broken.svg");
-}
+  &.offline-icon {
+    content: url("chrome://browser/content/torconnect/network-broken.svg");
+  }
 
-.torconnect-icon.assist-icon {
-  content: url("chrome://browser/content/torconnect/tor-connect-broken.svg");
-}
+  &.assist-icon {
+    content: url("chrome://browser/content/torconnect/tor-connect-broken.svg");
+  }
 
-.torconnect-icon.location-icon {
-  content: url("chrome://browser/content/torconnect/connection-location.svg");
-  stroke: var(--icon-color-warning);
+  &.location-icon {
+    content: url("chrome://browser/content/torconnect/connection-location.svg");
+    stroke: var(--icon-color-warning);
+  }
 }
 
 .torconnect-heading {
   grid-area: heading;
   /* Do not show the focus outline. */
   outline: none;
-  font-size: var(--font-size-xxxlarge);
+  font-size: var(--font-size-xxlarge);
   margin: 0;
   margin-block-end: var(--space-xxlarge);
 }
 
 .torconnect-text-container {
   grid-area: text-container;
+
+  & > *:not(:last-child) {
+    margin-block-end: var(--space-large);
+  }
+
+  & :is(p, ul) {
+    margin: 0;
+  }
+
+  & ul {
+    padding-inline-start: var(--space-xxlarge);
+  }
+
+  & li:not(:last-child) {
+    margin-block-end: var(--space-medium);
+  }
 }
 
-.torconnect-text-container p {
-  margin: 0;
+.torconnect-list-intro {
+  font-weight: var(--font-weight-semibold);
 }
 
-.torconnect-text-container > *:not(:last-child) {
-  margin-block-end: var(--space-large);
+body.hide-provider-config-debugging .provider-config-debugging,
+body:not(.hide-provider-config-debugging) .provider-generic-debugging {
+  display: none;
 }
 
 .torconnect-controls-container {
@@ -281,11 +298,33 @@ form#locationDropdown select {
   align-items: center;
   /* Gap between children and rows. */
   gap: var(--space-small) var(--space-small);
+
+  & > * {
+    flex: 0 0 max-content;
+    margin: 0;
+  }
 }
 
-.torconnect-controls-container > * {
-  flex: 0 0 max-content;
-  margin: 0;
+#restart-provider-failed {
+  color: var(--text-color-error);
+  align-items: center;
+  gap: var(--space-xxsmall);
+
+  &:not([hidden]) {
+    display: flex;
+  }
+
+  & > * {
+    flex: 0 0 max-content;
+  }
+}
+
+#restart-provider-failed-icon {
+  width: var(--icon-size);
+  height: var(--icon-size);
+  -moz-context-properties: fill;
+  fill: var(--icon-color-critical);
+  content: url("chrome://global/skin/icons/error.svg");
 }
 
 /* Temporary hacks for the connectPageContainer. */
