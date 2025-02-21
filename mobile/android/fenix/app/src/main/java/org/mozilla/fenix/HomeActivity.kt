@@ -903,7 +903,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorIn
         return false
     }
 
-    final override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
         ProfilerMarkers.addForDispatchTouchEvent(components.core.engine.profiler, ev)
         return super.dispatchTouchEvent(ev)
     }
