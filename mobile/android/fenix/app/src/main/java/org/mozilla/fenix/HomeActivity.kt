@@ -727,22 +727,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
         if (this !is ExternalAppBrowserActivity && !activityStartedWithLink) {
             stopMediaSession()
         }
-
-        if (isFinishing && !(application as FenixApplication).isTerminating()) {
-            // We assume the Activity is being destroyed because the user
-            // swiped away the app on the Recent screen. When this happens,
-            // we assume the user expects the entire Application is destroyed
-            // and not only the top Activity/Task. Therefore we kill the
-            // underlying Application, as well.
-            (application as FenixApplication).terminate()
-            if (settings().useHtmlConnectionUi) {
-                val engine = components.core.engine
-                if (engine is GeckoEngine) {
-                    val torIntegration = engine.getTorIntegrationController()
-                    torIntegration.unregisterBootstrapStateChangeListener(this)
-                }
-            }
-        }
     }
 
     final override fun onConfigurationChanged(newConfig: Configuration) {

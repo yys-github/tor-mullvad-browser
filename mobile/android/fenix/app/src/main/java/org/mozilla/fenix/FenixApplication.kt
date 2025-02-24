@@ -139,8 +139,6 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
         isDeviceRamAboveThreshold()
     }
 
-    var terminating = false
-
     open val components by lazy { Components(this) }
 
     var visibilityLifecycleCallback: VisibilityLifecycleCallback? = null
@@ -188,20 +186,6 @@ open class FenixApplication : LocaleAwareApplication(), Provider {
         GlobalScope.launch(IO) {
             PerfStartup.applicationOnCreate.accumulateSamples(listOf(durationMillis))
         }
-    }
-
-    fun isTerminating() = terminating
-
-    fun terminate() {
-        onTerminate()
-    }
-
-    override fun onTerminate() {
-        terminating = true
-
-        super.onTerminate()
-        components.torController.stop()
-        components.torController.stopTor()
     }
 
     @OptIn(DelicateCoroutinesApi::class) // GlobalScope usage
