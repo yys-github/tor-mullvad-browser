@@ -171,7 +171,7 @@ import mozilla.components.browser.engine.gecko.GeckoEngine
 import org.mozilla.fenix.compose.core.Action
 import org.mozilla.fenix.compose.snackbar.SnackbarState
 import org.mozilla.fenix.compose.snackbar.Snackbar
-import org.mozilla.fenix.tor.TorConnectionAssistViewModel
+import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 import org.mozilla.geckoview.TorAndroidIntegration
 
 /**
@@ -284,7 +284,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
 
     private var dialog: RedirectDialogFragment? = null
 
-    private val torConnectionAssistViewModel: TorConnectionAssistViewModel by viewModels()
+    private val urlQuickLoadViewModel: UrlQuickLoadViewModel by viewModels()
 
     @Suppress("ComplexMethod")
     final override fun onCreate(savedInstanceState: Bundle?) {
