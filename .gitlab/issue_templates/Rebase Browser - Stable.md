@@ -113,3 +113,5 @@
     ./tools/browser/sign-tag.basebrowser stable build1
     ```
   - [ ] Push tag to `upstream`
+
+/label ~"Apps::Type::Rebase"

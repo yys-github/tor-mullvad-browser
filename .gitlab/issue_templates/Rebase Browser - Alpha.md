@@ -151,3 +151,5 @@
   - [ ] Update `projects/geckoview/config`
     - [ ] Update `firefox_platform_version`
     - [ ] Set `browser_build` to 1 (to prevent failures in alpha testbuilds)
+
+/label ~"Apps::Type::Rebase"
