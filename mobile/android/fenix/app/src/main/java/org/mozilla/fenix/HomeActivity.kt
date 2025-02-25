@@ -452,10 +452,12 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
 
         components.notificationsDelegate.bindToActivity(this)
 
-        val engine = components.core.engine
-        if (engine is GeckoEngine) {
-            val torIntegration = engine.getTorIntegrationController()
-            torIntegration.registerBootstrapStateChangeListener(this)
+        if (settings().useHtmlConnectionUi) {
+            val engine = components.core.engine
+            if (engine is GeckoEngine) {
+                val torIntegration = engine.getTorIntegrationController()
+                torIntegration.registerBootstrapStateChangeListener(this)
+            }
         }
 
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.
