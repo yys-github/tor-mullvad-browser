@@ -315,7 +315,12 @@ android.applicationVariants.configureEach { variant ->
     if (project.hasProperty("disableTor")) {
         disableTor = project.getProperty("disableTor")
     }
-    System.setProperty("nimbusFml", "${topsrcdir}/mobile/android/fenix/tools/nimbus-fml")
+    // only set this property to pass to our patched application-service if it's defined in
+    // local.poperties, indicating this is a local dev build,
+    // otherwise we are in a TBB build env and the env var should be set and will be picked up
+    if (gradle.hasProperty('localProperties.dependencySubstitutions.geckoviewTopsrcdir')) {
+        System.setProperty("nimbusFml", "${topsrcdir}/mobile/android/fenix/tools/nimbus-fml")
+    }
 
     println("----------------------------------------------")
     println("Variant name:      " + variant.name)
