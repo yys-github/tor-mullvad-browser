@@ -288,3 +288,5 @@ gitGraph:
     ./tools/browser/sign-tag.basebrowser rapid build1 ${COMMIT}
     ```
   - [ ] Push tag to `upstream`
+
+/label ~"Apps::Type::Rebase"
