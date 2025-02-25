@@ -182,12 +182,13 @@ import org.mozilla.fenix.snackbar.SnackbarBinding
 import org.mozilla.fenix.tabstray.Page
 import org.mozilla.fenix.tabstray.TabsTrayAccessPoint
 import org.mozilla.fenix.theme.FirefoxTheme
-import org.mozilla.fenix.tor.TorConnectionAssistViewModel
 import org.mozilla.fenix.utils.Settings.Companion.TOP_SITES_PROVIDER_MAX_THRESHOLD
 import org.mozilla.fenix.utils.allowUndo
 import org.mozilla.fenix.wallpapers.Wallpaper
 import java.lang.ref.WeakReference
 import org.mozilla.fenix.GleanMetrics.TabStrip as TabStripMetrics
+
+import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 
 @Suppress("TooManyFunctions", "LargeClass")
 class HomeFragment : Fragment(), UserInteractionHandler {
@@ -203,7 +204,7 @@ class HomeFragment : Fragment(), UserInteractionHandler {
     private val snackbarBinding = ViewBoundFeatureWrapper<SnackbarBinding>()
 
     private val homeViewModel: HomeScreenViewModel by activityViewModels()
-    private val torConnectionAssistViewModel: TorConnectionAssistViewModel by activityViewModels()
+    private val urlQuickLoadViewModel: UrlQuickLoadViewModel by activityViewModels()
 
     private var _bottomToolbarContainerView: BottomToolbarContainerView? = null
     private val bottomToolbarContainerView: BottomToolbarContainerView
@@ -1183,14 +1184,15 @@ class HomeFragment : Fragment(), UserInteractionHandler {
             view = view,
         )
 
-        torConnectionAssistViewModel.urlToLoadAfterConnecting.also {
-            if(!it.isNullOrBlank()){
+        urlQuickLoadViewModel.urlToLoadAfterConnecting.observe(viewLifecycleOwner) {
+            if (!it.isNullOrBlank()) {
                 (requireActivity() as HomeActivity).openToBrowserAndLoad(
                     searchTermOrURL = it,
                     newTab = true,
                     from = BrowserDirection.FromHome,
                 )
-                torConnectionAssistViewModel.urlToLoadAfterConnecting = null // Only load this url once
+                // Only load this url once
+                urlQuickLoadViewModel.urlToLoadAfterConnecting.value = null
             }
         }
 
