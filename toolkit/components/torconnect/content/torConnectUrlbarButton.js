@@ -33,13 +33,21 @@ var gTorConnectUrlbarButton = {
     if (this._isActive) {
       return;
     }
+
+    this.button = document.getElementById("tor-connect-urlbar-button");
+
+    if (!TorConnect.enabled) {
+      // Don't initialise, just hide.
+      this._updateButtonVisibility();
+      return;
+    }
+
     this._isActive = true;
 
     const { TorStrings } = ChromeUtils.importESModule(
       "resource://gre/modules/TorStrings.sys.mjs"
     );
 
-    this.button = document.getElementById("tor-connect-urlbar-button");
     document.getElementById("tor-connect-urlbar-button-label").value =
       TorStrings.torConnect.torConnectButton;
     this.button.addEventListener("click", event => {
@@ -61,7 +69,7 @@ var gTorConnectUrlbarButton = {
         if (topic !== this._observeTopic) {
           return;
         }
-        this._torConnectStageChanged();
+        this._updateButtonVisibility();
       },
     };
     Services.obs.addObserver(this._stateListener, this._observeTopic);
@@ -84,7 +92,7 @@ var gTorConnectUrlbarButton = {
     // switching selected browser.
     gBrowser.addProgressListener(this._locationListener);
 
-    this._torConnectStageChanged();
+    this._updateButtonVisibility();
   },
 
   /**
@@ -109,20 +117,6 @@ var gTorConnectUrlbarButton = {
   },
 
   /**
-   * Callback for when the TorConnect stage changes.
-   */
-  _torConnectStageChanged() {
-    if (TorConnect.stageName === TorConnectStage.Disabled) {
-      // NOTE: We do not uninit early when we reach the
-      // TorConnectStage.Bootstrapped stage because we can still leave the
-      // Bootstrapped stage if the tor process exists early and needs a restart.
-      this.uninit();
-      return;
-    }
-    this._updateButtonVisibility();
-  },
-
-  /**
    * Callback when the TorConnect state, current browser location, or activation
    * state changes.
    */
@@ -130,25 +124,25 @@ var gTorConnectUrlbarButton = {
     if (!this.button) {
       return;
     }
-    // NOTE: We do not manage focus when hiding the button. We only expect to
-    // move from "not hidden" to "hidden" when:
-    // + switching tabs to "about:torconnect", or
-    // + starting bootstrapping.
-    //
-    // When switching tabs, the normal tab switching logic will eventually move
-    // focus to the new tab or url bar, so whilst the focus may be lost
-    // temporarily when we hide the button, it will be re-established quickly on
-    // tab switch.
-    //
-    // And we don't expect bootstrapping to start whilst outside of the
-    // "about:torconnect", and the automatic bootstrapping should only trigger
-    // at the initial start.
-    this.button.hidden =
+    const hadFocus = this.button.contains(document.activeElement);
+    const hide =
       !this._isActive ||
       this._inAboutTorConnectTab ||
-      !TorConnect.enabled ||
-      !TorConnect.canBeginBootstrap;
-    const plainButton = TorConnect.potentiallyBlocked;
+      TorConnect.stageName === TorConnectStage.Bootstrapped;
+    this.button.hidden = hide;
+    if (hide && hadFocus) {
+      // Lost focus. E.g. if the "Connect" button is focused in another window
+      // or tab outside of about:torconnect.
+      // Move focus back to the URL bar.
+      gURLBar.focus();
+    }
+    // We style the button as a tor purple button if clicking the button will
+    // also start a bootstrap. I.e. whether we meet the conditions in
+    // TorConnectParent.open.
+    const plainButton =
+      !this._isActive ||
+      !TorConnect.canBeginNormalBootstrap ||
+      TorConnect.potentiallyBlocked;
     this.button.classList.toggle("tor-urlbar-button-plain", plainButton);
     this.button.classList.toggle("tor-button", !plainButton);
   },
