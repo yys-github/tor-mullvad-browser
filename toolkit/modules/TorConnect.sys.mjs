@@ -1048,20 +1048,17 @@ export const TorConnect = {
   },
 
   /**
-   * Whether we are in a stage that can lead into the Bootstrapping stage. I.e.
-   * whether we can make a "normal" or "auto" bootstrapping request.
+   * Whether we are in a stage that can lead into a "normal" bootstrapping
+   * request.
    *
    * The value may change with TorConnectTopics.StageChanged.
    *
    * @param {boolean}
    */
-  get canBeginBootstrap() {
+  get canBeginNormalBootstrap() {
     return (
       this._stageName === TorConnectStage.Start ||
-      this._stageName === TorConnectStage.Offline ||
-      this._stageName === TorConnectStage.ChooseRegion ||
-      this._stageName === TorConnectStage.RegionNotFound ||
-      this._stageName === TorConnectStage.ConfirmRegion
+      this._stageName === TorConnectStage.Offline
     );
   },
 
@@ -1267,14 +1264,9 @@ export const TorConnect = {
       return true;
     }
 
-    if (!this.canBeginBootstrap) {
-      lazy.logger.warn(`Cannot begin bootstrap in stage ${currentStage}`);
-      return false;
-    }
-    if (this.canBeginAutoBootstrap) {
-      // Only expect "auto" bootstraps to be triggered when in an error stage.
+    if (!this.canBeginNormalBootstrap) {
       lazy.logger.warn(
-        `Expected a regionCode to bootstrap in stage ${currentStage}`
+        `Cannot begin normal bootstrap in stage ${currentStage}`
       );
       return false;
     }
