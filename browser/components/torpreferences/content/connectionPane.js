@@ -343,7 +343,7 @@ const gBridgeGrid = {
 
   observe(subject, topic) {
     switch (topic) {
-      case TorSettingsTopics.SettingsChanged:
+      case TorSettingsTopics.SettingsChanged: {
         const { changes } = subject.wrappedJSObject;
         if (
           changes.includes("bridges.source") ||
@@ -352,6 +352,7 @@ const gBridgeGrid = {
           this._updateRows();
         }
         break;
+      }
       case TorProviderTopics.BridgeChanged:
         this._updateConnectedBridge();
         break;
@@ -1019,7 +1020,7 @@ const gBuiltinBridgesArea = {
 
   observe(subject, topic) {
     switch (topic) {
-      case TorSettingsTopics.SettingsChanged:
+      case TorSettingsTopics.SettingsChanged: {
         const { changes } = subject.wrappedJSObject;
         if (
           changes.includes("bridges.source") ||
@@ -1031,6 +1032,7 @@ const gBuiltinBridgesArea = {
           this._updateBridgeIds();
         }
         break;
+      }
       case TorProviderTopics.BridgeChanged:
         this._updateConnectedBridge();
         break;
@@ -1365,7 +1367,7 @@ const gLoxStatus = {
 
   observe(subject, topic) {
     switch (topic) {
-      case TorSettingsTopics.SettingsChanged:
+      case TorSettingsTopics.SettingsChanged: {
         const { changes } = subject.wrappedJSObject;
         if (changes.includes("bridges.source")) {
           this._updateLoxId();
@@ -1376,6 +1378,7 @@ const gLoxStatus = {
         // *before* we do. In particular, we want to make sure the invites and
         // event data has been cleared.
         break;
+      }
       case LoxTopics.UpdateActiveLoxId:
         this._updateLoxId();
         break;
@@ -1881,7 +1884,7 @@ const gBridgeSettings = {
 
   observe(subject, topic) {
     switch (topic) {
-      case TorSettingsTopics.SettingsChanged:
+      case TorSettingsTopics.SettingsChanged: {
         const { changes } = subject.wrappedJSObject;
         if (changes.includes("bridges.enabled")) {
           this._updateEnabled();
@@ -1893,6 +1896,7 @@ const gBridgeSettings = {
           this._updateBridgeStrings();
         }
         break;
+      }
     }
   },
 
