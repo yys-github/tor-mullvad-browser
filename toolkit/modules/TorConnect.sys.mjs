@@ -278,10 +278,13 @@ class BootstrapAttempt {
       lazy.logger.warn("Cancelled bootstrap after it has already resolved");
       return;
     }
-    // Wait until after bootstrap.cancel returns before we resolve with
-    // cancelled. In particular, there is a small chance that the bootstrap
-    // completes, in which case we want to be able to resolve with a success
-    // instead.
+    // Wait until after #bootstrap.cancel returns before we resolve with
+    // cancelled. In particular:
+    // + there is a small chance that the bootstrap completes, in which case we
+    //   want to be able to resolve with a success instead.
+    // + we want to make sure that we only resolve this BootstrapAttempt
+    //   when the current TorBootstrapRequest instance is fully resolved so
+    //   there are never two competing instances.
     await this.#bootstrap?.cancel();
     this.#resolveRun({ result: "cancelled" });
   }
@@ -636,13 +639,15 @@ class AutoBootstrapAttempt {
       return;
     }
 
-    // Wait until after bootstrap.cancel returns before we resolve with
-    // cancelled. In particular, there is a small chance that the bootstrap
-    // completes, in which case we want to be able to resolve with a success
-    // instead.
+    // Wait until after #bootstrapAttempt.cancel returns before we resolve with
+    // cancelled. In particular:
+    // + there is a small chance that the bootstrap completes, in which case we
+    //   want to be able to resolve with a success instead.
+    // + we want to make sure that we only resolve this AutoBootstrapAttempt
+    //   when the current TorBootstrapRequest instance is fully resolved so
+    //   there are never two competing instances.
     if (this.#bootstrapAttempt) {
-      this.#bootstrapAttempt.cancel();
-      await this.#bootstrapAttempt;
+      await this.#bootstrapAttempt.cancel();
     }
     // In case no bootstrap is running, we resolve with "cancelled".
     this.#resolveRun({ result: "cancelled" });
