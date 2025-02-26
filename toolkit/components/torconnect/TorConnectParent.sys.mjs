@@ -152,23 +152,23 @@ export class TorConnectParent extends JSWindowActorParent {
    *   auto-bootstrapping.
    */
   static open(options) {
+    if (!TorConnect.shouldShowTorConnect) {
+      // Already bootstrapped, so don't reopen about:torconnect.
+      return;
+    }
+
     const win = lazy.BrowserWindowTracker.getTopWindow();
     win.switchToTabHavingURI("about:torconnect", true, {
       ignoreQueryString: true,
     });
 
-    if (!options?.beginBootstrapping || !TorConnect.canBeginBootstrap) {
-      return;
-    }
-
-    if (options.beginBootstrapping === "hard") {
-      if (TorConnect.canBeginAutoBootstrap && !options.regionCode) {
-        // Treat as an addition startAgain request to first move back to the
-        // "Start" stage before bootstrapping.
-        TorConnect.startAgain();
-      }
-    } else if (TorConnect.potentiallyBlocked) {
-      // Do not trigger the bootstrap if we have ever had an error.
+    if (
+      !options?.beginBootstrapping ||
+      (options.beginBootstrapping !== "hard" &&
+        TorConnect.potentiallyBlocked) ||
+      (options.regionCode && !TorConnect.canBeginAutoBootstrap) ||
+      (!options.regionCode && !TorConnect.canBeginNormalBootstrap)
+    ) {
       return;
     }
 
