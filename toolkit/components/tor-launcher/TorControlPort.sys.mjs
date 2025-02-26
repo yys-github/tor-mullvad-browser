@@ -973,7 +973,7 @@ export class TorController {
         throw new Error(`Unsupported type ${typeof value} (key ${key})`);
       })
       .join(" ");
-    return this.#sendCommandSimple(`SETCONF ${args}`);
+    await this.#sendCommandSimple(`SETCONF ${args}`);
   }
 
   /**
@@ -984,14 +984,14 @@ export class TorController {
    * @param {boolean} enabled Tell whether the network should be enabled
    */
   async setNetworkEnabled(enabled) {
-    return this.setConf([["DisableNetwork", !enabled]]);
+    await this.setConf([["DisableNetwork", !enabled]]);
   }
 
   /**
    * Ask Tor to write out its config options into its torrc.
    */
   async flushSettings() {
-    return this.#sendCommandSimple("SAVECONF");
+    await this.#sendCommandSimple("SAVECONF");
   }
 
   // Onion service authentication
@@ -1075,7 +1075,7 @@ export class TorController {
    * them is closed.
    */
   async takeOwnership() {
-    return this.#sendCommandSimple("TAKEOWNERSHIP");
+    await this.#sendCommandSimple("TAKEOWNERSHIP");
   }
 
   /**
@@ -1085,7 +1085,7 @@ export class TorController {
    * should be stopped by calling this function.
    */
   async resetOwningControllerProcess() {
-    return this.#sendCommandSimple("RESETCONF __OwningControllerProcess");
+    await this.#sendCommandSimple("RESETCONF __OwningControllerProcess");
   }
 
   // Signals
@@ -1094,7 +1094,7 @@ export class TorController {
    * Ask Tor to swtich to new circuits and clear the DNS cache.
    */
   async newnym() {
-    return this.#sendCommandSimple("SIGNAL NEWNYM");
+    await this.#sendCommandSimple("SIGNAL NEWNYM");
   }
 
   // Events monitoring

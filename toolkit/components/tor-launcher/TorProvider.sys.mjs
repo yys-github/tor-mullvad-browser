@@ -489,7 +489,7 @@ export class TorProvider {
    * @param {boolean} isPermanent Tell whether the key should be saved forever
    */
   async onionAuthAdd(address, b64PrivateKey, isPermanent) {
-    return this.#controller.onionAuthAdd(address, b64PrivateKey, isPermanent);
+    await this.#controller.onionAuthAdd(address, b64PrivateKey, isPermanent);
   }
 
   /**
@@ -498,7 +498,7 @@ export class TorProvider {
    * @param {string} address The address of the onion service
    */
   async onionAuthRemove(address) {
-    return this.#controller.onionAuthRemove(address);
+    await this.#controller.onionAuthRemove(address);
   }
 
   /**

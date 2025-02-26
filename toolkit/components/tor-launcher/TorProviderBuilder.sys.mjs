@@ -142,6 +142,8 @@ export class TorProviderBuilder {
    * Build a provider.
    * This method will wait for the system to be initialized, and allows you to
    * catch also any initialization errors.
+   *
+   * @returns {TorProvider} A TorProvider instance
    */
   static async build() {
     if (!this.#provider && this.providerType === TorProviders.none) {
