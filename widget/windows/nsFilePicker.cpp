@@ -13,6 +13,7 @@
 #include "mozilla/Assertions.h"
 #include "mozilla/BackgroundHangMonitor.h"
 #include "mozilla/ProfilerLabels.h"
+#include "mozilla/StaticPrefs_widget.h"
 #include "mozilla/UniquePtr.h"
 #include "mozilla/WindowsVersion.h"
 #include "nsReadableUtils.h"
@@ -181,19 +182,29 @@ bool nsFilePicker::ShowFilePicker(const nsString& aInitialDir) {
 
     // mode specific
     switch (mMode) {
+      case modeOpenMultiple:
+        fos |= FOS_ALLOWMULTISELECT;
+        [[fallthrough]];
+
       case modeOpen:
         fos |= FOS_FILEMUSTEXIST;
-        break;
-
-      case modeOpenMultiple:
-        fos |= FOS_FILEMUSTEXIST | FOS_ALLOWMULTISELECT;
+        switch (mozilla::StaticPrefs::
+                    widget_windows_follow_shortcuts_on_file_open()) {
+          case 1:
+            break;
+          default:
+            fos |= FOS_NODEREFERENCELINKS;
+        }
         break;
 
       case modeSave:
         fos |= FOS_NOREADONLYRETURN;
-        // Don't follow shortcuts when saving a shortcut, this can be used
-        // to trick users (bug 271732)
-        if (IsDefaultPathLink()) fos |= FOS_NODEREFERENCELINKS;
+        // Don't follow shortcuts when saving a shortcut; this can be used to
+        // trick users (bug 271732). _Do_ follow shortcuts when not saving a
+        // shortcut (bug 283730).
+        if (IsDefaultPathLink()) {
+          fos |= FOS_NODEREFERENCELINKS;
+        }
         break;
 
       case modeGetFolder:
