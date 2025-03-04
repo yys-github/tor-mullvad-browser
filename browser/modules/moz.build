@@ -155,6 +155,7 @@ MOZ_SRC_FILES += [
     "PrivateBrowsingUI.sys.mjs",
     "SecurityLevelNotification.sys.mjs",
     "SerialDeviceSharingHelper.sys.mjs",
+    "TorSettingsNotification.sys.mjs",
     "TorUIUtils.sys.mjs",
 ]
 
