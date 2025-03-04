@@ -70,6 +70,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
   TelemetryReportingPolicy:
     "resource://gre/modules/TelemetryReportingPolicy.sys.mjs",
   TRRRacer: "resource:///modules/TRRPerformance.sys.mjs",
+  TorSettingsNotification:
+    "resource:///modules/TorSettingsNotification.sys.mjs",
   WebChannel: "resource://gre/modules/WebChannel.sys.mjs",
   WebProtocolHandlerRegistrar:
     "resource:///modules/WebProtocolHandlerRegistrar.sys.mjs",
@@ -814,6 +816,8 @@ BrowserGlue.prototype = {
     if (Services.prefs.prefHasUserValue("services.sync.username")) {
       lazy.WeaveService.init();
     }
+
+    lazy.TorSettingsNotification.ready();
 
     lazy.BrowserUtils.callModulesFromCategory(
       {
