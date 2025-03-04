@@ -101,6 +101,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
   TabCrashHandler: "resource:///modules/ContentCrashHandlers.sys.mjs",
   TabUnloader: "resource:///modules/TabUnloader.sys.mjs",
   TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
+  TorSettingsNotification:
+    "resource:///modules/TorSettingsNotification.sys.mjs",
   UIState: "resource://services-sync/UIState.sys.mjs",
   UrlbarPrefs: "resource:///modules/UrlbarPrefs.sys.mjs",
   UrlbarSearchTermsPersistence:
@@ -2043,6 +2045,8 @@ BrowserGlue.prototype = {
     lazy.DragDropFilter.init();
 
     lazy.TorProviderBuilder.firstWindowLoaded();
+
+    lazy.TorSettingsNotification.ready();
 
     ClipboardPrivacy.startup();
 
