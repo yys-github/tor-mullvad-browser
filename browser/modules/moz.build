@@ -151,6 +151,7 @@ MOZ_SRC_FILES += [
     "ContextId.sys.mjs",
     "ClipboardPrivacy.sys.mjs",
     "SecurityLevelNotification.sys.mjs",
+    "TorSettingsNotification.sys.mjs",
 ]
 
 if CONFIG["MOZ_WIDGET_TOOLKIT"] == "windows":
