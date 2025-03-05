@@ -173,6 +173,7 @@ import org.mozilla.fenix.compose.snackbar.SnackbarState
 import org.mozilla.fenix.compose.snackbar.Snackbar
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 import org.mozilla.geckoview.TorAndroidIntegration
+import org.mozilla.geckoview.TorConnectStage
 
 /**
  * The main activity of the application. The application is primarily a single Activity (this one)
@@ -1528,6 +1529,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
     }
 
     override fun onBootstrapStateChange(state: String) = Unit
+    override fun onBootstrapStageChange(stage: TorConnectStage) = Unit
     override fun onBootstrapProgress(progress: Double, hasWarnings: Boolean) = Unit
     override fun onBootstrapComplete() {
         if (settings().useHtmlConnectionUi) {
