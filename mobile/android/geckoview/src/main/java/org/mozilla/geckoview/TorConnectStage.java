@@ -5,24 +5,10 @@ import org.mozilla.gecko.util.GeckoBundle;
 // Class to receive ConnectStage object from TorConnect.sys.mjs ~ln677
 public class TorConnectStage {
 
-    public class Error {
-        public String code;
-        public String message;
-        public String phase;
-        public String reason;
-
-        public Error(GeckoBundle bundle) {
-            code = bundle.getString("code");
-            message = bundle.getString("message");
-            phase = bundle.getString("phase");
-            reason = bundle.getString("reason");
-        }
-    }
-
     public TorConnectStageName name;
     // The TorConnectStage prior to this bootstrap attempt. Only set during the "Bootstrapping" stage.
     public TorConnectStageName bootstrapTrigger;
-    public Error error;
+    public TorConnectError error;
     public String defaultRegion;
     public Boolean potentiallyBlocked;
     public Boolean tryAgain;
@@ -37,7 +23,7 @@ public class TorConnectStage {
         potentiallyBlocked = bundle.getBoolean("potentiallyBlocked");
         tryAgain = bundle.getBoolean("tryAgain");
         if (bundle.getBundle("error") != null) {
-            error = new Error(bundle.getBundle("error"));
+            error = new TorConnectError(bundle.getBundle("error"));
         }
         bootstrappingStatus = new TorBootstrappingStatus(bundle.getBundle("bootstrappingStatus"));
     }
