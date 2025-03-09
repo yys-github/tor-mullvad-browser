@@ -13,11 +13,15 @@ import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import mozilla.components.browser.engine.gecko.GeckoEngine
 import org.mozilla.fenix.R
 import org.mozilla.fenix.ext.components
+import org.mozilla.geckoview.TorAndroidIntegration.TorLogListener
 
-class TorLogsViewModel(application: Application) : AndroidViewModel(application), TorLogs {
+class TorLogsViewModel(application: Application) : AndroidViewModel(application), TorLogListener {
     private val torController = application.components.torController
+    private val engine = application.components.core.engine as GeckoEngine
+    private val torAndroidIntegration = engine.getTorIntegrationController()
     private val clipboardManager =
         application.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
 
@@ -33,7 +37,7 @@ class TorLogsViewModel(application: Application) : AndroidViewModel(application)
 
     init {
         setupClipboardListener()
-        torController.registerTorLogListener(this)
+        torAndroidIntegration.registerLogListener(this)
         val currentEntries = torController.logEntries
         for (log in currentEntries) {
             addLog(log)
@@ -46,7 +50,7 @@ class TorLogsViewModel(application: Application) : AndroidViewModel(application)
 
     override fun onCleared() {
         super.onCleared()
-        torController.unregisterTorLogListener(this)
+        torAndroidIntegration.unregisterLogListener(this)
     }
 
     private fun setupClipboardListener() {

@@ -56,7 +56,6 @@ class TorBridgeConfigFragment : PreferenceFragmentCompat() {
             setOnPreferenceChangeListener<Boolean> { preference, enabled ->
                 preference.context.components.torController.bridgesEnabled = enabled
                 updateCurrentConfiguredBridgePref(preference)
-                preference.context.components.torController.restartTor()
                 true
             }
         }
@@ -71,7 +70,6 @@ class TorBridgeConfigFragment : PreferenceFragmentCompat() {
                 preference.context.components.torController.bridgeTransport = TorBridgeTransportConfig.USER_PROVIDED
                 preference.context.components.torController.userProvidedBridges = userProvidedBridge
                 updateCurrentConfiguredBridgePref(preference)
-                preference.context.components.torController.restartTor()
                 true
             }
             val userProvidedBridge: String? = context.components.torController.userProvidedBridges
@@ -103,7 +101,6 @@ class TorBridgeConfigFragment : PreferenceFragmentCompat() {
                     preference.context.components.torController.bridgeTransport = bridge
                     previousTransportConfig = bridge
                     updateCurrentConfiguredBridgePref(preference)
-                    preference.context.components.torController.restartTor()
                 }
                 true
             }
