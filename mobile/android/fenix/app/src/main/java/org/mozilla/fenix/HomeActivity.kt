@@ -915,7 +915,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
      */
     @SuppressLint("MissingSuperCall") // super.onNewIntent is called in [onNewIntentInternal(intent)]
     final override fun onNewIntent(intent: Intent) {
-        if (intent.action == ACTION_MAIN || components.torController.isConnected) {
+        if (intent.action == ACTION_MAIN || components.torController.isBootstrapped) {
             onNewIntentInternal(intent)
         } else {
             // Wait until Tor is connected to handle intents from external apps for links, search, etc.
@@ -1516,7 +1516,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
             // we want to ignore other cases when the app gets open by users clicking on links,
             // unless Tor is not yet connected.
             getSettings().shouldStartOnHome() && (intent?.action == ACTION_MAIN ||
-                    !components.torController.isConnected)
+                    !components.torController.isBootstrapped)
         }
     }
 
