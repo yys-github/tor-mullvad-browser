@@ -28,7 +28,6 @@ const EmittedEvents = Object.freeze({
   settingsChanged: "GeckoView:Tor:SettingsChanged",
   connectStateChanged: "GeckoView:Tor:ConnectStateChanged", // deprecation path
   connectStageChanged: "GeckoView:Tor:ConnectStageChanged", // new replacement path
-  connectError: "GeckoView:Tor:ConnectError",
   bootstrapProgress: "GeckoView:Tor:BootstrapProgress",
   bootstrapComplete: "GeckoView:Tor:BootstrapComplete",
   torLogs: "GeckoView:Tor:Logs",
@@ -49,6 +48,7 @@ const ListenedEvents = Object.freeze({
   quickstartGet: "GeckoView:Tor:QuickstartGet",
   quickstartSet: "GeckoView:Tor:QuickstartSet",
   regionNamesGet: "GeckoView:Tor:RegionNamesGet",
+  shouldShowTorConnectGet: "GeckoView:Tor:ShouldShowTorConnect",
 });
 
 class TorAndroidIntegrationImpl {
@@ -134,16 +134,6 @@ class TorAndroidIntegrationImpl {
           type: EmittedEvents.bootstrapComplete,
         });
         break;
-      // TODO: Replace with StageChange stage.error.
-      case lazy.TorConnectTopics.Error:
-        lazy.EventDispatcher.instance.sendRequest({
-          type: EmittedEvents.connectError,
-          code: subj.wrappedJSObject.code ?? "",
-          message: subj.wrappedJSObject.message ?? "",
-          phase: subj.wrappedJSObject.cause?.phase ?? "",
-          reason: subj.wrappedJSObject.cause?.reason ?? "",
-        });
-        break;
       case lazy.TorProviderTopics.TorLog:
         lazy.EventDispatcher.instance.sendRequest({
           type: EmittedEvents.torLogs,
@@ -224,6 +214,9 @@ class TorAndroidIntegrationImpl {
           break;
         case ListenedEvents.regionNamesGet:
           callback?.onSuccess(lazy.TorConnect.getRegionNames());
+          return;
+        case ListenedEvents.shouldShowTorConnectGet:
+          callback?.onSuccess(lazy.TorConnect.shouldShowTorConnect());
           return;
       }
       callback?.onSuccess();
