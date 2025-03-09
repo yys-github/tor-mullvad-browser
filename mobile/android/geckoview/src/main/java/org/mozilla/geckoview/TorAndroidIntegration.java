@@ -39,11 +39,8 @@ public class TorAndroidIntegration implements BundleEventListener {
   private static final String EVENT_TOR_STOP = "GeckoView:Tor:StopTor";
   private static final String EVENT_MEEK_START = "GeckoView:Tor:StartMeek";
   private static final String EVENT_MEEK_STOP = "GeckoView:Tor:StopMeek";
-  private static final String EVENT_CONNECT_STATE_CHANGED = "GeckoView:Tor:ConnectStateChanged"; // deprecation path
-  private static final String EVENT_CONNECT_STAGE_CHANGED = "GeckoView:Tor:ConnectStageChanged"; // replacement path
-  private static final String EVENT_CONNECT_ERROR = "GeckoView:Tor:ConnectError";
+  private static final String EVENT_CONNECT_STAGE_CHANGED = "GeckoView:Tor:ConnectStageChanged";
   private static final String EVENT_BOOTSTRAP_PROGRESS = "GeckoView:Tor:BootstrapProgress";
-  private static final String EVENT_BOOTSTRAP_COMPLETE = "GeckoView:Tor:BootstrapComplete";
   private static final String EVENT_TOR_LOGS = "GeckoView:Tor:Logs";
   private static final String EVENT_SETTINGS_READY = "GeckoView:Tor:SettingsReady";
   private static final String EVENT_SETTINGS_CHANGED = "GeckoView:Tor:SettingsChanged";
@@ -62,6 +59,7 @@ public class TorAndroidIntegration implements BundleEventListener {
   private static final String EVENT_QUICKSTART_GET = "GeckoView:Tor:QuickstartGet";
   private static final String EVENT_QUICKSTART_SET = "GeckoView:Tor:QuickstartSet";
   private static final String EVENT_REGION_NAMES_GET = "GeckoView:Tor:RegionNamesGet";
+  private static final String EVENT_SHOULD_SHOW_TOR_CONNECT = "GeckoView:Tor:ShouldShowTorConnect";
 
   private static final String CONTROL_PORT_FILE = "/control-ipc";
   private static final String SOCKS_FILE = "/socks-ipc";
@@ -124,11 +122,8 @@ public class TorAndroidIntegration implements BundleEventListener {
             EVENT_MEEK_STOP,
             EVENT_SETTINGS_READY,
             EVENT_SETTINGS_CHANGED,
-            EVENT_CONNECT_STATE_CHANGED,
             EVENT_CONNECT_STAGE_CHANGED,
-            EVENT_CONNECT_ERROR,
             EVENT_BOOTSTRAP_PROGRESS,
-            EVENT_BOOTSTRAP_COMPLETE,
             EVENT_TOR_LOGS);
   }
 
@@ -157,34 +152,17 @@ public class TorAndroidIntegration implements BundleEventListener {
       } else {
         Log.w(TAG, "Ignoring a settings changed event that did not have the new settings.");
       }
-    } else if (EVENT_CONNECT_STATE_CHANGED.equals(event)) {
-      String state = message.getString("state");
-      for (BootstrapStateChangeListener listener : mBootstrapStateListeners) {
-        listener.onBootstrapStateChange(state);
-      }
     } else if (EVENT_CONNECT_STAGE_CHANGED.equals(event)) {
       TorConnectStage stage = new TorConnectStage(message.getBundle("stage"));
       _lastKnownStage.setValue(stage);
       for (BootstrapStateChangeListener listener : mBootstrapStateListeners) {
         listener.onBootstrapStageChange(stage);
       }
-    } else if (EVENT_CONNECT_ERROR.equals(event)) {
-      String code = message.getString("code");
-      String msg = message.getString("message");
-      String phase = message.getString("phase");
-      String reason = message.getString("reason");
-      for (BootstrapStateChangeListener listener : mBootstrapStateListeners) {
-        listener.onBootstrapError(code, msg, phase, reason);
-      }
     } else if (EVENT_BOOTSTRAP_PROGRESS.equals(event)) {
       double progress = message.getDouble("progress");
       boolean hasWarnings = message.getBoolean("hasWarnings");
       for (BootstrapStateChangeListener listener : mBootstrapStateListeners) {
         listener.onBootstrapProgress(progress, hasWarnings);
-      }
-    } else if (EVENT_BOOTSTRAP_COMPLETE.equals(event)) {
-      for (BootstrapStateChangeListener listener : mBootstrapStateListeners) {
-        listener.onBootstrapComplete();
       }
     } else if (EVENT_TOR_LOGS.equals(event)) {
       String msg = message.getString("message");
@@ -647,15 +625,9 @@ public class TorAndroidIntegration implements BundleEventListener {
   }
 
   public interface BootstrapStateChangeListener {
-    void onBootstrapStateChange(String state); // depreaction path
-
-    void onBootstrapStageChange(TorConnectStage stage); // new upgrade
+    void onBootstrapStageChange(@NonNull TorConnectStage stage); // new upgrade
 
     void onBootstrapProgress(double progress, boolean hasWarnings);
-
-    void onBootstrapComplete();
-
-    void onBootstrapError(String code, String message, String phase, String reason);
   }
 
   public interface TorLogListener {
@@ -736,6 +708,17 @@ public class TorAndroidIntegration implements BundleEventListener {
     });
   }
 
+  public interface ShouldShowTorConnectGetter {
+    void onValue(Boolean shouldShowTorConnect);
+  }
+
+  public void shouldShowTorConnectGet(ShouldShowTorConnectGetter shouldShowTorConnectGetter) {
+    EventDispatcher.getInstance().queryBoolean(EVENT_SHOULD_SHOW_TOR_CONNECT).then(shouldShowTorConnect -> {
+      shouldShowTorConnectGetter.onValue(shouldShowTorConnect);
+      return new GeckoResult<Void>();
+    });
+  }
+
   public @NonNull GeckoResult<Void> beginBootstrap() {
     return EventDispatcher.getInstance().queryVoid(EVENT_BOOTSTRAP_BEGIN);
   }
@@ -754,21 +737,21 @@ public class TorAndroidIntegration implements BundleEventListener {
     return EventDispatcher.getInstance().queryVoid(EVENT_BOOTSTRAP_CANCEL);
   }
 
-  public void registerBootstrapStateChangeListener(BootstrapStateChangeListener listener) {
+  public synchronized void registerBootstrapStateChangeListener(BootstrapStateChangeListener listener) {
     mBootstrapStateListeners.add(listener);
   }
 
-  public void unregisterBootstrapStateChangeListener(BootstrapStateChangeListener listener) {
+  public synchronized void unregisterBootstrapStateChangeListener(BootstrapStateChangeListener listener) {
     mBootstrapStateListeners.remove(listener);
   }
 
   private final HashSet<BootstrapStateChangeListener> mBootstrapStateListeners = new HashSet<>();
 
-  public void registerLogListener(TorLogListener listener) {
+  public synchronized void registerLogListener(TorLogListener listener) {
     mLogListeners.add(listener);
   }
 
-  public void unregisterLogListener(TorLogListener listener) {
+  public synchronized void unregisterLogListener(TorLogListener listener) {
     mLogListeners.remove(listener);
   }
 
