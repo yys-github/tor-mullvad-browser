@@ -13,6 +13,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.StrictMode
 import androidx.annotation.VisibleForTesting
+import mozilla.components.browser.engine.gecko.GeckoEngine
 import mozilla.components.feature.intent.ext.sanitize
 import mozilla.components.feature.intent.processing.IntentProcessor
 import mozilla.components.support.base.log.logger.Logger
@@ -31,7 +32,8 @@ import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.perf.MarkersActivityLifecycleCallbacks
 import org.mozilla.fenix.perf.StartupTimeline
 import org.mozilla.fenix.shortcut.NewTabShortcutIntentProcessor
-import org.mozilla.fenix.tor.TorEvents
+import org.mozilla.geckoview.TorAndroidIntegration.BootstrapStateChangeListener
+import org.mozilla.geckoview.TorConnectStage
 
 /**
  * Processes incoming intents and sends them to the corresponding activity.
@@ -55,19 +57,24 @@ class IntentReceiverActivity : Activity() {
         // the HomeActivity.
         val intent = intent?.let { Intent(it) } ?: Intent()
         intent.sanitize().stripUnwantedFlags()
-        if (intent.action == ACTION_MAIN || components.torController.isConnected) {
+        if (intent.action == ACTION_MAIN || components.torController.isBootstrapped) {
             processIntent(intent)
         } else {
             // Wait until Tor is connected to handle intents from external apps for links, search, etc.
-            components.torController.registerTorListener(object : TorEvents {
-                override fun onTorConnected() {
-                    components.torController.unregisterTorListener(this)
-                    processIntent(intent)
-                }
-                override fun onTorConnecting() { /* no-op */ }
-                override fun onTorStopped() { /* no-op */ }
-                override fun onTorStatusUpdate(entry: String?, status: String?, progress: Double?) { /* no-op */ }
-            })
+            val engine = components.core.engine as GeckoEngine
+            engine.getTorIntegrationController().registerBootstrapStateChangeListener(
+                object : BootstrapStateChangeListener {
+
+                    override fun onBootstrapStageChange(stage: TorConnectStage) {
+                        if (stage.isBootstrapped) {
+                            engine.getTorIntegrationController().unregisterBootstrapStateChangeListener(this)
+                            processIntent(intent)
+                        }
+                    }
+
+                    override fun onBootstrapProgress(progress: Double, hasWarnings: Boolean) {}
+                })
+
 
             // In the meantime, open the HomeActivity so the user can get connected.
             processIntent(Intent())

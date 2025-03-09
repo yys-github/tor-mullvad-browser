@@ -4,75 +4,30 @@ package org.mozilla.fenix.tor
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LifecycleCoroutineScope
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import mozilla.components.browser.engine.gecko.GeckoEngine
 import org.mozilla.fenix.ext.components
 import org.mozilla.geckoview.TorAndroidIntegration
 import org.mozilla.geckoview.TorAndroidIntegration.BootstrapStateChangeListener
 import org.mozilla.geckoview.TorAndroidIntegration.TorLogListener
 import org.mozilla.geckoview.TorConnectStage
+import org.mozilla.geckoview.TorConnectStageName
 import org.mozilla.geckoview.TorSettings
 import org.mozilla.geckoview.TorSettings.BridgeBuiltinType
 import org.mozilla.geckoview.TorSettings.BridgeSource
 
-// Enum matching TorConnectState from TorConnect.sys.mjs that we get from onBootstrapStateChange
-internal enum class TorConnectState(val state: String) {
-    Initial("Initial"),
-    Configuring("Configuring"),
-    AutoBootstrapping("AutoBootstrapping"),
-    Bootstrapping("Bootstrapping"),
-    Error("Error"),
-    Bootstrapped("Bootstrapped"),
-    Disabled("Disabled");
-
-    fun isStarting() = this == Bootstrapping || this == AutoBootstrapping
-    fun isError() = this == Error
-
-    fun isStarted() = this == Bootstrapped
-
-    fun isOff() = this == Initial || this == Configuring || this == Disabled || this == Error
-
-
-    // Convert to TorStatus that firefox-android uses based on tor-android-service
-    fun toTorStatus(): TorStatus {
-        return when (this) {
-            Initial -> TorStatus.OFF
-            Configuring -> TorStatus.OFF
-            AutoBootstrapping -> TorStatus.STARTING
-            Bootstrapping -> TorStatus.STARTING
-            Error -> TorStatus.UNKNOWN
-            Bootstrapped -> TorStatus.ON
-            Disabled -> TorStatus.OFF
-        }
-    }
-}
-
 class TorControllerGV(
     private val context: Context,
-) : TorController, TorEvents, BootstrapStateChangeListener, TorLogListener {
+) : TorController, BootstrapStateChangeListener, TorLogListener {
 
     private val TAG = "TorControllerGV"
 
-    private var torListeners = mutableListOf<TorEvents>()
-    private var torLogListeners = mutableListOf<TorLogs>()
+    private var runOnceBootstrappedHandlers = mutableListOf<RunOnceBootstrapped>()
 
-    private val _lastKnownStatus = MutableStateFlow(TorConnectState.Initial)
-    internal val lastKnownStatus: StateFlow<TorConnectState> = _lastKnownStatus
-
-    internal var lastKnownError: TorError? = null
-    private var wasTorBootstrapped = false
-    private var isTorRestarting = false
-
-    private var isTorBootstrapped = false
-        get() = ((_lastKnownStatus.value.isStarted()) && wasTorBootstrapped)
+    override val isBootstrapped get() =
+        getTorIntegration().lastKnowStage.value?.name?.isBootstrapped ?: false
 
     private val entries = mutableListOf<TorLog>()
     override val logEntries get() = entries
-    override val isStarting get() = _lastKnownStatus.value.isStarting()
-    override val isRestarting get() = isTorRestarting
-    override val isBootstrapped get() = isTorBootstrapped
-    override val isConnected get() = (_lastKnownStatus.value.isStarted() && !isTorRestarting)
 
     private fun getTorIntegration(): TorAndroidIntegration {
         return (context.components.core.engine as GeckoEngine).getTorIntegrationController()
@@ -82,8 +37,7 @@ class TorControllerGV(
         return getTorIntegration().getSettings()
     }
 
-
-    // On a fresh install bridgeEnagled can be set to true without a valid bridgeSource
+    // On a fresh install bridgeEnabled can be set to true without a valid bridgeSource
     // having been selected. After first use this will not happen because last selected bridge
     // will be remembered and reused.
     // However, on first use, submitting this to TorSettings is an invalid state.
@@ -104,7 +58,6 @@ class TorControllerGV(
                 }
             }
         }
-
 
     override var bridgeTransport: TorBridgeTransportConfig
         get() {
@@ -144,7 +97,6 @@ class TorControllerGV(
             }
         }
 
-
     // Currently the UI takes a user provided string and sets this in one step so there is where we
     // actually set it.bridgesSource = BridgeSource.UserProvided, not above,
     // as TorSettings.sys.mjs #cleanupSettings could reject BridgeSource.UserProvided
@@ -179,73 +131,37 @@ class TorControllerGV(
         getTorIntegration().unregisterLogListener(this)
     }
 
-    // TorEvents
-    override fun onTorConnecting() {
-        synchronized(torListeners) {
-            torListeners.toList().forEach { it.onTorConnecting() }
-        }
-    }
-
-    // TorEvents
-    override fun onTorConnected() {
-        synchronized(torListeners) {
-            torListeners.toList().forEach { it.onTorConnected() }
-        }
-    }
-
-    // TorEvents
-    override fun onTorStatusUpdate(entry: String?, status: String?, progress: Double?) {
-        synchronized(torListeners) {
-            torListeners.toList().forEach { it.onTorStatusUpdate(entry, status, progress) }
-        }
-    }
-
-    // TorEvents
-    override fun onTorStopped() {
-        synchronized(torListeners) {
-            torListeners.toList().forEach { it.onTorStopped() }
-        }
-    }
-
     override fun onLog(type: String?, message: String?, timestamp: String?) {
-        synchronized(torLogListeners) {
+        synchronized(entries) {
             entries.add(TorLog(type ?: "null", message ?: "null", timestamp ?: "null"))
-            torLogListeners.toList().forEach { it.onLog(type ?: "null", message ?: "null", timestamp) }
         }
     }
 
-    override fun registerTorListener(l: TorEvents) {
-        synchronized(torListeners) {
-            if (torListeners.contains(l)) {
+    override fun registerRunOnceBootstrapped(rob: RunOnceBootstrapped) {
+        // TODO Remove need for this with tb-44002
+        // it would be nice to have a short circuit run and don't add if already bootstrapped
+        // however this calls context.components.core.engine which tries to lazy load engine
+        // which causes a recursive loop. instead we should do the work in tb-44002
+        // this is currently fine as there is a single use case for this called in
+        // TorBrowserFeatures that is at startup
+        //if (isBootstrapped) {
+        //    rob.onBootstrapped()
+        //    return
+        //}
+        synchronized(runOnceBootstrappedHandlers) {
+            if (runOnceBootstrappedHandlers.contains(rob)) {
                 return
             }
-            torListeners.add(l)
+            runOnceBootstrappedHandlers.add(rob)
         }
     }
 
-    override fun unregisterTorListener(l: TorEvents) {
-        synchronized(torListeners) {
-            if (!torListeners.contains(l)) {
+    override fun unregisterRunOnceBootstrapped(rob: RunOnceBootstrapped) {
+        synchronized(runOnceBootstrappedHandlers) {
+            if (!runOnceBootstrappedHandlers.contains(rob)) {
                 return
             }
-            torListeners.remove(l)
-        }
-    }
-
-    override fun registerTorLogListener(l: TorLogs) {
-        synchronized(torLogListeners) {
-            if (torLogListeners.contains(l)) {
-                return
-            }
-            torLogListeners.add(l)
-        }
-    }
-    override fun unregisterTorLogListener(l: TorLogs) {
-        synchronized(torLogListeners) {
-            if (!torLogListeners.contains(l)) {
-                return
-            }
-            torLogListeners.remove(l)
+            runOnceBootstrappedHandlers.remove(rob)
         }
     }
 
@@ -260,82 +176,22 @@ class TorControllerGV(
         getTorIntegration().cancelBootstrap()
     }
 
-    override fun setTorStopped() {
-        _lastKnownStatus.value = TorConnectState.Configuring
-        onTorStatusUpdate(null, lastKnownStatus.toString(), 0.0)
-        onTorStopped()
-    }
-
-    override fun restartTor() {
-        if (!_lastKnownStatus.value.isStarted() && wasTorBootstrapped) {
-            // If we aren't started, but we were previously bootstrapped,
-            // then we handle a "restart" request as a "start" restart
-            initiateTorBootstrap()
-        } else {
-            // |isTorRestarting| tracks the state of restart. When we receive an |OFF| state
-            // from TorService in persistentBroadcastReceiver::onReceive we restart the Tor
-            // service.
-            isTorRestarting = true
-            stopTor()
-        }
-    }
-
-    override fun getLastErrorState() : TorError? {
-        return lastKnownError
-    }
-
-    // TorEventsBootstrapStateChangeListener -> (lastKnowStatus, TorEvents)
-    // Handle events from GeckoView TorAndroidIntegration and map to TorEvents based events
-    // and state for firefox-android (designed for tor-android-service)
-    //   fun onTorConnecting()
-    //   fun onTorConnected()
-    //   fun onTorStatusUpdate(entry: String?, status: String?, progress: Double?)
-    //   fun onTorStopped()
-
     // TorEventsBootstrapStateChangeListener
-    override fun onBootstrapStateChange(newStateVal: String?) {
-        Log.d(TAG, "onBootstrapStateChange(newStateVal = $newStateVal)")
-        val newState: TorConnectState = TorConnectState.valueOf(newStateVal ?: "Error")
+    override fun onBootstrapStageChange(stage: TorConnectStage) {
+        Log.d(TAG, "onBootstrapStageChange(stage = $stage)")
 
-        if (newState.isError() && wasTorBootstrapped) {
-            stopTor()
-        }
-
-        if (newState.isStarted()) {
-            wasTorBootstrapped = true
-            onTorConnected()
-        }
-
-        if (wasTorBootstrapped && newState == TorConnectState.Configuring) {
-            wasTorBootstrapped = false
-            if (isTorRestarting) {
-                initiateTorBootstrap()
-            } else {
-                setTorStopped()
+        if (stage.name == TorConnectStageName.Bootstrapped) {
+            synchronized(runOnceBootstrappedHandlers) {
+                runOnceBootstrappedHandlers.toList().forEach {
+                    it.onBootstrapped()
+                    runOnceBootstrappedHandlers.remove(it)
+                }
             }
         }
-
-        if (_lastKnownStatus.value.isOff() && newState.isStarting()) {
-            isTorRestarting = false
-        }
-
-        _lastKnownStatus.value = newState
-        onTorStatusUpdate(null, newStateVal, null)
     }
-
-    override fun onBootstrapStageChange(stage: TorConnectStage) = Unit
 
     // TorEventsBootstrapStateChangeListener
     override fun onBootstrapProgress(progress: Double, hasWarnings: Boolean) {
         Log.d(TAG, "onBootstrapProgress(progress = $progress, hasWarnings = $hasWarnings)")
-        onTorStatusUpdate("", _lastKnownStatus.value.toTorStatus().status, progress)
-    }
-
-    // TorEventsBootstrapStateChangeListener
-    override fun onBootstrapComplete() = Unit
-
-    // TorEventsBootstrapStateChangeListener
-    override fun onBootstrapError(code: String?, message: String?, phase: String?, reason: String?) {
-        lastKnownError = TorError(code ?: "", message ?: "", phase ?: "", reason ?: "")
     }
 }
