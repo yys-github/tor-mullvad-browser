@@ -26,6 +26,10 @@ export class AboutTorChild extends JSWindowActorChild {
       case "SubmitSearchOnionize":
         this.sendAsyncMessage("AboutTor:SetSearchOnionize", !!event.detail);
         break;
+      case "SurveyDismissed":
+        // event.detail is the survey version.
+        this.sendAsyncMessage("AboutTor:SurveyDismissed", event.detail);
+        break;
     }
   }
 }
