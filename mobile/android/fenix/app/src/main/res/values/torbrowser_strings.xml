@@ -123,6 +123,4 @@
     <!-- Connection assist. Confirmation button for a shown "Snackbar" (special popup notification). -->
     <string name="connection_assist_connect_to_tor_before_opening_links_confirmation">CONNECT</string>
 
-    <string name="home_box_close">Close</string>
-
 </resources>
