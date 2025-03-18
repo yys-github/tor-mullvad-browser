@@ -796,6 +796,17 @@ class SettingsFragment : PreferenceFragmentCompat(), UserInteractionHandler {
                 true
             }
         }
+        requirePreference<Preference>(R.string.pref_key_about_config_shortcut).apply {
+            isVisible = requireContext().settings().showSecretDebugMenuThisSession || Config.channel == ReleaseChannel.Debug
+            setOnPreferenceClickListener {
+                (requireActivity() as HomeActivity).openToBrowserAndLoad(
+                    searchTermOrURL = "about:config",
+                    from = BrowserDirection.FromSettings,
+                    newTab = true,
+                )
+                true
+            }
+        }
     }
 
     @VisibleForTesting
