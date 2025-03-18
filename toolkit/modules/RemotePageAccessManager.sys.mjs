@@ -256,6 +256,7 @@ export let RemotePageAccessManager = {
         "torconnect:stage-change",
         "torconnect:bootstrap-progress",
         "torconnect:quickstart-change",
+        "torconnect:region-names-change",
       ],
       RPMSendAsyncMessage: [
         "torconnect:open-tor-preferences",
@@ -267,10 +268,7 @@ export let RemotePageAccessManager = {
         "torconnect:start-again",
         "torconnect:choose-region",
       ],
-      RPMSendQuery: [
-        "torconnect:get-init-args",
-        "torconnect:get-frequent-regions",
-      ],
+      RPMSendQuery: ["torconnect:get-init-args", "torconnect:get-regions"],
     },
     "about:welcome": {
       RPMSendAsyncMessage: ["ActivityStream:ContentToMain"],
