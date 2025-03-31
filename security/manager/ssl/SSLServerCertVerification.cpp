@@ -1211,9 +1211,6 @@ SSLServerCertVerificationResult::Run() {
   }
 
   mSocketControl->SetCertVerificationResult(mFinalError);
-  // Release this reference to the socket control so that it will be freed on
-  // the socket thread.
-  mSocketControl = nullptr;
   return NS_OK;
 }
 
