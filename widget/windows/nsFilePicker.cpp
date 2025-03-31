@@ -13,6 +13,7 @@
 #include "mozilla/Assertions.h"
 #include "mozilla/BackgroundHangMonitor.h"
 #include "mozilla/ProfilerLabels.h"
+#include "mozilla/StaticPrefs_widget.h"
 #include "mozilla/UniquePtr.h"
 #include "mozilla/WindowsVersion.h"
 #include "nsReadableUtils.h"
