@@ -18,4 +18,10 @@ Please select the appropriate issue template from the **Description** drop-down.
 - ❌ **Revert** - revert a change
 - ⤵️ **Rebase - Alpha** - rebase alpha to latest Firefox Nightly version
 - ⤵️ **Rebase - Stable** - rebase stable to latest Firefox ESR version
+- ⬆️ **Uplift** - uplift change to upstream project
+- 🛡️ **Security Backports** - cherry-pick security fixes from Firefox
 - 🚨 **Emergency Security Issue** - manage fixing and publishing a critical security fix
+- ✅ **Release QA - Desktop** - test and verify functionality of our Desktop release
+- ✅ **Release QA - Android** - test and verify functionality of our Android release
+- 📋 **Firefox Release Review** - identify upstream Firefox issues which need to be audited
+- 🔍 **Bugzilla Audit** - determine if/how an upstream change affects the browser
