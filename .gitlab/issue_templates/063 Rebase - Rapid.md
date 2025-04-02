@@ -128,9 +128,9 @@ gitGraph:
 
 - [ ] In [Repository Settings](https://gitlab.torproject.org/tpo/applications/tor-browser/-/settings/repository):
   - [ ] Remove previous nightly `tor-browser` branch protection rules (this will prevent pushing new changes to the branches being rebased)
-  - [ ] Create new `tor-browser` branch protection rule:
-    - **Branch**: `tor-browser-$(NIGHTLY_VERSION)-$(BROWSER_VERSION)-*`
-      - **Example**: `tor-browser-130.0a1-15.0-*`
+  - [ ] Create new `base-browser` and `tor-browser` branch protection rule:
+    - **Branch**: `(tor|base)-browser-$(NIGHTLY_VERSION)-$(BROWSER_VERSION)-*`
+      - **Example**: `(tor|base)-browser-130.0a1-15.0-*`
     - **Allowed to merge**: `Maintainers`
     - **Allowed to push and merge**: `Maintainers`
     - **Allowed to force push**: `false`
