@@ -30,14 +30,16 @@
 ### **Bookkeeping**
 
 - [ ] Link this issue to the appropriate [Release Prep](https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/issues/?sort=updated_desc&state=opened&label_name%5B%5D=Apps%3A%3AType%3A%3AReleasePreparation) issue.
+- [ ] Create "Firefox Release Review" issue for this version
+  - **NOTE**: We have issues open through Firefox 153 so this can be skipped until we get to Firefox 154
 
 ### **Update Branch Protection Rules**
 
 - [ ] In [Repository Settings](https://gitlab.torproject.org/tpo/applications/tor-browser/-/settings/repository):
   - [ ] Remove previous alpha `base-browser` and `tor-browser` branch protection rules (this will prevent pushing new changes to the branches being rebased)
   - [ ] Create new `base-browser` and `tor-browser` branch protection rule:
-    - **Branch**: `*-$(ESR_VERSION)esr-$(BROWSER_MAJOR).$(BROWSER_MINOR)-1*`
-      - **Example**: `*-102.8.0esr-12.5-1*`
+    - **Branch**: `(tor|base)-browser-$(ESR_VERSION)esr-$(BROWSER_MAJOR).$(BROWSER_MINOR)-1*`
+      - **Example**: `(tor|base)-browser-102.8.0esr-12.5-1*`
     - **Allowed to merge**: `Maintainers`
     - **Allowed to push and merge**: `Maintainers`
     - **Allowed to force push**: `false`
