@@ -36,8 +36,8 @@
 - [ ] In [Repository Settings](https://gitlab.torproject.org/tpo/applications/tor-browser/-/settings/repository):
   - [ ] Remove previous alpha `base-browser` and `tor-browser` branch protection rules (this will prevent pushing new changes to the branches being rebased)
   - [ ] Create new `base-browser` and `tor-browser` branch protection rule:
-    - **Branch**: `*-$(ESR_VERSION)esr-$(BROWSER_MAJOR).$(BROWSER_MINOR)-1*`
-      - **Example**: `*-102.8.0esr-12.5-1*`
+    - **Branch**: `(tor|base)-browser-$(ESR_VERSION)esr-$(BROWSER_MAJOR).$(BROWSER_MINOR)-1*`
+      - **Example**: `(tor|base)-browser-102.8.0esr-12.5-1*`
     - **Allowed to merge**: `Maintainers`
     - **Allowed to push and merge**: `Maintainers`
     - **Allowed to force push**: `false`
