@@ -8177,6 +8177,7 @@ var StatusPanel = {
     if (XULBrowserWindow.busyUI) {
       types.push("status");
     }
+    types.push("letterboxingStatus");
     types.push("defaultStatus");
     for (type of types) {
       if ((text = XULBrowserWindow[type])) {
