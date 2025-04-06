@@ -212,6 +212,7 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
         if (screen.regionDropDownVisible) {
             if (binding.countryDropDown.isEmpty()) {
                 regionDropDownSpinnerAdapter = initializeSpinner()
+                torConnectionAssistViewModel.fetchFrequentRegions()
                 torConnectionAssistViewModel.fetchRegionNames()
             }
 
@@ -280,6 +281,18 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
                         spinnerAdapter.clear()
                         spinnerAdapter.add(getString(torConnectionAssistViewModel.torConnectScreen.value.regionDropDownDefaultItem))
                         spinnerAdapter.addAll(it.values)
+                    }
+                }
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                torConnectionAssistViewModel.frequentRegionCodes.collect {
+                    if (it != null) {
+                        for (region in it) {
+                            Log.d(TAG, "collected region: $region")
+                        }
                     }
                 }
             }
