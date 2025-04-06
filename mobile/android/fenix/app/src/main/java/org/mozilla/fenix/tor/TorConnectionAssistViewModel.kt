@@ -80,6 +80,14 @@ class TorConnectionAssistViewModel(
         }
     }
 
+    fun fetchFrequentRegions() {
+        torAndroidIntegration.frequentRegionNamesGet { frequentRegionNames ->
+            if (frequentRegionNames != null) {
+                frequentRegionCodes.value = frequentRegionNames
+            }
+        }
+    }
+
     override fun onCleared() {
         torAndroidIntegration.unregisterBootstrapStateChangeListener(this)
         super.onCleared()
@@ -93,6 +101,10 @@ class TorConnectionAssistViewModel(
     internal val torConnectScreen: StateFlow<ConnectAssistUiState> = _torConnectScreen
 
     val regionCodeNameMap: MutableStateFlow<Map<String, String>?> by lazy {
+        MutableStateFlow(null)
+    }
+
+    val frequentRegionCodes: MutableStateFlow<Array<String>?> by lazy {
         MutableStateFlow(null)
     }
 
