@@ -60,6 +60,7 @@ public class TorAndroidIntegration implements BundleEventListener {
   private static final String EVENT_QUICKSTART_GET = "GeckoView:Tor:QuickstartGet";
   private static final String EVENT_QUICKSTART_SET = "GeckoView:Tor:QuickstartSet";
   private static final String EVENT_REGION_NAMES_GET = "GeckoView:Tor:RegionNamesGet";
+  private static final String EVENT_FREQUENT_REGION_NAMES_GET = "GeckoView:Tor:FrequentRegionNamesGet";
   private static final String EVENT_SHOULD_SHOW_TOR_CONNECT = "GeckoView:Tor:ShouldShowTorConnect";
 
   private static final String CONTROL_PORT_FILE = "/control-ipc";
@@ -705,6 +706,19 @@ public class TorAndroidIntegration implements BundleEventListener {
   public void regionNamesGet(RegionNamesGetter regionNamesGetter) {
     EventDispatcher.getInstance().queryBundle(EVENT_REGION_NAMES_GET).then(regionNames -> {
       regionNamesGetter.onValue(regionNames);
+      return new GeckoResult<Void>();
+    });
+  }
+
+  public interface FrequentRegionNamesGetter {
+    void onValue(String[] frequentRegionNames);
+  }
+
+  public void frequentRegionNamesGet(FrequentRegionNamesGetter frequentRegionNamesGetter) {
+    EventDispatcher.getInstance().queryBundle(EVENT_FREQUENT_REGION_NAMES_GET).then( frequentRegionNames -> {
+      if (frequentRegionNames != null) {
+        frequentRegionNamesGetter.onValue(frequentRegionNames.getStringArray("codes"));
+      }
       return new GeckoResult<Void>();
     });
   }

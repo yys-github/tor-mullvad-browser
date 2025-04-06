@@ -49,6 +49,7 @@ const ListenedEvents = Object.freeze({
   quickstartGet: "GeckoView:Tor:QuickstartGet",
   quickstartSet: "GeckoView:Tor:QuickstartSet",
   regionNamesGet: "GeckoView:Tor:RegionNamesGet",
+  frequentRegionNamesGet: "GeckoView:Tor:FrequentRegionNamesGet",
   shouldShowTorConnectGet: "GeckoView:Tor:ShouldShowTorConnect",
 });
 
@@ -212,6 +213,11 @@ class TorAndroidIntegrationImpl {
           break;
         case ListenedEvents.regionNamesGet:
           callback?.onSuccess(lazy.TorConnect.getRegionNames());
+          return;
+        case ListenedEvents.frequentRegionNamesGet:
+          callback?.onSuccess({
+            codes: await lazy.TorConnect.getFrequentRegions(),
+          });
           return;
         case ListenedEvents.shouldShowTorConnectGet:
           callback?.onSuccess(lazy.TorConnect.shouldShowTorConnect());
