@@ -4,7 +4,6 @@
 
 package org.mozilla.fenix.tor
 
-import android.content.Intent
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
@@ -18,9 +17,40 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.DividerDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
+import androidx.compose.material3.adaptive.currentWindowDpSize
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpOffset
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -29,8 +59,10 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.launch
 import mozilla.components.support.base.feature.UserInteractionHandler
+import mozilla.components.ui.colors.PhotonColors
 import mozilla.components.ui.colors.R as colorsR
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
@@ -48,7 +80,9 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
     private var _binding: FragmentTorConnectionAssistBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var regionDropDownSpinnerAdapter: ArrayAdapter<String>
+    private val firstMenuItem: MutableStateFlow<String> by lazy {
+        MutableStateFlow(getString(R.string.connection_assist_automatic_country_detection))
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -210,95 +244,186 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
 
     private fun updateRegionDropdown(screen: ConnectAssistUiState) {
         if (screen.regionDropDownVisible) {
-            if (binding.countryDropDown.isEmpty()) {
-                regionDropDownSpinnerAdapter = initializeSpinner()
+            firstMenuItem.value = getString(screen.regionDropDownDefaultItem)
+            if (binding.regionDropDown.isEmpty()) {
+                binding.regionDropDown.apply {
+                    setContent {
+                        setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+                        RegionDropDown()
+                    }
+                }
                 torConnectionAssistViewModel.fetchFrequentRegions()
                 torConnectionAssistViewModel.fetchRegionNames()
             }
 
-            setFirstItemInCountryDropDown(getString(screen.regionDropDownDefaultItem))
-
             if (screen == ConnectAssistUiState.ChooseRegion || screen == ConnectAssistUiState.ConfirmRegion || screen == ConnectAssistUiState.RegionNotFound) {
                 torConnectionAssistViewModel.selectDefaultRegion()
-                setDropDownSelectionToSelectedCountryCode()
             }
 
-            binding.unblockTheInternetInCountryDescription.visibility = View.VISIBLE
-            binding.countryDropDown.visibility = View.VISIBLE
+            binding.regionDropDown.visibility = View.VISIBLE
         } else {
-            binding.unblockTheInternetInCountryDescription.visibility = View.GONE
-            binding.countryDropDown.visibility = View.GONE
+            binding.regionDropDown.visibility = View.GONE
         }
     }
 
-    private fun setDropDownSelectionToSelectedCountryCode() {
-        binding.countryDropDown.setSelection(
-            indexOfSelectedCountryCode(),
-        )
-    }
-
-    private fun indexOfSelectedCountryCode() : Int {
-        return torConnectionAssistViewModel.regionCodeNameMap.value?.keys?.indexOf(
-            torConnectionAssistViewModel.selectedCountryCode.value,
-        )?.plus(1) ?: 0
-    }
-
-    private fun setFirstItemInCountryDropDown(item: String) {
-        if (!regionDropDownSpinnerAdapter.isEmpty) {
-            regionDropDownSpinnerAdapter.remove(regionDropDownSpinnerAdapter.getItem(0))
-        }
-        regionDropDownSpinnerAdapter.insert(item, 0)
-    }
-
-    private fun initializeSpinner(): ArrayAdapter<String> {
-        val spinnerAdapter: ArrayAdapter<String> =
-            ArrayAdapter<String>(
-                requireContext(),
-                android.R.layout.simple_spinner_item,
-                android.R.id.text1,
-            )
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.countryDropDown.adapter = spinnerAdapter
-        binding.countryDropDown.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long,
-                ) {
-                    torConnectionAssistViewModel.setCountryCodeToSelectedItem(position)
-                    updateButton1(torConnectionAssistViewModel.torConnectScreen.value)
-                }
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-            }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                torConnectionAssistViewModel.regionCodeNameMap.collect {
-                    if (it != null) {
-                        spinnerAdapter.clear()
-                        spinnerAdapter.add(getString(torConnectionAssistViewModel.torConnectScreen.value.regionDropDownDefaultItem))
-                        spinnerAdapter.addAll(it.values)
+    @Composable
+    fun RegionDropDown(
+        textStyle: TextStyle = TextStyle(
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            fontWeight = FontWeight(400),
+            color = PhotonColors.LightGrey05,
+            letterSpacing = 0.15.sp,
+        ),
+        labelTextStyle: TextStyle = TextStyle(
+            fontSize = 14.sp,
+            lineHeight = 20.sp,
+            fontWeight = FontWeight(400),
+            color = PhotonColors.LightGrey40,
+            letterSpacing = 0.25.sp,
+        ),
+    ) {
+        var expanded by rememberSaveable { mutableStateOf(false) }
+        Box(
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            TextButton(
+                onClick = { expanded = !expanded },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+            ) {
+                Column {
+                    Text(
+                        getString(R.string.connection_assist_unblock_the_internet_in_country_or_region),
+                        color = PhotonColors.LightGrey05,
+                        modifier = Modifier.padding(bottom = 8.dp),
+                        fontSize = 14.sp,
+                    )
+                    Row {
+                        Text(
+                            torConnectionAssistViewModel.regionCodeNameMap.collectAsState().value?.get(
+                                torConnectionAssistViewModel.selectedCountryCode.collectAsState().value,
+                            ) ?: firstMenuItem.collectAsState().value,
+                            color = PhotonColors.LightGrey05,
+                            fontSize = 14.sp,
+                        )
+                        Spacer(modifier = Modifier.weight(1f))
+                        Image(
+                            painterResource(mozilla.components.ui.icons.R.drawable.unthemed_dropdown_arrow),
+                            contentDescription = null,
+                        )
                     }
+                    HorizontalDivider(Modifier, thickness = 1.dp, color = PhotonColors.LightGrey05)
                 }
             }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                torConnectionAssistViewModel.frequentRegionCodes.collect {
-                    if (it != null) {
-                        for (region in it) {
-                            Log.d(TAG, "collected region: $region")
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false },
+                offset = DpOffset(x = 24.dp, y = 0.dp),
+                modifier = Modifier.background(color = PhotonColors.Violet90)
+            ) {
+                @OptIn(ExperimentalMaterial3AdaptiveApi::class)
+                LazyColumn(
+                        Modifier
+                            .width(250.dp)
+                            .height(currentWindowDpSize().height) // fixMaxHeight() doesn't work, use this instead
+                    ) {
+                        item {
+                            RegionDropdownMenuItem(
+                                "automatic",
+                                firstMenuItem.collectAsState().value,
+                                dismissAction = { expanded = false },
+                                textStyle = textStyle,
+                            )
+                        }
+                        if (torConnectionAssistViewModel.frequentRegionCodes.value?.isEmpty() == false) {
+                            item {
+                                HorizontalDivider(Modifier, DividerDefaults.Thickness, color = PhotonColors.Ink05)
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = getString(R.string.connection_assist_frequently_selected_locations),
+                                            style = labelTextStyle,
+                                        )
+                                    },
+                                    onClick = {},
+                                )
+                            }
+                            viewLifecycleOwner.lifecycleScope.launch {
+                                repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                    torConnectionAssistViewModel.frequentRegionCodes.collect { codes ->
+                                        if (codes != null) {
+                                            for (code in codes) {
+                                                item {
+                                                    RegionDropdownMenuItem(
+                                                        code,
+                                                        torConnectionAssistViewModel.regionCodeNameMap.collectAsState().value?.get(
+                                                            code,
+                                                        ),
+                                                        dismissAction = { expanded = false },
+                                                        textStyle = textStyle,
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            item {
+                                HorizontalDivider(Modifier, DividerDefaults.Thickness, color = PhotonColors.Ink05)
+                                DropdownMenuItem(
+                                    text = {
+                                        Text(
+                                            text = getString(R.string.connection_assist_other_locations),
+                                            style = labelTextStyle,
+                                        )
+                                    },
+                                    onClick = {}
+                                )
+                            }
+                        }
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                torConnectionAssistViewModel.regionCodeNameMap.collect { regions ->
+                                    if (regions != null) {
+                                        for (region in regions.toList()) {
+                                            item {
+                                                RegionDropdownMenuItem(
+                                                    region.first, region.second,
+                                                    dismissAction = { expanded = false },
+                                                    textStyle = textStyle,
+                                                )
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
-                }
             }
         }
+    }
 
-        return spinnerAdapter
+    @Composable
+    fun RegionDropdownMenuItem(
+        key: String,
+        text: String?,
+        dismissAction: () -> Unit,
+        textStyle: TextStyle,
+    ) {
+        DropdownMenuItem(
+            modifier = Modifier.padding(start = 8.dp),
+            text = { Text(
+                text ?: return@DropdownMenuItem,
+                style = textStyle,
+            ) },
+            onClick = {
+                torConnectionAssistViewModel.selectedCountryCode.value = key
+                updateButton1(torConnectionAssistViewModel.torConnectScreen.value)
+                dismissAction()
+            },
+        )
     }
 
     private fun setButton1(screen: ConnectAssistUiState) {

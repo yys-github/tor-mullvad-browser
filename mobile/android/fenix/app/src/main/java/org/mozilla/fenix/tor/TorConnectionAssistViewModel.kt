@@ -116,14 +116,6 @@ class TorConnectionAssistViewModel(
         selectedCountryCode.value = torConnectStage.value?.defaultRegion ?: "automatic"
     }
 
-    fun setCountryCodeToSelectedItem(position: Int) {
-        selectedCountryCode.value =
-            regionCodeNameMap.value?.keys?.toList()
-                ?.getOrNull(position - 1) ?: "automatic"
-        // position - 1 since we have the default/first value of automatic
-        Log.d(TAG, "selectedCountryCode = ${selectedCountryCode.value}")
-    }
-
     val shouldOpenHome: MutableLiveData<Boolean> by lazy {
         MutableLiveData(false)
     }
