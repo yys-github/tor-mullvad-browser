@@ -5,13 +5,11 @@
 ## Information
 
 ### Related Issue
-- tor-browser#AAAAA
 - mullvad-browser#BBBBB
 - tor-browser-build#CCCCC
 
 #### Affected Platforms
 
-- [ ] Android
 - [ ] Desktop
   - [ ] Windows
   - [ ] macOS
@@ -20,7 +18,9 @@
 ### Type of Issue: What are we dealing with?
 
 - [ ] Security (sandbox escape, remote code execution, etc)
-- [ ] Cross-Site Linkability (correlating sessions across websites)
+- [ ] Proxy Bypass (traffic contents becoming MITM'able)
+- [ ] De-Anonymization (otherwise identifying which website a user is visiting)
+- [ ] Cross-Site Linkability (correlating sessions across circuits and websites)
 - [ ] Disk Leak (persisting session information to disk)
 - [ ] Other (please explain)
 
@@ -40,8 +40,8 @@
   - [ ] UX (**donuts**)
   - [ ] TPA (**anarcat**, **lavamind**)
 - [ ] External Tor Partners
-  - [ ] Mozilla (**tjr**)
-  - [ ] Mullvad (**ruihildt**)
+  - [ ] Mozilla
+  - [ ] Mullvad
   - [ ] Other (please list)
 
 ### Urgency: When do we need to act?
@@ -68,7 +68,6 @@ Sometimes fixes have side-effects: users lose their data, roadmaps need to be ad
 
 - [ ] Start an initial email thread with the following people:
   - [ ] **bella**
-  - [ ] **ruihildt**, **support@mullvadvpn.net**
   - [ ] Relevant Applications Developers
   - [ ] **(Optional)** **micah**
     - if there are considerations or asks outside the Applications Team
@@ -91,7 +90,6 @@ Godspeed! :pray:
 
 /confidential
 
-/label ~"Apps::Product::TorBrowser"
 /label ~"Apps::Product::MullvadBrowser"
 /label ~"Apps::Type::Bug"
 /label ~"Apps::Priority::Blocker"
