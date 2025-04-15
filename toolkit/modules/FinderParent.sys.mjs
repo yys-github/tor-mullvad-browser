@@ -6,7 +6,6 @@
 
 const kModalHighlightPref = "findbar.modalHighlight";
 
-import { XPCOMUtils } from "resource://gre/modules/XPCOMUtils.sys.mjs";
 import {
   initNotFoundSound,
   playNotFoundSound,
