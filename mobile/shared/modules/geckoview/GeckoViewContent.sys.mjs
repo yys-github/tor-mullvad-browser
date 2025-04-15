@@ -172,6 +172,7 @@ export class GeckoViewContent extends GeckoViewModule {
   }
 
   // Bundle event handler.
+  // eslint-disable-next-line complexity
   onEvent(aEvent, aData, aCallback) {
     debug`onEvent: event=${aEvent}, data=${aData}`;
 
