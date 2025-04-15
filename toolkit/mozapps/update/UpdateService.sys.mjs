@@ -722,8 +722,10 @@ function getCanApplyUpdates() {
     return false;
   }
 
-  if (!AppConstants.BASE_BROWSER_UPDATE &&
-      (AppConstants.platform == "macosx" || AppConstants.platform == "win")) {
+  if (
+    !AppConstants.BASE_BROWSER_UPDATE &&
+    (AppConstants.platform == "macosx" || AppConstants.platform == "win")
+  ) {
     LOG(
       "getCanApplyUpdates - bypass the write since elevation can be used " +
         "on macOS and Windows"
