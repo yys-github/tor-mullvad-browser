@@ -23,6 +23,7 @@ export class AboutTorParent extends JSWindowActorParent {
             surveyDismissVersionPref,
             0
           ),
+          appLocale: Services.locale.appLocaleAsBCP47,
         });
       case "AboutTor:SetSearchOnionize":
         Services.prefs.setBoolPref(onionizePref, message.data);
