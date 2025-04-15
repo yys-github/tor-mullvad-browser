@@ -362,8 +362,9 @@ async function exportExtension(aAddon, aSourceURI) {
     privateBrowsingAllowed = policy.privateBrowsingAllowed;
   } else {
     const { permissions } = await lazy.ExtensionPermissions.get(aAddon.id);
-    privateBrowsingAllowed = permissions.includes(PRIVATE_BROWSING_PERM_NAME)
-                            || lazy.PrivateBrowsingUtils.permanentPrivateBrowsing;
+    privateBrowsingAllowed =
+      permissions.includes(PRIVATE_BROWSING_PERM_NAME) ||
+      lazy.PrivateBrowsingUtils.permanentPrivateBrowsing;
   }
 
   let updateDate;
