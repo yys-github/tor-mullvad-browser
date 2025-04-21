@@ -10,6 +10,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
   MoatRPC: "resource://gre/modules/Moat.sys.mjs",
   TorBootstrapRequest: "resource://gre/modules/TorBootstrapRequest.sys.mjs",
   TorProviderTopics: "resource://gre/modules/TorProviderBuilder.sys.mjs",
+  TorBootstrapError: "resource://gre/modules/TorProviderBuilder.sys.mjs",
+  TorProviderInitError: "resource://gre/modules/TorProviderBuilder.sys.mjs",
   TorLauncherUtil: "resource://gre/modules/TorLauncherUtil.sys.mjs",
   TorSettings: "resource://gre/modules/TorSettings.sys.mjs",
   TorSettingsTopics: "resource://gre/modules/TorSettings.sys.mjs",
@@ -223,9 +225,11 @@ class BootstrapAttempt {
         _timeout: 0,
         bootstrap() {
           this._timeout = setTimeout(() => {
-            const err = new Error("Censorship simulation");
-            err.phase = "conn";
-            err.reason = "noroute";
+            const err = new lazy.TorBootstrapError({
+              summary: "Censorship simulation",
+              phase: "conn",
+              reason: "noroute",
+            });
             this.onbootstraperror(err);
           }, options.simulateDelay || 0);
         },
@@ -258,9 +262,7 @@ class BootstrapAttempt {
         return;
       }
 
-      this.#resolveRun({
-        error: new TorConnectError(TorConnectError.BootstrapError, error),
-      });
+      this.#resolveRun({ error });
     };
 
     this.#bootstrap.bootstrap();
@@ -595,12 +597,9 @@ class AutoBootstrapAttempt {
       // bootstrapAttempt.
       result = await this.#bootstrapAttempt.run(progressCallback, options);
     } catch (error) {
-      // Only re-try with the next settings *if* we have a BootstrapError.
+      // Only re-try with the next settings *if* we have a TorBootstrapError.
       // Other errors will end this auto-bootstrap attempt entirely.
-      if (
-        error instanceof TorConnectError &&
-        error.code === TorConnectError.BootstrapError
-      ) {
+      if (error instanceof lazy.TorBootstrapError) {
         lazy.logger.info("TorConnect setting failed", bridges, error);
         // Try with the next settings.
         // NOTE: We do not restore the user settings in between these runs.
@@ -1200,7 +1199,9 @@ export const TorConnect = {
     // Currently it simulates the old behaviour for about:torconnect.
     lazy.logger.debug("Signalling error", error);
 
-    if (!(error instanceof TorConnectError)) {
+    if (error instanceof lazy.TorBootstrapError) {
+      error = new TorConnectError(TorConnectError.BootstrapError, error);
+    } else if (!(error instanceof TorConnectError)) {
       error = new TorConnectError(TorConnectError.ExternalError, error);
     }
     this._errorDetails = error;
@@ -1434,6 +1435,19 @@ export const TorConnect = {
       lazy.logger.info("Bootstrap attempt error", error);
       this._tryAgain = true;
 
+      if (error instanceof lazy.TorProviderInitError) {
+        // Treat like TorProviderTopics.ProcessExited. We expect a user
+        // notification when this happens.
+        // Treat a failure as a possibly broken configuration.
+        // So, prevent quickstart at the next start.
+        Services.prefs.setBoolPref(TorConnectPrefs.prompt_at_startup, true);
+        lazy.logger.info(
+          "Starting again since the tor provider failed to initialise"
+        );
+        this._setStage(TorConnectStage.Start);
+        return;
+      }
+
       if (
         (beginStage === TorConnectStage.Start ||
           beginStage === TorConnectStage.Offline) &&
@@ -1462,10 +1476,7 @@ export const TorConnect = {
       switch (beginStage) {
         case TorConnectStage.Start:
         case TorConnectStage.Offline:
-          if (
-            error instanceof TorConnectError &&
-            error.code === TorConnectError.BootstrapError
-          ) {
+          if (error instanceof lazy.TorBootstrapError) {
             errorStage = TorConnectStage.ChooseRegion;
           }
           // Else, some other unexpected error type. Skip straight to the
