@@ -18,6 +18,41 @@ export const TorProviderTopics = Object.freeze({
   CircuitCredentialsMatched: "TorCircuitCredentialsMatched",
 });
 
+/**
+ * Wrapper error class for errors raised during TorProvider.init.
+ */
+export class TorProviderInitError extends Error {
+  /**
+   * Create a new instance.
+   *
+   * @param {any} error - The raised error that we want to wrap.
+   */
+  constructor(error) {
+    super(error?.message, { cause: error });
+    this.name = "TorProviderInitError";
+  }
+}
+
+/**
+ * Bootstrap errors raised by the TorProvider.
+ */
+export class TorBootstrapError extends Error {
+  /**
+   * Create a new instance.
+   *
+   * @param {object} details - Details about the error.
+   * @param {string} details.summary - A summary of the error.
+   * @param {string} details.phase - The bootstrap phase when the error occured.
+   * @param {string} details.reason - The reason for the bootsrap failure.
+   */
+  constructor(details) {
+    super(details.summary);
+    this.name = "TorBootstrapError";
+    this.phase = details.phase;
+    this.reason = details.reason;
+  }
+}
+
 export const TorProviders = Object.freeze({
   none: 0,
   tor: 1,
@@ -178,7 +213,13 @@ export class TorProviderBuilder {
       (await oldProvider)?.uninit();
     } catch {}
     const provider = new lazy.TorProvider();
-    await provider.init();
+    try {
+      await provider.init();
+    } catch (error) {
+      // Wrap in an error type for callers to know whether the error comes from
+      // initialisation or something else.
+      throw new TorProviderInitError(error);
+    }
     return provider;
   }
 

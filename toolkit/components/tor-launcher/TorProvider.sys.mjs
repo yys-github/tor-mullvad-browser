@@ -6,7 +6,10 @@ import { clearTimeout, setTimeout } from "resource://gre/modules/Timer.sys.mjs";
 
 import { TorLauncherUtil } from "resource://gre/modules/TorLauncherUtil.sys.mjs";
 import { TorParsers } from "resource://gre/modules/TorParsers.sys.mjs";
-import { TorProviderTopics } from "resource://gre/modules/TorProviderBuilder.sys.mjs";
+import {
+  TorBootstrapError,
+  TorProviderTopics,
+} from "resource://gre/modules/TorProviderBuilder.sys.mjs";
 
 const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
@@ -996,12 +999,11 @@ export class TorProvider {
       // anymore, since the first error eligible for notification will as a
       // matter of fact cancel the bootstrap.
       Services.obs.notifyObservers(
-        {
+        new TorBootstrapError({
           phase: statusObj.TAG,
           reason: statusObj.REASON,
           summary: statusObj.SUMMARY,
-          warning: statusObj.WARNING,
-        },
+        }),
         TorProviderTopics.BootstrapError
       );
     }
