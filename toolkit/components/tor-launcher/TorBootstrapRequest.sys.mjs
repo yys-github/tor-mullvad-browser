@@ -54,9 +54,7 @@ export class TorBootstrapRequest {
       }
       case lazy.TorProviderTopics.BootstrapError: {
         log.info("TorBootstrapRequest: observerd TorBootstrapError", obj);
-        const error = new Error(obj.summary);
-        Object.assign(error, obj);
-        this.#stop(error);
+        this.#stop(obj);
         break;
       }
     }
