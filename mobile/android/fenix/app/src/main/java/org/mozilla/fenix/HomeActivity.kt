@@ -821,6 +821,10 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
 
         super.onDestroy()
 
+        if (isFinishing) {
+            exitProcess(0)
+        }
+
         // Diagnostic breadcrumb for "Display already aquired" crash:
         // https://github.com/mozilla-mobile/android-components/issues/7960
         breadcrumb(
