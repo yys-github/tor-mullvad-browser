@@ -20,7 +20,7 @@ import mozilla.components.support.webextensions.WebExtensionSupport
 import mozilla.components.support.base.log.logger.Logger
 import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.settings
-import org.mozilla.fenix.tor.TorEvents
+import org.mozilla.fenix.tor.RunOnceBootstrapped
 
 object TorBrowserFeatures {
     private val logger = Logger("torbrowser-features")
@@ -142,9 +142,8 @@ object TorBrowserFeatures {
          *  causing automatic update checks failures (components.addonUpdater being a lazy prop).
          *  The extension, from then on, should behave as if the user had installed it manually.
          */
-        context.components.torController.registerTorListener(object : TorEvents {
-            override fun onTorConnected() {
-                context.components.torController.unregisterTorListener(this)
+        context.components.torController.registerRunOnceBootstrapped(object : RunOnceBootstrapped {
+            override fun onBootstrapped() {
                 // Enable automatic updates. This must be done on every startup (tor-browser#42353)
                 context.components.addonUpdater.registerForFutureUpdates(NOSCRIPT_ID)
                 // Force a one-time immediate update check for older installations
@@ -152,18 +151,6 @@ object TorBrowserFeatures {
                     context.components.addonUpdater.update(NOSCRIPT_ID)
                     settings.noscriptUpdated = 2
                 }
-            }
-
-            @SuppressWarnings("EmptyFunctionBlock")
-            override fun onTorConnecting() {
-            }
-
-            @SuppressWarnings("EmptyFunctionBlock")
-            override fun onTorStopped() {
-            }
-
-            @SuppressWarnings("EmptyFunctionBlock")
-            override fun onTorStatusUpdate(entry: String?, status: String?, progress: Double?) {
             }
         })
     }
