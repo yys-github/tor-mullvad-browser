@@ -101,7 +101,6 @@ import org.mozilla.fenix.browser.browsingmode.BrowsingMode
 import org.mozilla.fenix.browser.browsingmode.BrowsingModeManager
 import org.mozilla.fenix.browser.browsingmode.DefaultBrowsingModeManager
 import org.mozilla.fenix.components.appstate.AppAction
-import org.mozilla.fenix.components.appstate.AppAction.ShareAction
 import org.mozilla.fenix.components.appstate.OrientationMode
 import org.mozilla.fenix.components.metrics.BreadcrumbsRecorder
 import org.mozilla.fenix.components.metrics.GrowthDataWorker
@@ -137,7 +136,6 @@ import org.mozilla.fenix.home.intent.OpenBrowserIntentProcessor
 import org.mozilla.fenix.home.intent.OpenPasswordManagerIntentProcessor
 import org.mozilla.fenix.home.intent.OpenRecentlyClosedIntentProcessor
 import org.mozilla.fenix.home.intent.OpenSpecificTabIntentProcessor
-import org.mozilla.fenix.home.intent.ReEngagementIntentProcessor
 import org.mozilla.fenix.home.intent.SpeechProcessingIntentProcessor
 import org.mozilla.fenix.home.intent.StartSearchIntentProcessor
 import org.mozilla.fenix.library.bookmarks.DesktopFolders
@@ -167,19 +165,18 @@ import org.mozilla.fenix.theme.DefaultThemeManager
 import org.mozilla.fenix.theme.StatusBarColorManager
 import org.mozilla.fenix.theme.ThemeManager
 import org.mozilla.fenix.tor.TorConnectionAssistFragmentDirections
-import org.mozilla.fenix.tor.TorEvents
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.changeAppLauncherIcon
 import java.lang.ref.WeakReference
 import java.util.Locale
 
-import androidx.compose.material.SnackbarDuration
 import mozilla.components.browser.engine.gecko.GeckoEngine
 import org.mozilla.fenix.compose.core.Action
 import org.mozilla.fenix.compose.snackbar.SnackbarState
 import org.mozilla.fenix.compose.snackbar.Snackbar
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 import org.mozilla.geckoview.TorAndroidIntegration
+import org.mozilla.geckoview.TorAndroidIntegration.BootstrapStateChangeListener
 import org.mozilla.geckoview.TorConnectStage
 import kotlin.system.exitProcess
 
@@ -913,15 +910,21 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
             onNewIntentInternal(intent)
         } else {
             // Wait until Tor is connected to handle intents from external apps for links, search, etc.
-            components.torController.registerTorListener(object : TorEvents {
-                override fun onTorConnected() {
-                    components.torController.unregisterTorListener(this)
-                    onNewIntentInternal(intent)
+            val torIntegration = (components.core.engine as GeckoEngine).getTorIntegrationController()
+            torIntegration.registerBootstrapStateChangeListener(
+                object : BootstrapStateChangeListener {
+
+                    override fun onBootstrapStageChange(stage: TorConnectStage) {
+                        if (stage.isBootstrapped) {
+                            torIntegration.unregisterBootstrapStateChangeListener(this)
+                            onNewIntentInternal(intent)
+                        }
+                    }
+
+                    override fun onBootstrapProgress(progress: Double, hasWarnings: Boolean) {}
                 }
-                override fun onTorConnecting() { /* no-op */ }
-                override fun onTorStopped() { /* no-op */ }
-                override fun onTorStatusUpdate(entry: String?, status: String?, progress: Double?) { /* no-op */ }
-            })
+            )
+
             return
         }
     }
@@ -1600,14 +1603,13 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
         exitProcess(0)
     }
 
-    override fun onBootstrapStateChange(state: String) = Unit
-    override fun onBootstrapStageChange(stage: TorConnectStage) = Unit
-    override fun onBootstrapProgress(progress: Double, hasWarnings: Boolean) = Unit
-    override fun onBootstrapComplete() {
-        if (settings().useHtmlConnectionUi) {
-            components.useCases.tabsUseCases.removeAllTabs()
-            navHost.navController.navigate(NavGraphDirections.actionStartupHome())
+    override fun onBootstrapStageChange(stage: TorConnectStage)  {
+        if (stage.isBootstrapped) {
+            if (settings().useHtmlConnectionUi) {
+                components.useCases.tabsUseCases.removeAllTabs()
+                navHost.navController.navigate(NavGraphDirections.actionStartupHome())
+            }
         }
     }
-    override fun onBootstrapError(code: String?, message: String?, phase: String?, reason: String?) = Unit
+    override fun onBootstrapProgress(progress: Double, hasWarnings: Boolean) = Unit
 }

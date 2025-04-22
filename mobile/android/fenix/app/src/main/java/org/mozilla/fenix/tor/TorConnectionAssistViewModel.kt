@@ -154,22 +154,11 @@ class TorConnectionAssistViewModel(
         }
     }
 
-    override fun onBootstrapStateChange(state: String?) {}
-
-    override fun onBootstrapStageChange(stage: TorConnectStage?) {
+    override fun onBootstrapStageChange(stage: TorConnectStage) {
         torConnectStage.value = stage
     }
 
     override fun onBootstrapProgress(progress: Double, hasWarnings: Boolean) {}
-
-    override fun onBootstrapComplete() {}
-
-    override fun onBootstrapError(
-        code: String?,
-        message: String?,
-        phase: String?,
-        reason: String?,
-    ) {}
 
     fun button1ShouldBeDisabled(screen: ConnectAssistUiState): Boolean {
         return selectedCountryCode.value == "automatic" && screen.regionDropDownDefaultItem == R.string.connection_assist_select_country_or_region
