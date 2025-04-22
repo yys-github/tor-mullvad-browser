@@ -27,20 +27,9 @@ class TorBootstrapProgressViewModel(
         super.onCleared()
     }
 
-    override fun onBootstrapStateChange(state: String?) {}
     override fun onBootstrapStageChange(stage: TorConnectStage) = Unit
 
     override fun onBootstrapProgress(progress: Double, hasWarnings: Boolean) {
         this.progress.value = progress.toInt()
-    }
-
-    override fun onBootstrapComplete() {}
-
-    override fun onBootstrapError(
-        code: String?,
-        message: String?,
-        phase: String?,
-        reason: String?,
-    ) {
     }
 }
