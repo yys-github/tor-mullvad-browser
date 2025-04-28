@@ -356,6 +356,10 @@ export class TorProvider {
   }
 
   async flushSettings() {
+    if (TorLauncherUtil.isAndroid) {
+      // Android does not have a torrc to flush to. See tor-browser#43577.
+      return;
+    }
     await this.#controller.flushSettings();
   }
 
