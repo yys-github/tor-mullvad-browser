@@ -112,6 +112,8 @@
 #ifdef XP_MACOSX
     <command id="zoomWindow" data-l10n-id="window-zoom-command" />
 #endif
+
+    <command id ="cmd_newCircuit" />
   </commandset>
 #include ../../components/places/content/placesCommands.inc.xhtml
 
@@ -405,5 +407,5 @@
          internal="true"/>
 #endif
     <key id="new-identity-key" modifiers="accel shift" key="U" command="cmd_newIdentity"/>
-    <key id="new-circuit-key" modifiers="accel shift" key="L" oncommand="TorDomainIsolator.newCircuitForBrowser(gBrowser.selectedBrowser)"/>
+    <key id="new-circuit-key" modifiers="accel shift" key="L" command="cmd_newCircuit"/>
   </keyset>
