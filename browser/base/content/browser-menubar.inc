@@ -428,7 +428,6 @@
      have their strings defined by appmenu-data-l10n-id. -->
                 <!-- Add Tor Browser manual link -->
                 <menuitem id="torBrowserUserManual"
-                          oncommand="gBrowser.selectedTab = gBrowser.addTab('about:manual', {triggeringPrincipal: Services.scriptSecurityManager.getSystemPrincipal()});"
                           data-l10n-id="menu-open-tor-manual"
                           appmenu-data-l10n-id="appmenu-open-tor-manual"/>
                 <menuitem id="menu_openHelp"

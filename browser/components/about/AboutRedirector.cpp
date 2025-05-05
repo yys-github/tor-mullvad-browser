@@ -203,6 +203,10 @@ static nsAutoCString GetAboutModuleName(nsIURI* aURI) {
 static nsTHashSet<nsCStringHashKey> GetManualLocales() {
   nsTHashSet<nsCStringHashKey> locales;
   RefPtr<nsZipArchive> zip = Omnijar::GetReader(Omnijar::APP);
+  if (!zip) {
+    // Probably a local build started with ./mach run
+    return locales;
+  }
   UniquePtr<nsZipFind> find;
   const nsAutoCString prefix("chrome/browser/content/browser/manual/");
   nsAutoCString needle = prefix;
