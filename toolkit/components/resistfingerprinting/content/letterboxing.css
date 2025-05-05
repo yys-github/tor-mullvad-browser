@@ -56,7 +56,7 @@
   border-radius: var(--letterboxing-border-radius);
   border-top-left-radius: var(--letterboxing-border-top-radius);
   border-top-right-radius: var(--letterboxing-border-top-radius);
-  box-shadow: var(--letterboxing-border-color) 0px 0px .1px inset, var(--letterboxing-border-color) 0 0 .1px;
+  box-shadow: var(--letterboxing-border-color) 0 0 .1px inset, var(--letterboxing-border-color) 0 0 .1px;
   border: .1px solid var(--letterboxing-border-color);
   outline: .1px solid var(--letterboxing-bgcolor);
   height: calc(var(--letterboxing-height) + 1px);
@@ -102,7 +102,7 @@
 }
 
 .letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) > browser {
-  box-shadow: 0px 4px 8px 0px var(--letterboxing-shadow-color);
+  box-shadow: 0 4px 8px 0 var(--letterboxing-shadow-color);
   border-radius: var(--letterboxing-border-radius);
   border-top-left-radius: var(--letterboxing-border-top-radius);
   border-top-right-radius: var(--letterboxing-border-top-radius);
