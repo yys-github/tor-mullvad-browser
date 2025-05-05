@@ -25,7 +25,7 @@
                           key="new-identity-key" data-l10n-id="menu-new-identity"/>
                 <menuitem id="menu_newCircuit"
                           key="new-circuit-key" data-l10n-id="menu-new-tor-circuit"
-                          oncommand="TorDomainIsolator.newCircuitForBrowser(gBrowser.selectedBrowser);"/>
+                          command="cmd_newCircuit"/>
                 <menuseparator/>
                 <menuitem id="menu_openLocation"
                           hidden="true"
