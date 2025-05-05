@@ -34,11 +34,18 @@ export class OnionLocationParent extends JSWindowActorParent {
   // Listeners are added in BrowserGlue.jsm
   receiveMessage(aMsg) {
     switch (aMsg.name) {
-      case "OnionLocation:Set":
+      case "OnionLocation:Set": {
         let browser = this.browsingContext.embedderElement;
         OnionLocationParent.setOnionLocation(browser);
         break;
+      }
     }
+  }
+
+  static init(document) {
+    document
+      .getElementById(ONIONLOCATION_BOX_ID)
+      .addEventListener("click", event => this.buttonClick(event));
   }
 
   static buttonClick(event) {
