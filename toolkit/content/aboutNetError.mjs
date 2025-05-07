@@ -503,10 +503,8 @@ async function initPage() {
   tryAgain.hidden = false;
   const learnMoreLink = document.getElementById("learnMoreLink");
   learnMoreLink.setAttribute("href", baseURL + "connection-not-secure");
-  let { pageTitleId, bodyTitle, bodyTitleId, longDesc } = await initTitleAndBodyIds(
-    baseURL,
-    isTRROnlyFailure
-  );
+  let { pageTitleId, bodyTitle, bodyTitleId, longDesc } =
+    await initTitleAndBodyIds(baseURL, isTRROnlyFailure);
 
   // bodyTitle is set to null if it has already been set in initTitleAndBodyIds
   if (!KNOWN_ERROR_TITLE_IDS.has(bodyTitleId)) {
