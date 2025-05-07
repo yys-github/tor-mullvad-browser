@@ -235,9 +235,9 @@ document.addEventListener(
           break;
 
         case "shopping-sidebar-button":
-          if (isLeftClick) {
-            ShoppingSidebarParent.urlbarButtonClick(event);
-          }
+          // if (isLeftClick) {
+          //   ShoppingSidebarParent.urlbarButtonClick(event);
+          // }
           break;
 
         case "urlbar-zoom-button":
@@ -338,9 +338,9 @@ document.addEventListener(
           break;
 
         case "shopping-sidebar-button":
-          if (isLikeLeftClick) {
-            ShoppingSidebarParent.urlbarButtonClick(event);
-          }
+          // if (isLikeLeftClick) {
+          //   ShoppingSidebarParent.urlbarButtonClick(event);
+          // }
           break;
 
         case "urlbar-zoom-button":
