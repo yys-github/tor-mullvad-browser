@@ -1,4 +1,4 @@
-import { XPCOMUtils } from "resource://gre/modules/XPCOMUtils.sys.mjs";
+/* eslint-disable mozilla/valid-lazy */
 import { AppConstants } from "resource://gre/modules/AppConstants.sys.mjs";
 import {
   clearInterval,
@@ -29,32 +29,31 @@ ChromeUtils.defineESModuleGetters(lazy, {
   TorBridgeSource: "resource://gre/modules/TorSettings.sys.mjs",
 });
 
-// eslint-disable-next-line mozilla/reject-chromeutils-import
-XPCOMUtils.defineLazyModuleGetters(lazy, {
-  init: "resource://gre/modules/lox_wasm.jsm",
-  open_invite: "resource://gre/modules/lox_wasm.jsm",
-  handle_new_lox_credential: "resource://gre/modules/lox_wasm.jsm",
-  set_panic_hook: "resource://gre/modules/lox_wasm.jsm",
-  invitation_is_trusted: "resource://gre/modules/lox_wasm.jsm",
-  issue_invite: "resource://gre/modules/lox_wasm.jsm",
-  handle_issue_invite: "resource://gre/modules/lox_wasm.jsm",
-  prepare_invite: "resource://gre/modules/lox_wasm.jsm",
-  get_invites_remaining: "resource://gre/modules/lox_wasm.jsm",
-  get_trust_level: "resource://gre/modules/lox_wasm.jsm",
-  level_up: "resource://gre/modules/lox_wasm.jsm",
-  handle_level_up: "resource://gre/modules/lox_wasm.jsm",
-  trust_promotion: "resource://gre/modules/lox_wasm.jsm",
-  handle_trust_promotion: "resource://gre/modules/lox_wasm.jsm",
-  trust_migration: "resource://gre/modules/lox_wasm.jsm",
-  handle_trust_migration: "resource://gre/modules/lox_wasm.jsm",
-  get_next_unlock: "resource://gre/modules/lox_wasm.jsm",
-  check_blockage: "resource://gre/modules/lox_wasm.jsm",
-  handle_check_blockage: "resource://gre/modules/lox_wasm.jsm",
-  blockage_migration: "resource://gre/modules/lox_wasm.jsm",
-  handle_blockage_migration: "resource://gre/modules/lox_wasm.jsm",
-  check_lox_pubkeys_update: "resource://gre/modules/lox_wasm.jsm",
-  handle_update_cred: "resource://gre/modules/lox_wasm.jsm",
-});
+// XPCOMUtils.defineLazyModuleGetters(lazy, {
+//   init: "resource://gre/modules/lox_wasm.jsm",
+//   open_invite: "resource://gre/modules/lox_wasm.jsm",
+//   handle_new_lox_credential: "resource://gre/modules/lox_wasm.jsm",
+//   set_panic_hook: "resource://gre/modules/lox_wasm.jsm",
+//   invitation_is_trusted: "resource://gre/modules/lox_wasm.jsm",
+//   issue_invite: "resource://gre/modules/lox_wasm.jsm",
+//   handle_issue_invite: "resource://gre/modules/lox_wasm.jsm",
+//   prepare_invite: "resource://gre/modules/lox_wasm.jsm",
+//   get_invites_remaining: "resource://gre/modules/lox_wasm.jsm",
+//   get_trust_level: "resource://gre/modules/lox_wasm.jsm",
+//   level_up: "resource://gre/modules/lox_wasm.jsm",
+//   handle_level_up: "resource://gre/modules/lox_wasm.jsm",
+//   trust_promotion: "resource://gre/modules/lox_wasm.jsm",
+//   handle_trust_promotion: "resource://gre/modules/lox_wasm.jsm",
+//   trust_migration: "resource://gre/modules/lox_wasm.jsm",
+//   handle_trust_migration: "resource://gre/modules/lox_wasm.jsm",
+//   get_next_unlock: "resource://gre/modules/lox_wasm.jsm",
+//   check_blockage: "resource://gre/modules/lox_wasm.jsm",
+//   handle_check_blockage: "resource://gre/modules/lox_wasm.jsm",
+//   blockage_migration: "resource://gre/modules/lox_wasm.jsm",
+//   handle_blockage_migration: "resource://gre/modules/lox_wasm.jsm",
+//   check_lox_pubkeys_update: "resource://gre/modules/lox_wasm.jsm",
+//   handle_update_cred: "resource://gre/modules/lox_wasm.jsm",
+// });
 
 export const LoxTopics = Object.freeze({
   // Whenever the activeLoxId value changes.
