@@ -67,9 +67,8 @@ Preferences.addAll([
     const value = Services.prefs.getBoolPref(alignMiddlePref)
       ? "middle"
       : "top";
-    document.querySelector(
-      `#${alignerId} input[value="${value}"]`
-    ).checked = true;
+    document.querySelector(`#${alignerId} input[value="${value}"]`).checked =
+      true;
   };
 
   var gLetterboxingPrefs = {
