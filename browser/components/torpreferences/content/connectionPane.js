@@ -1836,9 +1836,8 @@ const gBridgeSettings = {
     const telegramInstruction = document.getElementById(
       "tor-bridges-provider-instruction-telegram"
     );
-    telegramInstruction.querySelector(
-      "a"
-    ).href = `https://t.me/${telegramUserName}`;
+    telegramInstruction.querySelector("a").href =
+      `https://t.me/${telegramUserName}`;
     document.l10n.setAttributes(
       telegramInstruction,
       "tor-bridges-provider-telegram-instruction",
