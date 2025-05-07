@@ -238,7 +238,6 @@ class IconHandler {
    * Obtains the icon list from the remote settings collection.
    */
   async #buildIconMap() {
-    let iconList = [];
     try {
       this.#iconMap = new Map(
         await (
