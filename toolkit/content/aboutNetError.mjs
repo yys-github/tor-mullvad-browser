@@ -506,10 +506,8 @@ async function initPage() {
   tryAgain.hidden = false;
   const learnMoreLink = document.getElementById("learnMoreLink");
   learnMoreLink.setAttribute("href", baseURL + "connection-not-secure");
-  let { pageTitleId, bodyTitle, bodyTitleId, longDesc } = await initTitleAndBodyIds(
-    baseURL,
-    isTRROnlyFailure
-  );
+  let { pageTitleId, bodyTitle, bodyTitleId, longDesc } =
+    await initTitleAndBodyIds(baseURL, isTRROnlyFailure);
 
   // We can handle the offline page separately.
   if (noConnectivity) {
