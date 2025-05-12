@@ -132,6 +132,18 @@ locales = [
     l10n = "{l}browser/branding/official/**"
 
 [[paths]]
+    reference = "browser/branding/tb-alpha/locales/en-US/**"
+    l10n = "{l}browser/branding/tb-alpha/**"
+
+[[paths]]
+    reference = "browser/branding/tb-nightly/locales/en-US/**"
+    l10n = "{l}browser/branding/tb-nightly/**"
+
+[[paths]]
+    reference = "browser/branding/tb-release/locales/en-US/**"
+    l10n = "{l}browser/branding/tb-release/**"
+
+[[paths]]
     reference = "browser/extensions/formautofill/locales/en-US/**"
     l10n = "{l}browser/extensions/formautofill/**"
 
