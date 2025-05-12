@@ -168,4 +168,7 @@ if CONFIG["OS_TARGET"] == "Linux" and CONFIG["TARGET_CPU"] == "x86_64":
 
     DEFINES["_GNU_SOURCE"] = True
 
+if CONFIG["OS_TARGET"] == "WINNT" and CONFIG["CC_TYPE"] == "clang":
+    OS_LIBS += ["pthread"]
+
 Library("base_gn")
