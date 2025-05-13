@@ -95,7 +95,8 @@ class AccountSettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        SyncTelemetry.processOpenSyncSettingsMenuTelemetry()
+        // FIXME: Update A-S
+        // SyncTelemetry.processOpenSyncSettingsMenuTelemetry()
         SyncAccount.opened.record(NoExtras())
 
         accountManager = requireComponents.backgroundServices.accountManager
@@ -124,7 +125,8 @@ class AccountSettingsFragment : PreferenceFragmentCompat() {
                 }
             }
         }
-        SyncTelemetry.processSaveSyncSettingsTelemetry(enabledEngines, disabledEngines)
+        // FIXME: Update A-S
+        // SyncTelemetry.processSaveSyncSettingsTelemetry(enabledEngines, disabledEngines)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
