@@ -60,11 +60,11 @@ fun HomepageHeader(
             .padding(start = 16.dp, end = 16.dp, top = 18.dp, bottom = 32.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        WordmarkLogo()
+        // WordmarkLogo()
 
-        WordmarkText(wordmarkTextColor)
+        // WordmarkText(wordmarkTextColor)
 
-        Spacer(modifier = Modifier.weight(1f))
+        // Spacer(modifier = Modifier.weight(1f))
 
         PrivateBrowsingButton(
             color = privateBrowsingButtonColor,
