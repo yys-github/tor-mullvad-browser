@@ -675,9 +675,9 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
                 MessageNotificationWorker.setMessageNotificationWorker(applicationContext)
             }
 
-            if (components.core.sentFromFirefoxManager.shouldShowSnackbar) {
-                components.appStore.dispatch(ShareAction.ShareToWhatsApp)
-            }
+            // if (components.core.sentFromFirefoxManager.shouldShowSnackbar) {
+            //     components.appStore.dispatch(ShareAction.ShareToWhatsApp)
+            // }
         }
 
         onBackPressedCallback.isEnabled = true
