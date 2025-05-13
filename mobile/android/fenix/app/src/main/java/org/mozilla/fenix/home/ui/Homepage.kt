@@ -81,10 +81,10 @@ internal fun Homepage(
         modifier = Modifier
             .verticalScroll(rememberScrollState()),
     ) {
-        HomepageHeader(
-            browsingMode = state.browsingMode,
-            browsingModeChanged = interactor::onPrivateModeButtonClicked,
-        )
+        // HomepageHeader(
+        //     browsingMode = state.browsingMode,
+        //     browsingModeChanged = interactor::onPrivateModeButtonClicked,
+        // )
 
         with(state) {
             when (this) {
