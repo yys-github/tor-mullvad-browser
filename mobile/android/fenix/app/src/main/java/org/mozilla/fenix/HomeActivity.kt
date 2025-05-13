@@ -675,9 +675,9 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
                 MessageNotificationWorker.setMessageNotificationWorker(applicationContext)
             }
 
-            if (components.core.sentFromFirefoxManager.shouldShowSnackbar) {
-                components.appStore.dispatch(ShareAction.ShareToWhatsApp)
-            }
+            // if (components.core.sentFromFirefoxManager.shouldShowSnackbar) {
+            //     components.appStore.dispatch(ShareAction.ShareToWhatsApp)
+            // }
         }
 
         onBackPressedCallback.isEnabled = true
@@ -871,7 +871,13 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
             return existingDialog
         }
 
-        SimpleRedirectDialogFragment.newInstance().also {
+        // TODO: This is a temporary solution to keep RR rebases in motion.
+        // We need to figure out a proper fix here and then apply it as a fixup to
+        // "TB 34378: [android] Port external helper app prompting"
+        SimpleRedirectDialogFragment.newInstance(
+            dialogTitleString = "???",
+            dialogMessageString = "???"
+        ).also {
             dialog = it
             return it
         }
