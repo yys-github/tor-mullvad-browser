@@ -91,8 +91,10 @@ class SyncableLoginsStorage(
     val crypto by lazy { LoginsCrypto(context, securePrefs.value, this) }
 
     private val conn: Deferred<DatabaseLoginsStorage> = CoroutineScope(coroutineContext).async {
-        val managedKey = crypto.getOrGenerateKey()
-        val key = managedKey.key
+        // val managedKey = crypto.getOrGenerateKey()
+        // val key = managedKey.key
+        // I think this error goes away with a-s noop.
+        val key = "???"
         val keyManager = object : mozilla.appservices.logins.KeyManager {
             override fun getKey(): ByteArray {
                 return key.toByteArray()
@@ -104,10 +106,10 @@ class SyncableLoginsStorage(
         // If the path existed, but we generated a new key, then the key can't decrypt any existing
         // logins.  Run wipeLocal, to try to recover
         // (https://bugzilla.mozilla.org/show_bug.cgi?id=1970409)
-        if (managedKey.wasGenerated == KeyGenerationReason.New && pathExisted) {
+        /*if (managedKey.wasGenerated == KeyGenerationReason.New && pathExisted) {
             recordKeyRegenerationEvent(KeyRegenerationEventReason.Other)
             tryWithStorageOr(Unit) { wipeLocal() }
-        }
+        }*/
         storage
     }
 
