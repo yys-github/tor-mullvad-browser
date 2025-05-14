@@ -142,6 +142,7 @@ EXTRA_JS_MODULES += [
     "PingCentre.jsm",
     "ProcessHangMonitor.jsm",
     "Sanitizer.sys.mjs",
+    "SecurityLevelRestartNotification.sys.mjs",
     "SelectionChangedMenulist.jsm",
     "SiteDataManager.jsm",
     "SitePermissions.sys.mjs",
