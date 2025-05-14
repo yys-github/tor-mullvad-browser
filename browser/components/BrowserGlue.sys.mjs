@@ -82,6 +82,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
   ScreenshotsUtils: "resource:///modules/ScreenshotsUtils.sys.mjs",
   SearchSERPCategorization: "resource:///modules/SearchSERPTelemetry.sys.mjs",
   SearchSERPTelemetry: "resource:///modules/SearchSERPTelemetry.sys.mjs",
+  SecurityLevelRestartNotification:
+    "resource:///modules/SecurityLevelRestartNotification.sys.mjs",
   SessionStartup: "resource:///modules/sessionstore/SessionStartup.sys.mjs",
   SessionStore: "resource:///modules/sessionstore/SessionStore.sys.mjs",
   ShellService: "resource:///modules/ShellService.sys.mjs",
@@ -2029,6 +2031,8 @@ BrowserGlue.prototype = {
     lazy.DoHController.init();
 
     lazy.DragDropFilter.init();
+
+    lazy.SecurityLevelRestartNotification.ready();
 
     lazy.TorProviderBuilder.firstWindowLoaded();
 
