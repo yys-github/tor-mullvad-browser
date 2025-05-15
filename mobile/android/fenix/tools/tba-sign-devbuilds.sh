@@ -2,6 +2,8 @@
 
 cd "$(dirname $(realpath "$0"))/.."
 
+objdir=$1
+
 if [ -z "$APKSIGNER_ARGS" ]; then
 	if [ -z "$QA_KEY" ]; then
 		if [ -z "$TOR_BROWSER_BUILD" ]; then
@@ -62,7 +64,7 @@ sign () {
 	"$apksigner" sign --in "$aligned" --out "$out" $APKSIGNER_ARGS
 }
 
-for channel in app/build/outputs/apk/fenix/*; do
+for channel in "$objdir/gradle/build/mobile/android/fenix/app/outputs/apk/fenix/"*; do
 	for apk in $channel/*-unsigned.apk; do
 		sign "$apk"
 	done
