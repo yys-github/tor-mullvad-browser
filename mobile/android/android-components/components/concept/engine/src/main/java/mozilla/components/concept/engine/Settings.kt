@@ -302,6 +302,12 @@ abstract class Settings {
 
     /**
      * Setting to control the current security level
+     *
+     * 4 -> STANDARD
+     *
+     * 2 -> SAFER
+     *
+     * 1 -> SAFEST
      */
     open var torSecurityLevel: Int by UnsupportedSetting()
 

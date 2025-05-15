@@ -1469,9 +1469,7 @@ class GeckoEngine(
         override var torSecurityLevel: Int
             get() = runtime.settings.torSecurityLevel
             set(value) {
-                value.let {
-                    runtime.settings.torSecurityLevel = it
-                }
+                runtime.settings.torSecurityLevel = value
             }
 
         override var spoofEnglish: Boolean

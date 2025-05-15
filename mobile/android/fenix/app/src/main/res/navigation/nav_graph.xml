@@ -915,7 +915,7 @@
         android:label="@string/preferences_customize" />
     <fragment
         android:id="@+id/torSecurityLevelFragment"
-        android:name="org.mozilla.fenix.settings.TorSecurityLevelFragment"
+        android:name="org.mozilla.fenix.tor.TorSecurityLevelFragment"
         android:label="@string/preferences_tor_security_level_options" />
     <fragment
         android:id="@+id/privateBrowsingFragment"
