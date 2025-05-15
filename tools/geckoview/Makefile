@@ -41,11 +41,11 @@ env:
 	test -e android-env.sh || { echo "copy android-env-...-template.sh to android-env.sh and edit appropriatly"; exit 1; }
 
 install-release:
-	adb install "$(DEV_ROOT)/mobile/android/fenix/app/build/outputs/apk/fenix/release/app-fenix-$(ANDROID_ARCH)-release-signed.apk"
+	./install-fenix.sh $(DEV_ROOT) $(ANDROID_ARCH) release
 install-beta:
-	adb install "$(DEV_ROOT)/mobile/android/fenix/app/build/outputs/apk/fenix/beta/app-fenix-$(ANDROID_ARCH)-beta-signed.apk"
+	./install-fenix.sh $(DEV_ROOT) $(ANDROID_ARCH) beta
 install-nightly:
-	adb install "$(DEV_ROOT)/mobile/android/fenix/app/build/outputs/apk/fenix/nightly/app-fenix-$(ANDROID_ARCH)-nightly-signed.apk"
+	./install-fenix.sh $(DEV_ROOT) $(ANDROID_ARCH) nightly
 
 all: env geckoview fenix-nightly install-nightly
 all-release: env geckoview fenix-release install-release
