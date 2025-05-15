@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
@@ -73,7 +74,7 @@ import org.mozilla.fenix.perf.ProfilerViewModel
 import org.mozilla.fenix.settings.account.AccountUiView
 import org.mozilla.fenix.snackbar.FenixSnackbarDelegate
 import org.mozilla.fenix.snackbar.SnackbarBinding
-import org.mozilla.fenix.tor.SecurityLevel
+import org.mozilla.fenix.tor.TorSecurityLevel
 import org.mozilla.fenix.tor.QuickstartViewModel
 import org.mozilla.fenix.utils.Settings
 import kotlin.system.exitProcess
@@ -385,7 +386,7 @@ class SettingsFragment : PreferenceFragmentCompat(), UserInteractionHandler {
                 SettingsFragmentDirections.actionSettingsFragmentToPrivateBrowsingFragment()
             }
 
-            resources.getString(R.string.pref_key_tor_security_level_settings) -> {
+            resources.getString(R.string.pref_key_tor_security_level) -> {
                 SettingsFragmentDirections.actionSettingsFragmentToTorSecurityLevelFragment()
             }
 
@@ -865,14 +866,14 @@ class SettingsFragment : PreferenceFragmentCompat(), UserInteractionHandler {
     @VisibleForTesting
     internal fun setupSecurityLevelPreference() {
         val securityLevelPreference =
-            requirePreference<Preference>(R.string.pref_key_tor_security_level_settings)
-        securityLevelPreference.summary = context?.settings()?.torSecurityLevel()?.let {
-            when (it) {
-                SecurityLevel.STANDARD -> getString(R.string.tor_security_level_standard_option)
-                SecurityLevel.SAFER -> getString(R.string.tor_security_level_safer_option)
-                SecurityLevel.SAFEST -> getString(R.string.tor_security_level_safest_option)
+            requirePreference<Preference>(R.string.pref_key_tor_security_level)
+        securityLevelPreference.summary =
+            when (requireContext().settings().torSecurityLevel) {
+                TorSecurityLevel.STANDARD.level -> getString(R.string.tor_security_level_standard)
+                TorSecurityLevel.SAFER.level    -> getString(R.string.tor_security_level_safer)
+                TorSecurityLevel.SAFEST.level   -> getString(R.string.tor_security_level_safest)
+                else -> throw Exception("Unexpected TorSecurityLevel of ${requireContext().settings().torSecurityLevel}")
             }
-        }
     }
 
     @VisibleForTesting
