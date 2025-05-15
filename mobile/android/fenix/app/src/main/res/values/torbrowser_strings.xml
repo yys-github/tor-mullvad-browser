@@ -36,12 +36,19 @@
     <string name="preferences_tor_security_level_options">Security Level</string>
 
     <!-- Description of security levels -->
-    <string name="tor_security_level_standard_option">Standard</string>
+    <!-- %s will be replaced with the localised application name, such as "Tor Browser". -->
+    <string name="tor_security_level_warning">You will need to restart %s to apply any changes. This will close all tabs.</string>
+    <string name="tor_security_level_standard">Standard</string>
+    <string name="tor_security_level_standard_current_level">Standard (current level)</string>
     <string name="tor_security_level_standard_description">All Tor Browser and website features are enabled.</string>
-    <string name="tor_security_level_safer_option">Safer</string>
+    <string name="tor_security_level_safer">Safer</string>
+    <string name="tor_security_level_safer_current_level">Safer (current level)</string>
     <string name="tor_security_level_safer_description">Disable website features that are often dangerous, causing some sites to lose functionality.</string>
-    <string name="tor_security_level_safest_option">Safest</string>
+    <string name="tor_security_level_safest">Safest</string>
+    <string name="tor_security_level_safest_current_level">Safest (current level)</string>
     <string name="tor_security_level_safest_description">Only allow website features required for static sites and basic services. These changes affect images, media, and scripts.</string>
+    <string name="tor_security_level_save_and_restart_tor_browser">Save and restart</string>
+    <string name="tor_security_level_restarting">Restarting</string>
 
     <string name="btn_cancel">Cancel</string>
 
