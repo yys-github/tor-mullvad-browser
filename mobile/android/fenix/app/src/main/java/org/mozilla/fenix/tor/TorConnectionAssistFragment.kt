@@ -343,7 +343,7 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler {
             if (screen.torBootstrapButton2ShouldOpenSettings) {
                 openTorConnectionSettings()
             } else if (screen.torBootstrapButton2ShouldRestartApp) {
-                restartApplication()
+                (requireActivity() as HomeActivity).restartApplication()
             } else {
                 torConnectionAssistViewModel.cancelTorBootstrap()
             }
@@ -402,15 +402,6 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler {
 
     private fun openTorConnectionSettings() {
         openSettings(requireContext().getString(R.string.pref_key_connection))
-    }
-
-    private fun restartApplication() {
-        startActivity(
-            Intent(requireContext(), HomeActivity::class.java).addFlags(
-                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
-            ),
-        )
-        Runtime.getRuntime().exit(0)
     }
 
     override fun onBackPressed(): Boolean {

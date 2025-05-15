@@ -1591,6 +1591,15 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
         private const val PWA_RECENTLY_USED_THRESHOLD = DateUtils.DAY_IN_MILLIS * 30L
     }
 
+    fun restartApplication() {
+        startActivity(
+            Intent(applicationContext, HomeActivity::class.java).addFlags(
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK,
+            ),
+        )
+        shutDown()
+    }
+
     fun shutDown() : Nothing {
         finishAndRemoveTask()
         exitProcess(0)
