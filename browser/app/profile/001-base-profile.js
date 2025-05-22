@@ -482,6 +482,11 @@ pref("network.http.http2.default-hpack-buffer", 65536, locked);
 pref("network.http.http2.websockets", true, locked);
 pref("network.http.http2.enable-hpack-dump", false, locked);
 
+// Block 0.0.0.0
+// https://bugzilla.mozilla.org/show_bug.cgi?id=1889130
+// tor-browser#43811
+pref("network.socket.ip_addr_any.disabled", true);
+
 // tor-browser#23044: Make sure we don't have any GIO supported protocols
 // (defense in depth measure)
 pref("network.gio.supported-protocols", "");
