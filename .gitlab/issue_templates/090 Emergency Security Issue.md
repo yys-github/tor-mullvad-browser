@@ -82,6 +82,8 @@ Sometimes fixes have side-effects: users lose their data, roadmaps need to be ad
     - if there are considerations or asks outside the Applications Team
   - [ ] **(Optional)** **gazebook**
     - if there are consequences to the organisation or partners beyond a browser update, then a communication plan may be needed
+  - [ ] **(Optional)** **ruihildt**
+    - if there are consequences to Mullvad and/or Mullvad Browser
 
 Godspeed! :pray:
 
@@ -100,3 +102,4 @@ Godspeed! :pray:
 /label ~"Apps::Product::MullvadBrowser"
 /label ~"Apps::Type::Bug"
 /label ~"Apps::Priority::Blocker"
+/label ~"Emergency"
