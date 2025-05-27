@@ -28,5 +28,6 @@ from .runner import (
     TestManifest,
     TestResult,
     TestResultCollection,
+    TorBrowserMixin,
     WindowManagerMixin,
 )
