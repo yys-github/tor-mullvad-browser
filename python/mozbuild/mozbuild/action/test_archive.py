@@ -236,6 +236,12 @@ ARCHIVE_FILES = {
             "base": "_tests/testing",
             "pattern": "devtools_compat/**",
         },
+        {
+            "source": buildconfig.topsrcdir,
+            "base": "",
+            "pattern": "testing/tor",
+            "dest": "tor",
+        },
     ],
     "cppunittest": [
         {"source": STAGE, "base": "", "pattern": "cppunittest/**"},
