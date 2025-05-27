@@ -230,6 +230,12 @@ ARCHIVE_FILES = {
             "pattern": "**",
             "dest": "certs",
         },
+        {
+            "source": buildconfig.topsrcdir,
+            "base": "",
+            "pattern": "testing/tor",
+            "dest": "tor",
+        },
     ],
     "cppunittest": [
         {"source": STAGE, "base": "", "pattern": "cppunittest/**"},
