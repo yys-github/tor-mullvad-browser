@@ -3,3 +3,4 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 from .window_manager import WindowManagerMixin
+from .tor_browser import TorBrowserMixin
