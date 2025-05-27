@@ -1,0 +1,6 @@
+[DEFAULT]
+tags = "tor"
+
+["test_circuit_isolation.py"]
+
+["test_network_check.py"]
