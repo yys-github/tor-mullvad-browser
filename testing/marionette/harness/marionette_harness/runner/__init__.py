@@ -13,4 +13,7 @@ from .base import (
     TestResult,
     TestResultCollection,
 )
-from .mixins import WindowManagerMixin
+from .mixins import (
+    TorBrowserMixin,
+    WindowManagerMixin,
+)
