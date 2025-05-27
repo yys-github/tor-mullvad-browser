@@ -352,11 +352,16 @@ class MochiRemote(MochitestDesktop):
         runFailures=False,
         crashAsPass=False,
         currentManifest=None,
+        torBootstrap=False,
     ):
         """
         Run the app, log the duration it took to execute, return the status code.
         Kill the app if it outputs nothing for |timeout| seconds.
         """
+        # torBootstrap is accepted for signature compatibility with the
+        # shared doTests() call site, but not implemented here: unlike
+        # MochitestDesktop.runApp, this launches the app via adb/activity
+        # rather than a Marionette session, so there's nothing to wait on.
 
         if timeout == -1:
             timeout = self.DEFAULT_TIMEOUT
