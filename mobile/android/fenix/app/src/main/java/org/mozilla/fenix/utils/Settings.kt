@@ -178,7 +178,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     var showTopSitesFeature by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_top_sites),
         featureFlag = true,
-        default = { true },
+        default = { false },
     )
 
     var numberOfAppLaunches by intPreference(
