@@ -7,7 +7,7 @@ import os
 import sys
 import tempfile
 from abc import ABCMeta, abstractmethod, abstractproperty
-from argparse import SUPPRESS, ArgumentParser
+from argparse import SUPPRESS, ArgumentParser, BooleanOptionalAction
 from itertools import chain
 from shutil import which
 from urllib.parse import urlparse
@@ -161,6 +161,20 @@ class MochitestArguments(ArgumentContainer):
                 "metavar": "{{{}}}".format(", ".join(CANONICAL_FLAVORS)),
                 "default": None,
                 "help": "Only run tests of this flavor.",
+            },
+        ],
+        [
+            ["--tor-bootstrap"],
+            {
+                "action": BooleanOptionalAction,
+                "dest": "torBootstrap",
+                "default": True,
+                "help": "Wait for the Tor connection to finish bootstrapping "
+                "before loading the first test. The prefs/env needed for "
+                "mochitest content to load at all in Tor Browser (disabling "
+                "HTTPS-Only, TorDomainIsolator's non-Tor-proxy exemption, "
+                "and the mock TorProvider) are applied regardless of this "
+                "flag. Pass --no-tor-bootstrap to skip the wait.",
             },
         ],
         [
