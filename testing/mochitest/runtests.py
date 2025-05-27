@@ -62,6 +62,7 @@ from mozserve import DoHServer, Http2Server, Http3Server, MozHttp2Server
 try:
     from marionette_driver.addons import Addons
     from marionette_driver.marionette import Marionette
+    from marionette_driver.wait import Wait
 except ImportError as e:  # noqa
     error = e
 
@@ -2136,6 +2137,11 @@ toolbar#nav-bar {
         # via the commandline at your own risk.
         browserEnv["XPCOM_DEBUG_BREAK"] = "stack"
 
+        # Default to the mock Tor provider so mochitest runs
+        # don't depend on a real tor daemon/network.
+        # --setenv TOR_PROVIDER=... below can still override this.
+        browserEnv.setdefault("TOR_PROVIDER", "mock")
+
         # interpolate environment passed with options
         try:
             browserEnv.update(
@@ -2274,6 +2280,44 @@ toolbar#nav-bar {
         with self.marionette.using_context("chrome"):
             return self.marionette.execute_script(
                 script, script_args=(self.start_script_kwargs,)
+            )
+
+    def waitForTorBootstrap(self, timeout_ms=60 * 1000):
+        # Mirrors TorBrowserMixin.bootstrap() in
+        # testing/marionette/harness/marionette_harness/runner/mixins/tor_browser.py,
+        # duplicated here because that mixin is written against
+        # MarionetteTestCase, not the mochitest harness.
+        with self.marionette.using_context("chrome"):
+            did_bootstrap = self.marionette.execute_async_script(
+                """
+                const { TorConnect, TorConnectStage, TorConnectTopics } = ChromeUtils.importESModule(
+                    "moz-src:///toolkit/modules/TorConnect.sys.mjs"
+                );
+                const [resolve] = arguments;
+
+                if (TorConnect.stage.name === TorConnectStage.Bootstrapped) {
+                    resolve(false);
+                    return;
+                }
+
+                Services.obs.addObserver(function observer() {
+                    Services.obs.removeObserver(observer, TorConnectTopics.BootstrapComplete);
+                    resolve(true);
+                }, TorConnectTopics.BootstrapComplete);
+                TorConnect.beginBootstrapping();
+                """,
+                script_timeout=timeout_ms,
+            )
+
+        # Bootstrapping completes before TorConnect's redirect from
+        # about:torconnect to about:blank does. If we call execute_start_script
+        # (which navigates the same window) while that redirect is still in
+        # flight, the two navigations race and the mochitest-load event can be
+        # lost. So wait for the redirect to actually land first.
+        if did_bootstrap:
+            Wait(self.marionette).until(
+                lambda mn: mn.get_url() == "about:blank",
+                message="Still not in about:blank after Tor bootstrap",
             )
 
     def fillCertificateDB(self, options):
@@ -2621,6 +2665,13 @@ toolbar#nav-bar {
         # after the run, so there's nothing to leak.
         prefs["security.nocertdb"] = False
 
+        # Tell TorDomainIsolator the proxy it sees isn't really Tor, so it
+        # doesn't try to rewrite mochitest's own local PAC-provided proxy (see
+        # mozprofile.permissions.Permissions.pac_prefs, applied via
+        # self.profile.set_proxy() below) into a broken SOCKS proxy. This is
+        # needed for any mochitest content loading, not just --tor-bootstrap.
+        prefs["extensions.torbutton.use_nontor_proxy"] = True
+
         # See if we should use fake media devices.
         if options.useTestMediaDevices:
             prefs["media.audio_loopback_dev"] = self.mediaDevices["audio"]["name"]
@@ -2840,6 +2891,7 @@ toolbar#nav-bar {
         runFailures=False,
         crashAsPass=False,
         currentManifest=None,
+        torBootstrap=False,
     ):
         """
         Run the app, log the duration it took to execute, return the status code.
@@ -3052,6 +3104,9 @@ toolbar#nav-bar {
                         temp_addon_path = create_zip(addon_path)
                         temp_file_paths.append(temp_addon_path)
                         addons.install(temp_addon_path)
+
+                if torBootstrap:
+                    self.waitForTorBootstrap()
 
                 self.execute_start_script()
 
@@ -4127,6 +4182,7 @@ toolbar#nav-bar {
                     runFailures=options.runFailures,
                     crashAsPass=options.crashAsPass,
                     currentManifest=manifestToFilter,
+                    torBootstrap=options.torBootstrap,
                 )
                 self.log.info(
                     f"runtests.py | Running {scheme} tests: end. status: {ret}"
