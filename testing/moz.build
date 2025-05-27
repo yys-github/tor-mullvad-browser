@@ -17,3 +17,5 @@ DIRS += ["mozbase", "mozharness"]
 PERFTESTS_MANIFESTS += [
     "performance/perftest.toml",
 ]
+
+MARIONETTE_MANIFESTS += ["tor/marionette.toml"]
