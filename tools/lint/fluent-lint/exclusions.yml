@@ -85,9 +85,6 @@ ID01:
         - unknownSocketType-title
         - unsafeContentType-title
 
-        # toolkit/locales/en-US/toolkit/global/base-browser.ftl
-        - basebrowser-about-dialog-version
-
         # Mullvad browser identifiers we created before we applied the linters.
         - mullvad-about-readMore
         - mullvad-about-telemetryLink
