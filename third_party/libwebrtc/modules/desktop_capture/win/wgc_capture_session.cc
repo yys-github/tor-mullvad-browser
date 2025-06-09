@@ -370,7 +370,7 @@ HRESULT WgcCaptureSession::ProcessFrame() {
     return hr;
   }
 
-  ComPtr<ABI::Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>
+  ComPtr<Windows::Graphics::DirectX::Direct3D11::IDirect3DDxgiInterfaceAccess>
       direct3DDxgiInterfaceAccess;
   hr = d3d_surface->QueryInterface(IID_PPV_ARGS(&direct3DDxgiInterfaceAccess));
   if (FAILED(hr)) {
