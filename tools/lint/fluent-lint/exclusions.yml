@@ -84,9 +84,6 @@ ID01:
         - unknownProtocolFound-title
         - unknownSocketType-title
         - unsafeContentType-title
-
-        # toolkit/locales/en-US/toolkit/global/base-browser.ftl
-        - basebrowser-about-dialog-version
     files:
         # policies-descriptions.ftl
         # These IDs are generated programmatically from policy names.
