@@ -580,7 +580,7 @@ export class DomainFrontRequestBuilder {
       const inStream = Cc[
         "@mozilla.org/io/string-input-stream;1"
       ].createInstance(Ci.nsIStringInputStream);
-      inStream.setData(body, body.length);
+      inStream.setByteStringData(body);
       const upChannel = ch.QueryInterface(Ci.nsIUploadChannel);
       upChannel.setUploadStream(inStream, contentType, body.length);
       ch.requestMethod = method;
