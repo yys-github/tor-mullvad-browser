@@ -33,7 +33,7 @@ const val MESSAGING_FEATURE_ID = "messaging"
 /**
  * Provides messages from [messagingFeature] and combine with the metadata store on [metadataStorage].
  */
-open class NimbusMessagingStorage(
+class NimbusMessagingStorage(
     private val context: Context,
     private val metadataStorage: MessageMetadataStorage,
     private val onMalformedMessage: (String) -> Unit = {

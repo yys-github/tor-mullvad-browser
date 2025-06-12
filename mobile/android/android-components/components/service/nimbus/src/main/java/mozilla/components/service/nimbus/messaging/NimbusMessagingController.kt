@@ -96,32 +96,32 @@ open class NimbusMessagingController(
      * creates a URI string for the message action.
      */
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-    open fun processMessageActionToUri(message: Message): Uri {
+    fun processMessageActionToUri(message: Message): Uri {
         val (uuid, action) = messagingStorage.generateUuidAndFormatMessage(message)
         sendClickedMessageTelemetry(message.id, uuid)
 
         return convertActionIntoDeepLinkSchemeUri(action)
     }
 
-    open fun sendDismissedMessageTelemetry(messageId: String) {
+    private fun sendDismissedMessageTelemetry(messageId: String) {
         GleanMessaging.messageDismissed.record(GleanMessaging.MessageDismissedExtra(messageId))
     }
 
-    open fun sendShownMessageTelemetry(messageId: String) {
+    private fun sendShownMessageTelemetry(messageId: String) {
         GleanMessaging.messageShown.record(GleanMessaging.MessageShownExtra(messageId))
     }
 
-    open fun sendExpiredMessageTelemetry(messageId: String) {
+    private fun sendExpiredMessageTelemetry(messageId: String) {
         GleanMessaging.messageExpired.record(GleanMessaging.MessageExpiredExtra(messageId))
     }
 
-    open fun sendClickedMessageTelemetry(messageId: String, uuid: String?) {
+    private fun sendClickedMessageTelemetry(messageId: String, uuid: String?) {
         GleanMessaging.messageClicked.record(
             GleanMessaging.MessageClickedExtra(messageKey = messageId, actionUuid = uuid),
         )
     }
 
-    open fun sendMicrosurveyCompletedTelemetry(messageId: String, answer: String) {
+    private fun sendMicrosurveyCompletedTelemetry(messageId: String, answer: String) {
         Microsurvey.submitButtonTapped.record(
             Microsurvey.SubmitButtonTappedExtra(
                 surveyId = messageId,
@@ -130,7 +130,7 @@ open class NimbusMessagingController(
         )
     }
 
-    open fun convertActionIntoDeepLinkSchemeUri(action: String): Uri =
+    private fun convertActionIntoDeepLinkSchemeUri(action: String): Uri =
         if (action.startsWith("://")) {
             "$deepLinkScheme$action".toUri()
         } else {
