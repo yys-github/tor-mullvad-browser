@@ -206,14 +206,11 @@ class SettingsFragment : PreferenceFragmentCompat() {
     override fun onResume() {
         super.onResume()
 
-        // IN TOR BROWSER: We don't talk about Nimbus!
-        // ~Use nimbus to set the title, and a trivial addition~
-        // val nimbusValidation = FxNimbus.features.nimbusValidation.value()
+        // Use nimbus to set the title, and a trivial addition
+        val nimbusValidation = FxNimbus.features.nimbusValidation.value()
 
-        // val title = nimbusValidation.settingsTitle
-        // val suffix = nimbusValidation.settingsPunctuation
-        val title = getString(R.string.settings_title)
-        val suffix = ""
+        val title = nimbusValidation.settingsTitle
+        val suffix = nimbusValidation.settingsPunctuation
 
         showToolbar("$title$suffix")
 
@@ -716,7 +713,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
 
     @VisibleForTesting
     internal fun setupCookieBannerPreference() {
-        // FxNimbus.features.cookieBanners.recordExposure()
+        FxNimbus.features.cookieBanners.recordExposure()
         if (context?.settings()?.shouldShowCookieBannerUI == false) return
         with(requirePreference<SwitchPreference>(R.string.pref_key_cookie_banner_private_mode)) {
             isVisible = context.settings().shouldShowCookieBannerUI
