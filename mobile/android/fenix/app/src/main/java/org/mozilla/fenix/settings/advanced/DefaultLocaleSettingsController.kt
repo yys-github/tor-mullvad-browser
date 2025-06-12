@@ -40,7 +40,7 @@ class DefaultLocaleSettingsController(
         LocaleManager.updateBaseConfiguration(activity, locale)
 
         // Invalidate cached values to use the new locale
-        // FxNimbus.features.nimbusValidation.withCachedValue(null)
+        FxNimbus.features.nimbusValidation.withCachedValue(null)
         activity.recreate()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             activity.overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, 0, 0)
@@ -60,7 +60,7 @@ class DefaultLocaleSettingsController(
         LocaleManager.updateBaseConfiguration(activity, localeSettingsStore.state.localeList[0])
 
         // Invalidate cached values to use the default locale
-        // FxNimbus.features.nimbusValidation.withCachedValue(null)
+        FxNimbus.features.nimbusValidation.withCachedValue(null)
         activity.recreate()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
             activity.overrideActivityTransition(Activity.OVERRIDE_TRANSITION_OPEN, 0, 0)
