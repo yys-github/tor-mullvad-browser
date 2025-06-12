@@ -110,6 +110,7 @@ class TorSecurityLevelFragment : Fragment() {
         }
 
         binding.cancelButton.setOnClickListener {
+            @Suppress("DEPRECATION")
             requireActivity().onBackPressed()
         }
     }
