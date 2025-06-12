@@ -27,8 +27,8 @@
 
 #### Target Channels
 
-- [ ] **Alpha**: esr128-14.5
-- [ ] **Stable**: esr128-14.0
+- [ ] **Alpha**: esr140-15.0
+- [ ] **Stable**: esr128-14.5
 - [ ] **Legacy**: esr115-13.5
 
 ### Backporting
