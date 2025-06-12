@@ -11,6 +11,7 @@ Please select the appropriate issue template from the **Description** drop-down.
 *NOTE*: the following issue types are intended for internal use
 
 - 💣 **Test** - develop a test or update testing infrastructure
+- 👣 **Fingerprinting** - open a fingerprinting issue
 - ✨ **Feature** - implement new features
 - ⬅️ **Backport** - cherry-pick change to other release channels
 - ⤵️ **Rebase - Alpha** - rebase alpha to latest Firefox ESR version
