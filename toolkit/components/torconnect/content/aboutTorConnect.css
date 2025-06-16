@@ -303,7 +303,7 @@ body.android {
   box-sizing: border-box;
   margin: 0;
   padding: 0 24px !important;
-  color: var(--onion-color);
+  color: var(--android-dark-text-primary);
   background: linear-gradient(194deg, #692e9d -0.93%, #393270 48.91%);
   font: menu;
   font-size: 14px;
