@@ -646,13 +646,13 @@ features:
     defaults:
       - channel: developer
         value:
-          enabled: true
+          enabled: false
       - channel: nightly
         value:
-          enabled: true
+          enabled: false
       - channel: beta
         value:
-          enabled: true
+          enabled: false
 
   search-suggestions-on-homepage:
     description: Enables search suggestions on homepage.
