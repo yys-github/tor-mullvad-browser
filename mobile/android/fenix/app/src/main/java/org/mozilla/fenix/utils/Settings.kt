@@ -189,7 +189,7 @@ class Settings(
      */
     var showBookmarksHomeFeature by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_customization_bookmarks),
-        default = { homescreenSections[HomeScreenSection.BOOKMARKS] == true },
+        default = { true },
     )
 
     /**
@@ -197,7 +197,7 @@ class Settings(
      */
     var showRecentTabsFeature by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_recent_tabs),
-        default = { homescreenSections[HomeScreenSection.JUMP_BACK_IN] == true },
+        default = { true },
     )
 
     /**
@@ -207,7 +207,7 @@ class Settings(
     var showPocketRecommendationsFeature by lazyFeatureFlagBooleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_pocket_homescreen_recommendations),
         featureFlag = ContentRecommendationsFeatureHelper.isContentRecommendationsFeatureEnabled(appContext),
-        defaultValue = { homescreenSections[HomeScreenSection.POCKET] == true },
+        defaultValue = { false },
     )
 
     /**
@@ -252,7 +252,7 @@ class Settings(
     @Suppress("DEPRECATION")
     val showPocketSponsoredStories by lazyFeatureFlagBooleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_pocket_sponsored_stories),
-        defaultValue = { homescreenSections[HomeScreenSection.POCKET_SPONSORED_STORIES] == true },
+        defaultValue = { false },
         featureFlag = ContentRecommendationsFeatureHelper.isPocketSponsoredStoriesFeatureEnabled(appContext),
     )
 
@@ -261,7 +261,7 @@ class Settings(
      */
     var historyMetadataUIFeature by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_history_metadata_feature),
-        default = { homescreenSections[HomeScreenSection.RECENT_EXPLORATIONS] == true },
+        default = { true },
     )
 
     /**
@@ -295,7 +295,7 @@ class Settings(
      */
     var showTopSitesFeature by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_top_sites),
-        default = { homescreenSections[HomeScreenSection.TOP_SITES] == true },
+        default = { false },
     )
 
     /**
@@ -2219,19 +2219,7 @@ class Settings(
         featureEnabled: Boolean = onboardingFeatureEnabled,
         forceOnboardingForBenchmark: Boolean = false,
     ): Boolean {
-        if (isBenchmarkBuild && !forceOnboardingForBenchmark) {
-            return false
-        }
-
-        val shouldShowByDefaultConditions = featureEnabled && !hasUserBeenOnboarded
-
-        val shouldShow = shouldShowByDefaultConditions || enablePersistentOnboarding
-
-        if (shouldShow) {
-            FxNimbus.features.junoOnboarding.recordExposure()
-        }
-
-        return shouldShow
+        return false
     }
 
     /**
