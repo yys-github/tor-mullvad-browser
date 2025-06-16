@@ -123,8 +123,8 @@ pref("extensions.torlauncher.torrc_path", "");
 pref("extensions.torlauncher.tordatadir_path", "");
 
 // BridgeDB-related preferences (used for Moat).
-pref("extensions.torlauncher.bridgedb_front", "www.phpmyadmin.net");
-pref("extensions.torlauncher.bridgedb_reflector", "https://1723079976.rsc.cdn77.org");
+pref("extensions.torlauncher.bridgedb_front", "vuejs.org");
+pref("extensions.torlauncher.bridgedb_reflector", "https://bespoke-strudel-c243cc.netlify.app");
 pref("extensions.torlauncher.moat_service", "https://bridges.torproject.org/moat");
 
 // Log levels
