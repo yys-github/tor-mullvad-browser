@@ -154,7 +154,7 @@ button.spoof-button-disabled {
 }
 
 .tor-focusable-heading:focus-visible {
-  outline-offset: var(--in-content-focus-outline-offset);
+  outline-offset: var(--focus-outline-offset);
 }
 
 .bridge-status-badge {
@@ -303,7 +303,7 @@ button.spoof-button-disabled {
   width: 16px;
   height: 16px;
   -moz-context-properties: fill;
-  fill: var(--in-content-icon-color);
+  fill: var(--icon-color);
 }
 
 .tor-bridges-options-button {
@@ -390,8 +390,8 @@ button.spoof-button-disabled {
 
 #tor-bridges-grid-display .tor-bridges-grid-cell:focus-visible {
   /* #tor-bridges-grid-display has focus management for its cells. */
-  outline: var(--in-content-focus-outline);
-  outline-offset: var(--in-content-focus-outline-offset);
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
 }
 
 .tor-bridges-grid-cell {
@@ -551,7 +551,7 @@ button.spoof-button-disabled {
   justify-self: center;
   /* fill is the progress, stroke is the empty ring. */
   -moz-context-properties: fill, stroke;
-  fill: var(--in-content-success-icon-color);
+  fill: var(--icon-color-success);
   stroke: var(--in-content-border-color);
   content: url("chrome://browser/content/torpreferences/lox-progress-ring.svg");
 }
@@ -568,7 +568,7 @@ button.spoof-button-disabled {
   align-self: center;
   justify-self: center;
   -moz-context-properties: fill;
-  fill: var(--in-content-icon-color);
+  fill: var(--icon-color);
 }
 
 #tor-bridges-lox-details .tor-bridges-lox-image-inner {
@@ -617,7 +617,7 @@ button.spoof-button-disabled {
   display: grid;
   /* fill is the icon color, stroke is the border color. */
   -moz-context-properties: fill, stroke;
-  fill: var(--in-content-icon-color);
+  fill: var(--icon-color);
 }
 
 .tor-bridges-lox-list-item-bridge::before {
@@ -633,7 +633,7 @@ button.spoof-button-disabled {
 }
 
 #tor-bridges-lox-unlock-alert .tor-bridges-lox-list-item::before {
-  stroke: var(--in-content-success-icon-color);
+  stroke: var(--icon-color-success);
 }
 
 #tor-bridges-lox-remaining-invites {
@@ -683,7 +683,7 @@ button.spoof-button-disabled {
   width: 16px;
   height: 16px;
   -moz-context-properties: fill;
-  fill: var(--in-content-icon-color);
+  fill: var(--icon-color);
 }
 
 #tor-bridges-provider-icon-telegram {
@@ -925,7 +925,7 @@ hbox#torPreferences-requestBridge-incorrectCaptchaHbox {
 image#torPreferences-requestBridge-errorIcon {
   list-style-image: url("chrome://global/skin/icons/warning.svg");
   -moz-context-properties: fill;
-  fill: var(--in-content-warning-icon-color);
+  fill: var(--icon-color-warning);
 }
 
 groupbox#torPreferences-bridges-group textarea {
@@ -1030,8 +1030,8 @@ groupbox#torPreferences-bridges-group textarea {
 }
 
 #user-provide-bridge-grid-display:focus-visible {
-  outline: var(--in-content-focus-outline);
-  outline-offset: var(--in-content-focus-outline-offset);
+  outline: var(--focus-outline);
+  outline-offset: var(--focus-outline-offset);
 }
 
 /* Connection settings dialog */
