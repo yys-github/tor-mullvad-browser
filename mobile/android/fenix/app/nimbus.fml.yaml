@@ -649,13 +649,13 @@ features:
     defaults:
       - channel: developer
         value:
-          enabled: true
+          enabled: false
       - channel: nightly
         value:
-          enabled: true
+          enabled: false
       - channel: beta
         value:
-          enabled: true
+          enabled: false
 
   trending-searches:
     description: Enables trending searches.
