@@ -13663,7 +13663,7 @@
 
 - name: security.csp.truncate_blocked_uri_for_frame_navigations
   type: bool
-  value: true
+  value: false
   mirror: always
 
 # If true, all toplevel data: URI navigations will be blocked.
