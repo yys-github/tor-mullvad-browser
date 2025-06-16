@@ -185,7 +185,7 @@ class Settings(
      */
     var showBookmarksHomeFeature by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_customization_bookmarks),
-        default = { homescreenSections[HomeScreenSection.BOOKMARKS] == true },
+        default = { true },
         featureFlag = true,
     )
 
@@ -195,7 +195,7 @@ class Settings(
     var showRecentTabsFeature by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_recent_tabs),
         featureFlag = true,
-        default = { homescreenSections[HomeScreenSection.JUMP_BACK_IN] == true },
+        default = { true },
     )
 
     /**
@@ -204,7 +204,7 @@ class Settings(
     var showPocketRecommendationsFeature by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_pocket_homescreen_recommendations),
         featureFlag = ContentRecommendationsFeatureHelper.isContentRecommendationsFeatureEnabled(appContext),
-        default = { homescreenSections[HomeScreenSection.POCKET] == true },
+        default = { false },
     )
 
     /**
@@ -242,7 +242,7 @@ class Settings(
      */
     val showPocketSponsoredStories by lazyFeatureFlagPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_pocket_sponsored_stories),
-        default = { homescreenSections[HomeScreenSection.POCKET_SPONSORED_STORIES] == true },
+        default = { false },
         featureFlag = ContentRecommendationsFeatureHelper.isPocketSponsoredStoriesFeatureEnabled(appContext),
     )
 
@@ -251,7 +251,7 @@ class Settings(
      */
     var historyMetadataUIFeature by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_history_metadata_feature),
-        default = { homescreenSections[HomeScreenSection.RECENT_EXPLORATIONS] == true },
+        default = { true },
         featureFlag = true,
     )
 
@@ -288,7 +288,7 @@ class Settings(
     var showTopSitesFeature by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_top_sites),
         featureFlag = true,
-        default = { homescreenSections[HomeScreenSection.TOP_SITES] == true },
+        default = { false },
     )
 
     private val homescreenSections: Map<HomeScreenSection, Boolean>
@@ -1005,7 +1005,7 @@ class Settings(
     var whatsappLinkSharingEnabled by lazyFeatureFlagPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_link_sharing),
         featureFlag = true,
-        default = { FxNimbus.features.sentFromFirefox.value().enabled },
+        default = { false },
     )
 
     var linkSharingSettingsSnackbarShown by booleanPreference(
@@ -1084,13 +1084,13 @@ class Settings(
         get() = false // cookieBannersSection[CookieBannersSection.FEATURE_UI] == 1
 
     val shouldEnableCookieBannerDetectOnly: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_DETECT_ONLY] == 1
+        get() = false
 
     val shouldEnableCookieBannerGlobalRules: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_GLOBAL_RULES] == 1
+        get() = false
 
     val shouldEnableCookieBannerGlobalRulesSubFrame: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_GLOBAL_RULES_SUB_FRAMES] == 1
+        get() = false
 
     /**
      * Declared as a function for performance purposes. This could be declared as a variable using
@@ -1148,8 +1148,7 @@ class Settings(
      * Indicates if the re-engagement notification feature is enabled
      */
     val reEngagementNotificationType: Int
-        get() =
-            FxNimbus.features.reEngagementNotification.value().type
+        get() = 0
 
     val shouldUseAutoBatteryTheme by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_auto_battery_theme),
@@ -2161,8 +2160,7 @@ class Settings(
         isLauncherIntent: Boolean,
     ): Boolean {
         return if (featureEnabled && !hasUserBeenOnboarded && isLauncherIntent) {
-            FxNimbus.features.junoOnboarding.recordExposure()
-            true
+            false
         } else {
             false
         }
