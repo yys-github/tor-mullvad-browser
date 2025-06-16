@@ -753,7 +753,7 @@ features:
         description: >
           Whether or not to enable tab strip.
         type: Boolean
-        default: true
+        default: false
       allow-on-all-devices:
         description: >
           Experimental: When true, bypasses device restrictions and enables use on all devices.
