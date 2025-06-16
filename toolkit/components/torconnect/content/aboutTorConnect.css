@@ -4,11 +4,6 @@
 @import url("chrome://global/skin/tor-colors.css");
 @import url("chrome://global/skin/onion-pattern.css");
 
-:root {
-  --onion-opacity: 1;
-  --onion-color: var(--card-outline-color);
-}
-
 html {
   width: 100%;
   height: 100%;
@@ -45,12 +40,12 @@ body:not(.loaded) {
 }
 
 .breadcrumb-item:hover {
-  color: var(--in-content-accent-color);
+  color: var(--color-accent-primary);
   background-color: var(--in-content-button-background-hover);
 }
 
 .breadcrumb-item:active {
-  color: var(--in-content-accent-color-active);
+  color: var(--color-accent-primary-active);
   background-color: var(--in-content-button-background-active);
 }
 
@@ -73,7 +68,7 @@ body:not(.loaded) {
 }
 
 .breadcrumb-item.active {
-  color: var(--in-content-accent-color);
+  color: var(--color-accent-primary);
 }
 
 .breadcrumb-item.disabled,
@@ -270,9 +265,9 @@ body.aboutTorConnect {
 body.aboutTorConnect .title {
   background-image: url("chrome://global/content/torconnect/tor-connect.svg");
   -moz-context-properties: stroke, fill, fill-opacity;
-  fill-opacity: var(--onion-opacity);
-  fill: var(--onion-color);
-  stroke: var(--onion-color);
+  fill-opacity: 1;
+  fill: var(--icon-color);
+  stroke: var(--icon-color);
   /* Make sure there is no padding between the title and #breadcrumbs. */
   padding-block-start: 0;
 }
@@ -287,7 +282,7 @@ body.aboutTorConnect .title:is(.assist, .final) {
 
 body.aboutTorConnect .title.location {
   background-image: url("chrome://global/content/torconnect/connection-location.svg");
-  stroke: var(--in-content-warning-icon-color);
+  stroke: var(--icon-color-warning);
 }
 
 /* Android-specific CSS, to be removed when we use only the native UI. */
