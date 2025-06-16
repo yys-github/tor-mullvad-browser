@@ -732,7 +732,7 @@ features:
         description: >
           Whether or not to enable tab strip.
         type: Boolean
-        default: true
+        default: false
       allow-on-all-devices:
         description: >
           Experimental: When true, bypasses device restrictions and enables use on all devices.
@@ -1189,7 +1189,7 @@ features:
       enabled:
         description: If true, Mozilla Ads Client support for Top Sites is enabled.
         type: Boolean
-        default: true
+        default: false
 
   private-mode-and-stories-entry-point:
     description: Feature to enable the Private Mode and Stories Entry Point Experiment.
