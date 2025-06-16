@@ -161,7 +161,7 @@ aside {
   box-sizing: border-box;
 
   border-inline-end: 1px solid var(--in-content-border-color);
-  background-color: var(--in-content-box-background);
+  background-color: var(--background-color-box);
 }
 
 #ruleset-heading {
@@ -225,7 +225,7 @@ aside {
 }
 
 #ruleset-list .selected {
-  border-inline-start-color: var(--in-content-accent-color);
+  border-inline-start-color: var(--color-accent-primary);
 }
 
 #ruleset-list .selected.disabled {
@@ -254,7 +254,7 @@ aside {
 #ruleset-jwk-value {
   padding: 8px;
   border-radius: 2px;
-  background-color: var(--in-content-box-background);
+  background-color: var(--background-color-box);
   font-size: 85%;
   line-break: anywhere;
   /* ASCII-only text, so can set line-height. */
