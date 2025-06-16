@@ -180,14 +180,14 @@ class Settings(
     var showBookmarksHomeFeature by
         booleanPreference(
             appContext.getPreferenceKey(R.string.pref_key_customization_bookmarks),
-            default = { homescreenSections[HomeScreenSection.BOOKMARKS] == true },
+            default = { true },
         )
 
     /** Indicates if the recent tabs functionality should be visible. */
     var showRecentTabsFeature by
         booleanPreference(
             appContext.getPreferenceKey(R.string.pref_key_recent_tabs),
-            default = { homescreenSections[HomeScreenSection.JUMP_BACK_IN] == true },
+            default = { true },
         )
 
     /** Indicates if the stories homescreen section should be shown. */
@@ -196,7 +196,7 @@ class Settings(
         lazyFeatureFlagBooleanPreference(
             appContext.getPreferenceKey(R.string.pref_key_pocket_homescreen_recommendations),
             featureFlag = ContentRecommendationsFeatureHelper.isContentRecommendationsFeatureEnabled(appContext),
-            defaultValue = { homescreenSections[HomeScreenSection.POCKET] == true },
+            defaultValue = { false },
         )
 
     /** Indicates what simple toolbar shortcut key is currently selected. */
@@ -238,7 +238,7 @@ class Settings(
     val showPocketSponsoredStories by
         lazyFeatureFlagBooleanPreference(
             key = appContext.getPreferenceKey(R.string.pref_key_pocket_sponsored_stories),
-            defaultValue = { homescreenSections[HomeScreenSection.POCKET_SPONSORED_STORIES] == true },
+            defaultValue = { false },
             featureFlag = ContentRecommendationsFeatureHelper.isPocketSponsoredStoriesFeatureEnabled(appContext),
         )
 
@@ -246,7 +246,7 @@ class Settings(
     var historyMetadataUIFeature by
         booleanPreference(
             appContext.getPreferenceKey(R.string.pref_key_history_metadata_feature),
-            default = { homescreenSections[HomeScreenSection.RECENT_EXPLORATIONS] == true },
+            default = { true },
         )
 
     /** Indicates whether or not the "Synced Tabs" section should be shown on the home screen. */
@@ -302,7 +302,7 @@ class Settings(
     var showTopSitesFeature by
         booleanPreference(
             appContext.getPreferenceKey(R.string.pref_key_show_top_sites),
-            default = { homescreenSections[HomeScreenSection.TOP_SITES] == true },
+            default = { false },
         )
 
     /** Indicates whether or not the privacy report should be shown on the home screen. */
@@ -2301,19 +2301,7 @@ class Settings(
         featureEnabled: Boolean = onboardingFeatureEnabled,
         forceOnboardingForBenchmark: Boolean = false,
     ): Boolean {
-        if (isBenchmarkBuild && !forceOnboardingForBenchmark) {
-            return false
-        }
-
-        val shouldShowByDefaultConditions = featureEnabled && !hasUserBeenOnboarded
-
-        val shouldShow = shouldShowByDefaultConditions || enablePersistentOnboarding
-
-        if (shouldShow) {
-            FxNimbus.features.junoOnboarding.recordExposure()
-        }
-
-        return shouldShow
+        return false
     }
 
     /**
