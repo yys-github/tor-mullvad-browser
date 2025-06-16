@@ -179,7 +179,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     var showTopSitesFeature by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_top_sites),
         featureFlag = true,
-        default = { homescreenSections[HomeScreenSection.TOP_SITES] == true },
+        default = { false },
     )
 
     var numberOfAppLaunches by intPreference(
@@ -319,7 +319,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     var showWallpaperOnboarding by lazyFeatureFlagPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_wallpapers_onboarding),
         featureFlag = true,
-        default = { mr2022Sections[Mr2022Section.WALLPAPERS_SELECTION_TOOL] == true },
+        default = { true },
     )
 
     var openLinksInAPrivateTab by booleanPreference(
@@ -677,7 +677,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     var whatsappLinkSharingEnabled by lazyFeatureFlagPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_link_sharing),
         featureFlag = true,
-        default = { FxNimbus.features.sentFromFirefox.value().enabled },
+        default = { false },
     )
 
     var linkSharingSettingsSnackbarShown by booleanPreference(
@@ -756,25 +756,25 @@ class Settings(private val appContext: Context) : PreferencesHolder {
         get() = false // cookieBannersSection[CookieBannersSection.FEATURE_UI] == 1
 
     val shouldEnableCookieBannerDetectOnly: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_DETECT_ONLY] == 1
+        get() = false
 
     val shouldEnableCookieBannerGlobalRules: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_GLOBAL_RULES] == 1
+        get() = false
 
     val shouldEnableCookieBannerGlobalRulesSubFrame: Boolean
-        get() = cookieBannersSection[CookieBannersSection.FEATURE_SETTING_GLOBAL_RULES_SUB_FRAMES] == 1
+        get() = false
 
     val shouldEnableQueryParameterStripping: Boolean
-        get() = queryParameterStrippingSection[QUERY_PARAMETER_STRIPPING] == "1"
+        get() = true
 
     val shouldEnableQueryParameterStrippingPrivateBrowsing: Boolean
-        get() = queryParameterStrippingSection[QUERY_PARAMETER_STRIPPING_PMB] == "1"
+        get() = true
 
     val queryParameterStrippingAllowList: String
-        get() = queryParameterStrippingSection[QUERY_PARAMETER_STRIPPING_ALLOW_LIST].orEmpty()
+        get() = ""
 
     val queryParameterStrippingStripList: String
-        get() = queryParameterStrippingSection[QUERY_PARAMETER_STRIPPING_STRIP_LIST].orEmpty()
+        get() = ""
 
     /**
      * Declared as a function for performance purposes. This could be declared as a variable using
@@ -832,8 +832,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      * Indicates if the re-engagement notification feature is enabled
      */
     val reEngagementNotificationType: Int
-        get() =
-            FxNimbus.features.reEngagementNotification.value().type
+        get() = 0
 
     val shouldUseAutoBatteryTheme by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_auto_battery_theme),
@@ -1658,7 +1657,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
 
     var historyMetadataUIFeature by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_history_metadata_feature),
-        default = { homescreenSections[HomeScreenSection.RECENT_EXPLORATIONS] == true },
+        default = { true },
         featureFlag = true,
     )
 
@@ -1668,7 +1667,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     var showSyncCFR by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_should_show_sync_cfr),
         featureFlag = true,
-        default = { mr2022Sections[Mr2022Section.SYNC_CFR] == true },
+        default = { false },
     )
 
     /**
@@ -1677,7 +1676,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     var showHomeOnboardingDialog by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_should_show_home_onboarding_dialog),
         featureFlag = true,
-        default = { mr2022Sections[Mr2022Section.HOME_ONBOARDING_DIALOG_EXISTING_USERS] == true },
+        default = { true },
     )
 
     /**
@@ -1686,7 +1685,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     var showRecentTabsFeature by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_recent_tabs),
         featureFlag = true,
-        default = { homescreenSections[HomeScreenSection.JUMP_BACK_IN] == true },
+        default = { true },
     )
 
     /**
@@ -1694,7 +1693,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      */
     var showBookmarksHomeFeature by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_customization_bookmarks),
-        default = { homescreenSections[HomeScreenSection.BOOKMARKS] == true },
+        default = { true },
         featureFlag = true,
     )
 
@@ -1731,7 +1730,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     var showPocketRecommendationsFeature by lazyFeatureFlagPreference(
         appContext.getPreferenceKey(R.string.pref_key_pocket_homescreen_recommendations),
         featureFlag = ContentRecommendationsFeatureHelper.isPocketRecommendationsFeatureEnabled(appContext),
-        default = { homescreenSections[HomeScreenSection.POCKET] == true },
+        default = { false },
     )
 
     /**
@@ -1739,7 +1738,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      */
     val showPocketSponsoredStories by lazyFeatureFlagPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_pocket_sponsored_stories),
-        default = { homescreenSections[HomeScreenSection.POCKET_SPONSORED_STORIES] == true },
+        default = { false },
         featureFlag = ContentRecommendationsFeatureHelper.isPocketSponsoredStoriesFeatureEnabled(appContext),
     )
 
@@ -1846,8 +1845,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
         isLauncherIntent: Boolean,
     ): Boolean {
         return if (featureEnabled && !hasUserBeenOnboarded && isLauncherIntent) {
-            FxNimbus.features.junoOnboarding.recordExposure()
-            true
+            false
         } else {
             false
         }
