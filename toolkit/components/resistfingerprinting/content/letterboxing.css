@@ -19,6 +19,19 @@
   --letterboxing-border-color: var(--letterboxing-bgcolor);
   --letterboxing-decorator-visibility: visible;
 
+  /* Re-styling for Tor Browser. */
+  /* stylelint-disable declaration-block-no-duplicate-custom-properties */
+  --letterboxing-bgcolor: light-dark(#F0F0F4, #52525E);
+  --letterboxing-gradient-color1: light-dark(
+    rgba(0, 219, 222, 0.02),
+    rgba(0, 219, 222, 0.06)
+  );
+  --letterboxing-gradient-color2: light-dark(
+    rgba(252, 0, 255, 0.02),
+    rgba(252, 0, 255, 0.06)
+  );
+  /* stylelint-enable declaration-block-no-duplicate-custom-properties */
+
   .browserContainer {
     /*
      * From Firefox 115 on, .browserContainer layout is flex / column,
