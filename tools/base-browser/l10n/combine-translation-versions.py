@@ -7,6 +7,12 @@ import subprocess
 
 from combine import combine_files
 
+# Whether we are running within the gitlab CI, rather than on a developer
+# machine. This toggles some optimisations that work well in the temporary
+# gitlab environment but would cause problems if run locally for testing
+# purposes.
+IN_GITLAB_CI_ENV = os.environ.get("GITLAB_CI", "") == "true"
+
 arg_parser = argparse.ArgumentParser(
     description="Combine a translation file across two different versions"
 )
@@ -86,7 +92,7 @@ class BrowserBranch:
         """
         version_match = re.match(
             r"(?P<prefix>[a-z]+\-browser)\-"
-            r"(?P<firefox>[0-9]+(?:\.[0-9]+){1,2})esr\-"
+            r"(?P<firefox>[0-9]+(?:\.[0-9]+){1,2})(?:esr|[ab][0-9]+)?\-"
             r"(?P<browser>[0-9]+\.[05])\-"
             r"(?P<number>[0-9]+)$",
             branch_name,
@@ -170,11 +176,15 @@ class BrowserBranch:
         """
         if self._file_paths is None:
             if not self._is_head:
-                # Minimal fetch of non-HEAD branch to get the file paths.
-                # Individual file blobs will be downloaded as needed.
-                git_run(
-                    ["fetch", "--depth=1", "--filter=blob:none", "origin", self.name]
-                )
+                fetch_args = ()
+                if IN_GITLAB_CI_ENV:
+                    # Minimal fetch of non-HEAD branch to get the file paths.
+                    # Individual file blobs will be downloaded as needed.
+                    # Only do this when running in the gitlab CI since it will
+                    # alter the user's .git/config and will effect future
+                    # plain fetches.
+                    fetch_args = ("--depth=1", "--filter=blob:none")
+                git_run(["fetch", *fetch_args, "origin", self.name])
             self._file_paths = git_lines(
                 ["ls-tree", "-r", "--format=%(path)", self._ref]
             )
@@ -213,16 +223,19 @@ def get_stable_branch(
     # tor-browser-build.
     tag_glob = f"{compare_version.prefix}-*-build1"
 
-    # To speed up, only fetch the tags without blobs.
-    git_run(
-        ["fetch", "--depth=1", "--filter=object:type=tag", "origin", "tag", tag_glob]
-    )
+    fetch_args = ()
+    if IN_GITLAB_CI_ENV:
+        # To speed up, only fetch the tags without blobs.
+        # Only do this when running in the gitlab CI since it will alter the
+        # user's .git/config and will effect future plain fetches.
+        fetch_args = ("--depth=1", "--filter=object:type=tag")
+    git_run(["fetch", *fetch_args, "origin", "tag", tag_glob])
     stable_branches = []
     legacy_branches = []
     stable_annotation_regex = re.compile(r"\bstable\b")
     legacy_annotation_regex = re.compile(r"\blegacy\b")
     tag_pattern = re.compile(
-        rf"^{re.escape(compare_version.prefix)}-[^-]+esr-[^-]+-[^-]+-build1$"
+        rf"^{re.escape(compare_version.prefix)}-[^-]+-[^-]+-[^-]+-build1$"
     )
 
     for build_tag, annotation in (
@@ -259,13 +272,7 @@ def get_stable_branch(
                 continue
             stable_branches.append(branch)
         elif is_legacy:
-            # Legacy can be two release versions behind.
-            # We also allow for being just one version behind.
-            if not (
-                compare_version.release_below(branch, 2)
-                or compare_version.release_below(branch, 1)
-            ):
-                continue
+            # Legacy can be arbitrary release versions behind.
             legacy_branches.append(branch)
 
     if not stable_branches:
