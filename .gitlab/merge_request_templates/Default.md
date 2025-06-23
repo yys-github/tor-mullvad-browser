@@ -62,7 +62,7 @@
 #### Request Reviewer
 
 - [ ] Request review from an applications developer depending on modified system:
-  - **NOTE**: if the MR modifies multiple areas, please `/cc` all the relevant reviewers (since Gitlab only allows 1 reviewer)
+  - **NOTE**: if the MR modifies multiple areas, please `/request_review` all the relevant reviewers
   - **accessibility** : henry
   - **android** : clairehurst, dan
   - **build system** : boklm
