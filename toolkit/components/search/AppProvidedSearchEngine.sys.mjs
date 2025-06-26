@@ -134,29 +134,7 @@ class IconHandler {
    *   source object or null of there is no icon with the supplied width.
    */
   async createIconURL(iconRecord) {
-    let iconData;
-    try {
-      iconData = await this.#iconCollection.attachments.get(iconRecord);
-    } catch (ex) {
-      console.error(ex);
-    }
-    if (!iconData) {
-      console.warn("Unable to find the attachment for", iconRecord.id);
-      // Queue an update in case we haven't downloaded it yet.
-      this.#pendingUpdatesMap.set(iconRecord.id, iconRecord);
-      this.#maybeQueueIdle();
-      return null;
-    }
-
-    if (iconData.record.last_modified != iconRecord.last_modified) {
-      // The icon we have stored is out of date, queue an update so that we'll
-      // download the new icon.
-      this.#pendingUpdatesMap.set(iconRecord.id, iconRecord);
-      this.#maybeQueueIdle();
-    }
-    return URL.createObjectURL(
-      new Blob([iconData.buffer], { type: iconRecord.attachment.mimetype })
-    );
+    return iconRecord.url;
   }
 
   QueryInterface = ChromeUtils.generateQI(["nsIObserver"]);
@@ -242,11 +220,13 @@ class IconHandler {
   async #buildIconMap() {
     try {
       this.#iconMap = new Map(
-        await (
-          await fetch(
-            "chrome://global/content/search/torBrowserSearchEngineIcons.json"
-          )
-        ).json()
+        Object.entries(
+          await (
+            await fetch(
+              "chrome://global/content/search/torBrowserSearchEngineIcons.json"
+            )
+          ).json()
+        )
       );
     } catch (ex) {
       console.error(ex);
