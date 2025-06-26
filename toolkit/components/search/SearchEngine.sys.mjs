@@ -14,7 +14,7 @@ const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
   SearchSettings: "moz-src:///toolkit/components/search/SearchSettings.sys.mjs",
   SearchUtils: "moz-src:///toolkit/components/search/SearchUtils.sys.mjs",
-  SecurityLevelPrefs: "moz-src:///toolkit/modules/SecurityLevel.sys.mjs",
+  SecurityLevelPrefs: "resource://gre/modules/SecurityLevel.sys.mjs",
   OpenSearchEngine:
     "moz-src:///toolkit/components/search/OpenSearchEngine.sys.mjs",
 });
