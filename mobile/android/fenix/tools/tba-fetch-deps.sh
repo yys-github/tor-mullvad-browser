@@ -91,8 +91,7 @@ else
 	rm "$app_services"
 fi
 mkdir -p "$GRADLE_MAVEN_REPOSITORIES/org/mozilla"
-if [ -f "$app_services" ]; then
-	tar -C /tmp -xf "$app_services"
+if [ -d /tmp/application-services ]; then
 	cp -r /tmp/application-services/maven/org/mozilla/* "$GRADLE_MAVEN_REPOSITORIES/org/mozilla"
 
 	# Over on tor-browser-build all build tools are built for x86_64-linux.
@@ -103,7 +102,7 @@ if [ -f "$app_services" ]; then
 	# support reproducibility and are not necessary for development builds.
 	if [ "$os" != "unknown-linux" ] || [ "$arch" != "x86_64" ]; then
 		echo "Downloading nimbus-fml binary for $arch-$os"
-		app_services_version=$(echo "$app_services" | grep -oE 'application-services-[0-9]+\.[0-9]+\.[0-9]+' | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+		app_services_version=$(echo "$app_services" | grep -oE 'application-services-[0-9]+\.[0-9]+(\.[0-9]{1,2})?' | grep -oE '[0-9]+\.[0-9]+(\.[0-9]{1,2})?')
 
 		curl -L -o /tmp/nimbus-fml.zip "https://archive.mozilla.org/pub/app-services/releases/$app_services_version/nimbus-fml.zip"
 		unzip -d /tmp/nimbus-fml /tmp/nimbus-fml.zip
