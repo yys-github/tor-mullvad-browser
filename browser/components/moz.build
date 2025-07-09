@@ -45,7 +45,7 @@ DIRS += [
     "messagepreview",
     "migration",
     "newidentity",
-    "newtab",
+    # Exclude newtab component. tor-browser#43886.
     "onionservices",
     "originattributes",
     "pagedata",
