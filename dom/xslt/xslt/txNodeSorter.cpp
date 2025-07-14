@@ -14,10 +14,13 @@
 
 #include "mozilla/CheckedInt.h"
 #include "mozilla/UniquePtrExtensions.h"
+#include "nsRFPService.h"
 
 using mozilla::CheckedUint32;
 using mozilla::MakeUnique;
 using mozilla::MakeUniqueFallible;
+using mozilla::nsRFPService;
+using mozilla::RFPTarget;
 using mozilla::UniquePtr;
 
 /*
@@ -75,6 +78,10 @@ nsresult txNodeSorter::addSortElement(Expr* aSelectExpr, Expr* aLangExpr,
     if (aLangExpr) {
       rv = aLangExpr->evaluateToString(aContext, lang);
       NS_ENSURE_SUCCESS(rv, rv);
+    } else if (aContext->getContextNode()
+                   .OwnerDoc()
+                   ->ShouldResistFingerprinting(RFPTarget::JSLocale)) {
+      CopyUTF8toUTF16(nsRFPService::GetSpoofedJSLocale(), lang);
     }
 
     // Case-order
