@@ -3,7 +3,7 @@
 # Whenever there are changes to this file,
 # they are autopublished on merge to the tpo/applications/tor-browser repository.
 #
-# The image is updated roughly once a monce when the tor-browser repository is rebased.
+# The image is updated roughly once a month when the tor-browser repository is rebased.
 
 FROM containers.torproject.org/tpo/tpa/base-images/python:bookworm
 
@@ -32,20 +32,14 @@ RUN apt-get update && apt-get install -y \
         x11-utils \
         xvfb \
         xz-utils \
-        wget && \
-    apt-get clean && \
+        wget
+
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x -o nodesource_setup.sh && \
+    bash nodesource_setup.sh && \
+    apt-get install -y nodejs
+
+RUN apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-WORKDIR /app
-
-COPY taskcluster/docker/recipes/install-node.sh ./install-node.sh
-RUN chmod +x install-node.sh
-RUN ./install-node.sh
-RUN rm ./install-node.sh
-
-COPY taskcluster/kinds/fetch/toolchains.yml ./toolchains.yml
-RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain $(grep -oP 'rust-\K[0-9.]+(?=:)' ./toolchains.yml)
-RUN $HOME/.cargo/bin/cargo install cbindgen --version $(grep -oP 'cbindgen-\K[0-9.]+(?=:)' ./toolchains.yml)
-RUN rm ./toolchains.yml
-
-CMD ["/bin/bash"]
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+    $HOME/.cargo/bin/cargo install cbindgen
