@@ -229,9 +229,6 @@ var gBrowserInit = {
     // Init the SecurityLevelButton
     SecurityLevelButton.init();
 
-    // Init the NewIdentityButton
-    NewIdentityButton.init();
-
     gTorConnectUrlbarButton.init();
     gTorConnectTitlebarStatus.init();
 
@@ -1064,8 +1061,6 @@ var gBrowserInit = {
     DownloadsButton.uninit();
 
     SecurityLevelButton.uninit();
-
-    NewIdentityButton.uninit();
 
     gTorConnectUrlbarButton.uninit();
     gTorConnectTitlebarStatus.uninit();

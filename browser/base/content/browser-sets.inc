@@ -113,6 +113,7 @@
     <command id="zoomWindow" data-l10n-id="window-zoom-command" />
 #endif
 
+    <command id="cmd_newIdentity" />
     <command id ="cmd_newCircuit" />
   </commandset>
 #include ../../components/places/content/placesCommands.inc.xhtml
