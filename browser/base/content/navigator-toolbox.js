@@ -51,8 +51,7 @@ document.addEventListener(
         #BMB_bookmarksPopup,
         #BMB_viewBookmarksSidebar,
         #BMB_searchBookmarks,
-        #BMB_viewBookmarksToolbar,
-        #new-circuit-button`);
+        #BMB_viewBookmarksToolbar`);
       if (!element) {
         return;
       }
@@ -91,10 +90,6 @@ document.addEventListener(
 
         case "BMB_viewBookmarksToolbar":
           BookmarkingUI.toggleBookmarksToolbar("bookmarks-widget");
-          break;
-
-        case "new-circuit-button":
-          TorDomainIsolator.newCircuitForBrowser(gBrowser.selectedBrowser);
           break;
 
         default:
