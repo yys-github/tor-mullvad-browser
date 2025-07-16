@@ -767,14 +767,11 @@ class TorSettingsImpl {
   }
 
   /**
-   * Save our settings to prefs.
+   * Save our bridge settings.
    */
-  #saveToPrefs() {
-    lazy.logger.debug("saveToPrefs()");
+  #saveBridgeSettings() {
+    lazy.logger.debug("Saving bridge settings");
 
-    this.#checkIfInitialized();
-
-    /* Bridges */
     Services.prefs.setBoolPref(
       TorSettingsPrefs.bridges.enabled,
       this.#settings.bridges.enabled
@@ -812,7 +809,14 @@ class TorSettingsImpl {
         );
       });
     }
-    /* Proxy */
+  }
+
+  /**
+   * Save our proxy settings.
+   */
+  #saveProxySettings() {
+    lazy.logger.debug("Saving proxy settings");
+
     Services.prefs.setBoolPref(
       TorSettingsPrefs.proxy.enabled,
       this.#settings.proxy.enabled
@@ -845,7 +849,14 @@ class TorSettingsImpl {
       Services.prefs.clearUserPref(TorSettingsPrefs.proxy.username);
       Services.prefs.clearUserPref(TorSettingsPrefs.proxy.password);
     }
-    /* Firewall */
+  }
+
+  /**
+   * Save our firewall settings.
+   */
+  #saveFirewallSettings() {
+    lazy.logger.debug("Saving firewall settings");
+
     Services.prefs.setBoolPref(
       TorSettingsPrefs.firewall.enabled,
       this.#settings.firewall.enabled
@@ -1403,7 +1414,32 @@ class TorSettingsImpl {
 
     // No errors so far, so save and commit.
     this.#settings = completeSettings;
-    this.#saveToPrefs();
+    // NOTE: We want to avoid overwriting saved preference values unless the
+    // user actually makes a change in their settings.
+    // In particular, if we fail to load a setting at startup due to a bug, the
+    // #settings object for that group will point to the #defaultSettings value
+    // instead.  We do not want to write these #defaultSettings to the user's
+    // settings unless the user actually makes a change in one of the groups.
+    // E.g. we do not want a change in the proxy settings to overwrite the
+    // saved bridge settings. Hence, we only save the groups that have changes.
+    // See tor-browser#43766.
+    // NOTE: We could go more fine-grained and only save the preference values
+    // that actually change. E.g. only save the bridges.enabled pref when the
+    // user switches the toggle, and leave the bridges.bridge_strings as they
+    // are. However, at the time of implementation there is no known benefit to
+    // doing this, since the #defaultSettings will not allow for any changes
+    // that don't require changing the group entirely. E.g. to change
+    // bridges.enabled when starting with the #defaultSettings.bridges,
+    // bridges.bridge_strings must necessarily be set.
+    if (apply.bridges) {
+      this.#saveBridgeSettings();
+    }
+    if (apply.proxy) {
+      this.#saveProxySettings();
+    }
+    if (apply.firewall) {
+      this.#saveFirewallSettings();
+    }
 
     if (changes.length) {
       Services.obs.notifyObservers(
