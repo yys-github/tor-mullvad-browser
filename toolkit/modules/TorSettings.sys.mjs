@@ -612,8 +612,7 @@ class TorSettingsImpl {
           this.#settings.bridges.source === TorBridgeSource.Lox
         ) {
           // Re-trigger the call to lazy.Lox.getBridges.
-          // FIXME: This can compete with TorConnect to reach TorProvider.
-          // tor-browser#42316
+          // FIXME: This can cancel a bootstrap. tor-browser#43991.
           this.changeSettings({
             bridges: {
               source: TorBridgeSource.Lox,
