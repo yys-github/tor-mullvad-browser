@@ -41,11 +41,13 @@ env:
 	test -e android-env.sh || { echo "copy android-env-...-template.sh to android-env.sh and edit appropriatly"; exit 1; }
 
 install-release:
-	./install-fenix.sh $(DEV_ROOT) $(ANDROID_ARCH) release
+	./install-fenix.sh $(DEV_ROOT) $(ARCH) $(ANDROID_ARCH) release
 install-beta:
-	./install-fenix.sh $(DEV_ROOT) $(ANDROID_ARCH) beta
+	./install-fenix.sh $(DEV_ROOT) $(ARCH) $(ANDROID_ARCH) beta
 install-nightly:
-	./install-fenix.sh $(DEV_ROOT) $(ANDROID_ARCH) nightly
+	./install-fenix.sh $(DEV_ROOT) $(ARCH) $(ANDROID_ARCH) nightly
+install-debug:
+	./install-fenix.sh $(DEV_ROOT) $(ARCH) $(ANDROID_ARCH) debug
 
 all: env geckoview fenix-nightly install-nightly
 all-release: env geckoview fenix-release install-release
@@ -56,4 +58,3 @@ jslint:
 
 clean:
 	rm -rf $(BUILD_OUTPUT)
-
