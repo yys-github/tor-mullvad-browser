@@ -6,7 +6,7 @@ BINARIES_DIR="$1"
 # download the current downloads.json
 wget https://aus1.torproject.org/torbrowser/update_3/alpha/downloads.json
 # get url for latest alpha linux package
-TOR_BROWSER_VERSION=$(grep -Eo "\"version\":\"[0-9.a]+\"" downloads.json | grep -Eo "[0-9.a]+")
+TOR_BROWSER_VERSION=$(grep -Eo "\"version\"\s*:\s*\"[0-9.a]+\"" downloads.json | grep -Eo "[0-9.a]+")
 if [ "$(uname)" = "Darwin" ]; then
     TOR_BROWSER_PACKAGE="tor-browser-macos-${TOR_BROWSER_VERSION}.dmg"
   else
