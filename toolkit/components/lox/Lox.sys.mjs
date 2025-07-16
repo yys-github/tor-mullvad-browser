@@ -1,5 +1,4 @@
 /* eslint-disable mozilla/valid-lazy */
-import { AppConstants } from "resource://gre/modules/AppConstants.sys.mjs";
 import {
   clearInterval,
   setInterval,
@@ -121,7 +120,7 @@ class LoxImpl {
    *
    * @type {boolean}
    */
-  #enabled = AppConstants.MOZ_UPDATE_CHANNEL !== "release";
+  #enabled = false;
 
   get enabled() {
     return this.#enabled;
