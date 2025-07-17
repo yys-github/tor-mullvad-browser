@@ -162,7 +162,7 @@ body:not(.show-tor-check) #tor-check {
 #onionize-toggle {
   flex: 0 0 auto;
   font-weight: 500;
-  justify-content: center;
+  align-content: center;
   padding-block: var(--form-outer-padding);
   padding-inline-end: var(--form-outer-padding);
   border-start-end-radius: var(--form-radius);
