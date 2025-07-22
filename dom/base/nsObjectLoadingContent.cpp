@@ -791,8 +791,8 @@ void nsObjectLoadingContent::MaybeRewriteYoutubeEmbed(nsIURI* aURI,
   path.ReplaceSubstring("/v/"_ns, "/embed/"_ns);
   NS_ConvertUTF8toUTF16 utf16URI(prePath);
   AppendUTF8toUTF16(path, utf16URI);
-  rv = nsContentUtils::NewURIWithDocumentCharset(aRewrittenURI, utf16URI, doc,
-                                                 aBaseURI);
+  rv = nsContentUtils::NewURIWithDocumentCharset(
+      aRewrittenURI, utf16URI, thisContent->OwnerDoc(), aBaseURI);
   if (NS_FAILED(rv)) {
     return;
   }
