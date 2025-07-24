@@ -112,11 +112,6 @@ class SearchEngineFragment : PreferenceFragmentCompat() {
                 isChecked = context.settings().shouldShowBookmarkSuggestions
             }
 
-        val showShortcutsSuggestions =
-            requirePreference<SwitchPreference>(R.string.pref_key_show_shortcuts_suggestions).apply {
-                isChecked = context.settings().shouldShowShortcutSuggestions
-            }
-
         // val showSyncedTabsSuggestions =
         //     requirePreference<SwitchPreference>(R.string.pref_key_search_synced_tabs).apply {
         //         isChecked = context.settings().shouldShowSyncedTabsSuggestions
@@ -148,7 +143,6 @@ class SearchEngineFragment : PreferenceFragmentCompat() {
         searchSuggestionsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
         showHistorySuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
         showBookmarkSuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
-        showShortcutsSuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
         // showSyncedTabsSuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
         showClipboardSuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
         searchSuggestionsInPrivatePreference.onPreferenceChangeListener = SharedPreferenceUpdater()
