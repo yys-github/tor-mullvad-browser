@@ -1524,6 +1524,10 @@ class ModalPrompter {
       args.isExtra1Secondary = true;
     }
 
+    if (flags & Ci.nsIPrompt.BUTTON_DEFAULT_IS_DESTRUCTIVE) {
+      args.isDefaultDestructive = true;
+    }
+
     if (flags & Ci.nsIPrompt.SHOW_SPINNER) {
       args.headerIconCSSValue = "url('chrome://global/skin/icons/loading.svg')";
     }
