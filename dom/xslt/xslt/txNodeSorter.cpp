@@ -76,6 +76,9 @@ nsresult txNodeSorter::addSortElement(Expr* aSelectExpr, Expr* aLangExpr,
       rv = aLangExpr->evaluateToString(aContext, lang);
       NS_ENSURE_SUCCESS(rv, rv);
     }
+    if (lang.IsEmpty() && nsContentUtils::SpoofLocaleEnglish()) {
+      lang.AssignLiteral("en-US");
+    }
 
     // Case-order
     bool upperFirst = false;
