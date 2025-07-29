@@ -19,19 +19,9 @@ button.spoof-button-disabled {
 .tor-loading-icon {
   width: 16px;
   height: 16px;
-  content: image-set(
-    url("chrome://global/skin/icons/tor-light-loading.png"),
-    url("chrome://global/skin/icons/tor-light-loading@2x.png") 2x
-  );
-}
-
-@media (prefers-color-scheme: dark) {
-  .tor-loading-icon {
-    content: image-set(
-      url("chrome://global/skin/icons/tor-dark-loading.png"),
-      url("chrome://global/skin/icons/tor-dark-loading@2x.png") 2x
-    );
-  }
+  -moz-context-properties: fill;
+  fill: var(--tor-accent-color);
+  content: url("chrome://global/skin/icons/loading.svg");
 }
 
 .tor-toggle {
