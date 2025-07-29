@@ -1,5 +1,3 @@
-/* eslint-env mozilla/browser-window */
-
 /**
  * A "Connect" button shown in the urlbar when not connected to tor and in tabs
  * other than about:torconnect.
