@@ -13,7 +13,7 @@
   --letterboxing-border-radius: 8px;
   --letterboxing-border-top-radius: 0;
   --letterboxing-vertical-alignment: start;
-  --letterboxing-shadow-color: rgba(12, 12, 13, 0.10);
+  --letterboxing-shadow-color: rgba(12, 12, 13, 0.1);
   --letterboxing-gradient-color1: var(--letterboxing-bgcolor);
   --letterboxing-gradient-color2: color-mix(in srgb, var(--chrome-content-separator-color) 50%, var(--letterboxing-bgcolor));
   --letterboxing-border-color: var(--letterboxing-bgcolor);
@@ -61,17 +61,17 @@
   background: linear-gradient(283deg, var(--letterboxing-gradient-color1) 0%, var(--letterboxing-gradient-color2) 100%), var(--letterboxing-bgcolor);
 }
 
-:root:not([inDOMFullscreen]) .letterboxing .browserContainer:not(.responsive-mode)
-  > .browserStack:not(.exclude-letterboxing)
-  > .browserDecorator {
+:root:not([inDOMFullscreen]) .letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) > .browserDecorator {
   display: initial;
   visibility: var(--letterboxing-decorator-visibility);
   border-radius: var(--letterboxing-border-radius);
   border-top-left-radius: var(--letterboxing-border-top-radius);
   border-top-right-radius: var(--letterboxing-border-top-radius);
-  box-shadow: var(--letterboxing-border-color) 0 0 .1px inset, var(--letterboxing-border-color) 0 0 .1px;
-  border: .1px solid var(--letterboxing-border-color);
-  outline: .1px solid var(--letterboxing-bgcolor);
+  box-shadow:
+    var(--letterboxing-border-color) 0 0 0.1px inset,
+    var(--letterboxing-border-color) 0 0 0.1px;
+  border: 0.1px solid var(--letterboxing-border-color);
+  outline: 0.1px solid var(--letterboxing-bgcolor);
   height: calc(var(--letterboxing-height) + 1px);
   top: -1px;
 }
@@ -85,8 +85,7 @@
   Align status bar with content.
   TODO: switch to nested CSS selectors for conciseness when available (Firefox >= 117)
 */
-.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing)
-  > #statuspanel:not([hidden]) {
+.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) > #statuspanel:not([hidden]) {
   position: relative;
   place-self: end left;
   left: 0;
@@ -95,10 +94,8 @@
   --letterboxing-status-left-radius: var(--letterboxing-border-radius);
   --letterboxing-status-right-radius: 0;
 }
-.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing)
-  > #statuspanel:not([mirror]):-moz-locale-dir(rtl),
-.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing)
-  > #statuspanel[mirror]:-moz-locale-dir(ltr) {
+.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) > #statuspanel:not([mirror]):-moz-locale-dir(rtl),
+.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) > #statuspanel[mirror]:-moz-locale-dir(ltr) {
   left: 0;
   right: 0;
   --letterboxing-status-right-radius: var(--letterboxing-border-radius);
@@ -106,12 +103,11 @@
   justify-self: right;
 }
 
-.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing)
-#statuspanel-label {
+.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) #statuspanel-label {
   border-radius: 0 0 var(--letterboxing-status-right-radius) var(--letterboxing-status-left-radius);
   margin: 0;
   border: 1px solid var(--letterboxing-border-color);
-  max-width: calc(var(--letterboxing-width) * .5);
+  max-width: calc(var(--letterboxing-width) * 0.5);
 }
 
 browser:fullscreen {
@@ -119,7 +115,6 @@ browser:fullscreen {
   --letterboxing-border-radius: 0;
 }
 
-:root:not([inDOMFullscreen]) .letterboxing.letterboxing-ready .browserContainer:not(.responsive-mode)
-  > .browserStack:not(.exclude-letterboxing) {
+:root:not([inDOMFullscreen]) .letterboxing.letterboxing-ready .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) {
   place-content: var(--letterboxing-vertical-alignment) center;
 }
