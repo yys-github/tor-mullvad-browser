@@ -240,6 +240,11 @@ body {
   place-content: var(--letterboxing-vertical-alignment) center;
 }
 
+:root:not([inDOMFullscreen]) .letterboxing.letterboxing-ready .browserContainer:not(.responsive-mode)
+  > .browserStack:not(.exclude-letterboxing) > .dialogStack {
+    position: fixed;
+}
+
 #toolbar-menubar[autohide="true"] {
   overflow: hidden;
 }
