@@ -192,8 +192,6 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        //setPreferencesFromResource(R.xml.tor_network_settings_preferences, rootKey)
-        //setupConnectionPreferences()
         setPreferencesFromResource(R.xml.preferences, rootKey)
     }
 
