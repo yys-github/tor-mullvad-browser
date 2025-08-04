@@ -34,8 +34,10 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import mozilla.components.browser.state.state.selectedOrDefaultSearchEngine
 import mozilla.components.concept.engine.Engine
 import mozilla.components.concept.sync.AccountObserver
@@ -189,7 +191,9 @@ class SettingsFragment : PreferenceFragmentCompat(), UserInteractionHandler {
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.preferences, rootKey)
+        runBlocking(context = Dispatchers.IO) {
+            setPreferencesFromResource(R.xml.preferences, rootKey)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
