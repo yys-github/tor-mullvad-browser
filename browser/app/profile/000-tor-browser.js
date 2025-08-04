@@ -48,6 +48,9 @@ pref("extensions.torbutton.use_nontor_proxy", false);
 // Browser home page:
 pref("browser.startup.homepage", "about:tor");
 
+// General browser support url. tor-browser#43864 and tor-browser#40899.
+pref("browser.base-browser-support-url", "https://support.torproject.org/tbb");
+
 // tor-browser#40701: Add new download warning
 pref("browser.download.showTorWarning", true);
 
