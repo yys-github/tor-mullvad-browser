@@ -802,6 +802,7 @@ addon-page-header .main-search {
   visibility: hidden;
 }
 
-#help-button, #empty-addons-message {
+#help-button,
+#empty-addons-message {
   display: none;
 }
