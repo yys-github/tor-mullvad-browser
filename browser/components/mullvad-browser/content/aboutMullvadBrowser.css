@@ -87,12 +87,7 @@ body:not(.no-update) #mullvad-browser-intro {
 @media not ((prefers-contrast) or (forced-colors)) {
   :root {
     /* Dark background. */
-    background: linear-gradient(
-      to bottom,
-      var(--branding-gradient-start) 0%,
-      var(--branding-gradient-middle) 55%,
-      var(--branding-gradient-end) 100%
-    );
+    background: linear-gradient(to bottom, var(--branding-gradient-start) 0%, var(--branding-gradient-middle) 55%, var(--branding-gradient-end) 100%);
     /* Same as --in-content-page-color when "prefers-color-scheme: dark" */
     --in-content-page-color-dark: var(--color-gray-05);
     color: var(--in-content-page-color-dark);
