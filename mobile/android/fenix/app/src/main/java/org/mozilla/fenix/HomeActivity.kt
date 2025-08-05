@@ -174,7 +174,6 @@ import org.mozilla.fenix.utils.changeAppLauncherIcon
 import java.lang.ref.WeakReference
 import java.util.Locale
 
-import androidx.compose.material.SnackbarDuration
 import mozilla.components.browser.engine.gecko.GeckoEngine
 import org.mozilla.fenix.compose.core.Action
 import org.mozilla.fenix.compose.snackbar.SnackbarState
