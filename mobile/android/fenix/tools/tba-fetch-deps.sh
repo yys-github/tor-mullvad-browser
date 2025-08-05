@@ -28,7 +28,7 @@ if [[ $1 == "--tbb" ]]; then
   tor_expert_bundle_aar="$(ls -1td "$TOR_BROWSER_BUILD/out/tor-expert-bundle-aar/"tor-expert-bundle-aar-* | head -1)"
   cp "$tor_expert_bundle_aar"/* app/
 else
-  tor_expert_bundle_aar_dirname="$(curl -s $TBB_BUILD_06/tor-expert-bundle-aar/ | sed -nE 's/.*href=\"(tor-expert-bundle-aar-[0-9a-z\.\-]*).*/\1/p')"
+  tor_expert_bundle_aar_dirname="$(curl -s $TBB_BUILD_06/tor-expert-bundle-aar/ | sed -nE 's/.*href=\"(tor-expert-bundle-aar-[0-9a-z\.\-]*).*/\1/p' | head -n 1)"
   curl -o app/tor-expert-bundle.aar $TBB_BUILD_06/tor-expert-bundle-aar/$tor_expert_bundle_aar_dirname/tor-expert-bundle.aar
 fi
 
