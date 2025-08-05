@@ -3,7 +3,7 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 #aboutDialogContainer {
-  background-color: #0B2138;
+  background-color: #0b2138;
   color: #fff;
   color-scheme: dark;
 }
@@ -14,7 +14,7 @@
 }
 
 #bottomBox {
-  background-color: rgba(0,0,0,0.2);
+  background-color: rgba(0, 0, 0, 0.2);
   padding: 15px 10px 15px;
 }
 
