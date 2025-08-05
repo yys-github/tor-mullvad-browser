@@ -18,10 +18,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.selection.DisableSelection
 import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.FloatingActionButton
-import androidx.compose.material.Icon
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -131,7 +131,7 @@ class TorLogsComposeFragment : Fragment() {
                     contentDescription = getString(R.string.share_copy_link_to_clipboard),
                 )
             },
-            backgroundColor = PhotonColors.Violet50, // Same color as connect button
+            containerColor = PhotonColors.Violet50, // Same color as connect button
             contentColor = PhotonColors.LightGrey05,
         )
     }
