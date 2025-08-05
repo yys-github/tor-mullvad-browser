@@ -11,7 +11,7 @@ import org.mozilla.fenix.R
 
 @Parcelize
 enum class TorBridgeTransportConfig(
-    @StringRes val preferenceKey: Int,
+    @param:StringRes val preferenceKey: Int,
     val transportName: String
 ) : Parcelable {
 
