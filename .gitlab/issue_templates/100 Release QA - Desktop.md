@@ -209,4 +209,4 @@ Please lay claim to a platform in the comments:
 
 /label ~"Apps::Product::TorBrowser"
 /label ~"Apps::Type::Test"
-/label ~"Apps::Priority::Blocker"
+/label ~"Priority::Blocker"

@@ -18,4 +18,4 @@ Title:
 /label ~"esr-140"
 /label ~"Apps::Product::TorBrowser"
 /label ~"Apps::Type::Audit"
-/label ~"Apps::Priority::Blocker"
+/label ~"Priority::Blocker"
