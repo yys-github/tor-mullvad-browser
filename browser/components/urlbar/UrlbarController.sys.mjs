@@ -15,8 +15,6 @@ ChromeUtils.defineESModuleGetters(lazy, {
   ExtensionUtils: "resource://gre/modules/ExtensionUtils.sys.mjs",
   Interactions: "moz-src:///browser/components/places/Interactions.sys.mjs",
   UrlbarPrefs: "moz-src:///browser/components/urlbar/UrlbarPrefs.sys.mjs",
-  UrlbarProviderSemanticHistorySearch:
-    "moz-src:///browser/components/urlbar/UrlbarProviderSemanticHistorySearch.sys.mjs",
   UrlbarProvidersManager:
     "moz-src:///browser/components/urlbar/UrlbarProvidersManager.sys.mjs",
   UrlbarUtils: "moz-src:///browser/components/urlbar/UrlbarUtils.sys.mjs",
@@ -1272,16 +1270,6 @@ class TelemetryEvent {
    */
   #getAvailableSemanticSources() {
     let sources = [];
-    try {
-      if (
-        lazy.UrlbarProviderSemanticHistorySearch.semanticManager
-          .canUseSemanticSearch
-      ) {
-        sources.push("history");
-      }
-    } catch (e) {
-      lazy.logger.error("Error getting the semantic manager:", e);
-    }
     if (!sources.length) {
       sources.push("none");
     }
