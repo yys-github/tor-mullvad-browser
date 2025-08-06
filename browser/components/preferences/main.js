@@ -20,7 +20,7 @@
 ChromeUtils.defineESModuleGetters(this, {
   BackgroundUpdate: "resource://gre/modules/BackgroundUpdate.sys.mjs",
   UpdateListener: "resource://gre/modules/UpdateListener.sys.mjs",
-  LinkPreview: "moz-src:///browser/components/genai/LinkPreview.sys.mjs",
+  // LinkPreview.sys.mjs is missing. tor-browser#44045.
   MigrationUtils: "resource:///modules/MigrationUtils.sys.mjs",
   SelectableProfileService:
     "resource:///modules/profiles/SelectableProfileService.sys.mjs",
@@ -541,21 +541,14 @@ Preferences.addSetting(
 Preferences.addSetting({
   id: "linkPreviewEnabled",
   pref: "browser.ml.linkPreview.enabled",
-  deps: ["aiControlDefault", "aiControlLinkPreviews"],
-  visible: ({ aiControlDefault, aiControlLinkPreviews }) => {
-    return (
-      canShowAiFeature(aiControlLinkPreviews, aiControlDefault) &&
-      // @ts-ignore bug 1996860
-      LinkPreview.canShowPreferences
-    );
-  },
+  visible: () => false, // LinkPreview is missing. tor-browser#44045.
 });
 Preferences.addSetting({
   id: "linkPreviewKeyPoints",
   pref: "browser.ml.linkPreview.optin",
   // LinkPreview.canShowKeyPoints depends on the global genai pref.
   // @ts-ignore bug 1996860
-  visible: () => LinkPreview.canShowKeyPoints,
+  visible: () => false, // LinkPreview is missing. tor-browser#44045.
 });
 Preferences.addSetting({
   id: "linkPreviewLongPress",
@@ -3381,21 +3374,21 @@ SettingGroupManager.registerGroups({
         supportPage: "extensionrecommendations",
         subcategory: "cfrfeatures",
       },
-      {
-        id: "linkPreviewEnabled",
-        l10nId: "link-preview-settings-enable",
-        subcategory: "link-preview",
-        items: [
-          {
-            id: "linkPreviewKeyPoints",
-            l10nId: "link-preview-settings-key-points",
-          },
-          {
-            id: "linkPreviewLongPress",
-            l10nId: "link-preview-settings-long-press",
-          },
-        ],
-      },
+      // {
+      //   id: "linkPreviewEnabled",
+      //   l10nId: "link-preview-settings-enable",
+      //   subcategory: "link-preview",
+      //   items: [
+      //     {
+      //       id: "linkPreviewKeyPoints",
+      //       l10nId: "link-preview-settings-key-points",
+      //     },
+      //     {
+      //       id: "linkPreviewLongPress",
+      //       l10nId: "link-preview-settings-long-press",
+      //     },
+      //   ],
+      // },
     ],
   },
   httpsOnly: {

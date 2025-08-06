@@ -1159,10 +1159,7 @@ var gBrowserInit = {
     }
     CustomKeys.uninitWindow(window);
 
-    // Bug 1952900 to allow switching to unload category without leaking
-    ChromeUtils.importESModule(
-      "moz-src:///browser/components/genai/LinkPreview.sys.mjs"
-    ).LinkPreview.teardown(window);
+    // LinkPreview.sys.mjs is missing. tor-browser#44045.
 
     FirefoxViewHandler.uninit();
 
