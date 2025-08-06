@@ -135,12 +135,12 @@ tor-bridges-built-in-obfs4-description = Makes your Tor traffic look like random
 tor-bridges-built-in-snowflake-name = Snowflake
 # "Snowflake" is a proper noun for a type of Tor bridge, and likely should not be translated.
 tor-bridges-built-in-snowflake-description = Routes your connection through Snowflake proxies to make it look like you’re placing a video call, for example.
-# "meek-azure" is a technical name, and likely should not be translated.
-tor-bridges-built-in-meek-azure-name = meek-azure
-tor-bridges-built-in-meek-azure-description = Makes it look like you’re connected to a Microsoft website, instead of using Tor. May work in heavily censored regions, but is usually very slow.
+# "meek" is a technical name, and likely should not be translated.
+tor-bridges-built-in-meek-name = meek
+tor-bridges-built-in-meek-description = Connects you to the Tor network through a big cloud provider. May work in heavily censored regions, but is usually very slow.
 
 # Shown at the start of a Tor bridge line.
-# $type (String) - The Tor bridge type ("snowflake", "obfs4", "meek-azure").
+# $type (String) - The Tor bridge type ("snowflake", "obfs4", "meek", etc).
 tor-bridges-type-prefix = { $type } bridge:
 # Shown at the start of a Tor bridge line, when the transport type is unknown (or "vanilla").
 tor-bridges-type-prefix-generic = Tor bridge:
@@ -385,15 +385,12 @@ built-in-dialog-title =
     .title = Select a Built-In Bridge
 # -brand-short-name refers to 'Tor Browser', localized.
 built-in-dialog-introduction = { -brand-short-name } includes some specific types of bridges known as “pluggable transports”, which can help conceal the fact you’re using Tor.
-# "obfs4" is a technical name, and likely should not be translated.
-built-in-dialog-obfs4-radio-option =
-    .label = obfs4
-# "Snowflake" is a proper noun for a type of Tor bridge, and likely should not be translated.
-built-in-dialog-snowflake-radio-option =
-    .label = Snowflake
-# "meek-azure" is a technical name, and likely should not be translated.
-built-in-dialog-meek-azure-radio-option =
-    .label = meek-azure
+built-in-dialog-obfs4-radio-option2 =
+    .label = { tor-bridges-built-in-obfs4-name }
+built-in-dialog-snowflake-radio-option2 =
+    .label = { tor-bridges-built-in-snowflake-name }
+built-in-dialog-meek-radio-option2 =
+    .label = { tor-bridges-built-in-meek-name }
 # Label attached to the built-in bridge option that is already in use.
 # The "aria-label" should use the same text, but include some ending punctuation to separate it from the sentence that follows. This is used for screen reader users.
 built-in-dialog-current-bridge-label = Current bridge
