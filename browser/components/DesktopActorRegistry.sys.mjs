@@ -596,62 +596,7 @@ let JSWINDOWACTORS = {
     safeForUntrustedWebProcess: true,
   },
 
-  GenAI: {
-    parent: {
-      esModuleURI: "moz-src:///browser/components/genai/GenAIParent.sys.mjs",
-    },
-    child: {
-      esModuleURI: "moz-src:///browser/components/genai/GenAIChild.sys.mjs",
-      events: {
-        mousedown: {},
-        mouseup: {},
-      },
-    },
-    allFrames: true,
-    onAddActor(register, unregister) {
-      let isRegistered = false;
-
-      // Register the actor if an external chat provider is set, page summarization is enabled, shortcuts are enabled, or the selection menu is enabled.
-      const maybeRegister = () => {
-        if (
-          Services.prefs.getCharPref("browser.ml.chat.provider", "") ||
-          Services.prefs.getBoolPref("browser.ml.chat.page") ||
-          Services.prefs.getBoolPref("browser.ml.chat.shortcuts") ||
-          Services.prefs.getBoolPref("browser.ml.chat.shortcuts.smartwindow") ||
-          (Services.prefs.getBoolPref(
-            "browser.highlightToSearch.featureGate"
-          ) &&
-            Services.prefs.getBoolPref("browser.highlightToSearch.enabled"))
-        ) {
-          if (!isRegistered) {
-            register();
-            isRegistered = true;
-          }
-        } else if (isRegistered) {
-          unregister();
-          isRegistered = false;
-        }
-      };
-
-      Services.prefs.addObserver("browser.ml.chat.page", maybeRegister);
-      Services.prefs.addObserver("browser.ml.chat.provider", maybeRegister);
-      Services.prefs.addObserver("browser.ml.chat.shortcuts", maybeRegister);
-      Services.prefs.addObserver(
-        "browser.ml.chat.shortcuts.smartwindow",
-        maybeRegister
-      );
-      Services.prefs.addObserver(
-        "browser.highlightToSearch.featureGate",
-        maybeRegister
-      );
-      Services.prefs.addObserver(
-        "browser.highlightToSearch.enabled",
-        maybeRegister
-      );
-      maybeRegister();
-    },
-    safeForUntrustedWebProcess: true,
-  },
+  // GenAIParent.sys.mjs and GenAIChild.sys.mjs are missing. tor-browser#44045.
 
   LightweightTheme: {
     child: {
@@ -708,19 +653,8 @@ let JSWINDOWACTORS = {
     safeForUntrustedWebProcess: true,
   },
 
-  LinkPreview: {
-    parent: {
-      esModuleURI:
-        "moz-src:///browser/components/genai/LinkPreviewParent.sys.mjs",
-    },
-    child: {
-      esModuleURI:
-        "moz-src:///browser/components/genai/LinkPreviewChild.sys.mjs",
-    },
-    includeChrome: true,
-    enablePreference: "browser.ml.linkPreview.enabled",
-    safeForUntrustedWebProcess: true,
-  },
+  // LinkPreviewParent.sys.mjs and LinkPreviewChild.sys.mjs are missing.
+  // tor-browser#44045.
 
   PageAssist: {
     parent: {

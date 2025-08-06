@@ -11,7 +11,9 @@ include protocol PUtilityMediaService;
 include protocol PJSOracle;
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
 include protocol PHWInference;
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
 #if defined(XP_WIN)
@@ -144,7 +146,9 @@ child:
 #endif  // defined(XP_WIN)
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
   async StartHWInferenceService(Endpoint<PHWInferenceChild> aEndpoint);
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
   /**

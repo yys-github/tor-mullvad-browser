@@ -9,7 +9,7 @@
  */
 
 import { XPCOMUtils } from "resource://gre/modules/XPCOMUtils.sys.mjs";
-import { AIFeature } from "chrome://global/content/ml/AIFeature.sys.mjs";
+// import { AIFeature } from "chrome://global/content/ml/AIFeature.sys.mjs";
 
 export const AIWINDOW_URL = "chrome://browser/content/aiwindow/aiWindow.html";
 const AIWINDOW_URI = Services.io.newURI(AIWINDOW_URL);
@@ -213,7 +213,11 @@ export const AIWindow = {
     Services.obs.addObserver(this, "browser-region-updated");
     Services.prefs.addObserver(PREF_AGENT_SUPPORTED_REGIONS, this);
     lazy.SmartWindowTelemetry.init();
-    lazy.getAllModelsData(); // loads model data into cache for about:preferences
+    if (this.isAIWindowEnabled()) {
+      // Depends on the ml component, which tor-browser#44045 excludes from
+      // the build, so only touch it when AI Window is actually enabled.
+      lazy.getAllModelsData(); // loads model data into cache for about:preferences
+    }
     lazy.NimbusFeatures.smartWindow.onUpdate(this.onNimbusUpdate);
     this._initialized = true;
     this._updateGroupTabsWidgetRegistration();
@@ -1696,7 +1700,7 @@ export const AIWindow = {
   },
 };
 
-Object.setPrototypeOf(AIWindow, AIFeature);
+// Object.setPrototypeOf(AIWindow, AIFeature);
 
 XPCOMUtils.defineLazyPreferenceGetter(
   AIWindow,
