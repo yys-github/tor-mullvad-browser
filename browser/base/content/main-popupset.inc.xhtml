@@ -64,7 +64,8 @@
     <menuitem id="context_duplicateTab" data-lazy-l10n-id="duplicate-tab" data-alt-l10n-id="duplicate-tab2"/>
     <menuitem id="context_duplicateTabs" data-lazy-l10n-id="duplicate-tabs" data-alt-l10n-id="duplicate-tabs2"/>
     <menuseparator id="context_tabStateSeparator"/>
-    <menu id="context_askChat"/>
+    <!-- Hide the GenAI menu. tor-browser#44554. -->
+    <menu id="context_askChat" hidden="true"/>
     <!-- Flat "Summarize Page" item used by the alternate tab context menu layout
          in place of the #context_askChat submenu. Populated by
          GenAI.buildTabSummarizeItem; hidden by default. -->
@@ -72,7 +73,7 @@
     <menuitem id="context_createAITab"
               hidden="true"
               data-l10n-id="tab-context-create-aitab"/>
-    <menuseparator id="context_aiSeparator"/>
+    <menuseparator id="context_aiSeparator" hidden="true"/>
     <menuitem id="context_bookmarkSelectedTabs"
               hidden="true"
               data-lazy-l10n-id="bookmark-selected-tabs"
