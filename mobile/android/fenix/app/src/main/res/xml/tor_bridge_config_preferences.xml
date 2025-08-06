@@ -21,12 +21,12 @@
         android:defaultValue="false"
         android:dependency="@string/pref_key_tor_network_settings_bridge_config_toggle"
         android:key="@string/pref_key_tor_network_settings_bridge_config_builtin_bridge_meek_azure"
-        android:title="@string/preferences_tor_network_settings_bridge_config_builtin_bridge_meek_azure" />
+        android:title="@string/preferences_tor_network_settings_bridge_config_builtin_bridge_meek" />
     <org.mozilla.fenix.settings.RadioButtonPreference
         android:defaultValue="false"
         android:dependency="@string/pref_key_tor_network_settings_bridge_config_toggle"
         android:key="@string/pref_key_tor_network_settings_bridge_config_builtin_bridge_snowflake"
-        android:title="@string/preferences_tor_network_settings_bridge_config_builtin_bridge_snowflake" />
+        android:title="@string/preferences_tor_network_settings_bridge_config_builtin_bridge_snowflake2" />
     <EditTextPreference
         android:dependency="@string/pref_key_tor_network_settings_bridge_config_toggle"
         android:key="@string/pref_key_tor_network_settings_bridge_config_user_provided_bridge"
