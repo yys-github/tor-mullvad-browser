@@ -215,8 +215,7 @@ const FEATURES = {
     "moz-src:///browser/components/urlbar/private/SportsSuggestions.sys.mjs",
   SuggestBackendMerino:
     "moz-src:///browser/components/urlbar/private/SuggestBackendMerino.sys.mjs",
-  SuggestBackendMl:
-    "moz-src:///browser/components/urlbar/private/SuggestBackendMl.sys.mjs",
+  // SuggestBackendMl.sys.mjs is missing. tor-browser#44045.
   SuggestBackendRust:
     "moz-src:///browser/components/urlbar/private/SuggestBackendRust.sys.mjs",
   WeatherSuggestions:
@@ -302,7 +301,7 @@ class _QuickSuggest {
     return [
       this.rustBackend,
       this.#featuresByName.get("SuggestBackendMerino"),
-      this.#featuresByName.get("SuggestBackendMl"),
+      // SuggestBackendMl.sys.mjs is missing. tor-browser#44045.
     ].filter(b => b?.isEnabled);
   }
 

@@ -9,7 +9,7 @@
  */
 
 import { XPCOMUtils } from "resource://gre/modules/XPCOMUtils.sys.mjs";
-import { AIFeature } from "chrome://global/content/ml/AIFeature.sys.mjs";
+// import { AIFeature } from "chrome://global/content/ml/AIFeature.sys.mjs";
 
 export const AIWINDOW_URL = "chrome://browser/content/aiwindow/aiWindow.html";
 const AIWINDOW_URI = Services.io.newURI(AIWINDOW_URL);
@@ -1078,7 +1078,7 @@ export const AIWindow = {
   },
 };
 
-Object.setPrototypeOf(AIWindow, AIFeature);
+// Object.setPrototypeOf(AIWindow, AIFeature);
 
 XPCOMUtils.defineLazyPreferenceGetter(
   AIWindow,
