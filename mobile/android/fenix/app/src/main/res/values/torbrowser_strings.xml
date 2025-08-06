@@ -23,9 +23,12 @@
     <string name="preferences_tor_network_settings_bridge_config_explanation">Bridges are unlisted relays that make it more difficult to block connections to the Tor network. Because of how certain countries try to block Tor, certain bridges work in certain countries but not others.</string>
     <string name="preferences_tor_network_settings_bridge_config_toggle">Use a Bridge</string>
     <string name="preferences_tor_network_settings_bridge_config_toggle_description">Config a bridge to connect to Tor</string>
+    <!-- "obfs4" is a technical name, and likely should not be translated. -->
     <string name="preferences_tor_network_settings_bridge_config_builtin_bridge_obfs4">obfs4</string>
-    <string name="preferences_tor_network_settings_bridge_config_builtin_bridge_meek_azure">meek-azure</string>
-    <string name="preferences_tor_network_settings_bridge_config_builtin_bridge_snowflake">snowflake</string>
+    <!-- "meek" is a technical name, and likely should not be translated. -->
+    <string name="preferences_tor_network_settings_bridge_config_builtin_bridge_meek">meek</string>
+    <!-- "Snowflake" is a proper noun for a type of Tor bridge, and likely should not be translated. -->
+    <string name="preferences_tor_network_settings_bridge_config_builtin_bridge_snowflake2">Snowflake</string>
     <string name="preferences_tor_network_settings_bridge_config_user_provided_bridge">Provide a Bridge I know</string>
     <string name="preferences_tor_network_settings_bridge_config_user_provided_bridge_description">Enter bridge information from a trusted source</string>
     <string name="preferences_tor_network_settings_bridge_config_current_bridge">Current Configured Bridge: %s</string>
