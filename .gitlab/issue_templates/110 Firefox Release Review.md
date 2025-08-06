@@ -72,3 +72,4 @@
 /label ~"Apps::Product::TorBrowser"
 /label ~"Apps::Type::Triage"
 /label ~"Priority::Blocker"
+/milestone %"Tor Browser 16.0"
