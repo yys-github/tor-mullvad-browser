@@ -110,8 +110,8 @@
         AsyncTabSwitcher:
           "moz-src:///browser/components/tabbrowser/AsyncTabSwitcher.sys.mjs",
         PictureInPicture: "resource://gre/modules/PictureInPicture.sys.mjs",
-        SmartTabGroupingManager:
-          "moz-src:///browser/components/tabbrowser/SmartTabGrouping.sys.mjs",
+        // SmartTabGrouping.sys.mjs is missing. tor-browser#44045.
+        // Unused in this context. See mozilla bug 1981785.
         SponsorProtection:
           "moz-src:///browser/components/newtab/SponsorProtection.sys.mjs",
         TabMetrics:
@@ -10452,10 +10452,7 @@ var TabContextMenu = {
       !this.contextTab.pinned || !this.multiselected;
 
     // Build Ask Chat items
-    TabContextMenu.GenAI.buildTabMenu(
-      document.getElementById("context_askChat"),
-      this
-    );
+    // GenAI is missing. tor-browser#44045.
 
     // Move Tab items
     let contextMoveTabOptions = document.getElementById(
@@ -10977,6 +10974,6 @@ var TabContextMenu = {
 };
 
 ChromeUtils.defineESModuleGetters(TabContextMenu, {
-  GenAI: "resource:///modules/GenAI.sys.mjs",
+  // GenAI.sys.mjs is missing. tor-browser#44045.
   TabNotes: "moz-src:///browser/components/tabnotes/TabNotes.sys.mjs",
 });
