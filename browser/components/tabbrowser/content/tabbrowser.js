@@ -204,8 +204,8 @@
           "moz-src:///browser/components/tabbrowser/OpenInTabsUtils.sys.mjs",
         PictureInPicture:
           "moz-src:///toolkit/components/pictureinpicture/PictureInPicture.sys.mjs",
-        SmartTabGroupingManager:
-          "moz-src:///browser/components/tabbrowser/SmartTabGrouping.sys.mjs",
+        // SmartTabGrouping.sys.mjs is missing. tor-browser#44045.
+        // Unused in this context. See mozilla bug 1981785.
         SponsorProtection:
           "moz-src:///browser/components/newtab/SponsorProtection.sys.mjs",
         TabMetrics:
