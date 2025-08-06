@@ -71,4 +71,4 @@
 
 /label ~"Apps::Product::TorBrowser"
 /label ~"Apps::Type::Triage"
-/label ~"Apps::Priority::Blocker"
+/label ~"Priority::Blocker"
