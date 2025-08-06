@@ -151,11 +151,7 @@ var localProviderModules = [
     module: "resource:///modules/UrlbarProviderSearchSuggestions.sys.mjs",
     supportedInputTypes: ["urlbar", "searchbar"],
   },
-  {
-    name: "UrlbarProviderSemanticHistorySearch",
-    module: "resource:///modules/UrlbarProviderSemanticHistorySearch.sys.mjs",
-    supportedInputTypes: ["urlbar"],
-  },
+  // UrlbarProviderSemanticHistorySearch.sys.mjs is missing. tor-browser#44045.
   {
     name: "UrlbarProviderTabToSearch",
     module: "resource:///modules/UrlbarProviderTabToSearch.sys.mjs",
