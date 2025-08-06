@@ -846,20 +846,14 @@ var TabContextMenu = {
     // a pref toggle reverses cleanly.
     if (!this._altTabContextMenu) {
       document.getElementById("context_askChatSummarize").hidden = true;
-      TabContextMenu.GenAI.buildTabMenu(
-        document.getElementById("context_askChat"),
-        this
-      );
+      // GenAI is missing. tor-browser#44045.
     } else {
       document.getElementById("context_askChat").hidden = true;
       // In the alt layout #context_aiSeparator is reused as the divider after
       // the open-and-organize group, so keep it shown (the classic ask-chat
       // path would otherwise hide it together with #context_askChat).
       document.getElementById("context_aiSeparator").hidden = false;
-      TabContextMenu.GenAI.buildTabSummarizeItem(
-        document.getElementById("context_askChatSummarize"),
-        this
-      );
+      // GenAI is missing. tor-browser#44045.
     }
 
     // Move Tab items
@@ -1445,7 +1439,7 @@ var TabContextMenu = {
 };
 
 ChromeUtils.defineESModuleGetters(TabContextMenu, {
-  GenAI: "resource:///modules/GenAI.sys.mjs",
+  // GenAI.sys.mjs is missing. tor-browser#44045.
   MenuSectionLayout: "resource:///modules/MenuSectionLayout.sys.mjs",
   TabNotes: "moz-src:///browser/components/tabnotes/TabNotes.sys.mjs",
 });

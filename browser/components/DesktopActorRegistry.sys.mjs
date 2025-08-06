@@ -526,50 +526,7 @@ let JSWINDOWACTORS = {
     safeForUntrustedWebProcess: true,
   },
 
-  GenAI: {
-    parent: {
-      esModuleURI: "resource:///actors/GenAIParent.sys.mjs",
-    },
-    child: {
-      esModuleURI: "resource:///actors/GenAIChild.sys.mjs",
-      events: {
-        mousedown: {},
-        mouseup: {},
-      },
-    },
-    allFrames: true,
-    onAddActor(register, unregister) {
-      let isRegistered = false;
-
-      // Register the actor if an external chat provider is set, page summarization is enabled, or shortcuts are enabled
-      const maybeRegister = () => {
-        if (
-          Services.prefs.getCharPref("browser.ml.chat.provider", "") ||
-          Services.prefs.getBoolPref("browser.ml.chat.page") ||
-          Services.prefs.getBoolPref("browser.ml.chat.shortcuts") ||
-          Services.prefs.getBoolPref("browser.ml.chat.shortcuts.smartwindow")
-        ) {
-          if (!isRegistered) {
-            register();
-            isRegistered = true;
-          }
-        } else if (isRegistered) {
-          unregister();
-          isRegistered = false;
-        }
-      };
-
-      Services.prefs.addObserver("browser.ml.chat.page", maybeRegister);
-      Services.prefs.addObserver("browser.ml.chat.provider", maybeRegister);
-      Services.prefs.addObserver("browser.ml.chat.shortcuts", maybeRegister);
-      Services.prefs.addObserver(
-        "browser.ml.chat.shortcuts.smartwindow",
-        maybeRegister
-      );
-      maybeRegister();
-    },
-    safeForUntrustedWebProcess: true,
-  },
+  // GenAIParent.sys.mjs and GenAIChild.sys.mjs are missing. tor-browser#44045.
 
   LightweightTheme: {
     child: {
@@ -626,17 +583,8 @@ let JSWINDOWACTORS = {
     safeForUntrustedWebProcess: true,
   },
 
-  LinkPreview: {
-    parent: {
-      esModuleURI: "resource:///actors/LinkPreviewParent.sys.mjs",
-    },
-    child: {
-      esModuleURI: "resource:///actors/LinkPreviewChild.sys.mjs",
-    },
-    includeChrome: true,
-    enablePreference: "browser.ml.linkPreview.enabled",
-    safeForUntrustedWebProcess: true,
-  },
+  // LinkPreviewParent.sys.mjs and LinkPreviewChild.sys.mjs are missing.
+  // tor-browser#44045.
 
   PageAssist: {
     parent: {
