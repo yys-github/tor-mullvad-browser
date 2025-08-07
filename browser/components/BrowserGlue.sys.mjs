@@ -1922,7 +1922,7 @@ BrowserGlue.prototype = {
   // Use this method for any TBB migration that can be run just before showing
   // the UI.
   // Anything that critically needs to be migrated earlier should not use this.
-  _migrateUITBB() {
+  async _migrateUITBB() {
     // Version 1: Tor Browser 12.0. We use it to remove langpacks, after the
     //            migration to packaged locales.
     // Version 2: Tor Browser 13.0/13.0a1: tor-browser#41845. Also, removed some
@@ -1936,9 +1936,11 @@ BrowserGlue.prototype = {
     // Version 6: Tor Browser 14.5a3: Clear preference for TorSettings that is
     //            no longer used (tor-browser#41921).
     //            Drop unused TorConnect setting (tor-browser#43462).
-    // Version 6: Tor Browser 14.5a6: Clear home page update url preference
+    // Version 7: Tor Browser 14.5a6: Clear home page update url preference
     //            (tor-browser#43567).
-    const TBB_MIGRATION_VERSION = 7;
+    // Version 8: Tor Browser 15.0a2: Remove legacy search addons
+    //            (tor-browser#43111).
+    const TBB_MIGRATION_VERSION = 8;
     const MIGRATION_PREF = "torbrowser.migration.version";
 
     // If we decide to force updating users to pass through any version
@@ -1961,9 +1963,11 @@ BrowserGlue.prototype = {
       }
     };
     if (currentVersion < 1) {
-      removeLangpacks().catch(err => {
+      try {
+        await removeLangpacks();
+      } catch (err) {
         console.error("Could not remove langpacks", err);
-      });
+      }
     }
     if (currentVersion < 2) {
       const prefToClear = [
@@ -1999,13 +2003,13 @@ BrowserGlue.prototype = {
       }
     };
     if (currentVersion < 3) {
-      dropAddons([
+      await dropAddons([
         "blockchair@search.mozilla.org",
         "blockchair-onion@search.mozilla.org",
       ]);
     }
     if (currentVersion < 4) {
-      dropAddons([
+      await dropAddons([
         "twitter@search.mozilla.org",
         "yahoo@search.mozilla.org",
         "youtube@search.mozilla.org",
@@ -2019,14 +2023,22 @@ BrowserGlue.prototype = {
         Services.prefs.clearUserPref(pref);
       }
     }
-
     if (currentVersion < 6) {
       Services.prefs.clearUserPref("torbrowser.settings.enabled");
       Services.prefs.clearUserPref("torbrowser.bootstrap.allow_internet_test");
     }
-
     if (currentVersion < 7) {
       Services.prefs.clearUserPref("torbrowser.post_update.url");
+    }
+    if (currentVersion < 8) {
+      await dropAddons([
+        "ddg@search.mozilla.org",
+        "ddg-onion@search.mozilla.org",
+        "google@search.mozilla.org",
+        "startpage@search.mozilla.org",
+        "startpage-onion@search.mozilla.org",
+        "wikipedia@search.mozilla.org",
+      ]);
     }
 
     Services.prefs.setIntPref(MIGRATION_PREF, TBB_MIGRATION_VERSION);
