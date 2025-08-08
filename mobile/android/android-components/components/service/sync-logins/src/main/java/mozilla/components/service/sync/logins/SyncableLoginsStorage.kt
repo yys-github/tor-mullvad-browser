@@ -88,9 +88,7 @@ class SyncableLoginsStorage(
     val crypto by lazy { LoginsCrypto(context, securePrefs.value, this) }
 
     private val conn: Deferred<DatabaseLoginsStorage> = CoroutineScope(coroutineContext).async {
-        // val key = crypto.getOrGenerateKey().key
-        // I think this error goes away with a-s noop.
-        val key = "???"
+        val key = crypto.getOrGenerateKey().key
         val keyManager = object : mozilla.appservices.logins.KeyManager {
             override fun getKey(): ByteArray {
                 return key.toByteArray()
