@@ -8,9 +8,13 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import mozilla.components.browser.state.ext.getUrl
+import mozilla.components.browser.state.state.recover.TabState
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.ext.components
@@ -30,22 +34,38 @@ class TorConnectionAssistViewModel(
 
     init {
         torAndroidIntegration.registerBootstrapStateChangeListener(this)
-        loadDummyPage()
+        loadAndUnloadDummyPage()
     }
 
-    private fun loadDummyPage() {
-        // Load local url (it just needs to begin with "about:" to get past filter) to initialize the browser,
-        // Domain fronting needs Services.io.getProtocolHandler("http")... to actually work, and it
-        // does not till the browser/engine is initialized, and this is so far the easiest way to do that.
-        // Load early here so that it is ready when needed if we get to the step where DF is invoked
-        // Then later remove it in onCleared so it doesn't show for the user
-        components.useCases.tabsUseCases.addTab.invoke("about:")
+    private fun loadAndUnloadDummyPage() {
+        viewModelScope.launch(Dispatchers.IO) {
+            // Load local url (it just needs to begin with "about:" to get past filter) to initialize the browser,
+            // Domain fronting needs Services.io.getProtocolHandler("http")... to actually work, and it
+            // does not till the browser/engine is initialized, and this is so far the easiest way to do that.
+            // Load early here so that it is ready when needed if we get to the step where DF is invoked
+            // Then later remove it so it doesn't show for the user
+            components.useCases.tabsUseCases.addTab.invoke("about:")
+            // removeTabs doesn't work without a delay.
+            Thread.sleep(500)
+            // Remove loaded URL so it is never visible to the user
+            components.useCases.tabsUseCases.removeTabs.invoke(
+                components.core.store.state.tabs.filter {
+                    it.getUrl() == "about:" || it.getUrl() == "about:blank"
+                }.map { it.id },
+            )
+            // recentlyClosedTabsStorage.value.removeAllTabs() doesn't seem to work,
+            // so instead we collect and iteratively remove all tabs from recent history.
+            // Nothing should ever show up in history so we remove everything,
+            // including old "about:" tabs that may have stacked up.
+            components.core.recentlyClosedTabsStorage.value.getTabs()
+                .collect { tabs: List<TabState> ->
+                    for (tab in tabs) {
+                        components.core.recentlyClosedTabsStorage.value.removeTab(tab)
+                    }
+                }
+        }
     }
 
-    private fun clearDummyPage() {
-        // Remove loaded URL so it doesn't show up
-        components.useCases.tabsUseCases.removeTab.invoke(components.core.store.state.tabs.find {it.getUrl() == "about:"}?.id ?: "")
-    }
 
     fun fetchRegionNames() {
         torAndroidIntegration.regionNamesGet { regionNames : GeckoBundle? ->
@@ -63,7 +83,6 @@ class TorConnectionAssistViewModel(
 
     override fun onCleared() {
         torAndroidIntegration.unregisterBootstrapStateChangeListener(this)
-        clearDummyPage()
         super.onCleared()
     }
 
