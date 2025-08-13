@@ -21,7 +21,7 @@ import mozilla.components.support.base.log.logger.Logger
 class AutofillUseCases(
     @VisibleForTesting sdkVersion: Int = Build.VERSION.SDK_INT,
 ) {
-    private val isAutofillAvailable = sdkVersion >= Build.VERSION_CODES.O
+    private val isAutofillAvailable = false
     private val logger = Logger("AutofillUseCases")
 
     /**
