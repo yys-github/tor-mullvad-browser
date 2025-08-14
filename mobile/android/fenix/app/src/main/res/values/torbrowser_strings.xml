@@ -133,10 +133,9 @@
     <!-- Connection assist. Confirmation button for a shown "Snackbar" (special popup notification). -->
     <string name="connection_assist_connect_to_tor_before_opening_links_confirmation">CONNECT</string>
 
-
-    <!-- "Close %s's tabs?"   -->
+    <!-- Notification title for closing browser tabs. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
     <string name="notification_close_tor_browser_tabs">Close %s’s tabs?</string>
-    <!-- "Close %s's tabs? (long)"   -->
+    <!-- Notification body for closing browser tabs. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
     <string name="notification_close_tor_browser_tabs_long">Tap or swipe this notification to close %s’s tabs</string>
 
 </resources>
