@@ -164,16 +164,7 @@ gradle.projectsLoaded { ->
                 rename { 'manifest.json' }
                 into extDir
 
-                // android-components#40013: overwrite the timestamp in
-                // extension version to ensure build reproducibility. 
-                def systemEnvBuildDate = System.getenv('MOZ_BUILD_DATE')
-                // MOZ_BUILD_DATE is in the YYYYMMDDHHMMSS format. Thus, we only use a
-                // substring of it if it is available.
-                def values = ['version': rootProject.ext.config.componentsVersion + "." +
-                        (systemEnvBuildDate != null ?
-                                systemEnvBuildDate.substring(4) :
-                                new Date().format('MMddHHmmss'))]
-
+                def values = ['version': getManifestVersionString(rootProject.ext.config.componentsVersion)]
                 inputs.properties(values)
                 expand(values)
             }
