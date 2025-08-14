@@ -3,6 +3,10 @@
 cd "$(dirname $(realpath "$0"))/.."
 
 objdir=$1
+if [ -z "$objdir" ]; then
+	echo "Usage $0 objdir"
+	exit 1
+fi
 
 if [ -z "$APKSIGNER_ARGS" ]; then
 	if [ -z "$QA_KEY" ]; then
