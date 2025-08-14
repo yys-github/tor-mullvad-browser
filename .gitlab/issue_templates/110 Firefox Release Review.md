@@ -7,7 +7,7 @@
 - [ ] Generate Bugzilla triage CSV
   - Run (from `tor-browser-build` root):
   ```bash
-    ./tools/browser/generate-bugzilla-triage-csv ${FIREFOX_VERSION} ${PREVIOUS_NIGHTLY_TAG} ${NEXT_NIGHLTY_TAG} ${TRIAGE_ISSUE_NUMBER} ${REVIEWERS} > out.csv
+    ./tools/browser/generate-bugzilla-triage-csv ${FIREFOX_VERSION} ${PREVIOUS_NIGHTLY_TAG} ${NEXT_NIGHLTY_TAG} ${TRIAGE_ISSUE_NUMBER} > out.csv
   ```
   - `${FIREFOX_VERSION}`: the major Firefox version of the nightly to review
     - **Example**: 129
@@ -17,18 +17,9 @@
     - **Example**: `FIREFOX_NIGHTLY_129_END`
   - `${TRIAGE_ISSUE_NUMBER}`: this `tor-browser` issue
     - **Example**: `43303`
-  - `${REVIEWERS}`: `morgan` and two additional devs to triage this Firefox version
-    - `boklm`
-    - `brizental`
-    - `clairehurst`
-    - `dan`
-    - `henry`
-    - `jwilde`
-    - `ma1`
-    - `pierov`
   - **Example**:
     ```bash
-    ./tools/browser/generate-bugzilla-triage-csv 129 FIREFOX_NIGHTLY_128_END FIREFOX_NIGHTLY_129_END 43303 morgan pierov henry > 129.csv
+    ./tools/browser/generate-bugzilla-triage-csv 129 FIREFOX_NIGHTLY_128_END FIREFOX_NIGHTLY_129_END 43303 > 129.csv
     ```
 - [ ] Attach the generated CSV file to the triage isssue
 - [ ] Import to Google Sheets ( https://sheets.google.com )
