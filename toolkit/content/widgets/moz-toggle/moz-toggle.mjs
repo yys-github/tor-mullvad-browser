@@ -27,8 +27,6 @@ export default class MozToggle extends MozBaseInputElement {
     pressed: { type: Boolean, reflect: true },
     // Extension for tor-browser. Used for tor-browser#41333.
     title: { type: String, attribute: "title" },
-    // Extension for tor-browser. Used for tor-browser#40837.
-    labelAlignAfter: { type: Boolean, attribute: "label-align-after" },
   };
 
   static activatedProperty = "pressed";
