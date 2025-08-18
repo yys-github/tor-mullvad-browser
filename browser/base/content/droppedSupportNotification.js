@@ -3,8 +3,8 @@
 // Show a prompt that a user's system will no longer be supported.
 window.addEventListener("load", () => {
   let labelId;
-  // Firefox moved ESR 115 EOL to 16th September 2025.
-  const isExpired = Date.now() > Date.UTC(2025, 8, 16);
+  // ESR 115 EOL pushed to 14th October 2025.
+  const isExpired = Date.now() > Date.UTC(2025, 9, 14);
 
   if (
     AppConstants.platform === "macosx" &&
