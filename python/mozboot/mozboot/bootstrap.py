@@ -346,6 +346,8 @@ class Bootstrapper:
         getattr(self.instance, "ensure_%s_packages" % application)()
 
     def check_code_submission(self, checkout_root: Path):
+        return
+
         if self.instance.no_interactive or which("moz-phab"):
             return
 
@@ -461,8 +463,7 @@ class Bootstrapper:
                 repo.configure(state_dir)
 
         # Offer to configure Git, if the current checkout or repo type is Git.
-        elif git and checkout_type == "git":
-            should_configure_git = False
+        elif False and git and checkout_type == "git":
             if not self.instance.no_interactive:
                 should_configure_git = self.instance.prompt_yesno(prompt=CONFIGURE_GIT)
             else:
