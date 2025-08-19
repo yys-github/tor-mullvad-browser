@@ -740,13 +740,16 @@ set_config(
 )
 
 
-@depends("GRADLE_MAVEN_REPOSITORIES")
+@depends(application_services, "GRADLE_MAVEN_REPOSITORIES")
 @imports(_from="os.path", _import="isdir")
-def gradle_maven_repositories(values):
+def gradle_maven_repositories(app_services_location, values):
     if not values:
         die("GRADLE_MAVEN_REPOSITORIES must not be empty")
     if not all(values):
         die("GRADLE_MAVEN_REPOSITORIES entries must not be empty")
+
+    # Prepend the location of the custom a-s location
+    values = (f"file://{app_services_location}",) + values
     return values
 
 
