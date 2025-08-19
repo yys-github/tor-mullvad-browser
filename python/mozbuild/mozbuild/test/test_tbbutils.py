@@ -134,6 +134,24 @@ class TestListFilesHttp(unittest.TestCase):
         result = list_files_http(self.url)
         self.assertEqual(result, ["file1.zip", "file2.zip"])
 
+    @patch("mozbuild.tbbutils.urlopen")
+    def test_tor_expert_bundle_rewrites(self, mock_urlopen):
+        html = """
+            <a href="tor-expert-bundle">bundle</a>
+        """
+        mock_resp = MagicMock()
+        mock_resp.status = 200
+        mock_resp.read.return_value = html.encode()
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        result = list_files_http(self.url)
+        self.assertEqual(
+            result,
+            [
+                "tor-expert-bundle/tor-expert-bundle.tar.gz",
+            ],
+        )
+
 
 if __name__ == "__main__":
     mozunit.main()
