@@ -17,6 +17,9 @@ def list_files_http(url):
         if href == "../":
             continue
 
+        if "tor-expert-bundle" in href:
+            href = f"{href}/tor-expert-bundle.tar.gz"
+
         links.append(href)
 
     return links
@@ -26,6 +29,7 @@ TOR_BROWSER_BUILD_ARTIFACTS = [
     # Tor Browser Build-only artifacts, these artifacts are not common with Firefox.
     "noscript",
     "fonts",
+    "tor-expert-bundle",
 ]
 
 # Mapping of artifacts from taskcluster to tor-browser-build.
