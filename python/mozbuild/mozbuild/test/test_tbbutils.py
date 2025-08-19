@@ -36,9 +36,16 @@ class TestGetArtifactName(unittest.TestCase):
 
 class TestGetArtifactIndex(unittest.TestCase):
     def test_regular_artifact(self):
+        artifact = "tor"
         path = "https://tb-build-06.torproject.org/~tb-builder/tor-browser-build/out/tor/tor-b1f9824464dc-linux-x86_64-b0ffe2.tar.gz"
         expected = "tor-b1f9824464dc-linux-x86_64-b0ffe2.tar.gz"
-        self.assertEqual(get_artifact_index(path), expected)
+        self.assertEqual(get_artifact_index(path, artifact), expected)
+
+    def test_expert_bundle_artifact(self):
+        artifact = "tor-expert-bundle"
+        path = "https://tb-build-06.torproject.org/~tb-builder/tor-browser-build/out/tor-expert-bundle/tor-expert-bundle-linux-x86_64-tbb-nightly.2025.10.14-d9aa09/"
+        expected = "tor-expert-bundle-linux-x86_64-tbb-nightly.2025.10.14-d9aa09"
+        self.assertEqual(get_artifact_index(path, artifact), expected)
 
 
 class TestGetArtifactPath(unittest.TestCase):
@@ -140,6 +147,24 @@ class TestListFilesHttp(unittest.TestCase):
 
         result = list_files_http(self.url)
         self.assertEqual(result, ["file1.zip", "file2.zip"])
+
+    @patch("mozbuild.tbbutils.urlopen")
+    def test_tor_expert_bundle_rewrites(self, mock_urlopen):
+        html = """
+            <a href="tor-expert-bundle">bundle</a>
+        """
+        mock_resp = MagicMock()
+        mock_resp.status = 200
+        mock_resp.read.return_value = html.encode()
+        mock_urlopen.return_value.__enter__.return_value = mock_resp
+
+        result = list_files_http(self.url)
+        self.assertEqual(
+            result,
+            [
+                "tor-expert-bundle/tor-expert-bundle.tar.gz",
+            ],
+        )
 
 
 if __name__ == "__main__":
