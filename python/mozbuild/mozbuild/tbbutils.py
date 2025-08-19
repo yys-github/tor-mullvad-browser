@@ -17,6 +17,11 @@ def list_files_http(url):
         if href == "../":
             continue
 
+        if "tor-expert-bundle-aar" in href:
+            href = f"{href.rstrip('/')}/tor-expert-bundle.aar"
+        elif "tor-expert-bundle" in href:
+            href = f"{href.rstrip('/')}/tor-expert-bundle.tar.gz"
+
         links.append(href)
 
     return links
@@ -26,6 +31,9 @@ TOR_BROWSER_BUILD_ARTIFACTS = [
     # Tor Browser Build-only artifacts, these artifacts are not common with Firefox.
     "noscript",
     "fonts",
+    "tor-expert-bundle",
+    "tor-expert-bundle-aar",
+    "application-services",
 ]
 
 # Mapping of artifacts from taskcluster to tor-browser-build.
@@ -41,14 +49,19 @@ ARTIFACT_NAME_MAP = {
 }
 
 
-def get_artifact_index(artifact_path):
+def get_artifact_index(artifact_path, artifact):
     """
     Return a unique identifier for the given artifact based on its path.
 
     In most cases, artifacts built by tor-browser-build include part of their
     SHA sum or version in the filename, so the file name itself serves as a unique
-    identifier.
+    identifier. However, some artifacts are stored within subfolders where the file
+    name alone is not unique — in those cases, the name of the parent directory
+    provides the unique identifier instead.
     """
+    if artifact in ["tor-expert-bundle"]:
+        return artifact_path.rsplit("/", 2)[-2]
+
     return artifact_path.rsplit("/", 1)[-1]
 
 
