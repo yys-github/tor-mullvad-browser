@@ -267,12 +267,16 @@ class BuildBackend(LoggingMixin):
                 paths = {
                     "docs": tbdir / "Contents/Resources/TorBrowser/Docs",
                     "exts": tbdir / "Contents/Resources/distribution/extensions",
+                    "tor_bin": tbdir / "Contents/MacOS/tor",
+                    "tor_config": tbdir / "Contents/Resources/TorBrowser/Tor",
                     "fonts": tbdir / "Resources/fonts",
                 }
             else:
                 paths = {
                     "docs": tbdir / "TorBrowser/Docs",
                     "exts": tbdir / "distribution/extensions",
+                    "tor_bin": tbdir / "TorBrowser/Tor",
+                    "tor_config": tbdir / "TorBrowser/Data/Tor",
                     "fonts": tbdir / "fonts",
                 }
 
@@ -307,6 +311,64 @@ class BuildBackend(LoggingMixin):
 
                 paths["exts"].mkdir(parents=True, exist_ok=True)
                 _infallible_symlink(noscript_location, noscript_target)
+
+            expert_bundle_location = config.substs.get("TOR_EXPERT_BUNDLE")
+            if expert_bundle_location:
+                expert_bundle_location = Path(expert_bundle_location)
+                if not expert_bundle_location.is_dir():
+                    return
+
+                self.log(
+                    logging.INFO,
+                    "_setup_tor_browser_environment",
+                    {
+                        "expert_bundle_location": str(expert_bundle_location),
+                    },
+                    "Setting up tor-expert-bundle resources from {expert_bundle_location}",
+                )
+
+                # Set up Tor configuration files
+                paths["tor_config"].mkdir(parents=True, exist_ok=True)
+                for file in ["geoip", "geoip6"]:
+                    target = paths["tor_config"] / file
+                    _infallible_symlink(expert_bundle_location / "data" / file, target)
+
+                # Set up Conjure documentation
+                conjust_docs_location = paths["docs"] / "conjure"
+                conjust_docs_location.mkdir(parents=True, exist_ok=True)
+                conjure_readme = conjust_docs_location / "README.CONJURE.md"
+                _infallible_symlink(
+                    expert_bundle_location
+                    / "tor/pluggable_transports/README.CONJURE.md",
+                    conjure_readme,
+                )
+
+                # Set up pluggable transports
+                paths["tor_bin"].mkdir(parents=True, exist_ok=True)
+                pluggable_transports_location = (
+                    expert_bundle_location / "tor/pluggable_transports"
+                )
+                pluggable_transports_target = paths["tor_bin"] / "PluggableTransports"
+                pluggable_transports_target.mkdir(parents=True, exist_ok=True)
+                for file in pluggable_transports_location.iterdir():
+                    # We only want the PT executables.
+                    if os.access(file, os.X_OK) or file.suffix.lower() == ".exe":
+                        target = pluggable_transports_target / file.name
+                        _infallible_symlink(file, target)
+
+                # Setup Tor binary
+                for item in Path(expert_bundle_location / "tor").iterdir():
+                    target = paths["tor_bin"] / item.name
+
+                    if item.is_file():
+                        _infallible_symlink(item, target)
+
+                # Set up licenses
+                licenses_location = paths["docs"] / "Licenses"
+                licenses_location.mkdir(parents=True, exist_ok=True)
+                for item in (expert_bundle_location / "docs").iterdir():
+                    target = licenses_location / item.name
+                    _infallible_symlink(item, target)
 
     def post_build(self, config, output, jobs, verbose, status):
         """Called late during 'mach build' execution, after `build(...)` has finished.
