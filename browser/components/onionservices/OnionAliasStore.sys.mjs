@@ -175,17 +175,15 @@ class Channel {
         );
         return;
       }
-      let toHostname;
-      try {
-        const toUrl = new URL(rule.rule[0].to);
-        toHostname = toUrl.hostname;
-      } catch (err) {
+      const toHostname = URL.parse(rule.rule[0].to)?.hostname;
+      if (!toHostname) {
         log.error(
-          "Cannot detect the hostname from the to rule",
-          rule.rule[0].to,
-          err
+          "Unable to parse the URL and the hostname from the to rule",
+          rule.rule[0].to
         );
+        return;
       }
+
       let fromRe;
       try {
         fromRe = new RegExp(rule.rule[0].from);
@@ -318,6 +316,7 @@ class _OnionAliasStore {
       throw Error("Name cannot be empty");
     }
 
+    // This will throw if the URL is invalid.
     new URL(chanData.pathPrefix);
     const scope = new RegExp(chanData.scope);
     const ch = new Channel(
