@@ -79,7 +79,14 @@ class RequestObserver {
   }
 
   isCrossOrigin(url1, url2) {
-    return new URL(url1).origin !== new URL(url2).origin;
+    const origin1 = URL.parse(url1)?.origin;
+    const origin2 = URL.parse(url2)?.origin;
+
+    if (!origin1 || !origin2) {
+      return true;
+    }
+
+    return origin1 !== origin2;
   }
   shouldBlindCrossOrigin(uri) {
     try {
