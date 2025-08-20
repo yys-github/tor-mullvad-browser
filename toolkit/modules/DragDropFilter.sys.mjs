@@ -97,11 +97,7 @@ export const DragDropFilter = {
         const links = aDataTransfer.mozGetDataAt(urlType, i);
         // Skip DNS-safe URLs (no hostname, e.g. RFC 3966 tel:)
         const mayLeakDNS = links.split("\n").some(link => {
-          try {
-            return new URL(link).hostname;
-          } catch (e) {
-            return false;
-          }
+          return URL.parse(link)?.hostname ?? false;
         });
         if (!mayLeakDNS) {
           continue;
