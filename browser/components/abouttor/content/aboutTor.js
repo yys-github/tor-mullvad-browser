@@ -298,10 +298,11 @@ const SurveyArea = {
    */
   init() {
     document.getElementById("survey-launch").addEventListener("click", () => {
-      if (!this._localeData) {
+      const url = URL.parse(this._urlBase);
+      if (!url || !this._localeData) {
         return;
       }
-      const url = new URL(this._urlBase);
+
       url.searchParams.append("lang", this._localeData.urlCode);
       open(url.href);
     });
