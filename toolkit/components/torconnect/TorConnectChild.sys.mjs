@@ -30,20 +30,21 @@ export class TorConnectChild extends RemotePageChild {
     this.#redirected = true;
 
     const redirect = new URLSearchParams(
-      new URL(this.contentWindow.document.location.href).search
+      URL.parse(this.contentWindow.document.location.href)?.search
     ).get("redirect");
 
     // Fallback in error cases:
     let replaceURI = "about:tor";
-    try {
-      const url = new URL(
-        redirect
-          ? decodeURIComponent(redirect)
-          : // NOTE: We expect no redirect when address is entered manually, or
-            // about:torconnect is opened from preferences or urlbar.
-            // Go to the home page.
-            await this.sendQuery("torconnect:home-page")
-      );
+    const url = URL.parse(
+      redirect
+        ? decodeURIComponent(redirect)
+        : // NOTE: We expect no redirect when address is entered manually, or
+          // about:torconnect is opened from preferences or urlbar.
+          // Go to the home page.
+          await this.sendQuery("torconnect:home-page")
+    );
+
+    if (url) {
       // Do not allow javascript URI. See tor-browser#41766
       if (
         ["about:", "file:", "https:", "http:"].includes(url.protocol) ||
@@ -55,8 +56,8 @@ export class TorConnectChild extends RemotePageChild {
       } else {
         console.error(`Scheme is not allowed "${redirect}"`);
       }
-    } catch (e) {
-      console.error(`Invalid redirect URL "${redirect}"`, e);
+    } else {
+      console.error(`Invalid redirect URL "${redirect}"`);
     }
 
     // Replace the destination to prevent "about:torconnect" entering the
