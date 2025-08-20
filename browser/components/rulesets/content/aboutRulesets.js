@@ -210,8 +210,8 @@ class EditState {
 
     const pathPrefix = elements.pathPrefixInput.value.trim();
     try {
-      const url = new URL(pathPrefix);
-      if (url.protocol !== "http:" && url.protocol !== "https:") {
+      const url = URL.parse(pathPrefix);
+      if (url?.protocol !== "http:" && url?.protocol !== "https:") {
         elements.pathPrefixInput.setCustomValidity(
           await document.l10n.formatValue("rulesets-details-path-input-invalid")
         );
