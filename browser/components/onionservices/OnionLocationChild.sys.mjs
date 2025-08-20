@@ -25,12 +25,12 @@ export class OnionLocationChild extends JSWindowActorChild {
       let onionLocationURI = doc.onionLocationURI;
       const refreshURI = docShell.QueryInterface(Ci.nsIRefreshURI);
       if (onionLocationURI && refreshURI) {
-        const docUrl = new URL(doc.URL);
-        let onionUrl = new URL(onionLocationURI.asciiSpec);
+        const docUrl = URL.parse(doc.URL);
+        let onionUrl = URL.parse(onionLocationURI.asciiSpec);
         // Keep consistent with Location
-        if (!onionUrl.hash && docUrl.hash) {
+        if (!onionUrl?.hash && docUrl?.hash) {
           onionUrl.hash = docUrl.hash;
-          onionLocationURI = Services.io.newURI(onionUrl.toString());
+          onionLocationURI = Services.io.newURI(onionUrl?.toString() || "");
         }
         refreshURI.refreshURI(
           onionLocationURI,
