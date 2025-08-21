@@ -821,10 +821,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
 
         super.onDestroy()
 
-        if (isFinishing) {
-            exitProcess(0)
-        }
-
         // Diagnostic breadcrumb for "Display already aquired" crash:
         // https://github.com/mozilla-mobile/android-components/issues/7960
         breadcrumb(
@@ -850,6 +846,16 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
         val activityStartedWithLink = startupPathProvider.startupPathForActivity == StartupPathProvider.StartupPath.VIEW
         if (this !is ExternalAppBrowserActivity && !activityStartedWithLink) {
             stopMediaSession()
+        }
+
+        if (applicationContext.components.notificationsDelegate.shouldShutDownWithOnDestroyWhenIsFinishing) {
+            if (isFinishing) {
+                shutDown()
+            }
+        } else {
+            // We only want to not shut down when the notification is swiped away,
+            // if we do not reset this value
+            applicationContext.components.notificationsDelegate.shouldShutDownWithOnDestroyWhenIsFinishing = true
         }
 
         components.core.engine.profiler?.addMarker(
