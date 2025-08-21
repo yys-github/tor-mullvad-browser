@@ -2173,6 +2173,7 @@ const gBridgeSettings = {
           Services.prompt.BUTTON_POS_0 *
             Services.prompt.BUTTON_TITLE_IS_STRING +
           Services.prompt.BUTTON_POS_0_DEFAULT +
+          Services.prompt.BUTTON_DEFAULT_IS_DESTRUCTIVE +
           Services.prompt.BUTTON_POS_1 * Services.prompt.BUTTON_TITLE_CANCEL;
 
         const [titleString, bodyString, removeString] =
