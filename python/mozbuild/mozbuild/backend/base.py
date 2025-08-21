@@ -312,8 +312,12 @@ class BuildBackend(LoggingMixin):
                 paths["exts"].mkdir(parents=True, exist_ok=True)
                 _infallible_symlink(noscript_location, noscript_target)
 
-            expert_bundle_location = Path(config.substs["TOR_EXPERT_BUNDLE"])
-            if expert_bundle_location.is_dir():
+            expert_bundle_location = config.substs.get("TOR_EXPERT_BUNDLE")
+            if expert_bundle_location:
+                expert_bundle_location = Path(expert_bundle_location)
+                if not expert_bundle_location.is_dir():
+                    return
+
                 self.log(
                     logging.INFO,
                     "_setup_tor_browser_environment",
@@ -353,9 +357,10 @@ class BuildBackend(LoggingMixin):
                         _infallible_symlink(file, target)
 
                 # Setup Tor binary
-                for item in (expert_bundle_location / "tor").iterdir():
+                for item in Path(expert_bundle_location / "tor").iterdir():
                     target = paths["tor_bin"] / item.name
-                    if target.is_file():
+
+                    if item.is_file():
                         _infallible_symlink(item, target)
 
                 # Set up licenses
