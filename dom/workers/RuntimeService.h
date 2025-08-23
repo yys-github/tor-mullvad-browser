@@ -164,7 +164,8 @@ class RuntimeService final : public nsIObserver {
 
   void MemoryPressureAllWorkers();
 
-  uint32_t ClampedHardwareConcurrency(bool aShouldResistFingerprinting) const;
+  uint32_t ClampedHardwareConcurrency(bool aRFPHardcoded,
+                                      bool aRFPTiered) const;
 
   void CrashIfHanging();
 
