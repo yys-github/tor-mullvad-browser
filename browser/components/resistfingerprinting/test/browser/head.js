@@ -908,7 +908,7 @@ async function RFPPBMFPP_NormalMode_NoProtectionsTest(
       ["privacy.fingerprintingProtection", true],
       [
         "privacy.fingerprintingProtection.overrides",
-        "-NavigatorHWConcurrency,-CanvasRandomization",
+        "-NavigatorHWConcurrency,-NavigatorHWConcurrencyTiered,-CanvasRandomization",
       ],
     ].concat(extraPrefs || []),
   });
