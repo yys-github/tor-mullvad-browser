@@ -9,6 +9,7 @@ import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.os.StrictMode
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -34,7 +35,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 import mozilla.components.browser.state.state.selectedOrDefaultSearchEngine
 import mozilla.components.concept.engine.Engine
 import mozilla.components.concept.sync.AccountObserver
@@ -185,7 +185,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        runBlocking(context = Dispatchers.IO) {
+        requireContext().components.strictMode.resetAfter(StrictMode.allowThreadDiskReads()) {
             setPreferencesFromResource(R.xml.preferences, rootKey)
         }
     }
