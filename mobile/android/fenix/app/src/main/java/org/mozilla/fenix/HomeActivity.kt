@@ -378,35 +378,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
             }
         }
 
-        SplashScreenManager(
-            splashScreenOperation = if (FxNimbus.features.splashScreen.value().offTrainOnboarding) {
-                ApplyExperimentsOperation(
-                    storage = DefaultExperimentsOperationStorage(components.settings),
-                    nimbus = components.nimbus.sdk,
-                )
-            } else {
-                FetchExperimentsOperation(
-                    storage = DefaultExperimentsOperationStorage(components.settings),
-                    nimbus = components.nimbus.sdk,
-                )
-            },
-            scope = lifecycleScope,
-            splashScreenTimeout = FxNimbus.features.splashScreen.value().maximumDurationMs.toLong(),
-            isDeviceSupported = { Build.VERSION.SDK_INT > Build.VERSION_CODES.M },
-            storage = DefaultSplashScreenStorage(components.settings),
-            showSplashScreen = { installSplashScreen().setKeepOnScreenCondition(it) },
-            onSplashScreenFinished = { result ->
-                if (result.sendTelemetry) {
-                    SplashScreen.firstLaunchExtended.record(
-                        SplashScreen.FirstLaunchExtendedExtra(dataFetched = result.wasDataFetched),
-                    )
-                }
-
-                if (savedInstanceState == null && shouldShowOnboarding) {
-                    navHost.navController.navigate(NavGraphDirections.actionGlobalOnboarding())
-                }
-            },
-        ).showSplashScreen()
+        // tor-browser#43730: Do not delay splash screen
+        // to fetch or apply Nimbus experiments.
 
         lifecycleScope.launch {
             val debugSettingsRepository = DefaultDebugSettingsRepository(
