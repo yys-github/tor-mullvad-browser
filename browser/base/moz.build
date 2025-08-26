@@ -79,14 +79,7 @@ PERFTESTS_MANIFESTS += ["content/test/perftest.toml"]
 DEFINES["MOZ_APP_VERSION"] = CONFIG["MOZ_APP_VERSION"]
 DEFINES["MOZ_APP_VERSION_DISPLAY"] = CONFIG["MOZ_APP_VERSION_DISPLAY"]
 
-# Firefox's about:license: the shared page plus the Mozilla binaries notice.
-# jar.mn overrides chrome://global/content/license.html with this copy.
-GENERATED_FILES += ["license.html"]
-GENERATED_FILES["license.html"].script = "/toolkit/content/gen_license_html.py"
-GENERATED_FILES["license.html"].inputs = [
-    "/toolkit/content/license.html.mako",
-    "!/licenses.json",
-    "content/overrides/app-license.html",
-]
+# Do not include the Firefox app-license.html in about:license.
+# tor-browser#43901.
 
 JAR_MANIFESTS += ["jar.mn"]
