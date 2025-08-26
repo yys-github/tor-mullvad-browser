@@ -279,6 +279,9 @@ export class NetErrorChild extends RemotePageChild {
   }
 
   RPMShowOSXLocalNetworkPermissionWarning() {
+    // Short-circuit per tor-browser#44127
+    return false;
+    /*
     if (!lazy.AppInfo.isMac) {
       return false;
     }
@@ -290,5 +293,6 @@ export class NetErrorChild extends RemotePageChild {
     let version = parseInt(Services.sysinfo.getProperty("version"));
     // We only show this error on Sequoia or later
     return version >= 24;
+    */
   }
 }
