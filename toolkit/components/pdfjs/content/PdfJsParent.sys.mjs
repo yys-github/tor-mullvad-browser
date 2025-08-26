@@ -424,6 +424,8 @@ export class PdfJsParent extends JSWindowActorParent {
         return this.#getSignatures(data);
       case "delete":
         return this.#deleteSignature(data);
+      case "isVolatile":
+        return lazy.PrivateBrowsingUtils.isBrowserPrivate(this.browser);
       default:
         return null;
     }
