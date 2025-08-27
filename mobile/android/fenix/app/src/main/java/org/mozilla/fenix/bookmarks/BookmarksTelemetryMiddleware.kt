@@ -68,7 +68,6 @@ internal class BookmarksTelemetryMiddleware : Middleware<BookmarksState, Bookmar
             is SelectFolderAction.ItemClicked,
             is SelectFolderAction.ChevronClicked,
             AddFolderAction.ParentFolderClicked,
-            SignIntoSyncClicked,
             is AddFolderAction.FolderCreated,
             is AddFolderAction.TitleChanged,
             is EditBookmarkAction.TitleChanged,
