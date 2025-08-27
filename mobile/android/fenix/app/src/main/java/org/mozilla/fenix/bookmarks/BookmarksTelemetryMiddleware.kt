@@ -76,7 +76,6 @@ internal class BookmarksTelemetryMiddleware : Middleware<BookmarksState, Bookmar
             is ReceivedSyncSignInUpdate,
             CloseClicked,
             AddFolderClicked,
-            SignIntoSyncClicked,
             OpenTabsConfirmationDialogAction.CancelTapped,
             OpenTabsConfirmationDialogAction.ConfirmTapped,
             FirstSyncCompleted,
