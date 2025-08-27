@@ -372,16 +372,6 @@ private fun TabPageBannerTabs(
             Icon(painterResource(iconsR.drawable.mozac_ic_tab_group_24), null)
         }
     }
-
-    BannerTab(
-        selected = selectedPage == Page.SyncedTabs,
-        testTag = TabsTrayTestTag.SYNCED_TABS_PAGE_BUTTON,
-        contentDescription = syncedTabDescription,
-        inactiveColor = inactiveColor,
-        onClick = { onTabPageIndicatorClicked(Page.SyncedTabs) },
-    ) {
-        Icon(painterResource(iconsR.drawable.mozac_ic_sync_tabs_24), null)
-    }
 }
 
 @Composable
