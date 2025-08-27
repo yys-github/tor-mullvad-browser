@@ -159,7 +159,6 @@ internal class BookmarksMiddleware(
             }
             AddFolderClicked -> getNavController().navigate(BookmarksDestinations.ADD_FOLDER)
             CloseClicked -> exitBookmarks()
-            SignIntoSyncClicked -> navigateToSignIntoSync()
             is EditBookmarkClicked -> getNavController().navigate(BookmarksDestinations.EDIT_BOOKMARK)
             BackClicked -> {
                 when {
