@@ -9,6 +9,7 @@ FROM containers.torproject.org/tpo/tpa/base-images/python:bookworm
 
 RUN apt-get update && apt-get install -y \
         clang \
+        clang-tidy \
         curl \
         git \
         libasound2-dev \
