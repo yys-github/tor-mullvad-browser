@@ -1139,30 +1139,11 @@ private fun EmptyList(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Image(
-                painter = painterResource(state.drawableId()),
-                contentDescription = null,
-            )
             Text(
                 text = stringResource(R.string.bookmark_empty_list_title),
                 style = FirefoxTheme.typography.headline7,
                 color = FirefoxTheme.colors.textPrimary,
             )
-            Text(
-                text = stringResource(state.descriptionId()),
-                style = FirefoxTheme.typography.body2,
-                color = FirefoxTheme.colors.textPrimary,
-                textAlign = TextAlign.Center,
-            )
-            if (state is EmptyListState.NotAuthenticated) {
-                FilledButton(
-                    text = stringResource(R.string.bookmark_empty_list_guest_cta),
-                    onClick = { dispatcher(SignIntoSyncClicked) },
-                    modifier = Modifier
-                        .heightIn(36.dp)
-                        .fillMaxWidth(),
-                )
-            }
         }
     }
 }
