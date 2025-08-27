@@ -67,7 +67,6 @@ internal fun bookmarksReducer(state: BookmarksState, action: BookmarksAction) = 
     FirstSyncCompleted,
     ViewDisposed,
     SelectFolderAction.ViewAppeared,
-    SignIntoSyncClicked,
     is InitEdit,
     Init,
     PrivateBrowsingAuthorized,
