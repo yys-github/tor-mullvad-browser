@@ -1307,39 +1307,11 @@ private fun EmptyList(
             modifier = Modifier.width(FirefoxTheme.layout.size.containerMaxWidth),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Image(
-                painter = painterResource(state.drawableId()),
-                contentDescription = null,
-            )
-
-            Spacer(modifier = Modifier.height(FirefoxTheme.layout.space.static200))
-
             Text(
                 text = stringResource(R.string.bookmark_empty_list_title),
                 color = MaterialTheme.colorScheme.onSurface,
                 style = FirefoxTheme.typography.headline6,
             )
-
-            Spacer(modifier = Modifier.height(FirefoxTheme.layout.space.static100))
-
-            Text(
-                text = stringResource(state.descriptionId()),
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                style = FirefoxTheme.typography.body2,
-                textAlign = TextAlign.Center,
-            )
-
-            if (state is EmptyListState.NotAuthenticated) {
-                Spacer(modifier = Modifier.height(FirefoxTheme.layout.space.static300))
-
-                FilledButton(
-                    text = stringResource(R.string.bookmark_empty_list_guest_cta),
-                    onClick = { dispatcher(SignIntoSyncClicked) },
-                    modifier = Modifier
-                        .heightIn(36.dp)
-                        .fillMaxWidth(),
-                )
-            }
         }
     }
 }
