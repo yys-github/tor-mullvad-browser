@@ -113,7 +113,6 @@ internal data object CloseClicked : BookmarksAction
 
 internal data object BackClicked : BookmarksAction
 
-internal data object SignIntoSyncClicked : BookmarksAction
 
 internal data class EditBookmarkClicked(val bookmark: BookmarkItem.Bookmark) : BookmarksAction
 
