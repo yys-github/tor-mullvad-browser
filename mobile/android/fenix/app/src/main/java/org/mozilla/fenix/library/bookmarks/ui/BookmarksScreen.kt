@@ -826,38 +826,11 @@ private fun EmptyList(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(16.dp),
         ) {
-            Image(
-                painter = painterResource(state.drawableId()),
-                contentDescription = null,
-            )
             Text(
                 text = stringResource(R.string.bookmark_empty_list_title),
                 style = FirefoxTheme.typography.headline7,
                 color = FirefoxTheme.colors.textPrimary,
             )
-            Text(
-                text = stringResource(state.descriptionId()),
-                style = FirefoxTheme.typography.body2,
-                color = FirefoxTheme.colors.textPrimary,
-                textAlign = TextAlign.Center,
-            )
-            if (state is EmptyListState.NotAuthenticated) {
-                TextButton(
-                    onClick = { dispatcher(SignIntoSyncClicked) },
-                    colors = ButtonDefaults.buttonColors(backgroundColor = FirefoxTheme.colors.actionPrimary),
-                    shape = RoundedCornerShape(4.dp),
-                    modifier = Modifier
-                        .heightIn(36.dp)
-                        .fillMaxWidth(),
-                ) {
-                    Text(
-                        text = stringResource(R.string.bookmark_empty_list_guest_cta),
-                        color = FirefoxTheme.colors.textOnColorPrimary,
-                        style = FirefoxTheme.typography.button,
-                        textAlign = TextAlign.Center,
-                    )
-                }
-            }
         }
     }
 }
