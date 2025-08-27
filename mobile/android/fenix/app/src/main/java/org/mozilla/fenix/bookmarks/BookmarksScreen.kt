@@ -1017,7 +1017,7 @@ private fun EmptyList(
             when (state) {
                 is EmptyListState.NotAuthenticated -> RootEmptyContent(
                     dispatcher,
-                    showSignIn = true,
+                    showSignIn = false,
                     showBookmarksImport = showBookmarksImport,
                 )
                 EmptyListState.Authenticated -> RootEmptyContent(
@@ -1037,14 +1037,6 @@ private fun RootEmptyContent(
     showSignIn: Boolean,
     showBookmarksImport: Boolean,
 ) {
-    Image(
-        painter = painterResource(R.drawable.ic_kit_bookmarks_empty_state),
-        modifier = Modifier.width(204.dp).height(182.dp),
-        contentDescription = null,
-    )
-
-    Spacer(modifier = Modifier.height(FirefoxTheme.layout.space.static200))
-
     Text(
         text = stringResource(R.string.bookmark_empty_list_root_title),
         color = MaterialTheme.colorScheme.onSurface,
@@ -1079,13 +1071,6 @@ private fun RootEmptyContent(
 
 @Composable
 private fun FolderEmptyContent() {
-    Image(
-        painter = painterResource(R.drawable.bookmarks_folder_illustration),
-        contentDescription = null,
-    )
-
-    Spacer(modifier = Modifier.height(FirefoxTheme.layout.space.static200))
-
     Text(
         text = stringResource(R.string.bookmark_empty_list_title),
         color = MaterialTheme.colorScheme.onSurface,
