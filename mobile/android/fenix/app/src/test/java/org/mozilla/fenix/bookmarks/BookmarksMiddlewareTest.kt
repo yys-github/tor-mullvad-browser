@@ -1230,31 +1230,8 @@ class BookmarksMiddlewareTest {
             assertFalse(exited)
         }
 
-    @Test
-    fun `GIVEN current screen is an empty list and the top-level is loaded WHEN sign into sync is clicked THEN navigate to sign into sync `() =
-        runTest {
-            coEvery {
-                bookmarksStorage.countBookmarksInTrees(
-                    listOf(
-                        BookmarkRoot.Menu.id,
-                        BookmarkRoot.Toolbar.id,
-                        BookmarkRoot.Unfiled.id,
-                    ),
-                )
-            } returns 0u
-            coEvery { bookmarksStorage.getTree(BookmarkRoot.Mobile.id) } returns Result.success(
-                generateBookmarkTree(),
-            )
-            var navigated = false
-            navigateToSignIntoSync = { navigated = true }
-            val middleware = buildMiddleware(this)
-            val store = middleware.makeStore()
-            testScheduler.advanceUntilIdle()
-
-            store.dispatch(SignIntoSyncClicked)
-
-            assertTrue(navigated)
-        }
+    // tor-browser#44098: sign-into-sync from bookmarks was removed, along with the
+    // SignIntoSyncClicked action this test used to dispatch.
 
     @Test
     fun `GIVEN current screen is a subfolder WHEN close is clicked THEN exit bookmarks `() =
