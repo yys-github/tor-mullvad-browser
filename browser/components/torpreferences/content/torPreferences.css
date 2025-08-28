@@ -57,8 +57,8 @@ button.spoof-button-disabled {
   height: 18px;
   margin-inline-end: 8px;
   -moz-context-properties: fill, stroke;
-  fill: currentColor;
-  stroke: currentColor;
+  fill: var(--icon-color);
+  stroke: var(--icon-color);
 }
 
 #network-status-internet-area .network-status-icon {
@@ -79,13 +79,7 @@ button.spoof-button-disabled {
 
 #network-status-tor-area.status-blocked .network-status-icon {
   /* Same as .tor-connect-status-potentially-blocked. */
-  stroke: #c50042;
-}
-
-@media (prefers-color-scheme: dark) {
-  #network-status-tor-area.status-blocked  .network-status-icon {
-    stroke: #ff9aa2;
-  }
+  stroke: var(--icon-color-critical);
 }
 
 .network-status-label {
