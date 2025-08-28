@@ -1571,6 +1571,15 @@ abstract class BaseBrowserFragment :
                     openLinksInExternalApp
                 }
             }
+
+        getSafeCurrentTab()?.id?.let {
+            requireComponents.core.store.dispatch(
+                ContentAction.UpdateExpandedToolbarStateAction(
+                    sessionId = it,
+                    expanded = true,
+                ),
+            )
+        }
     }
 
     @CallSuper
