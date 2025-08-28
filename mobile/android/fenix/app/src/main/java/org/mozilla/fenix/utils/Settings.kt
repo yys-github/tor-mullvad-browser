@@ -2955,23 +2955,7 @@ class Settings(
     fun shouldShowSetAsDefaultPrompt(
         nimbusFeature: DefaultBrowserPrompt = FxNimbus.features.defaultBrowserPrompt.value(),
     ): Boolean {
-        if (!nimbusFeature.enabled) return false
-
-        val now = System.currentTimeMillis()
-
-        val daysOk = nimbusFeature.daysBetweenPrompts?.let { intervalDays ->
-            (now - lastSetAsDefaultPromptShownTimeInMillis) > intervalDays * ONE_DAY_MS
-        } ?: true
-
-        val maxOk = nimbusFeature.maxPromptsShown?.let { max ->
-            numberOfSetAsDefaultPromptShownTimes < max
-        } ?: true
-
-        val coldStartsOk = nimbusFeature.coldStartsBetweenPrompts?.let { minColdStarts ->
-            coldStartsBetweenSetAsDefaultPrompts >= minColdStarts
-        } ?: true
-
-        return daysOk && maxOk && coldStartsOk
+        return false // tor-browser#43976 Remove default browser prompt
     }
 
     /**
