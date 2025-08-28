@@ -20,7 +20,10 @@ button.spoof-button-disabled {
   width: 16px;
   height: 16px;
   -moz-context-properties: fill;
-  fill: var(--tor-accent-color);
+  /* Use --tor-text-color. This will have good contrast for this small icon
+   * against the background. And it will match the surrounding text for high
+   * contrast and forced colour themes. */
+  fill: var(--tor-text-color);
   content: url("chrome://global/skin/icons/loading.svg");
 }
 
@@ -168,7 +171,7 @@ button.spoof-button-disabled {
    * using it for text colors, so we only enable these rules when not using a
    * high contrast theme or forced colors. */
   .bridge-status-badge.bridge-status-connected {
-    color: var(--tor-accent-color);
+    color: var(--tor-text-color);
   }
 
   .bridge-status-badge.bridge-status-current-built-in {
