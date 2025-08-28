@@ -2289,11 +2289,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      * Indicates if the Set as default Browser prompt should be displayed to the user.
      */
     val shouldShowSetAsDefaultPrompt: Boolean
-        get() =
-            (System.currentTimeMillis() - lastSetAsDefaultPromptShownTimeInMillis) >
-                DAYS_BETWEEN_DEFAULT_BROWSER_PROMPTS * ONE_DAY_MS &&
-                numberOfSetAsDefaultPromptShownTimes < MAX_NUMBER_OF_DEFAULT_BROWSER_PROMPTS &&
-                coldStartsBetweenSetAsDefaultPrompts >= APP_COLD_STARTS_TO_SHOW_DEFAULT_PROMPT
+        get() = false // bug_43976 Remove default browser prompt
 
     /**
      * Updates the relevant settings when the "Set as Default Browser" prompt is shown.
