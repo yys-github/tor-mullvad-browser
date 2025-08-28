@@ -12,8 +12,8 @@
 
 #tor-connect-titlebar-status img {
   -moz-context-properties: fill, stroke;
-  fill: currentColor;
-  stroke: currentColor;
+  fill: var(--icon-color);
+  stroke: var(--icon-color);
   width: 16px;
   height: 16px;
   object-fit: none;
@@ -30,21 +30,23 @@
    * we assign the potentially-blocked class, we do *not* expect to be connected
    * at the same time, so we only expect this first frame to be visible in this
    * state. */
-  stroke: #c50042;
-}
-
-@media (prefers-color-scheme: dark) {
-  #tor-connect-titlebar-status.tor-connect-status-potentially-blocked img {
-    stroke: #ff9aa2;
-  }
+  stroke: var(--icon-color-critical);
 }
 
 #tor-connect-titlebar-status.tor-connect-status-connected img {
   object-position: var(--tor-connected-offset);
 }
 
-#tor-connect-titlebar-status.tor-connect-status-connected {
-  color: var(--tor-text-color);
+@media not ((prefers-contrast) or (forced-colors)) {
+  /* Make the connected text and icon purple. */
+  #tor-connect-titlebar-status.tor-connect-status-connected {
+    color: var(--tor-text-color);
+  }
+
+  #tor-connect-titlebar-status.tor-connect-status-connected img {
+    fill: var(--tor-text-color);
+    stroke: var(--tor-text-color);
+  }
 }
 
 @keyframes onion-not-connected-to-connected {
@@ -63,6 +65,7 @@
   }
 
   #tor-connect-titlebar-status.tor-connect-status-connected.tor-connect-status-animate-transition img {
+    transition: fill 1000ms, stroke 1000ms;
     animation-name: onion-not-connected-to-connected;
     animation-delay: 200ms;
     animation-fill-mode: both;
