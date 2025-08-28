@@ -1577,6 +1577,15 @@ abstract class BaseBrowserFragment :
                 }
             }
         handleBetaHtmlTorConnect()
+
+        getSafeCurrentTab()?.id?.let {
+            requireComponents.core.store.dispatch(
+                ContentAction.UpdateExpandedToolbarStateAction(
+                    sessionId = it,
+                    expanded = true,
+                ),
+            )
+        }
     }
 
     private fun handleBetaHtmlTorConnect() {
