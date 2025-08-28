@@ -1887,6 +1887,15 @@ abstract class BaseBrowserFragment :
             true
         BiometricAuthenticationManager.biometricAuthenticationNeededInfo.authenticationStatus =
             AuthenticationStatus.NOT_AUTHENTICATED
+
+        getSafeCurrentTab()?.id?.let {
+            requireComponents.core.store.dispatch(
+                ContentAction.UpdateExpandedToolbarStateAction(
+                    sessionId = it,
+                    expanded = true,
+                ),
+            )
+        }
     }
 
     private fun evaluateMessagesForMicrosurvey(components: Components) =
