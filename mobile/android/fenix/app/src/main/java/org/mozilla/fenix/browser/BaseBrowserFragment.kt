@@ -1895,6 +1895,15 @@ abstract class BaseBrowserFragment :
             AuthenticationStatus.NOT_AUTHENTICATED
 
         handleBetaHtmlTorConnect()
+
+        getSafeCurrentTab()?.id?.let {
+            requireComponents.core.store.dispatch(
+                ContentAction.UpdateExpandedToolbarStateAction(
+                    sessionId = it,
+                    expanded = true,
+                ),
+            )
+        }
     }
 
     private fun handleBetaHtmlTorConnect() {
