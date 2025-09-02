@@ -864,7 +864,9 @@ auto DocumentLoadListener::Open(nsDocShellLoadState* aLoadState,
   if (documentContext && aLoadState->LoadType() != LOAD_ERROR_PAGE &&
       !(aLoadState->HasInternalLoadFlags(
           nsDocShell::INTERNAL_LOAD_FLAGS_BYPASS_LOAD_URI_DELEGATE)) &&
-      !(aLoadState->LoadType() & LOAD_HISTORY)) {
+      !(aLoadState->LoadType() & LOAD_HISTORY) &&
+      !nsExternalHelperAppService::ExternalProtocolIsBlockedBySandbox(
+          documentContext, aLoadState->HasValidUserGestureActivation())) {
     nsCOMPtr<nsIWidget> widget =
         documentContext->GetParentProcessWidgetContaining();
     RefPtr<nsWindow> window = nsWindow::From(widget);
@@ -2960,7 +2962,8 @@ DocumentLoadListener::AsyncOnChannelRedirect(
       bc ? bc->GetParentProcessWidgetContaining() : nullptr;
   RefPtr<nsWindow> window = nsWindow::From(widget);
 
-  if (window) {
+  if (window && !nsExternalHelperAppService::ExternalProtocolIsBlockedBySandbox(
+                    bc, false)) {
     promise = window->OnLoadRequest(uriBeingLoaded,
                                     nsIBrowserDOMWindow::OPEN_CURRENTWINDOW,
                                     nsIWebNavigation::LOAD_FLAGS_IS_REDIRECT,
