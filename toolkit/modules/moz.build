@@ -164,7 +164,6 @@ EXTRA_JS_MODULES += [
     "DateTimePickerPanel.sys.mjs",
     "DeferredTask.sys.mjs",
     "DomainFrontedRequests.sys.mjs",
-    "DragDropFilter.sys.mjs",
     "E10SUtils.sys.mjs",
     "EventEmitter.sys.mjs",
     "FileUtils.sys.mjs",
@@ -218,6 +217,10 @@ EXTRA_JS_MODULES += [
     "Troubleshoot.sys.mjs",
     "UpdateUtils.sys.mjs",
     "WebChannel.sys.mjs",
+]
+
+MOZ_SRC_FILES += [
+    "DragDropFilter.sys.mjs",
 ]
 
 if CONFIG["MOZ_ASAN_REPORTER"]:
