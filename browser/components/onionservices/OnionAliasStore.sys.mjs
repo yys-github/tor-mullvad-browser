@@ -84,12 +84,14 @@ class Channel {
     };
   }
 
+  #enabled;
+
   constructor(name, pathPrefix, jwk, scope, enabled) {
     this.name = name;
     this.pathPrefix = pathPrefix;
     this.jwk = jwk;
     this.scope = scope;
-    this._enabled = enabled;
+    this.#enabled = enabled;
 
     this.mappings = [];
     this.currentTimestamp = 0;
@@ -158,10 +160,10 @@ class Channel {
     log.debug(
       `Downloaded and verified rules for ${this.name}, now uncompressing`
     );
-    this._makeMappings(JSON.parse(await gunzip(rulesGz)));
+    this.#makeMappings(JSON.parse(await gunzip(rulesGz)));
   }
 
-  _makeMappings(rules) {
+  #makeMappings(rules) {
     const toTest = /^https?:\/\/[a-zA-Z0-9\.]{56}\.onion$/;
     const mappings = [];
     rules.rulesets.forEach(rule => {
@@ -210,7 +212,7 @@ class Channel {
 
   async updateMappings(force) {
     force = force === undefined ? false : !!force;
-    if (!this._enabled && !force) {
+    if (!this.#enabled && !force) {
       return;
     }
     await this.updateLatestTimestamp();
@@ -224,10 +226,10 @@ class Channel {
   }
 
   get enabled() {
-    return this._enabled;
+    return this.#enabled;
   }
   set enabled(enabled) {
-    this._enabled = enabled;
+    this.#enabled = enabled;
     if (!enabled) {
       this.mappings = [];
       this.currentTimestamp = 0;
@@ -243,7 +245,7 @@ class Channel {
       pathPrefix: this.pathPrefix,
       jwk: this.jwk,
       scope,
-      enabled: this._enabled,
+      enabled: this.#enabled,
       mappings: this.mappings,
       currentTimestamp: this.currentTimestamp,
     };
@@ -277,37 +279,35 @@ class _OnionAliasStore {
     return 86400 * 1000; // 1 day, like HTTPS-Everywhere
   }
 
-  constructor() {
-    this._channels = new Map();
-    this._rulesetTimeout = null;
-    this._lastCheck = 0;
-    this._storage = null;
-  }
+  #channels = new Map();
+  #rulesetTimeout = null;
+  #lastCheck = 0;
+  #storage = null;
 
   async init() {
     lazy.TorRequestWatch.start();
-    await this._loadSettings();
+    await this.#loadSettings();
     if (this.enabled) {
-      await this._startUpdates();
+      await this.#startUpdates();
     }
     Services.prefs.addObserver(kPrefOnionAliasEnabled, this);
   }
 
   uninit() {
-    this._clear();
-    if (this._rulesetTimeout) {
-      clearTimeout(this._rulesetTimeout);
+    this.#clear();
+    if (this.#rulesetTimeout) {
+      clearTimeout(this.#rulesetTimeout);
     }
-    this._rulesetTimeout = null;
+    this.#rulesetTimeout = null;
     Services.prefs.removeObserver(kPrefOnionAliasEnabled, this);
     lazy.TorRequestWatch.stop();
   }
 
   async getChannels() {
-    if (this._storage === null) {
-      await this._loadSettings();
+    if (this.#storage === null) {
+      await this.#loadSettings();
     }
-    return Array.from(this._channels.values(), ch => ch.toJSON());
+    return Array.from(this.#channels.values(), ch => ch.toJSON());
   }
 
   async setChannel(chanData) {
@@ -328,20 +328,20 @@ class _OnionAliasStore {
     );
     // Call makeKey to make it throw if the key is invalid
     await ch.makeKey();
-    this._channels.set(name, ch);
-    this._applyMappings();
-    this._saveSettings();
-    setTimeout(this._notifyChanges.bind(this), 1);
+    this.#channels.set(name, ch);
+    this.#applyMappings();
+    this.#saveSettings();
+    setTimeout(this.#notifyChanges.bind(this), 1);
     return ch;
   }
 
   enableChannel(name, enabled) {
-    const channel = this._channels.get(name);
+    const channel = this.#channels.get(name);
     if (channel !== null) {
       channel.enabled = enabled;
-      this._applyMappings();
-      this._saveSettings();
-      this._notifyChanges();
+      this.#applyMappings();
+      this.#saveSettings();
+      this.#notifyChanges();
       if (this.enabled && enabled && !channel.currentTimestamp) {
         this.updateChannel(name);
       }
@@ -352,46 +352,46 @@ class _OnionAliasStore {
     if (!this.enabled) {
       throw Error("Onion Aliases are disabled");
     }
-    const channel = this._channels.get(name);
+    const channel = this.#channels.get(name);
     if (channel === null) {
       throw Error("Channel not found");
     }
     await channel.updateMappings(true);
-    this._saveSettings();
-    this._applyMappings();
-    setTimeout(this._notifyChanges.bind(this), 1);
+    this.#saveSettings();
+    this.#applyMappings();
+    setTimeout(this.#notifyChanges.bind(this), 1);
     return channel;
   }
 
   deleteChannel(name) {
-    if (this._channels.delete(name)) {
-      this._saveSettings();
-      this._applyMappings();
-      this._notifyChanges();
+    if (this.#channels.delete(name)) {
+      this.#saveSettings();
+      this.#applyMappings();
+      this.#notifyChanges();
     }
   }
 
-  async _loadSettings() {
-    if (this._storage !== null) {
+  async #loadSettings() {
+    if (this.#storage !== null) {
       return;
     }
-    this._channels = new Map();
-    this._storage = new lazy.JSONFile({
+    this.#channels = new Map();
+    this.#storage = new lazy.JSONFile({
       path: PathUtils.join(
         Services.dirsvc.get("ProfD", Ci.nsIFile).path,
         "onion-aliases.json"
       ),
-      dataPostProcessor: this._settingsProcessor.bind(this),
+      dataPostProcessor: this.#settingsProcessor.bind(this),
     });
-    await this._storage.load();
-    log.debug("Loaded settings", this._storage.data, this._storage.path);
-    this._applyMappings();
-    this._notifyChanges();
+    await this.#storage.load();
+    log.debug("Loaded settings", this.#storage.data, this.#storage.path);
+    this.#applyMappings();
+    this.#notifyChanges();
   }
 
-  _settingsProcessor(data) {
+  #settingsProcessor(data) {
     if ("lastCheck" in data) {
-      this._lastCheck = data.lastCheck;
+      this.#lastCheck = data.lastCheck;
     } else {
       data.lastCheck = 0;
     }
@@ -410,56 +410,56 @@ class _OnionAliasStore {
       }
       return true;
     });
-    this._channels = channels;
+    this.#channels = channels;
     return data;
   }
 
-  _saveSettings() {
-    if (this._storage === null) {
+  #saveSettings() {
+    if (this.#storage === null) {
       throw Error("Settings have not been loaded");
     }
-    this._storage.data.lastCheck = this._lastCheck;
-    this._storage.data.channels = Array.from(this._channels.values(), ch =>
+    this.#storage.data.lastCheck = this.#lastCheck;
+    this.#storage.data.channels = Array.from(this.#channels.values(), ch =>
       ch.toJSON()
     );
-    this._storage.saveSoon();
+    this.#storage.saveSoon();
   }
 
-  _addMapping(shortOnionHost, longOnionHost) {
+  #addMapping(shortOnionHost, longOnionHost) {
     const service = Cc["@torproject.org/onion-alias-service;1"].getService(
       Ci.IOnionAliasService
     );
     service.addOnionAlias(shortOnionHost, longOnionHost);
   }
 
-  _clear() {
+  #clear() {
     const service = Cc["@torproject.org/onion-alias-service;1"].getService(
       Ci.IOnionAliasService
     );
     service.clearOnionAliases();
   }
 
-  _applyMappings() {
-    this._clear();
-    for (const ch of this._channels.values()) {
+  #applyMappings() {
+    this.#clear();
+    for (const ch of this.#channels.values()) {
       if (!ch.enabled) {
         continue;
       }
       for (const [short, long] of ch.mappings) {
-        this._addMapping(short, long);
+        this.#addMapping(short, long);
       }
     }
   }
 
-  async _periodicRulesetCheck() {
+  async #periodicRulesetCheck() {
     if (!this.enabled) {
       log.debug("Onion Aliases are disabled, not updating rulesets.");
       return;
     }
     log.debug("Begin scheduled ruleset update");
-    this._lastCheck = Date.now();
+    this.#lastCheck = Date.now();
     let anyUpdated = false;
-    for (const ch of this._channels.values()) {
+    for (const ch of this.#channels.values()) {
       if (!ch.enabled) {
         log.debug(`Not updating ${ch.name} because not enabled`);
         continue;
@@ -473,22 +473,22 @@ class _OnionAliasStore {
       }
     }
     if (anyUpdated) {
-      this._saveSettings();
-      this._applyMappings();
-      this._notifyChanges();
+      this.#saveSettings();
+      this.#applyMappings();
+      this.#notifyChanges();
     } else {
       log.debug("No channel has been updated, avoid saving");
     }
-    this._scheduleCheck(_OnionAliasStore.RULESET_CHECK_INTERVAL);
+    this.#scheduleCheck(_OnionAliasStore.RULESET_CHECK_INTERVAL);
   }
 
-  async _startUpdates() {
-    // This is a "private" function, so we expect the callers to verify wheter
+  async #startUpdates() {
+    // This is a private function, so we expect the callers to verify whether
     // onion aliases are enabled.
     // Callees will also do, so we avoid an additional check here.
-    const dt = Date.now() - this._lastCheck;
+    const dt = Date.now() - this.#lastCheck;
     let force = false;
-    for (const ch of this._channels.values()) {
+    for (const ch of this.#channels.values()) {
       if (ch.enabled && !ch.currentTimestamp) {
         // Edited while being offline or some other error happened
         force = true;
@@ -499,34 +499,34 @@ class _OnionAliasStore {
       log.debug(
         `Mappings are stale (${dt}), or force check requested (${force}), checking them immediately`
       );
-      await this._periodicRulesetCheck();
+      await this.#periodicRulesetCheck();
     } else {
-      this._scheduleCheck(_OnionAliasStore.RULESET_CHECK_INTERVAL - dt);
+      this.#scheduleCheck(_OnionAliasStore.RULESET_CHECK_INTERVAL - dt);
     }
   }
 
-  _scheduleCheck(dt) {
-    if (this._rulesetTimeout) {
+  #scheduleCheck(dt) {
+    if (this.#rulesetTimeout) {
       log.warn("The previous update timeout was not null");
-      clearTimeout(this._rulesetTimeout);
+      clearTimeout(this.#rulesetTimeout);
     }
     if (!this.enabled) {
       log.warn(
         "Ignoring the scheduling of a new check because the Onion Alias feature is currently disabled."
       );
-      this._rulesetTimeout = null;
+      this.#rulesetTimeout = null;
       return;
     }
     log.debug(`Scheduling ruleset update in ${dt}`);
-    this._rulesetTimeout = setTimeout(() => {
-      this._rulesetTimeout = null;
-      this._periodicRulesetCheck();
+    this.#rulesetTimeout = setTimeout(() => {
+      this.#rulesetTimeout = null;
+      this.#periodicRulesetCheck();
     }, dt);
   }
 
-  _notifyChanges() {
+  #notifyChanges() {
     Services.obs.notifyObservers(
-      Array.from(this._channels.values(), ch => ch.toJSON()),
+      Array.from(this.#channels.values(), ch => ch.toJSON()),
       OnionAliasStoreTopics.ChannelsChanged
     );
   }
@@ -538,10 +538,10 @@ class _OnionAliasStore {
   observe(aSubject, aTopic) {
     if (aTopic === "nsPref:changed") {
       if (this.enabled) {
-        this._startUpdates();
-      } else if (this._rulesetTimeout) {
-        clearTimeout(this._rulesetTimeout);
-        this._rulesetTimeout = null;
+        this.#startUpdates();
+      } else if (this.#rulesetTimeout) {
+        clearTimeout(this.#rulesetTimeout);
+        this.#rulesetTimeout = null;
       }
     }
   }
