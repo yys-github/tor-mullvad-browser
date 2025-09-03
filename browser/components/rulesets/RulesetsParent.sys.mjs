@@ -1,9 +1,11 @@
-// Copyright (c) 2022, The Tor Project, Inc.
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import {
   OnionAliasStore,
   OnionAliasStoreTopics,
-} from "resource:///modules/OnionAliasStore.sys.mjs";
+} from "moz-src:///browser/components/onionservices/OnionAliasStore.sys.mjs";
 
 const kShowWarningPref = "torbrowser.rulesets.show_warning";
 
@@ -56,9 +58,10 @@ export class RulesetsParent extends JSWindowActorParent {
         return {
           showWarning: Services.prefs.getBoolPref(kShowWarningPref, true),
         };
-      case "rulesets:set-channel":
+      case "rulesets:set-channel": {
         const ch = await OnionAliasStore.setChannel(message.data);
         return ch;
+      }
       case "rulesets:update-channel":
         // We need to catch any error in this way, because in case of an
         // exception, RPMSendQuery does not return on the other side

@@ -1,4 +1,6 @@
-// Copyright (c) 2022, The Tor Project, Inc.
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 import { setTimeout, clearTimeout } from "resource://gre/modules/Timer.sys.mjs";
 
@@ -6,7 +8,10 @@ const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
   JSONFile: "resource://gre/modules/JSONFile.sys.mjs",
-  TorRequestWatch: "resource:///modules/TorRequestWatch.sys.mjs",
+  TorConnect: "resource://gre/modules/TorConnect.sys.mjs",
+  TorConnectTopics: "resource://gre/modules/TorConnect.sys.mjs",
+  TorRequestWatch:
+    "moz-src:///browser/components/onionservices/TorRequestWatch.sys.mjs",
 });
 
 /* OnionAliasStore observer topics */
@@ -287,8 +292,10 @@ class _OnionAliasStore {
   async init() {
     lazy.TorRequestWatch.start();
     await this.#loadSettings();
-    if (this.enabled) {
+    if (this.enabled && !lazy.TorConnect.shouldShowTorConnect) {
       await this.#startUpdates();
+    } else {
+      Services.obs.addObserver(this, lazy.TorConnectTopics.BootstrapComplete);
     }
     Services.prefs.addObserver(kPrefOnionAliasEnabled, this);
   }
@@ -299,7 +306,10 @@ class _OnionAliasStore {
       clearTimeout(this.#rulesetTimeout);
     }
     this.#rulesetTimeout = null;
+
+    Services.obs.removeObserver(this, lazy.TorConnectTopics.BootstrapComplete);
     Services.prefs.removeObserver(kPrefOnionAliasEnabled, this);
+
     lazy.TorRequestWatch.stop();
   }
 
@@ -543,6 +553,11 @@ class _OnionAliasStore {
         clearTimeout(this.#rulesetTimeout);
         this.#rulesetTimeout = null;
       }
+    } else if (
+      aTopic === lazy.TorConnectTopics.BootstrapComplete &&
+      this.enabled
+    ) {
+      this.#startUpdates();
     }
   }
 }
