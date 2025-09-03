@@ -152,7 +152,7 @@ MOZ_SRC_FILES += [
     "ContextId.sys.mjs",
     "ClipboardPrivacy.sys.mjs",
     "ObserverForwarder.sys.mjs",
-    "SecurityLevelRestartNotification.sys.mjs",
+    "SecurityLevelNotification.sys.mjs",
     "TorSettingsNotification.sys.mjs",
     "UnexpectedScriptObserver.sys.mjs",
 ]
