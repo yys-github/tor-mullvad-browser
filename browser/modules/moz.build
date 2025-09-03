@@ -140,7 +140,6 @@ EXTRA_JS_MODULES += [
     "SharingUtils.sys.mjs",
     "SiteDataManager.sys.mjs",
     "SitePermissions.sys.mjs",
-    "TorSettingsNotification.sys.mjs",
     "TorUIUtils.sys.mjs",
     "TransientPrefs.sys.mjs",
     "URILoadingHelper.sys.mjs",
@@ -152,6 +151,7 @@ MOZ_SRC_FILES += [
     "ContextId.sys.mjs",
     "ClipboardPrivacy.sys.mjs",
     "SecurityLevelRestartNotification.sys.mjs",
+    "TorSettingsNotification.sys.mjs",
 ]
 
 if CONFIG["MOZ_WIDGET_TOOLKIT"] == "windows":
