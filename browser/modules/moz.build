@@ -150,7 +150,7 @@ EXTRA_JS_MODULES += [
 MOZ_SRC_FILES += [
     "ContextId.sys.mjs",
     "ClipboardPrivacy.sys.mjs",
-    "SecurityLevelRestartNotification.sys.mjs",
+    "SecurityLevelNotification.sys.mjs",
     "TorSettingsNotification.sys.mjs",
 ]
 
