@@ -140,7 +140,6 @@ EXTRA_JS_MODULES += [
     "SharingUtils.sys.mjs",
     "SiteDataManager.sys.mjs",
     "SitePermissions.sys.mjs",
-    "TorSettingsNotification.sys.mjs",
     "TorUIUtils.sys.mjs",
     "TransientPrefs.sys.mjs",
     "URILoadingHelper.sys.mjs",
@@ -155,6 +154,7 @@ MOZ_SRC_FILES += [
     "ObserverForwarder.sys.mjs",
     "PrivateBrowsingUI.sys.mjs",
     "SecurityLevelNotification.sys.mjs",
+    "TorSettingsNotification.sys.mjs",
     "UnexpectedScriptObserver.sys.mjs",
     "WebAuthnPromptHelper.sys.mjs",
 ]
