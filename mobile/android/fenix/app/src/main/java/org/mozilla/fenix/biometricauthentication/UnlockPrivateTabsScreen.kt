@@ -31,6 +31,14 @@ import org.mozilla.fenix.ext.isLargeWindow
 import org.mozilla.fenix.theme.FirefoxTheme
 import org.mozilla.fenix.theme.Theme
 
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import org.mozilla.fenix.compose.parseHtml
+
 private const val FILL_WIDTH_LARGE_WINDOW = 0.5f
 private const val FILL_WIDTH_DEFAULT = 1.0f
 
@@ -72,16 +80,30 @@ private fun Header() {
         modifier = Modifier.padding(horizontal = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.ic_pbm_firefox_logo),
-            contentDescription = null, // decorative only.
-            modifier = Modifier.padding(32.dp),
-        )
+        Row (
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Image(
+                painter = painterResource(id = R.drawable.tor_browser_app_icon),
+                contentDescription = null, // decorative only.
+                Modifier
+                    .size(62.dp)
+                    .padding(end = 10.dp),
+            )
+            Text(
+                text = stringResource(R.string.app_name),
+                color = FirefoxTheme.colors.textPrimary,
+                fontWeight = FontWeight.Bold,
+                fontSize = 29.sp,
+                letterSpacing = 0.18.sp,
+                lineHeight = 52.sp,
+            )
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            text = stringResource(id = R.string.pbm_authentication_unlock_private_tabs),
+            text = stringResource(id = R.string.tor_authentication_unlock_private_tabs, stringResource(R.string.app_name)),
             color = FirefoxTheme.colors.textPrimary,
             textAlign = TextAlign.Center,
             style = FirefoxTheme.typography.headline6,
@@ -108,15 +130,6 @@ private fun Footer(onUnlockClicked: () -> Unit, onLeaveClicked: () -> Unit) {
             text = stringResource(id = R.string.pbm_authentication_unlock),
             modifier = Modifier.fillMaxWidth(),
             onClick = onUnlockClicked,
-        )
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        TextButton(
-            text = stringResource(R.string.pbm_authentication_leave_private_tabs),
-            onClick = onLeaveClicked,
-            textColor = FirefoxTheme.colors.textActionPrimary,
-            upperCaseText = false,
         )
     }
 }
