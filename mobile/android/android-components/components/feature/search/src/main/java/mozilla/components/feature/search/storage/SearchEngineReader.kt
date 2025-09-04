@@ -43,7 +43,9 @@ internal val GENERAL_SEARCH_ENGINE_IDS =
     setOf(
         GOOGLE_ID,
         "ddg",
-        "bing",
+        "ddg-onion",
+        "startpage",
+        "startpage-onion",
         "baidu",
         "ecosia",
         "qwant",
