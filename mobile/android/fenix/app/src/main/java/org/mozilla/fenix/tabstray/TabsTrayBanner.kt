@@ -205,7 +205,7 @@ fun TabsTrayBanner(
                 // After this bug: https://bugzilla.mozilla.org/show_bug.cgi?id=1965545
                 // is resolved, we should swap the button 1 and button 2 click actions.
                 Banner(
-                    message = stringResource(id = R.string.private_tab_cfr_title),
+                    message = stringResource(id = R.string.tor_tab_cfr_title, stringResource(R.string.app_name)),
                     button1Text = stringResource(id = R.string.private_tab_cfr_negative),
                     button2Text = stringResource(id = R.string.private_tab_cfr_positive),
                     onButton1Click = {
