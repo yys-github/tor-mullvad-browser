@@ -513,10 +513,9 @@ class Settings(
         default = { FxNimbus.features.appIconSelection.value().enabled },
     )
 
-    var privateBrowsingLockedFeatureEnabled by lazyFeatureFlagPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_private_browsing_locked_enabled),
-        featureFlag = true,
-        default = { FxNimbus.features.privateBrowsingLock.value().enabled },
+    var privateBrowsingLockedFeatureEnabled by booleanPreference(
+        appContext.getPreferenceKey(R.string.pref_key_private_browsing_locked_enabled),
+        default = false,
     )
 
     var privateBrowsingModeLocked by booleanPreference(
