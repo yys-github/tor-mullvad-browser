@@ -40,6 +40,7 @@ interface BiometricUtils {
      */
     fun bindBiometricsCredentialsPromptOrShowWarning(
         @StringRes titleRes: Int = R.string.logins_biometric_prompt_message_2,
+        @StringRes titleRes2: Int = R.string.empty_string,
         view: View,
         onShowPinVerification: (Intent) -> Unit,
         onAuthSuccess: () -> Unit,
@@ -52,6 +53,7 @@ object DefaultBiometricUtils : BiometricUtils {
     @Suppress("Deprecation")
     override fun bindBiometricsCredentialsPromptOrShowWarning(
         @StringRes titleRes: Int,
+        @StringRes titleRes2: Int,
         view: View,
         onShowPinVerification: (Intent) -> Unit,
         onAuthSuccess: () -> Unit,
@@ -91,7 +93,7 @@ object DefaultBiometricUtils : BiometricUtils {
             )
         // Use the BiometricPrompt first
         if (BiometricPromptFeature.canUseFeature(BiometricManager.from(context))) {
-            biometricPromptFeature.get()?.requestAuthentication(context.resources.getString(titleRes))
+            biometricPromptFeature.get()?.requestAuthentication(context.resources.getString(titleRes, context.resources.getString(titleRes2)))
             return
         }
 
@@ -101,7 +103,7 @@ object DefaultBiometricUtils : BiometricUtils {
             val confirmDeviceCredentialIntent =
                 manager.createConfirmDeviceCredentialIntent(
                     context.resources.getString(R.string.logins_biometric_prompt_message_pin),
-                    context.resources.getString(titleRes),
+                    context.resources.getString(titleRes, context.resources.getString(titleRes2)),
                 )
             onShowPinVerification(confirmDeviceCredentialIntent)
         } else {
