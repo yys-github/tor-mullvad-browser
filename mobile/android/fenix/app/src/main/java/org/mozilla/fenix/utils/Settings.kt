@@ -334,10 +334,9 @@ class Settings(private val appContext: Context) : PreferencesHolder {
         default = false,
     )
 
-    var privateBrowsingLockedEnabled by lazyFeatureFlagPreference(
+    var privateBrowsingLockedEnabled by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_private_browsing_locked_enabled),
-        featureFlag = FxNimbus.features.privateBrowsingLock.value().enabled,
-        default = { false },
+        default = false,
     )
 
     var shouldReturnToBrowser by booleanPreference(
