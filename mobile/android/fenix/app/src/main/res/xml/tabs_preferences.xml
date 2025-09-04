@@ -62,4 +62,14 @@
         android:defaultValue="true"
         android:key="@string/pref_key_privacy_report_tab_manager"
         android:title="@string/customize_toggle_privacy_report" />
+
+    <PreferenceCategory
+        android:key="@string/pref_key_pbm_lock_category_divider"
+        android:layout="@xml/preference_category_divider"
+        android:selectable="false" />
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="pref_key_private_browsing_locked_enabled" />
+    <Preference
+        android:key="@string/pref_key_private_browsing_lock_device_feature_enabled" />
 </androidx.preference.PreferenceScreen>
