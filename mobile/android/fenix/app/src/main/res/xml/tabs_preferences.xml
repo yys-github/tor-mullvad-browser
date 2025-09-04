@@ -57,4 +57,14 @@
             android:key="@string/pref_key_inactive_tabs"
             android:title="@string/preferences_inactive_tabs_title"/>
     </androidx.preference.PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="@string/pref_key_pbm_lock_category_divider"
+        android:layout="@xml/preference_category_divider"
+        android:selectable="false" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_key_private_browsing_locked_enabled" />
+    <Preference
+        android:key="@string/pref_key_private_browsing_lock_device_feature_enabled" />
 </androidx.preference.PreferenceScreen>
