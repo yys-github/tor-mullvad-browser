@@ -62,4 +62,8 @@ private const val MEDIUM_WINDOW_WIDTH = 700
     device = Devices.PIXEL_TABLET,
     uiMode = Configuration.UI_MODE_NIGHT_YES,
 )
+@Preview(
+    name = "Large text",
+    fontScale = 2.5f,
+)
 annotation class FlexibleWindowLightDarkPreview
