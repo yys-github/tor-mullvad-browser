@@ -347,7 +347,8 @@ fun Fragment.verifyUser(
     onVerified: (() -> Unit)? = null,
 ) {
     biometricUtils.bindBiometricsCredentialsPromptOrShowWarning(
-        titleRes = R.string.pbm_authentication_unlock_private_tabs,
+        titleRes = R.string.tor_authentication_unlock_private_tabs,
+        titleRes2 = R.string.app_name,
         view = requireView(),
         onShowPinVerification = { intent -> fallbackVerification.launch(intent) },
         onAuthSuccess = { handleVerificationSuccess(requireContext(), onVerified) },
