@@ -5,6 +5,7 @@
 package mozilla.components.support.utils.cache
 
 import android.content.Context
+import android.os.StrictMode
 import androidx.annotation.VisibleForTesting
 import com.jakewharton.disklrucache.DiskLruCache
 import mozilla.components.support.base.log.logger.Logger
@@ -44,10 +45,13 @@ class DiskLruCacheStore(
      */
     fun clear(context: Context) {
         synchronized(cacheLock) {
+            val defaultPolicy = StrictMode.allowThreadDiskWrites()
             try {
                 getCache(context)?.delete()
             } catch (_: IOException) {
                 logger.warn("Cache could not be cleared. Perhaps there are none?")
+            } finally {
+                StrictMode.setThreadPolicy(defaultPolicy)
             }
 
             cache = null
