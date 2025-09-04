@@ -72,8 +72,7 @@ class UnlockPrivateTabsFragment : Fragment(), UserInteractionHandler, SystemInse
                 UnlockPrivateTabsScreen(
                     onUnlockClicked = { requestPrompt() },
                     onLeaveClicked = {
-                        PrivateBrowsingLocked.seeOtherTabsClicked.record()
-                        closeFragment()
+                        requireActivity().moveTaskToBack(true)
                     },
                     showNegativeButton = !isCustomPrivateTab,
                 )
@@ -83,7 +82,7 @@ class UnlockPrivateTabsFragment : Fragment(), UserInteractionHandler, SystemInse
     }
 
     override fun onBackPressed(): Boolean {
-        closeFragment()
+        requireActivity().moveTaskToBack(true)
         return true
     }
 
@@ -107,7 +106,8 @@ class UnlockPrivateTabsFragment : Fragment(), UserInteractionHandler, SystemInse
 
     private fun requestPrompt() {
         DefaultBiometricUtils.bindBiometricsCredentialsPromptOrShowWarning(
-            titleRes = R.string.pbm_authentication_unlock_private_tabs,
+            titleRes = R.string.tor_authentication_unlock_private_tabs,
+            titleRes2 = R.string.app_name,
             view = requireView(),
             onShowPinVerification = { intent -> startForResult.launch(intent) },
             onAuthSuccess = ::onAuthSuccess,
