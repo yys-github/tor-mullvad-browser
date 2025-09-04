@@ -17,6 +17,16 @@ import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.ext.showToolbar
 import org.mozilla.fenix.utils.view.addToRadioGroup
 
+import android.content.Intent
+import android.provider.Settings
+import androidx.activity.result.ActivityResultLauncher
+import androidx.biometric.BiometricManager
+import androidx.preference.Preference
+import org.mozilla.fenix.ext.registerForActivityResult
+import org.mozilla.fenix.settings.biometric.DefaultBiometricUtils
+import org.mozilla.fenix.settings.biometric.ext.isAuthenticatorAvailable
+import org.mozilla.fenix.settings.biometric.ext.isHardwareAvailable
+
 /**
  * Lets the user customize auto closing tabs.
  */
@@ -40,6 +50,31 @@ class TabsSettingsFragment : PreferenceFragmentCompat() {
         findPreference<PreferenceCategory>(getString(R.string.pref_key_inactive_tabs_category))?.apply {
             isVisible = !context.settings().shouldDisableNormalMode
         }
+
+        startForResult = registerForActivityResult(
+            onFailure = { },
+            onSuccess = { onSuccessfulAuthenticationUsingFallbackPrompt() },
+        )
+    }
+
+    private lateinit var startForResult: ActivityResultLauncher<Intent>
+
+    private fun onSuccessfulAuthenticationUsingFallbackPrompt() {
+        val newValue = !requireContext().settings().privateBrowsingLockedEnabled
+        requireContext().settings().privateBrowsingLockedEnabled = newValue
+        // Update switch state manually
+        requirePreference<SwitchPreference>(R.string.pref_key_private_browsing_locked_enabled).apply {
+            isChecked = !isChecked
+        }
+    }
+
+    private fun onSuccessfulAuthenticationUsingPrimaryPrompt(
+        pbmLockEnabled: Boolean,
+        preference: Preference,
+    ) {
+        requireContext().settings().privateBrowsingLockedEnabled = pbmLockEnabled
+        // Update switch state manually
+        (preference as? SwitchPreference)?.isChecked = pbmLockEnabled
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,6 +121,67 @@ class TabsSettingsFragment : PreferenceFragmentCompat() {
         radioOneMonth.onClickListener(::enableInactiveTabsSetting)
 
         setupRadioGroups()
+        /**
+         * Changes in this file for "tor-browser#44027 Update PBM lockscreen" were copied from
+         * [PrivateBrowsingFragment] and changed to make sense and work for TBA such as removing
+         * any use of nimbus/glean that was being used for business logic which was making the
+         * release build variant not work. We should check [PrivateBrowsingFragment] for updates
+         * when we rebase
+         * */
+        setUpHideBrowsingSessionPreference()
+    }
+
+    private fun setUpHideBrowsingSessionPreference() {
+        val biometricManager = BiometricManager.from(requireContext())
+        val deviceCapable = biometricManager.isHardwareAvailable()
+        val userHasEnabledCapability = biometricManager.isAuthenticatorAvailable()
+
+        requirePreference<SwitchPreference>(R.string.pref_key_private_browsing_locked_enabled).apply {
+            title = getString(R.string.preferences_tor_lock_screen_title, getString(R.string.app_name))
+            summary = getString(R.string.preferences_tor_lock_screen_summary, getString(R.string.app_name))
+            isChecked = context.settings().privateBrowsingLockedEnabled &&
+                    biometricManager.isAuthenticatorAvailable()
+            isVisible = deviceCapable
+            isEnabled = userHasEnabledCapability
+
+            setOnPreferenceChangeListener { preference, newValue ->
+                val pbmLockEnabled = newValue as? Boolean
+                    ?: return@setOnPreferenceChangeListener false
+
+                val titleRes = if (pbmLockEnabled) {
+                    R.string.tor_authentication_enable_lock
+                } else {
+                    R.string.tor_authentication_disable_lock
+                }
+
+                DefaultBiometricUtils.bindBiometricsCredentialsPromptOrShowWarning(
+                    titleRes = titleRes,
+                    titleRes2 = R.string.app_name,
+                    view = requireView(),
+                    onShowPinVerification = { intent -> startForResult.launch(intent) },
+                    onAuthSuccess = {
+                        onSuccessfulAuthenticationUsingPrimaryPrompt(
+                            pbmLockEnabled = pbmLockEnabled,
+                            preference = preference,
+                        )
+                    },
+                    onAuthFailure = { },
+                )
+
+                // Cancel toggle change until biometric is successful
+                false
+            }
+        }
+
+        requirePreference<Preference>(R.string.pref_key_private_browsing_lock_device_feature_enabled).apply {
+            title = getString(R.string.tor_authentication_lock_device_feature_disabled, getString(R.string.app_name))
+            isVisible = deviceCapable && !userHasEnabledCapability
+
+            setOnPreferenceClickListener {
+                context.startActivity(Intent(Settings.ACTION_SECURITY_SETTINGS))
+                true
+            }
+        }
     }
 
     private fun setupRadioGroups() {
