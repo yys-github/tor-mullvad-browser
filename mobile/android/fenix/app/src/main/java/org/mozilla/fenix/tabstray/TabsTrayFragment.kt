@@ -795,10 +795,11 @@ class TabsTrayFragment : AppCompatDialogFragment() {
             BiometricManager.from(requireContext()).isAuthenticatorAvailable()
         if (!isAuthenticatorAvailable) {
             navControllerProvider.getNavController(this)
-                .navigate(TabsTrayFragmentDirections.actionGlobalPrivateBrowsingFragment())
+                .navigate(TabsTrayFragmentDirections.actionGlobalTabSettingsFragment())
         } else {
             DefaultBiometricUtils.bindBiometricsCredentialsPromptOrShowWarning(
-                titleRes = R.string.pbm_authentication_enable_lock,
+                titleRes = R.string.tor_authentication_enable_lock,
+                titleRes2 = R.string.app_name,
                 view = requireView(),
                 onShowPinVerification = { intent -> enablePbmPinLauncher.launch(intent) },
                 onAuthSuccess = {
