@@ -6,6 +6,7 @@ package mozilla.components.browser.thumbnails.utils
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.os.StrictMode
 import androidx.annotation.VisibleForTesting
 import com.jakewharton.disklrucache.DiskLruCache
 import mozilla.components.concept.base.images.ImageLoadRequest
@@ -33,10 +34,13 @@ class ThumbnailDiskCache(private val isPrivate: Boolean = false) {
 
     internal fun clear(context: Context) {
         synchronized(thumbnailCacheWriteLock) {
+            val defaultPolicy = StrictMode.allowThreadDiskWrites()
             try {
                 getThumbnailCache(context)?.delete()
             } catch (e: IOException) {
                 logger.warn("Thumbnail cache could not be cleared. Perhaps there are none?")
+            } finally {
+                StrictMode.setThreadPolicy(defaultPolicy)
             }
             thumbnailCache = null
         }
