@@ -96,14 +96,14 @@ private fun Logo() {
     ) {
         Image(
             modifier = Modifier.padding(end = 14.dp),
-            painter = painterResource(getResolvedAttrResId(R.attr.fenixWordmarkLogo)),
+            painter = painterResource(R.drawable.tor_browser_app_icon),
             contentDescription = null,
         )
 
-        Image(
-            modifier = Modifier.height(28.dp),
-            painter = painterResource(getResolvedAttrResId(R.attr.fenixWordmarkText)),
-            contentDescription = stringResource(R.string.app_name),
+        Text(
+            text = stringResource(R.string.app_name),
+            style = FirefoxTheme.typography.headline5,
+            maxLines = 1,
         )
     }
 }
@@ -130,7 +130,7 @@ private fun Footer(onUnlockClicked: () -> Unit, onLeaveClicked: () -> Unit, show
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        if (showNegativeButton) {
+        if (false) {
             TextButton(
                 text = stringResource(R.string.pbm_authentication_leave_private_tabs),
                 onClick = onLeaveClicked,
