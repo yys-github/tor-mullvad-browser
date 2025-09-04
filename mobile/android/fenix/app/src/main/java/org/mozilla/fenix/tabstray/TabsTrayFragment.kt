@@ -265,7 +265,7 @@ class TabsTrayFragment : AppCompatDialogFragment() {
                     shouldShowTabAutoCloseBanner = requireContext().settings().shouldShowAutoCloseTabsBanner &&
                         requireContext().settings().canShowCfr,
                     shouldShowLockPbmBanner =
-                        if (FxNimbus.features.privateBrowsingLock.value().enabled) {
+                        if (true) {
                             shouldShowLockPbmBanner(
                                 isPrivateMode = (activity as HomeActivity).browsingModeManager.mode.isPrivate,
                                 hasPrivateTabs = requireComponents.core.store.state.privateTabs.isNotEmpty(),
@@ -775,10 +775,11 @@ class TabsTrayFragment : AppCompatDialogFragment() {
         val isAuthenticatorAvailable =
             BiometricManager.from(requireContext()).isAuthenticatorAvailable()
         if (!isAuthenticatorAvailable) {
-            findNavController().navigate(TabsTrayFragmentDirections.actionGlobalPrivateBrowsingFragment())
+            findNavController().navigate(TabsTrayFragmentDirections.actionGlobalTabSettingsFragment())
         } else {
             DefaultBiometricUtils.bindBiometricsCredentialsPromptOrShowWarning(
-                titleRes = R.string.pbm_authentication_enable_lock,
+                titleRes = R.string.tor_authentication_enable_lock,
+                titleRes2 = R.string.app_name,
                 view = requireView(),
                 onShowPinVerification = { intent -> enablePbmPinLauncher.launch(intent) },
                 onAuthSuccess = {
