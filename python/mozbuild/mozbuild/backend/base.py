@@ -258,7 +258,34 @@ class BuildBackend(LoggingMixin):
                     os.remove(dst)
                     os.symlink(src, dst)
                 else:
+                    self.log(
+                        logging.ERROR,
+                        "_setup_tor_browser_environment",
+                        {},
+                        "Error creating symlink.",
+                    )
                     return
+
+        if app == "mobile/android":
+            # Set up NoScript extension
+            # We put it in the srcdir... It will be moved to the APK in the gradle build.
+            if noscript_location:
+                noscript_target = (
+                    Path(config.topsrcdir)
+                    / "mobile/android/fenix/app/src/main/assets/extensions"
+                    / noscript_target_filename
+                )
+                self.log(
+                    logging.INFO,
+                    "_setup_tor_browser_environment",
+                    {
+                        "noscript_location": noscript_location,
+                        "noscript_target": str(noscript_target),
+                    },
+                    "Creating symlink for NoScript from {noscript_location} to {noscript_target}",
+                )
+
+                _infallible_symlink(noscript_location, noscript_target)
 
         if app == "browser":
             tbdir = Path(config.topobjdir) / "dist" / "bin"
