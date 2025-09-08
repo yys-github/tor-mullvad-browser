@@ -4,6 +4,7 @@ option(
     nargs=1,
     default=None,
     help="Path to location of tor-expert-bundle directory.",
+    when=is_desktop_build,
 )
 
 
@@ -12,8 +13,11 @@ option(
     mozbuild_state_path,
     bootstrap_path(
         "tor-expert-bundle",
-        when=depends("--with-tor-expert-bundle")(lambda x: not x) & is_desktop_build,
+        when=depends("--with-tor-expert-bundle", when=is_desktop_build)(
+            lambda x: not x
+        ),
     ),
+    when=is_desktop_build,
 )
 @checking("for tor-expert-bundle")
 @imports(_from="pathlib", _import="Path")
@@ -34,4 +38,155 @@ def tor_expert_bundle(value, mozbuild_state_path, _bootstrapped):
     return None
 
 
-set_config("TOR_EXPERT_BUNDLE", tor_expert_bundle)
+set_config("TOR_EXPERT_BUNDLE", tor_expert_bundle, when=is_desktop_build)
+
+
+# Android
+# -------------------------------------------------
+
+
+@depends(build_project)
+def is_android_build(build_project):
+    return build_project == "mobile/android"
+
+
+@imports(_from="pathlib", _import="Path")
+def maven_local_default():
+    return str(Path.home() / ".m2/repository")
+
+
+option(
+    "--with-maven-local",
+    nargs=1,
+    default=maven_local_default(),
+    help="Path the maven local directory. Defaults to $HOME/.m2/repository",
+)
+
+
+@depends("--with-maven-local")
+def maven_local(value):
+    if value:
+        return value[0]
+
+
+option(
+    "--with-tor-expert-bundle-aar",
+    env="TOR_EXPERT_BUNDLE_AAR",
+    nargs=1,
+    default=None,
+    help="Path to location of tor-expert-bundle.aar archive.",
+    when=is_android_build,
+)
+
+
+@depends(
+    "--with-tor-expert-bundle-aar",
+    mozbuild_state_path,
+    bootstrap_path(
+        "tor-expert-bundle-aar",
+        no_unpack=True,
+        when=depends("--with-tor-expert-bundle-aar", when=is_android_build)(
+            lambda x: not x
+        ),
+    ),
+    when=is_android_build,
+)
+@checking("for tor-expert-bundle.aar")
+@imports(_from="pathlib", _import="Path")
+def tor_expert_bundle_aar(value, mozbuild_state_path, _bootstrapped):
+    if value:
+        path = Path(value[0])
+        if path.suffix.lower() == ".aar":
+            return value[0]
+        else:
+            die("--with-tor-expert-bundle-aar must point to a AAR archive.")
+
+    bootstrapped_location = Path(mozbuild_state_path) / "tor-expert-bundle.aar"
+    if bootstrapped_location.is_file():
+        return str(bootstrapped_location)
+
+    die(
+        "tor-expert-bundle-aar not found. Either enable bootstrap, or provide a path with --with-tor-expert-bundle-aar."
+    )
+
+
+set_config("TOR_EXPERT_BUNDLE_AAR", tor_expert_bundle_aar)
+
+
+option(
+    "--with-application-services",
+    env="APPLICATION_SERVICES",
+    nargs=1,
+    default=None,
+    help="Path to location of application-services gradle lib.",
+    when=is_android_build,
+)
+
+
+@depends(
+    maven_local,
+    "--with-application-services",
+    mozbuild_state_path,
+    bootstrap_path(
+        "application-services",
+        when=depends("--with-application-services", when=is_android_build)(
+            lambda x: not x
+        ),
+    ),
+    when=is_android_build,
+)
+@checking("for application-services")
+@imports(_from="pathlib", _import="Path")
+@imports("mozbuild.tbbutils")
+def application_services(maven_local, value, mozbuild_state_path, _bootstrapped):
+    as_location = None
+
+    if value:
+        path = Path(value[0])
+        if path.is_dir():
+            as_location = path
+        else:
+            die("--with-application-services must point to a directory.")
+    else:
+        bootstrapped_location = Path(mozbuild_state_path) / "application-services/maven"
+        if bootstrapped_location.is_dir():
+            as_location = bootstrapped_location
+
+    if not as_location:
+        # application-services is not required for building.
+        die(
+            "application-services not found. Either enable bootstrap, or provide a path with --with-application-services."
+        )
+
+    # Symlink a-s in the maven local repository.
+    # Note that this _overwrites_ whatever is already in there.
+    mozbuild.tbbutils.symlink_tree(as_location, maven_local)
+    return as_location
+
+
+option(
+    "--with-nimbus-fml",
+    env="NIMBUS_FML",
+    nargs=1,
+    default=None,
+    help="Path to location of nimbus-fml executable.",
+    when=is_android_build,
+)
+
+
+@depends("--with-nimbus-fml", when=is_android_build)
+@checking("for nimbus-fml")
+@imports(_from="pathlib", _import="Path")
+def nimbus_fml(value):
+    if value:
+        path = Path(value[0])
+        if path.is_file():
+            return value[0]
+        else:
+            die("--with-nimbus-fml must point to an existing file.")
+
+    # a-s nimbus-gradle-plugin will download nimbus-fml itself if not provided.
+    return None
+
+
+set_config("NIMBUS_FML", nimbus_fml)
