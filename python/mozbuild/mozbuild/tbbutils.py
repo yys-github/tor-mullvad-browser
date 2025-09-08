@@ -17,7 +17,9 @@ def list_files_http(url):
         if href == "../":
             continue
 
-        if "tor-expert-bundle" in href:
+        if "tor-expert-bundle-aar" in href:
+            href = f"{href.rstrip('/')}/tor-expert-bundle.aar"
+        elif "tor-expert-bundle" in href:
             href = f"{href.rstrip('/')}/tor-expert-bundle.tar.gz"
 
         links.append(href)
@@ -30,6 +32,8 @@ TOR_BROWSER_BUILD_ARTIFACTS = [
     "noscript",
     "fonts",
     "tor-expert-bundle",
+    "tor-expert-bundle-aar",
+    "application-services",
 ]
 
 # Mapping of artifacts from taskcluster to tor-browser-build.
