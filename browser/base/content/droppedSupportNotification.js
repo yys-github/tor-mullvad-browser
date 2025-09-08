@@ -3,8 +3,8 @@
 // Show a prompt that a user's system will no longer be supported.
 window.addEventListener("load", () => {
   let labelId;
-  // ESR 115 EOL pushed to 14th October 2025.
-  const isExpired = Date.now() > Date.UTC(2025, 9, 14);
+  // ESR 115 EOL pushed to 24th March 2026.
+  const isExpired = Date.now() > Date.UTC(2026, 2, 24);
 
   if (
     AppConstants.platform === "macosx" &&
