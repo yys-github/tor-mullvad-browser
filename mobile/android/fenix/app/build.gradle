@@ -771,7 +771,7 @@ dependencies {
     lintChecks project(':components:tooling-lint')
 
     // Tor Expert Bundle
-    implementation files('tor-expert-bundle.aar')
+    implementation files(gradle.mozconfig.substs.TOR_EXPERT_BUNDLE_AAR)
 }
 
 protobuf {
