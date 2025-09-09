@@ -1025,7 +1025,9 @@ export let ProfileDataUpgrader = {
     //            (tor-browser#43567).
     // Version 8: Tor Browser 15.0a2: Remove legacy search addons
     //            (tor-browser#43111).
-    const TBB_MIGRATION_VERSION = 8;
+    // Version 9: Tor Browser 15.0a3: Remove YEC 2024 preference.
+    //            (tor-browser#44180)
+    const TBB_MIGRATION_VERSION = 9;
     const MIGRATION_PREF = "torbrowser.migration.version";
 
     // If we decide to force updating users to pass through any version
@@ -1124,6 +1126,9 @@ export let ProfileDataUpgrader = {
         "startpage-onion@search.mozilla.org",
         "wikipedia@search.mozilla.org",
       ]);
+    }
+    if (currentVersion < 9) {
+      Services.prefs.clearUserPref("torbrowser.homepage.yec2024.message");
     }
 
     Services.prefs.setIntPref(MIGRATION_PREF, TBB_MIGRATION_VERSION);
