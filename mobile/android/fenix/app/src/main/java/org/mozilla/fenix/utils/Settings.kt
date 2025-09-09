@@ -1160,7 +1160,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     @VisibleForTesting
     internal var trendingSearchSuggestionsEnabled by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_trending_search_suggestions),
-        default = true,
+        default = false,
     )
 
     /**
@@ -1169,7 +1169,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     @VisibleForTesting
     internal var recentSearchSuggestionsEnabled by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_recent_search_suggestions),
-        default = true,
+        default = false,
     )
 
     /**

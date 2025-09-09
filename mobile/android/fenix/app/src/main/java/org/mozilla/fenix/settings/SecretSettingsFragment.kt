@@ -135,12 +135,6 @@ class SecretSettingsFragment : PreferenceFragmentCompat() {
             onPreferenceChangeListener = SharedPreferenceUpdater()
         }
 
-        requirePreference<SwitchPreference>(R.string.pref_key_enable_recent_searches).apply {
-            isVisible = true
-            isChecked = context.settings().isRecentSearchesVisible
-            onPreferenceChangeListener = SharedPreferenceUpdater()
-        }
-
         requirePreference<SwitchPreference>(R.string.pref_key_enable_shortcuts_suggestions).apply {
             isVisible = true
             isChecked = context.settings().isShortcutSuggestionsVisible

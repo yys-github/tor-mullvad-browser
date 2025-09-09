@@ -34,25 +34,6 @@ class SearchEngineFragment : PreferenceFragmentCompat() {
             rootKey,
         )
 
-        // requirePreference<SwitchPreference>(R.string.pref_key_show_sponsored_suggestions).apply {
-        //     isVisible = context.settings().enableFxSuggest
-        // }
-        // requirePreference<SwitchPreference>(R.string.pref_key_show_nonsponsored_suggestions).apply {
-        //     isVisible = context.settings().enableFxSuggest
-        // }
-        // requirePreference<Preference>(R.string.pref_key_learn_about_fx_suggest).apply {
-        //     isVisible = context.settings().enableFxSuggest
-        // }
-        // requirePreference<CheckBoxPreference>(R.string.pref_key_show_trending_search_suggestions).apply {
-        //     isVisible = context.settings().isTrendingSearchesVisible
-        // }
-        // requirePreference<SwitchPreference>(R.string.pref_key_show_recent_search_suggestions).apply {
-        //     isVisible = context.settings().isRecentSearchesVisible
-        // }
-        // requirePreference<SwitchPreference>(R.string.pref_key_show_shortcuts_suggestions).apply {
-        //     isVisible = context.settings().isShortcutSuggestionsVisible
-        // }
-
         view?.hideKeyboard()
     }
 
@@ -72,44 +53,15 @@ class SearchEngineFragment : PreferenceFragmentCompat() {
                 isChecked = context.settings().shouldShowSearchSuggestions
             }
 
-        val trendingSearchSuggestionsPreference =
-            requirePreference<CheckBoxPreference>(R.string.pref_key_show_trending_search_suggestions).apply {
-                isVisible = context.settings().isTrendingSearchesVisible
-                isEnabled = requireContext().components.core.store.state.search
-                    .selectedOrDefaultSearchEngine?.trendingUrl != null &&
-                    context.settings().shouldShowSearchSuggestions
-            }
-
-        val recentSearchSuggestionsPreference =
-            requirePreference<SwitchPreference>(R.string.pref_key_show_recent_search_suggestions).apply {
-                isChecked = context.settings().shouldShowRecentSearchSuggestions
-            }
-
         val autocompleteURLsPreference =
             requirePreference<SwitchPreference>(R.string.pref_key_enable_autocomplete_urls).apply {
                 isChecked = context.settings().shouldAutocompleteInAwesomebar
-            }
-
-        val searchSuggestionsInPrivatePreference =
-            requirePreference<CheckBoxPreference>(R.string.pref_key_show_search_suggestions_in_private).apply {
-                isChecked = context.settings().shouldShowSearchSuggestionsInPrivate
-                isEnabled = context.settings().shouldShowSearchSuggestions
-            }
-
-        val showHistorySuggestions =
-            requirePreference<SwitchPreference>(R.string.pref_key_search_browsing_history).apply {
-                isChecked = context.settings().shouldShowHistorySuggestions
             }
 
         val showBookmarkSuggestions =
             requirePreference<SwitchPreference>(R.string.pref_key_search_bookmarks).apply {
                 isChecked = context.settings().shouldShowBookmarkSuggestions
             }
-
-        // val showSyncedTabsSuggestions =
-        //     requirePreference<SwitchPreference>(R.string.pref_key_search_synced_tabs).apply {
-        //         isChecked = context.settings().shouldShowSyncedTabsSuggestions
-        //     }
 
         val showClipboardSuggestions =
             requirePreference<SwitchPreference>(R.string.pref_key_show_clipboard_suggestions).apply {
@@ -121,32 +73,9 @@ class SearchEngineFragment : PreferenceFragmentCompat() {
                 isChecked = context.settings().shouldShowVoiceSearch
             }
 
-        // val showSponsoredSuggestionsPreference =
-        //     requirePreference<SwitchPreference>(R.string.pref_key_show_sponsored_suggestions).apply {
-        //         isChecked = context.settings().showSponsoredSuggestions
-        //         summary = getString(
-        //             R.string.preferences_show_sponsored_suggestions_summary,
-        //             getString(R.string.app_name),
-        //         )
-        //     }
-
-        // val showNonSponsoredSuggestionsPreference =
-        //     requirePreference<SwitchPreference>(R.string.pref_key_show_nonsponsored_suggestions).apply {
-        //         isChecked = context.settings().showNonSponsoredSuggestions
-        //         title = getString(
-        //             R.string.preferences_show_nonsponsored_suggestions,
-        //             getString(R.string.app_name),
-        //         )
-        //     }
-
         searchSuggestionsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
-        showHistorySuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
         showBookmarkSuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
-        // showSyncedTabsSuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
         showClipboardSuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
-        searchSuggestionsInPrivatePreference.onPreferenceChangeListener = SharedPreferenceUpdater()
-        trendingSearchSuggestionsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
-        recentSearchSuggestionsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
         showVoiceSearchPreference.onPreferenceChangeListener = object : Preference.OnPreferenceChangeListener {
             override fun onPreferenceChange(preference: Preference, newValue: Any?): Boolean {
                 val newBooleanValue = newValue as? Boolean ?: return false
@@ -158,17 +87,6 @@ class SearchEngineFragment : PreferenceFragmentCompat() {
             }
         }
         autocompleteURLsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
-
-        searchSuggestionsPreference.setOnPreferenceClickListener {
-            searchSuggestionsInPrivatePreference.isEnabled = searchSuggestionsPreference.isChecked
-            trendingSearchSuggestionsPreference.isEnabled =
-                requireContext().components.core.store.state.search.selectedOrDefaultSearchEngine
-                    ?.trendingUrl != null && searchSuggestionsPreference.isChecked
-            true
-        }
-
-        // showSponsoredSuggestionsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
-        // showNonSponsoredSuggestionsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
     }
 
     override fun onPreferenceTreeClick(preference: Preference): Boolean {
