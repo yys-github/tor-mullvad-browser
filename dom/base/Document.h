@@ -3748,7 +3748,7 @@ class Document : public nsINode,
   // Called to track whether this document has had any interaction.
   // This is used to track whether we should permit "beforeunload".
   void SetUserHasInteracted();
-  bool UserHasInteracted() { return mUserHasInteracted; }
+  bool UserHasInteracted() const { return mUserHasInteracted; }
   void ResetUserInteractionTimer();
 
   // Whether we're cloning the contents of an SVG use element.
