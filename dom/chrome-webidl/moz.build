@@ -115,6 +115,7 @@ GENERATED_EVENTS_WEBIDL_FILES = [
     "CSSCustomPropertyRegisteredEvent.webidl",
     "PluginCrashedEvent.webidl",
     "PopupPositionedEvent.webidl",
+    "RedirectBlockedEvent.webidl",
     "StyleSheetApplicableStateChangeEvent.webidl",
     "StyleSheetRemovedEvent.webidl",
 ]
