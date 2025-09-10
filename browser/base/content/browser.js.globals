@@ -24,7 +24,7 @@
   "gClickAndHoldListenersOnElement",
   "gSessionHistoryObserver",
   "gStoragePressureObserver",
-  "PopupBlockerObserver",
+  "PopupAndRedirectBlockerObserver",
   "gKeywordURIFixup",
   "_createNullPrincipalFromTabUserContextId",
   "HandleAppCommandEvent",
