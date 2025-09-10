@@ -455,8 +455,9 @@ class nsGlobalWindowOuter final : public mozilla::dom::EventTarget,
   bool IsCleanedUp() const { return mCleanedUp; }
 
   virtual void FirePopupBlockedEvent(
-      Document* aDoc, nsIURI* aPopupURI, const nsAString& aPopupWindowName,
+      nsIURI* aPopupURI, const nsAString& aPopupWindowName,
       const nsAString& aPopupWindowFeatures) override;
+  virtual void FireRedirectBlockedEvent(nsIURI* aRedirectURI) override;
 
   void AddSizeOfIncludingThis(nsWindowSizes& aWindowSizes) const;
 
@@ -763,9 +764,6 @@ class nsGlobalWindowOuter final : public mozilla::dom::EventTarget,
  public:
   mozilla::dom::PopupBlocker::PopupControlState RevisePopupAbuseLevel(
       mozilla::dom::PopupBlocker::PopupControlState aState);
-  void FireAbuseEvents(const nsACString& aPopupURL,
-                       const nsAString& aPopupWindowName,
-                       const nsAString& aPopupWindowFeatures);
 
   void FlushPendingNotifications(mozilla::FlushType aType);
 
