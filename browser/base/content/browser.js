@@ -64,7 +64,8 @@ ChromeUtils.defineESModuleGetters(this, {
   PlacesUIUtils: "resource:///modules/PlacesUIUtils.sys.mjs",
   PlacesUtils: "resource://gre/modules/PlacesUtils.sys.mjs",
   Pocket: "chrome://pocket/content/Pocket.sys.mjs",
-  PopupBlockerObserver: "resource:///modules/PopupBlockerObserver.sys.mjs",
+  PopupAndRedirectBlockerObserver:
+    "resource:///modules/PopupAndRedirectBlockerObserver.sys.mjs",
   PrivateBrowsingUtils: "resource://gre/modules/PrivateBrowsingUtils.sys.mjs",
   ProcessHangMonitor: "resource:///modules/ProcessHangMonitor.sys.mjs",
   ProfilesDatastoreService:
