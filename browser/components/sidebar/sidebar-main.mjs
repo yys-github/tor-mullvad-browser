@@ -338,17 +338,7 @@ export default class SidebarMain extends MozLitElement {
       .querySelectorAll("[customized-tool='true']")
       .forEach(node => node.remove());
 
-    const menuBuilders = {
-      aichat: async () => {
-        if (Services.prefs.getBoolPref("browser.ml.chat.page")) {
-          await lazy.GenAI.buildAskChatMenu(this._contextMenu, {
-            browser: window.gBrowser.selectedBrowser,
-            selectionInfo: null,
-            source: "tool",
-          });
-        }
-      },
-    };
+    const menuBuilders = {};
 
     const builder = menuBuilders[toolId];
     if (typeof builder === "function") {
