@@ -2053,7 +2053,8 @@ tab-group {
 
 /* about:firefoxview is disabled in Base Browser. Always hide the toolbar button
  * and menu item regardless of private browsing. See tor-browser#42037. */
-#firefox-view-button, #menu_openFirefoxView {
+#firefox-view-button,
+#menu_openFirefoxView {
   display: none;
 }
 
