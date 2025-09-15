@@ -99,15 +99,12 @@ export class SearchEngineSelector {
         "chrome://global/content/search/base-browser-search-engines.json"
       )
     ).json();
-    this.#configurationOverrides = [];
     resolve(this.#configuration);
 
     this.#selector.setSearchConfig(
       JSON.stringify({ data: this.#configuration })
     );
-    this.#selector.setConfigOverrides(
-      JSON.stringify({ data: remoteSettingsData[1] })
-    );
+    this.#selector.setConfigOverrides(JSON.stringify({ data: [] }));
 
     return this.#configuration;
   }
@@ -395,23 +392,6 @@ export class SearchEngineSelector {
     if (this.#changeListener) {
       this.#changeListener();
     }
-  }
-
-  /**
-   * Obtains the configuration overrides from remote settings.
-   *
-   * @returns {Promise<object[]>}
-   *   An array of objects in the database, or an empty array if none
-   *   could be obtained.
-   */
-  async #getConfigurationOverrides() {
-    let result = [];
-    try {
-      result = await this.#remoteConfigOverrides.get();
-    } catch (ex) {
-      // This data is remote only, so we just return an empty array if it fails.
-    }
-    return result;
   }
 
   /**
