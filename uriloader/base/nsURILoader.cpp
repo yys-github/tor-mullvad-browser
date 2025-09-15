@@ -451,16 +451,15 @@ nsresult nsDocumentOpenInfo::DispatchContent(nsIRequest* request) {
 
   bool maybeForceInternalHandling =
       (isPDF &&
-        mozilla::StaticPrefs::browser_download_open_pdf_attachments_inline()) ||
-       (
-        forceExternalHandling &&
-        mozilla::StaticPrefs::browser_download_ignore_content_disposition() &&
-        // we want to exclude html and svg files, which could execute
-        // scripts (tor-browser#43211)
-        kNotFound == mContentType.LowerCaseFindASCII("html") &&
-        kNotFound == ext.LowerCaseFindASCII("htm") &&
-        kNotFound == mContentType.LowerCaseFindASCII("/svg+") &&
-        !ext.EqualsIgnoreCase("svg"));
+       mozilla::StaticPrefs::browser_download_open_pdf_attachments_inline()) ||
+      (forceExternalHandling &&
+       mozilla::StaticPrefs::browser_download_ignore_content_disposition() &&
+       // we want to exclude html and svg files, which could execute
+       // scripts (tor-browser#43211)
+       kNotFound == mContentType.LowerCaseFindASCII("html") &&
+       kNotFound == ext.LowerCaseFindASCII("htm") &&
+       kNotFound == mContentType.LowerCaseFindASCII("/svg+") &&
+       !ext.EqualsIgnoreCase("svg"));
 
   // Check if this is a PDF which should be opened internally. We also handle
   // octet-streams that look like they might be PDFs based on their extension.
