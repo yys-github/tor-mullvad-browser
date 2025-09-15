@@ -721,3 +721,10 @@ onion-site-saved-keys-dialog-remove-button = Remove
 onion-site-saved-keys-dialog-remove-all-button = Remove all
 onion-site-saved-keys-dialog-fetch-keys-error-message = Unable to retrieve keys from Tor
 onion-site-saved-keys-dialog-remove-keys-error-message = Unable to remove key
+
+## Year end campaign.
+
+yec-donate-button = Donate now
+# Here "Close" is a verb, referring to closing the banner.
+yec-close-button =
+    .title = Close
