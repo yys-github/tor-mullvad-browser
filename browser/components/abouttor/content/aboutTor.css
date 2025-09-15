@@ -392,6 +392,13 @@ body.show-yec h1 {
   /* stylelint-disable-next-line stylelint-plugin-mozilla/use-font-size-tokens */
   font-size: 64px;
   font-weight: var(--font-weight);
+  font-family: "Jacquard 12", serif;
+}
+
+#yec-heading.all-jacquard12-chars {
+  /* All characters are supported by Jacquard 12.
+   * These have a high natural line-height. */
+  line-height: 1.0;
 }
 
 #yec-body {

@@ -728,3 +728,13 @@ yec-donate-button = Donate now
 # Here "Close" is a verb, referring to closing the banner.
 yec-close-button =
     .title = Close
+
+## 2025 Year end campaign.
+
+# Here "Free" is a verb, as in "release" or "liberate".
+yec2025-title = Free the internet
+# The second sentence's translation should be wrapped in '<b data-l10n-name="highlight">' and '</b>', which will make the text green and bold.
+yec2025-body = Support tools that break the chains of censorship and surveillance. <b data-l10n-name="highlight">Donate to the Tor Project today.</b>
+# The end date should match the end of the year 2025.
+# The "$250,000" should be localised: it should be shown as USD (United States dollar) currency, but you may use numbers and formatting appropriate to your locale.
+yec2025-matching = Through December 31, your gift will be matched, up to $250,000!
