@@ -431,14 +431,14 @@ const YecArea = {
    *
    * @type {?integer}
    */
-  _startDate: null, // No YEC is active.
+  _startDate: Date.UTC(2025, 9, 14, 15), // 2025 October 14th 15:00 UTC.
 
   /**
    * The epoch time to stop showing the banner, if at all.
    *
    * @type {?integer}
    */
-  _endDate: null, // No YEC is active.
+  _endDate: Date.UTC(2026, 0, 2, 0), // 2026 January 2nd 0:00 UTC.
 
   /**
    * Whether the area has been initialised.
@@ -528,7 +528,35 @@ const YecArea = {
 
     const donateLink = document.getElementById("yec-donate-link");
     const base = "https://www.torproject.org/donate";
-    donateLink.href = base;
+    const locale = this._locale;
+    donateLink.href = locale ? `${base}/donate-${locale}-yec2025` : base;
+
+    if (!this._addedHeadingCharObserver) {
+      // Observer to determine whether the heading contains Jacquard 12
+      // supported characters.
+      this._addedHeadingCharObserver = true;
+      const headingEl = document.getElementById("yec-heading");
+      const measure = () => {
+        const jacquard12Charset =
+          // eslint does not like the range \u{300}-\u{304} and onward, which
+          // are combining characters. But we want to detect the combining
+          // characters as individual characters.
+          // eslint-disable-next-line no-misleading-character-class
+          /^[\u{20}-\u{7e}\u{a0}-\u{a3}\u{a5}\u{a7}-\u{ab}\u{ae}-\u{b0}\u{b4}\u{b6}-\u{b8}\u{ba}-\u{bb}\u{bf}-\u{107}\u{10a}-\u{113}\u{116}-\u{11b}\u{11e}-\u{123}\u{126}-\u{127}\u{12a}-\u{12b}\u{12e}-\u{133}\u{136}-\u{137}\u{139}-\u{13e}\u{141}-\u{148}\u{14a}-\u{14d}\u{150}-\u{15b}\u{15e}-\u{161}\u{164}-\u{165}\u{16a}-\u{17e}\u{218}-\u{21b}\u{237}\u{2c6}-\u{2c7}\u{2d8}-\u{2dd}\u{300}-\u{304}\u{306}-\u{308}\u{30a}-\u{30c}\u{312}\u{326}-\u{328}\u{1e80}-\u{1e85}\u{1e9e}\u{1ef2}-\u{1ef3}\u{200a}\u{2013}-\u{2014}\u{2018}-\u{201a}\u{201c}-\u{201e}\u{2022}\u{2026}\u{2039}-\u{203a}\u{20ac}\u{2122}\u{2212}]+$/u;
+        headingEl.classList.toggle(
+          "all-jacquard12-chars",
+          jacquard12Charset.test(headingEl.textContent)
+        );
+      };
+
+      const headingObserver = new MutationObserver(measure);
+      headingObserver.observe(headingEl, {
+        subtree: true,
+        childList: true,
+        characterData: true,
+      });
+      measure();
+    }
 
     document.body.classList.add("show-yec");
   },
