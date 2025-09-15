@@ -4,7 +4,7 @@
   <head>
     <meta
       http-equiv="Content-Security-Policy"
-      content="default-src chrome:; object-src 'none'"
+      content="default-src chrome:; font-src data:; object-src 'none'"
     />
     <title data-l10n-id="newtab-page-title"></title>
     <link
@@ -17,6 +17,10 @@
     <link
       rel="stylesheet"
       href="chrome://browser/content/abouttor/aboutTor.css"
+    />
+    <link
+      rel="stylesheet"
+      href="chrome://browser/content/abouttor/yec2025-font.css"
     />
 
     <link rel="localization" href="browser/newtab/newtab.ftl" />
@@ -35,12 +39,16 @@
   <body class="onion-pattern-background">
     <!-- Year End Campaign (YEC). -->
     <article id="yec-banner" aria-labelledby="yec-heading">
-      <img id="yec-image" alt="" />
-      <h2 id="yec-heading"></h2>
-      <p id="yec-body">
+      <img
+        id="yec-image"
+        alt=""
+        src="chrome://browser/content/abouttor/yec2025-image.svg"
+      />
+      <h2 id="yec-heading" data-l10n-id="yec2025-title"></h2>
+      <p id="yec-body" data-l10n-id="yec2025-body">
         <b id="yec-body-highlight" data-l10n-name="highlight"></b>
       </p>
-      <p id="yec-matching"></p>
+      <p id="yec-matching" data-l10n-id="yec2025-matching"></p>
       <a id="yec-donate-link">
         <span data-l10n-id="yec-donate-button"></span>
         <img
