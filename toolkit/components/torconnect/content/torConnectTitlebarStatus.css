@@ -65,7 +65,9 @@
   }
 
   #tor-connect-titlebar-status.tor-connect-status-connected.tor-connect-status-animate-transition img {
-    transition: fill 1000ms, stroke 1000ms;
+    transition:
+      fill 1000ms,
+      stroke 1000ms;
     animation-name: onion-not-connected-to-connected;
     animation-delay: 200ms;
     animation-fill-mode: both;
