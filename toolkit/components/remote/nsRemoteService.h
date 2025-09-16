@@ -36,7 +36,7 @@ class nsRemoteService final : public nsIObserver, public nsIRemoteService {
   NS_DECL_NSIOBSERVER
   NS_DECL_NSIREMOTESERVICE
 
-  nsRemoteService();
+  nsRemoteService(bool aRemotingEnabled);
   void SetProgram(const char* aProgram);
   void SetProfile(nsACString& aProfile);
 #ifdef MOZ_WIDGET_GTK
@@ -88,6 +88,7 @@ class nsRemoteService final : public nsIObserver, public nsIRemoteService {
   nsresult SendCommandLine(const nsACString& aProfile, size_t aArgc,
                            const char** aArgv, bool aRaise);
 
+  bool mRemotingEnabled;
   mozilla::UniquePtr<nsRemoteServer> mRemoteServer;
   nsCString mProgram;
   nsCString mProfile;
