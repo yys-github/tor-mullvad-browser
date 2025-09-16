@@ -50,7 +50,8 @@ nsStartupLock::~nsStartupLock() {
 
 NS_IMPL_ISUPPORTS(nsRemoteService, nsIObserver, nsIRemoteService)
 
-nsRemoteService::nsRemoteService() : mProgram("mozilla") {
+nsRemoteService::nsRemoteService(bool aRemotingEnabled)
+    : mRemotingEnabled(aRemotingEnabled), mProgram("mozilla") {
   ToLowerCase(mProgram);
 }
 
@@ -191,6 +192,10 @@ nsresult nsRemoteService::SendCommandLine(const nsACString& aProfile,
     return NS_ERROR_FAILURE;
   }
 
+  if (!mRemotingEnabled) {
+    return NS_ERROR_NOT_AVAILABLE;
+  }
+
   UniquePtr<nsRemoteClient> client;
 #ifdef MOZ_WIDGET_GTK
 #  if defined(MOZ_ENABLE_DBUS)
@@ -246,7 +251,7 @@ nsresult nsRemoteService::StartClient() {
 }
 
 void nsRemoteService::StartupServer() {
-  if (mRemoteServer) {
+  if (mRemoteServer || !mRemotingEnabled) {
     return;
   }
 
