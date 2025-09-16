@@ -315,6 +315,8 @@ static nsIProfileLock* gProfileLock;
 #if defined(MOZ_HAS_REMOTE)
 MOZ_CONSTINIT static RefPtr<nsRemoteService> gRemoteService;
 MOZ_CONSTINIT static RefPtr<nsStartupLock> gStartupLock;
+// tor-browser#43107: Disable remoting by default.
+bool gDisableRemoting = true;
 #endif
 
 int gRestartArgc;
@@ -2095,7 +2097,7 @@ nsresult ScopedXPCOMStartup::SetWindowCreator(nsINativeAppSupport* native) {
 /* static */ already_AddRefed<nsIRemoteService> GetRemoteService() {
   AssertIsOnMainThread();
 
-  if (!gRemoteService) {
+  if (!gRemoteService && !gDisableRemoting) {
     gRemoteService = new nsRemoteService();
   }
   nsCOMPtr<nsIRemoteService> remoteService = gRemoteService.get();
@@ -2155,8 +2157,7 @@ static void DumpHelp() {
       "  --origin-to-force-quic-on <origin>\n"
       "                     Force to use QUIC for the specified origin.\n"
 #ifdef MOZ_HAS_REMOTE
-      "  --new-instance     Open new instance, not a new window in running "
-      "instance.\n"
+      "  --allow-remote     Accept and send remote commands.\n"
 #endif
       "  --safe-mode        Disables extensions and themes for this session.\n"
 #ifdef MOZ_BLOCK_PROFILE_DOWNGRADE
@@ -3859,9 +3860,6 @@ class XREMain {
 
   bool mStartOffline = false;
   nsAutoCString mOriginToForceQUIC;
-#if defined(MOZ_HAS_REMOTE)
-  bool mDisableRemoteClient = false;
-#endif
 };
 
 #if defined(XP_UNIX) && !defined(ANDROID)
@@ -4484,15 +4482,19 @@ int XREMain::XRE_mainInit(bool* aExitFlag) {
   CheckArg("no-remote");
 
 #if defined(MOZ_HAS_REMOTE)
-  // Handle the --new-instance command line arguments.
-  ar = CheckArg("new-instance");
-  if (ar == ARG_FOUND || EnvHasValue("MOZ_NEW_INSTANCE")) {
-    mDisableRemoteClient = true;
+  // tor-browser#43107: Drop the new-instance argument and environment
+  // variables. They are confusing, because they kinda disable remoting when
+  // it's already disabled in tor-browser.
+  //
+  // The user can still enable remoting if they want to, by adding the
+  // allow-remote parameter to the command line.
+  if (CheckArg("allow-remote") == ARG_FOUND) {
+    gDisableRemoting = false;
   }
 #else
   // These arguments do nothing in platforms with no remoting support but we
   // should remove them from the command line anyway.
-  CheckArg("new-instance");
+  CheckArg("allow-remote");
 #endif
 
   ar = CheckArg("offline");
@@ -4876,7 +4878,7 @@ int XREMain::XRE_mainStartup(bool* aExitFlag) {
 
 #ifdef MOZ_HAS_REMOTE
   if (gfxPlatform::IsHeadless()) {
-    mDisableRemoteClient = true;
+    gDisableRemoting = true;
   }
 #endif
 
@@ -4998,8 +5000,10 @@ int XREMain::XRE_mainStartup(bool* aExitFlag) {
   }
 #endif
 #if defined(MOZ_HAS_REMOTE)
-  // handle --remote now that xpcom is fired up
-  gRemoteService = new nsRemoteService();
+  if (!gDisableRemoting) {
+    // handle --remote now that xpcom is fired up
+    gRemoteService = new nsRemoteService();
+  }
   if (gRemoteService) {
     gRemoteService->SetProgram(gAppData->remotingName);
     gStartupLock = gRemoteService->LockStartup();
@@ -5084,7 +5088,7 @@ int XREMain::XRE_mainStartup(bool* aExitFlag) {
     if (NS_SUCCEEDED(rv)) {
       gRemoteService->SetProfile(profilePath);
 
-      if (!mDisableRemoteClient) {
+      if (!gDisableRemoting) {
         // Try to remote the entire command line. If this fails, start up
         // normally.
 #  ifdef MOZ_WIDGET_GTK
