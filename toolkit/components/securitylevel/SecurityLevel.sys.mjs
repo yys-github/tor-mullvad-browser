@@ -390,6 +390,8 @@ var initializeSecurityPrefs = function () {
     Services.prefs.setBoolPref(kCustomPref, false);
     Services.prefs.setIntPref(kSliderPref, effectiveIndex);
   }
+  // Determine the javascriptEnabled value *after* we have set kSliderPref.
+  SecurityLevelPrefs.updateJavascriptEnabled();
   // Warn the user if they have booted the browser in a custom state, and have
   // not yet acknowledged it in a previous session.
   SecurityLevelPrefs.maybeWarnCustom();
@@ -567,6 +569,42 @@ export const SecurityLevelPrefs = {
   },
 
   /**
+   * Cached value for whether javascript is enabled. `null` whilst undetermined.
+   *
+   * @type {?boolean}
+   */
+  _javascriptEnabled: null,
+
+  /**
+   * Whether javascript is enabled for web pages at the current security level.
+   *
+   * @type {boolean}
+   */
+  get javascriptEnabled() {
+    if (this._javascriptEnabled === null) {
+      this.updateJavascriptEnabled();
+    }
+    return this._javascriptEnabled;
+  },
+
+  /**
+   * Update the javascriptEnabled value.
+   */
+  updateJavascriptEnabled() {
+    // NoScript will disable javascript for web pages at the safest security
+    // level.
+    const enabled = this.securityLevel !== "safest";
+    if (enabled === this._javascriptEnabled) {
+      return;
+    }
+    this._javascriptEnabled = enabled;
+    Services.obs.notifyObservers(
+      null,
+      "SecurityLevel:JavascriptEnabledChanged"
+    );
+  },
+
+  /**
    * Set the desired security level just before a restart.
    *
    * The caller must restart the browser after calling this method.
@@ -575,6 +613,10 @@ export const SecurityLevelPrefs = {
    */
   setSecurityLevelBeforeRestart(level) {
     write_setting_to_prefs(this.SecurityLevels[level]);
+    // NOTE: Do not call `updateJavascriptEnabled`. We are about to restart, so
+    // consumers do not need to know about the change.
+    // Moreover, the change has not reached NoScript, which controls the
+    // javascript changes.
   },
 
   /**
@@ -729,6 +771,8 @@ export const SecurityLevelPrefs = {
     // still be marked as "custom" because:
     // 1. Some preferences require a browser restart to be applied.
     // 2. NoScript has not been updated with the new settings.
+    // NOTE: Do not call `updateJavascriptEnabled` because the change has not
+    // reached NoScript, which controls the javascript changes.
 
     this._tryShowNotifications({ restart: true, custom: true });
   },
