@@ -482,6 +482,7 @@ body.show-yec h1 {
   #yec-heading {
     margin-block-start: 16px;
     text-align: center;
+    /* stylelint-disable-next-line property-no-unknown */
     text-wrap-style: balance;
   }
 
