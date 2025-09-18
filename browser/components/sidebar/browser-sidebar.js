@@ -98,9 +98,10 @@ var SidebarController = {
         "viewHistorySidebar",
         this.makeSidebar({
           elementId: "sidebar-switcher-history",
-          url: this.sidebarRevampEnabled
-            ? "chrome://browser/content/sidebar/sidebar-history.html"
-            : "chrome://browser/content/places/historySidebar.xhtml",
+          // sidebar-history.html requires the "firefoxview" component and
+          // requires more work. Stick to historySidebar.xhtml for ESR 140.
+          // See tor-browser#44108.
+          url: "chrome://browser/content/places/historySidebar.xhtml",
           menuId: "menu_historySidebar",
           triggerButtonId: "appMenuViewHistorySidebar",
           keyId: "key_gotoHistory",
