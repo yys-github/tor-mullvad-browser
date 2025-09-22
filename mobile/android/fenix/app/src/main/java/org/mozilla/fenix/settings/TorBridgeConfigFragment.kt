@@ -33,10 +33,10 @@ class TorBridgeConfigFragment : PreferenceFragmentCompat() {
 
         // Initialize radio button group for built-in bridge transport types
         val radioObfs4 = bindBridgeTransportRadio(TorBridgeTransportConfig.BUILTIN_OBFS4)
-        val radioMeekAzure = bindBridgeTransportRadio(TorBridgeTransportConfig.BUILTIN_MEEK_AZURE)
+        val radioMeek = bindBridgeTransportRadio(TorBridgeTransportConfig.BUILTIN_MEEK)
         val radioSnowflake = bindBridgeTransportRadio(TorBridgeTransportConfig.BUILTIN_SNOWFLAKE)
 
-        builtinBridgeRadioGroups.addAll(mutableListOf(radioObfs4, radioMeekAzure, radioSnowflake))
+        builtinBridgeRadioGroups.addAll(mutableListOf(radioObfs4, radioMeek, radioSnowflake))
 
         // `*` is Kotlin's "spread" operator, for expanding an Array as a vararg.
         addToRadioGroup(*builtinBridgeRadioGroups.toTypedArray())
