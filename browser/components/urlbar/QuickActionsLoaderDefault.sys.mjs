@@ -172,6 +172,10 @@ const DEFAULT_ACTIONS = {
     l10nCommands: ["quickactions-cmd-logins"],
     label: "quickactions-logins2",
     onPick: openUrlFun("about:logins"),
+    // Disabled in base browser since saved passwords is not well supported in
+    // Tor Browser, and should be disabled in Mullvad Browser.
+    // tor-browser#44177.
+    disabled: () => true,
   },
   print: {
     l10nCommands: ["quickactions-cmd-print"],
@@ -194,6 +198,10 @@ const DEFAULT_ACTIONS = {
       lazy.BrowserWindowTracker.getTopWindow().OpenBrowserWindow({
         private: true,
       });
+    },
+    // Disable in permanent private browsing. tor-browser#44177.
+    disabled: () => {
+      return lazy.PrivateBrowsingUtils.permanentPrivateBrowsing;
     },
   },
   refresh: {
