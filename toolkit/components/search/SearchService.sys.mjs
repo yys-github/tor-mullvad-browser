@@ -4,6 +4,7 @@
 
 /* eslint no-shadow: error, mozilla/no-aArgs: error */
 
+import { AppConstants } from "resource://gre/modules/AppConstants.sys.mjs";
 import { XPCOMUtils } from "resource://gre/modules/XPCOMUtils.sys.mjs";
 
 const lazy = XPCOMUtils.declareLazy({
@@ -1471,6 +1472,10 @@ export class SearchService {
       this.#earlyObserversAdded = true;
     }
 
+    this.#getIgnoreListAndSubscribe().catch(ex =>
+      console.error(ex, "Search Service could not get the ignore list.")
+    );
+
     this.#engineSelector = new lazy.SearchEngineSelector(
       this.#handleConfigurationUpdated.bind(this)
     );
@@ -1610,7 +1615,6 @@ export class SearchService {
    * handled via a sync listener.
    *
    */
-  // eslint-disable-next-line no-unused-private-class-members
   async #getIgnoreListAndSubscribe() {
     let listener = this.#handleIgnoreListUpdated.bind(this);
     const current = await lazy.IgnoreLists.getAndSubscribe(listener);
@@ -1635,6 +1639,10 @@ export class SearchService {
    *   The event in the format received from RemoteSettings.
    */
   async #handleIgnoreListUpdated(eventData) {
+    if (AppConstants.BASE_BROWSER_VERSION) {
+      return;
+    }
+
     lazy.logConsole.debug("#handleIgnoreListUpdated");
     const {
       data: { current },
