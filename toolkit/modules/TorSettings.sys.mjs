@@ -36,7 +36,7 @@ const TorSettingsPrefs = Object.freeze({
     source: "torbrowser.settings.bridges.source",
     /* string: output of crypto.randomUUID() */
     lox_id: "torbrowser.settings.bridges.lox_id",
-    /* string: obfs4|meek-azure|snowflake|etc */
+    /* string: obfs4|meek|snowflake|etc */
     builtin_type: "torbrowser.settings.bridges.builtin_type",
     /* preference branch: each child branch should be a bridge string */
     bridge_strings: "torbrowser.settings.bridges.bridge_strings",
@@ -534,6 +534,13 @@ class TorSettingsImpl {
       const req = await fetch("chrome://global/content/pt_config.json");
       const config = await req.json();
       lazy.logger.debug("Loaded pt_config.json", config);
+      if ("meek-azure" in config.bridges) {
+        // Convert the meek-azure name to meek. tor-browser#44068.
+        // NOTE: no need to convert recommendedDefault since it is not meek.
+        lazy.logger.debug("Converting pt_config type from meek-azure to meek");
+        config.bridges.meek = config.bridges["meek-azure"];
+        delete config.bridges["meek-azure"];
+      }
       this.#recommendedPT = config.recommendedDefault;
       this.#builtinBridges = config.bridges;
       for (const type in this.#builtinBridges) {
@@ -687,13 +694,26 @@ class TorSettingsImpl {
             )
           );
         break;
-      case TorBridgeSource.BuiltIn:
+      case TorBridgeSource.BuiltIn: {
         // bridge_strings is set via builtin_type.
-        bridges.builtin_type = Services.prefs.getStringPref(
+        let builtinType = Services.prefs.getStringPref(
           TorSettingsPrefs.bridges.builtin_type,
           ""
         );
+        if (builtinType === "meek-azure") {
+          lazy.logger.debug(
+            "Converting builtin-bridge setting value from meek-azure to meek"
+          );
+          builtinType = "meek";
+          // Store the new value.
+          Services.prefs.setStringPref(
+            TorSettingsPrefs.bridges.builtin_type,
+            builtinType
+          );
+        }
+        bridges.builtin_type = builtinType;
         break;
+      }
       case TorBridgeSource.Lox:
         // bridge_strings is set via lox id.
         bridges.lox_id = Services.prefs.getStringPref(
