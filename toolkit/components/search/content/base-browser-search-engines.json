@@ -37,7 +37,7 @@
   },
   {
     "base": {
-      "aliases": ["startpage"],
+      "aliases": ["startpage", "sp"],
       "classification": "general",
       "name": "Startpage",
       "urls": {
