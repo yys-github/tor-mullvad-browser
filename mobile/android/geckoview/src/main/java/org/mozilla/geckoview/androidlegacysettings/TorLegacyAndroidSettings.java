@@ -49,7 +49,7 @@ public class TorLegacyAndroidSettings {
               TorSettings.BridgeBuiltinType.fromString(userDefinedBridgeList);
           break;
         case "meek":
-          settings.bridgesBuiltinType = TorSettings.BridgeBuiltinType.MeekAzure;
+          settings.bridgesBuiltinType = TorSettings.BridgeBuiltinType.Meek;
           break;
         default:
           settings.bridgesSource = TorSettings.BridgeSource.Invalid;
