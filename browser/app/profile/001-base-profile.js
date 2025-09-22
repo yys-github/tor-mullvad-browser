@@ -164,6 +164,10 @@ pref("security.ssl3.dhe_rsa_aes_256_sha", false, locked);
 // See tor-browser#40565.
 pref("security.tls.version.enable-deprecated", false, locked);
 
+// tor-browser#44187: Disable session identifiers to make PBM and normal mode
+// more similar.
+pref("security.ssl.disable_session_identifiers", true);
+
 // Misc privacy: Remote
 pref("browser.send_pings", false);
 // Space separated list of URLs that are allowed to send objects (instead of
