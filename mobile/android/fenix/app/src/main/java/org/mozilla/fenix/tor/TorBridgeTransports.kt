@@ -19,7 +19,7 @@ enum class TorBridgeTransportConfig(
         preferenceKey = R.string.pref_key_tor_network_settings_bridge_config_builtin_bridge_obfs4,
         transportName = "obfs4"
     ),
-    BUILTIN_MEEK_AZURE(
+    BUILTIN_MEEK(
         preferenceKey = R.string.pref_key_tor_network_settings_bridge_config_builtin_bridge_meek_azure,
         transportName = "meek"
     ),
@@ -38,8 +38,8 @@ object TorBridgeTransportConfigUtil {
         return when (bridge) {
             TorBridgeTransportConfig.BUILTIN_OBFS4.transportName ->
                 TorBridgeTransportConfig.BUILTIN_OBFS4
-            TorBridgeTransportConfig.BUILTIN_MEEK_AZURE.transportName ->
-                TorBridgeTransportConfig.BUILTIN_MEEK_AZURE
+            TorBridgeTransportConfig.BUILTIN_MEEK.transportName ->
+                TorBridgeTransportConfig.BUILTIN_MEEK
             TorBridgeTransportConfig.BUILTIN_SNOWFLAKE.transportName ->
                 TorBridgeTransportConfig.BUILTIN_SNOWFLAKE
             else -> TorBridgeTransportConfig.USER_PROVIDED
