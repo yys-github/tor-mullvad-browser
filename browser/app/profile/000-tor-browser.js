@@ -62,7 +62,7 @@ pref("torbrowser.settings.bridges.enabled", false);
 // TorBridgeSource. Initially TorBridgeSource.Invalid = -1.
 pref("torbrowser.settings.bridges.source", -1);
 pref("torbrowser.settings.bridges.lox_id", "");
-// obfs4|meek-azure|snowflake|etc.
+// obfs4|meek|snowflake|etc.
 pref("torbrowser.settings.bridges.builtin_type", "");
 // torbrowser.settings.bridges.bridge_strings.0
 // torbrowser.settings.bridges.bridge_strings.1
