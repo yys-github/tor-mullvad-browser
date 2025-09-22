@@ -68,10 +68,10 @@ public class TorSettings {
   }
 
   public enum BridgeBuiltinType {
-    /* TorSettings.sys.mjs ~ln43:  string: obfs4|meek-azure|snowflake|etc */
+    /* TorSettings.sys.mjs ~ln43:  string: obfs4|meek|snowflake|etc */
     Invalid("invalid"),
     Obfs4("obfs4"),
-    MeekAzure("meek-azure"),
+    Meek("meek"),
     Snowflake("snowflake");
 
     private String type;
@@ -88,8 +88,8 @@ public class TorSettings {
       switch (s) {
         case "obfs4":
           return Obfs4;
-        case "meek-azure":
-          return MeekAzure;
+        case "meek":
+          return Meek;
         case "snowflake":
           return Snowflake;
       }
