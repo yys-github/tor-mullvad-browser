@@ -1079,7 +1079,7 @@ const gBuiltinBridgesArea = {
       name: "tor-bridges-built-in-snowflake-name",
       description: "tor-bridges-built-in-snowflake-description",
     },
-    "meek-azure": {
+    meek: {
       name: "tor-bridges-built-in-meek-name",
       description: "tor-bridges-built-in-meek-description",
     },
