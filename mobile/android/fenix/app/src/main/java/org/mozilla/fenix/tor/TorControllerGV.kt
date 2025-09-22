@@ -65,7 +65,7 @@ class TorControllerGV(
                 BridgeSource.BuiltIn -> {
                     when (getTorSettings()?.bridgesBuiltinType) {
                         BridgeBuiltinType.Obfs4 -> TorBridgeTransportConfig.BUILTIN_OBFS4
-                        BridgeBuiltinType.MeekAzure -> TorBridgeTransportConfig.BUILTIN_MEEK_AZURE
+                        BridgeBuiltinType.Meek -> TorBridgeTransportConfig.BUILTIN_MEEK
                         BridgeBuiltinType.Snowflake -> TorBridgeTransportConfig.BUILTIN_SNOWFLAKE
                         else -> TorBridgeTransportConfig.USER_PROVIDED
                     }
@@ -87,7 +87,7 @@ class TorControllerGV(
                     it.bridgesSource = BridgeSource.BuiltIn
                     val bbt: BridgeBuiltinType = when (value) {
                         TorBridgeTransportConfig.BUILTIN_OBFS4 -> BridgeBuiltinType.Obfs4
-                        TorBridgeTransportConfig.BUILTIN_MEEK_AZURE -> BridgeBuiltinType.MeekAzure
+                        TorBridgeTransportConfig.BUILTIN_MEEK -> BridgeBuiltinType.Meek
                         TorBridgeTransportConfig.BUILTIN_SNOWFLAKE -> BridgeBuiltinType.Snowflake
                         else -> BridgeBuiltinType.Invalid
                     }
