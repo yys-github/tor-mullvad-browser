@@ -1883,7 +1883,7 @@ void nsContentSecurityUtils::AssertAboutPageHasCSP(Document* aDocument) {
     if (dir.EqualsLiteral("default-src") || dir.EqualsLiteral("object-src") ||
         dir.EqualsLiteral("script-src") || dir.EqualsLiteral("style-src") ||
         dir.EqualsLiteral("img-src") || dir.EqualsLiteral("media-src") ||
-        dir.EqualsLiteral("connect-src")) {
+        dir.EqualsLiteral("connect-src") || dir.EqualsLiteral("font-src")) {
       continue;
     }
 
