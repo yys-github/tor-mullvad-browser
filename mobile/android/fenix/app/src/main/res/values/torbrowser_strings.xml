@@ -92,14 +92,6 @@
     <string name="connection_assist_select_country_or_region">Select country or region</string>
     <!-- Connection assist. -->
     <string name="connection_assist_try_a_bridge_button">Try a bridge</string>
-
-    <!-- Connection assist. %1$s is connection_assist_choose_a_bridge_manually_link-->
-    <string name="connection_assist_try_a_bridge_learn_more_description1">Tor Browser will need to establish a brief non-Tor connection to determine your location and look up a bridge. If you don’t want to do that, you can %1$s instead.</string>
-    <!-- Connection assist. -->
-    <string name="connection_assist_choose_a_bridge_manually_link">choose a bridge manually</string>
-    <!-- Connection assist. %s is the error code-->
-    <string name="connection_assist_try_a_bridge_learn_more_error_code">Error code: %s</string>
-
     <!-- Connection assist. -->
     <string name="connection_assist_trying_a_bridge_title">Trying a bridge…</string>
 
@@ -109,9 +101,6 @@
     <string name="connection_assist_location_error_description" translatable="false">%1$s %2$s %3$s</string>
     <string name="connection_assist_find_bridge_location_description">To find a bridge that can unblock your internet, we need to know where you’re connecting from.</string>
     <string name="connection_assist_select_country_try_again">Select your country or region and try again.</string>
-    <!-- Connection assist. %1$s is connection_assist_find_bridge_location_description, %2$s is connection_assist_check_location_settings_try_again. %3$s is connection_assist_location_error_learn_more_link-->
-    <string name="connection_assist_location_error_last_try_description">%1$s %2$s %3$s</string>
-    <string name="connection_assist_check_location_settings_try_again">Please check your location settings are correct and try again.</string>
 
     <string name="connection_assist_location_error_learn_more_link">Learn more</string>
 
