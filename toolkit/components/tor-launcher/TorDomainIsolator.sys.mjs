@@ -500,7 +500,13 @@ class TorDomainIsolatorImpl {
     const browsers =
       channel.loadInfo.browsingContext?.topChromeWindow?.gBrowser?.browsers;
     if (!browsers || !channel.loadInfo.browsingContext?.browserId) {
-      logger.debug("Missing data to associate to a browser", channel.loadInfo);
+      if (channel instanceof Ci.nsIHttpChannel) {
+        logger.debug(
+          "Missing data to associate to a browser",
+          channel.loadInfo.loadingPrincipal?.URI?.spec,
+          channel.loadInfo
+        );
+      }
       return null;
     }
     for (const browser of browsers) {
@@ -593,7 +599,7 @@ class TorDomainIsolatorImpl {
     // Should we modify the lower layer to send a circuit identifier, instead?
     if (
       circuit.length === data.length &&
-      circuit.every((id, index) => id === data[index].fingerprint)
+      circuit.every((fp, index) => fp === data[index].fingerprint)
     ) {
       return;
     }
