@@ -9,10 +9,14 @@
 "use strict";
 
 const expectedURLs = {
-  ddg: "https://duckduckgo.com/?q=test",
+  leta: "https://leta.mullvad.net/?q=test",
+  ddg: "https://duckduckgo.com/html/?q=test",
+  "ddg-html": "https://html.duckduckgo.com/html?q=test",
+  mojeek: "https://www.mojeek.com/search?q=test",
+  brave: "https://search.brave.com/search?q=test",
   startpage: "https://www.startpage.com/sp/search?q=test",
 };
-const defaultEngine = "ddg";
+const defaultEngine = "leta";
 
 add_setup(async function setup() {
   await Services.search.init();
