@@ -1100,7 +1100,7 @@ already_AddRefed<mozilla::MediaByteBuffer> H265::ExtractHVCCExtraData(
   // If we encounter SPS with the same id but different content, we will stop
   // attempting to detect duplicates.
   bool checkDuplicate = true;
-  const H265SPS* firstSPS = nullptr;
+  Maybe<uint8_t> firstSPSId;
 
   RefPtr<mozilla::MediaByteBuffer> extradata = new mozilla::MediaByteBuffer;
   while (reader.Remaining() > nalLenSize) {
@@ -1160,17 +1160,18 @@ already_AddRefed<mozilla::MediaByteBuffer> H265::ExtractHVCCExtraData(
       } else {
         spsRefTable[spsId] = Some(sps);
         spsNALUs.AppendElement(nalu);
-        if (!firstSPS) {
-          firstSPS = spsRefTable[spsId].ptr();
+        if (!firstSPSId) {
+          firstSPSId.emplace(spsId);
         }
       }
     }
   }
 
   LOGV("Found %zu SPS NALU", spsNALUs.Length());
-  if (!spsNALUs.IsEmpty()) {
-    MOZ_ASSERT(firstSPS);
+  if (firstSPSId && !spsNALUs.IsEmpty()) {
     BitWriter writer(extradata);
+    const H265SPS* firstSPS = spsRefTable[*firstSPSId].ptr();
+    MOZ_ASSERT(firstSPS);
 
     // ISO/IEC 14496-15, HEVCDecoderConfigurationRecord. But we only append SPS.
     writer.WriteBits(1, 8);  // version
