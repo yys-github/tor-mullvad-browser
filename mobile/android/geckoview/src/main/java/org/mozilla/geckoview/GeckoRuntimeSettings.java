@@ -609,7 +609,8 @@ public final class GeckoRuntimeSettings extends RuntimeSettings {
       for (String tag : locales) {
         Locale locale = Locale.forLanguageTag(tag);
         getSettings().mSupportedLocales.put(locale, locale);
-        getSettings().mSupportedLocales.put(new Locale(locale.getLanguage()), locale);
+        Locale lang = new Locale.Builder().setLanguage(locale.getLanguage()).build();
+        getSettings().mSupportedLocales.put(lang, locale);
       }
       return this;
     }
@@ -1371,7 +1372,7 @@ public final class GeckoRuntimeSettings extends RuntimeSettings {
     if (mSupportedLocales.containsKey(exact)) {
       return exact;
     }
-    Locale fallback = new Locale(exact.getLanguage());
+    Locale fallback = new Locale.Builder().setLanguage(exact.getLanguage()).build();
     return mSupportedLocales.get(fallback);
   }
 
