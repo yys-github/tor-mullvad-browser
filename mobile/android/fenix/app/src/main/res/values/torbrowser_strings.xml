@@ -134,4 +134,11 @@
     <!-- Connection assist. Content Description for back button. Button will start the connection assist process again -->
     <string name="connection_assist_back_button_content_description_start_again">Start again</string>
 
+    <!-- Year End Campaign. Text on the "Donate Now" button that takes the user to the donation page. A small black heart image will be added to the "end" of the text but within the button. Here end" means to the right of the test for LTR and to the left of the text for RTL, android handles this. -->
+    <string name="donate_now_yec">Donate Now</string>
+    <!-- Year End Campaign. White text to be shown below the purple rectangle that the rest of the content is in. -->
+    <string name="no_donation_required_yec">Tor Browser for Android will always be free to use—no donation is required to use this app.</string>
+    <!-- Year End Campaign. Here "Close" is a verb, referring to closing the banner. This is used primarily for screen readers to give the small "x" button a name. -->
+    <string name="close_yec_button_description">Close</string>
+
 </resources>
