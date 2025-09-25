@@ -182,7 +182,10 @@ export class PictureInPictureLauncherChild extends JSWindowActorChild {
           detail: { reason },
         }
       );
-      video.dispatchEvent(stopPipEvent);
+      this.contentWindow.windowUtils.dispatchEventToChromeOnly(
+        video,
+        stopPipEvent
+      );
       return;
     }
 
@@ -673,7 +676,7 @@ export class PictureInPictureToggleChild extends JSWindowActorChild {
           detail: { reason: "urlBar" },
         }
       );
-      video.dispatchEvent(pipEvent);
+      this.contentWindow.windowUtils.dispatchEventToChromeOnly(video, pipEvent);
     }
   }
 
@@ -1066,7 +1069,7 @@ export class PictureInPictureToggleChild extends JSWindowActorChild {
         detail: { reason: "toggle" },
       }
     );
-    video.dispatchEvent(pipEvent);
+    this.contentWindow.windowUtils.dispatchEventToChromeOnly(video, pipEvent);
 
     // Since we've initiated Picture-in-Picture, we can go ahead and
     // hide the toggle now.
