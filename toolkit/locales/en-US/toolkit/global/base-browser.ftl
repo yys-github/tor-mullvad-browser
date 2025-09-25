@@ -97,6 +97,10 @@ letterboxing-disabled-description = Letterboxing is currently disabled.
 letterboxing-enable-button =
     .label = Enable Letterboxing
 
+## Preferences - Sidebar.
+
+browser-layout-show-sidebar-desc-limited = Quickly access bookmarks and more without leaving your main view.
+
 ## Security level toolbar button.
 ## Uses sentence case in English (US).
 ## ".label" is the accessible name, and shown in the overflow menu and when customizing the toolbar.
