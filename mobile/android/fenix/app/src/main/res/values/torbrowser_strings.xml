@@ -141,4 +141,13 @@
     <!-- Year End Campaign. Here "Close" is a verb, referring to closing the banner. This is used primarily for screen readers to give the small "x" button a name. -->
     <string name="close_yec_button_description">Close</string>
 
+    <!-- 2025 Year End Campaign. Title text that will show up bigger and in a different font -->
+    <string name="free_the_internet_yec">Free the internet</string>
+    <!-- 2025 Year End Campaign. %s will be replaced with the value for body1_link_yec -->
+    <string name="body1_yec">Support tools that break the chains of censorship and surveillance. %s</string>
+    <!-- 2025 Year End Campaign. The part to replace %s in body1_yec -->
+    <string name="body1_link_yec">Donate to the Tor Project today.</string>
+    <!-- 2025 Year End Campaign. The end date should match the end of the year 2025. The "$250,000" should be localised: it should be shown as USD (United States dollar) currency, but you may use numbers and formatting appropriate to your locale. -->
+    <string name="body2_yec">Through December 31, your gift will be matched, up to $250,000!</string>
+
 </resources>
