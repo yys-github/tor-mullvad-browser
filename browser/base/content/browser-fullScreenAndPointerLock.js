@@ -947,7 +947,13 @@ var FullScreen = {
     gNavToolbox.style.marginTop =
       -gNavToolbox.getBoundingClientRect().height + "px";
     this._isChromeCollapsed = true;
-    Services.obs.notifyObservers(null, "fullscreen-nav-toolbox", "hidden");
+    // Need a subject to know which window this applies to.
+    // Base browser patch can be dropped after bugzilla bug 1880918.
+    Services.obs.notifyObservers(
+      gNavToolbox,
+      "fullscreen-nav-toolbox",
+      "hidden"
+    );
 
     MousePosTracker.removeListener(this);
   },
