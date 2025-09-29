@@ -677,7 +677,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
     var whatsappLinkSharingEnabled by lazyFeatureFlagPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_link_sharing),
         featureFlag = true,
-        default = { FxNimbus.features.sentFromFirefox.value().enabled },
+        default = { false },
     )
 
     var linkSharingSettingsSnackbarShown by booleanPreference(
