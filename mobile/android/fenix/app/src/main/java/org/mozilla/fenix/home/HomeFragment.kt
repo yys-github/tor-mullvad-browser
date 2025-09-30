@@ -158,6 +158,7 @@ import org.mozilla.fenix.search.toolbar.SearchSelectorMenu
 import org.mozilla.fenix.tabstray.Page
 import org.mozilla.fenix.tabstray.TabsTrayAccessPoint
 import org.mozilla.fenix.theme.FirefoxTheme
+import org.mozilla.fenix.tor.TorCampaignViewModel
 import org.mozilla.fenix.utils.Settings.Companion.TOP_SITES_PROVIDER_MAX_THRESHOLD
 import org.mozilla.fenix.utils.allowUndo
 import org.mozilla.fenix.wallpapers.Wallpaper
@@ -166,6 +167,7 @@ import org.mozilla.fenix.GleanMetrics.TabStrip as TabStripMetrics
 
 import org.mozilla.fenix.tor.TorHomePage
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
+import java.util.Locale
 
 @Suppress("TooManyFunctions", "LargeClass")
 class HomeFragment : Fragment(), UserInteractionHandler {
@@ -179,6 +181,7 @@ class HomeFragment : Fragment(), UserInteractionHandler {
     internal var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
+    private val torCampaignViewModel: TorCampaignViewModel by activityViewModels()
     private val homeViewModel: HomeScreenViewModel by activityViewModels()
     private val urlQuickLoadViewModel: UrlQuickLoadViewModel by activityViewModels()
 
@@ -899,6 +902,17 @@ class HomeFragment : Fragment(), UserInteractionHandler {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 TorHomePage(
+                    torCampaignViewModel.shouldInitiallyShowPromo,
+                    onClicked = {
+                        val baseUrl =  "https://www.torproject.org/donate"
+                        val locale = Locale.getDefault().getLanguage()
+                        val donateUrl = "${baseUrl}/donate-${locale}-yec2025"
+                        (requireActivity() as HomeActivity).openToBrowserAndLoad(
+                            searchTermOrURL = donateUrl,
+                            newTab = true,
+                            from = BrowserDirection.FromHome,
+                        )
+                    },
                     toolBarAtTop = requireContext().settings().toolbarPosition == ToolbarPosition.TOP
                 )
             }
