@@ -82,6 +82,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.toColorInt
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -127,6 +128,7 @@ import org.mozilla.fenix.compose.Favicon
 import org.mozilla.fenix.compose.list.IconListItem
 import org.mozilla.fenix.compose.list.SelectableFaviconListItem
 import org.mozilla.fenix.compose.list.SelectableIconListItem
+import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.search.SearchFragmentAction.SuggestionClicked
 import org.mozilla.fenix.search.SearchFragmentAction.SuggestionSelected
 import org.mozilla.fenix.search.SearchFragmentState
@@ -1215,7 +1217,7 @@ private fun BookmarkListOverflowMenu(
     onDismissRequest: () -> Unit,
     store: BookmarksStore,
 ) {
-    val menuItems = listOf(
+    val menuItems = listOfNotNull(
         MenuItem.TextItem(
             text = Text.Resource(R.string.bookmark_menu_select_all_bookmarks),
             onClick = { store.dispatch(BookmarksListMenuAction.SelectAll) },
@@ -1223,7 +1225,7 @@ private fun BookmarkListOverflowMenu(
         MenuItem.TextItem(
             text = Text.Resource(R.string.bookmark_menu_open_in_new_tab_button),
             onClick = { store.dispatch(BookmarksListMenuAction.MultiSelect.OpenInNormalTabsClicked) },
-        ),
+        ).takeIf { !LocalContext.current.settings().shouldDisableNormalMode },
         MenuItem.TextItem(
             text = Text.Resource(R.string.bookmark_menu_open_in_private_tab_button),
             onClick = { store.dispatch(BookmarksListMenuAction.MultiSelect.OpenInPrivateTabsClicked) },
@@ -1251,7 +1253,7 @@ private fun FolderListOverflowMenu(
     onDismissRequest: () -> Unit,
     store: BookmarksStore,
 ) {
-    val menuItems = listOf(
+    val menuItems = listOfNotNull(
         MenuItem.TextItem(
             text = Text.Resource(R.string.bookmark_menu_select_all_bookmarks),
             onClick = { store.dispatch(BookmarksListMenuAction.SelectAll) },
@@ -1300,7 +1302,7 @@ private fun BookmarkListItemMenu(
         MenuItem.TextItem(
             text = Text.Resource(R.string.bookmark_menu_open_in_new_tab_button),
             onClick = { store.dispatch(BookmarksListMenuAction.Bookmark.OpenInNormalTabClicked(bookmark)) },
-        ),
+        ).takeIf { !LocalContext.current.settings().shouldDisableNormalMode },
         MenuItem.TextItem(
             text = Text.Resource(R.string.bookmark_menu_open_in_private_tab_button),
             onClick = { store.dispatch(BookmarksListMenuAction.Bookmark.OpenInPrivateTabClicked(bookmark)) },
@@ -1325,7 +1327,7 @@ private fun BookmarkListFolderMenu(
     folder: BookmarkItem.Folder,
     store: BookmarksStore,
 ) {
-    val menuItems = listOf(
+    val menuItems = listOfNotNull(
         MenuItem.TextItem(
             text = Text.Resource(R.string.bookmark_menu_edit_button),
             onClick = { store.dispatch(BookmarksListMenuAction.Folder.EditClicked(folder)) },
@@ -1333,7 +1335,7 @@ private fun BookmarkListFolderMenu(
         MenuItem.TextItem(
             text = Text.Resource(R.string.bookmark_menu_open_all_in_tabs_button),
             onClick = { store.dispatch(BookmarksListMenuAction.Folder.OpenAllInNormalTabClicked(folder)) },
-        ),
+        ).takeIf { !LocalContext.current.settings().shouldDisableNormalMode },
         MenuItem.TextItem(
             text = Text.Resource(R.string.bookmark_menu_open_all_in_private_tabs_button),
             onClick = { store.dispatch(BookmarksListMenuAction.Folder.OpenAllInPrivateTabClicked(folder)) },
