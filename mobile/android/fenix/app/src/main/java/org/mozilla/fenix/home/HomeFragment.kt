@@ -164,6 +164,7 @@ import org.mozilla.fenix.wallpapers.Wallpaper
 import java.lang.ref.WeakReference
 import org.mozilla.fenix.GleanMetrics.TabStrip as TabStripMetrics
 
+import org.mozilla.fenix.tor.TorHomePage
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 
 @Suppress("TooManyFunctions", "LargeClass")
@@ -299,16 +300,6 @@ class HomeFragment : Fragment(), UserInteractionHandler {
             orientationChange = false,
             orientation = requireContext().resources.configuration.orientation,
         )
-
-        // Splits by full stops or commas and puts the parts in different lines.
-        // Ignoring separators at the end of the string, it is expected
-        // that there are at most two parts (e.g. "Explore. Privately.").
-        val localBinding = binding
-        binding.exploreprivately.text = localBinding
-            .exploreprivately
-            .text
-            ?.replace(" *([.,。।]) *".toRegex(), "$1\n")
-            ?.trim()
 
         components.appStore.dispatch(AppAction.ModeChange(browsingModeManager.mode))
 
@@ -491,17 +482,7 @@ class HomeFragment : Fragment(), UserInteractionHandler {
             initializeNavBar(activity)
         }
 
-        if (!shouldAddNavigationBar && shouldShowMicrosurveyPrompt()) {
-            initializeMicrosurveyPrompt(requireContext())
-        }
-
-        sessionControlView = SessionControlView(
-            containerView = binding.sessionControlRecyclerView,
-            viewLifecycleOwner = viewLifecycleOwner,
-            interactor = sessionControlInteractor,
-        )
-
-        updateSessionControlView()
+        initComposeTorHomePageView()
 
         disableAppBarDragging()
 
@@ -911,6 +892,17 @@ class HomeFragment : Fragment(), UserInteractionHandler {
             profilerStartTime,
             "HomeFragment.onViewCreated",
         )
+    }
+
+    private fun initComposeTorHomePageView() {
+        binding.torHomepageView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                TorHomePage(
+                    toolBarAtTop = requireContext().settings().toolbarPosition == ToolbarPosition.TOP
+                )
+            }
+        }
     }
 
     private fun initTabStrip() {

@@ -377,6 +377,11 @@
 
     <!-- Private Mode mask icon circle fill colors -->
     <color name="mozac_ui_private_mode_circle_fill" tools:ignore="UnusedResources">@color/photonPurple60</color>
+    
+    <!-- TorHomepage gradient colors -->
+    <color name="tor_homepage_gradient_start">#7529A7</color>
+    <color name="tor_homepage_gradient_middle">#492E85</color>
+    <color name="tor_homepage_gradient_end">#383372</color>
 
     <!-- Connection Assist -->
     <color name="connect_button_purple">#9059FF</color>
