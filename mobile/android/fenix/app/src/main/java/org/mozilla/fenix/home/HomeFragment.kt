@@ -175,8 +175,10 @@ import org.mozilla.fenix.wallpapers.Wallpaper
 import java.lang.ref.WeakReference
 
 import org.mozilla.fenix.components.toolbar.ToolbarPosition
+import org.mozilla.fenix.tor.TorCampaignViewModel
 import org.mozilla.fenix.tor.TorHomePage
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
+import java.util.Locale
 
 @Suppress("TooManyFunctions", "LargeClass")
 class HomeFragment : Fragment(), UserInteractionHandler {
@@ -191,6 +193,7 @@ class HomeFragment : Fragment(), UserInteractionHandler {
     internal val binding get() = _binding!!
     private val snackbarBinding = ViewBoundFeatureWrapper<SnackbarBinding>()
 
+    private val torCampaignViewModel: TorCampaignViewModel by activityViewModels()
     private val homeViewModel: HomeScreenViewModel by activityViewModels()
     private val urlQuickLoadViewModel: UrlQuickLoadViewModel by activityViewModels()
 
@@ -979,6 +982,17 @@ class HomeFragment : Fragment(), UserInteractionHandler {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 TorHomePage(
+                    torCampaignViewModel.shouldInitiallyShowPromo,
+                    onClicked = {
+                        val baseUrl =  "https://www.torproject.org/donate"
+                        val locale = Locale.getDefault().getLanguage()
+                        val donateUrl = "${baseUrl}/donate-${locale}-yec2025"
+                        (requireActivity() as HomeActivity).openToBrowserAndLoad(
+                            searchTermOrURL = donateUrl,
+                            newTab = true,
+                            from = BrowserDirection.FromHome,
+                        )
+                    },
                     toolBarAtTop = settings().toolbarPosition == ToolbarPosition.TOP
                 )
             }
