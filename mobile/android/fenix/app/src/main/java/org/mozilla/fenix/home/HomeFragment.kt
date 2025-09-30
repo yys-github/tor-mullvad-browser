@@ -168,6 +168,8 @@ import org.mozilla.fenix.utils.showAddSearchWidgetPromptIfSupported
 import org.mozilla.fenix.wallpapers.Wallpaper
 import java.lang.ref.WeakReference
 
+import org.mozilla.fenix.components.toolbar.ToolbarPosition
+import org.mozilla.fenix.tor.TorHomePage
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 
 @Suppress("TooManyFunctions", "LargeClass")
@@ -311,16 +313,6 @@ class HomeFragment : Fragment(), UserInteractionHandler {
             orientationChange = false,
             orientation = requireContext().resources.configuration.orientation,
         )
-
-        // Splits by full stops or commas and puts the parts in different lines.
-        // Ignoring separators at the end of the string, it is expected
-        // that there are at most two parts (e.g. "Explore. Privately.").
-        val localBinding = binding
-        binding.exploreprivately.text = localBinding
-            .exploreprivately
-            .text
-            ?.replace(" *([.,。।]) *".toRegex(), "$1\n")
-            ?.trim()
 
         lifecycleScope.launch(IO) {
             val settings = requireContext().settings()
@@ -597,7 +589,9 @@ class HomeFragment : Fragment(), UserInteractionHandler {
             listenForMicrosurveyMessage(requireContext())
         }
 
-        initComposeHomepage()
+        binding.torHomepageView.setContent {
+            initComposeTorHomePageView()
+        }
 
         disableAppBarDragging()
 
@@ -986,6 +980,17 @@ class HomeFragment : Fragment(), UserInteractionHandler {
             profilerStartTime,
             "HomeFragment.onViewCreated",
         )
+    }
+
+    private fun initComposeTorHomePageView() {
+        binding.torHomepageView.apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
+            setContent {
+                TorHomePage(
+                    toolBarAtTop = settings().toolbarPosition == ToolbarPosition.TOP
+                )
+            }
+        }
     }
 
     private fun initComposeHomepage() {
