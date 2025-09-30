@@ -1084,3 +1084,6 @@ pref("font.name-list.monospace.x-unicode", "Cousine, Noto Sans Balinese, Noto Sa
 // setting it will still change the value in `prefs.js`, but it will be ignored.
 // If this is ever unlocked, the value in prefs.js will be used.
 pref("browser.laterrun.enabled", false, locked);
+
+// tor-browser#44123: Never trim the protocol off of URLs.
+pref("browser.urlbar.trimURLs", false);
