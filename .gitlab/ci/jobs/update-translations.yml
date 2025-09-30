@@ -17,14 +17,11 @@
 
 
 combine-en-US-translations:
-  extends: .update-translation-base
+  extends:
+    - .with-local-repo-bash
+    - .update-translation-base
   needs: []
-  image: python
-  variables:
-    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
-  cache:
-    paths:
-      - .cache/pip
+  image: $IMAGE_PATH
   # Artifact is for translation project job
   artifacts:
     paths:
@@ -34,12 +31,14 @@ combine-en-US-translations:
       dotenv: job_id.env
   # Don't load artifacts for this job.
   dependencies: []
+  tags:
+    # Run these jobs in the browser dedicated runners.
+    - firefox
   script:
     # Save this CI_JOB_ID to the dotenv file to be used in the variables for the
     # push-en-US-translations job.
     - echo 'COMBINE_TRANSLATIONS_JOB_ID='"$CI_JOB_ID" >job_id.env
-    - pip install compare_locales
-    - python ./tools/base_browser/l10n/combine-translation-versions.py "$CI_COMMIT_BRANCH" "$TRANSLATION_FILES" "$COMBINED_FILES_JSON"
+    - ./mach python ./tools/base_browser/l10n/combine-translation-versions.py "$CI_COMMIT_BRANCH" "$TRANSLATION_FILES" "$COMBINED_FILES_JSON"
 
 push-en-US-translations:
   extends: .update-translation-base
