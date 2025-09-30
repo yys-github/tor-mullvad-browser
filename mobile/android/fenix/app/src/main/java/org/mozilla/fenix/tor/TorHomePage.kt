@@ -12,6 +12,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.paint
@@ -34,8 +36,13 @@ import org.mozilla.fenix.R
 @Composable
 @FlexibleWindowLightDarkPreview
 fun TorHomePage(
+    shouldInitiallyShowPromo: Boolean = false,
+    onClicked: () -> Unit = {},
     toolBarAtTop: Boolean = true,
 ) {
+    val shouldShowPromo = rememberSaveable {
+        mutableStateOf(shouldInitiallyShowPromo)
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -82,30 +89,35 @@ fun TorHomePage(
             )
         }
         Spacer(Modifier.weight(1f))
-        Text(
-            // Moved from the commit 5bb3cc6b93346dabd8d46677fae7f86a8f8a4fc2
-            // "[android] Modify UI/UX", and the file HomeFragment.
-            // Splits by full stops or commas and puts the parts in different lines.
-            // Ignoring separators at the end of the string, it is expected
-            // that there are at most two parts (e.g. "Explore. Privately.").
-            text = stringResource(R.string.tor_explore_privately).replace(
+        if (shouldShowPromo.value) {
+            CampaignBox(shouldShowPromo, onDonateButtonClicked = onClicked)
+            Spacer(Modifier.weight(1f))
+        } else {
+            Text(
+                // Moved from the commit 5bb3cc6b93346dabd8d46677fae7f86a8f8a4fc2
+                // "[android] Modify UI/UX", and the file HomeFragment.
+                // Splits by full stops or commas and puts the parts in different lines.
+                // Ignoring separators at the end of the string, it is expected
+                // that there are at most two parts (e.g. "Explore. Privately.").
+                text = stringResource(R.string.tor_explore_privately).replace(
                     " *([.,。।]) *".toRegex(),
                     "$1\n",
                 ).trim(),
-            style = TextStyle(
-                color = Color(color = 0xDEFFFFFF),
-                fontSize = 40.sp,
-                textAlign = TextAlign.Start,
-            ),
-            modifier = Modifier.align(Alignment.CenterHorizontally),
-        )
-        Spacer(Modifier.weight(1f))
-        Image(
-            painter = painterResource(
-                id = R.drawable.ic_onion_pattern,
-            ),
-            contentDescription = null, Modifier.fillMaxWidth(),
-        )
+                style = TextStyle(
+                    color = Color(color = 0xDEFFFFFF),
+                    fontSize = 40.sp,
+                    textAlign = TextAlign.Start,
+                ),
+                modifier = Modifier.align(Alignment.CenterHorizontally),
+            )
+            Spacer(Modifier.weight(1f))
+            Image(
+                painter = painterResource(
+                    id = R.drawable.ic_onion_pattern,
+                ),
+                contentDescription = null, Modifier.fillMaxWidth(),
+            )
+        }
+        Spacer(modifier = Modifier.size(17.dp))
     }
-    Spacer(modifier = Modifier.size(17.dp))
 }
