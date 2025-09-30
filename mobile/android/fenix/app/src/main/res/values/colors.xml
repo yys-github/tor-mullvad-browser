@@ -395,4 +395,10 @@
     <color name="configure_connection_button_white">#E1E0E7</color>
     <color name="warning_yellow">#FFA436</color>
     <color name="progress_background_tint">#55148C</color>
+
+    <!-- 2025 YEC -->
+    <color name="yec_green">#B6E368</color>
+    <color name="yec_purple">#C272FF</color>
+    <color name="yec_black">#15141A</color>
+    <color name="yec_background">#1D1133</color>
 </resources>
