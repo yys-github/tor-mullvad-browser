@@ -1506,5 +1506,11 @@
 
     <!-- Translations feature-->
 
-
-    </resources>
+    <!--   Not meant for production. Uncomment for the compose preview in [TorHomePage] -->
+    <!--  <string name="donate_now_yec">تبرع الآن</string>-->
+    <!--  <string name="free_the_internet_yec">حرروا الإنترنت</string>-->
+    <!--  <string name="body1_yec">دعم الأدوات التي تكسر قيود الرقابة والمراقبة. %s</string>-->
+    <!--  <string name="body1_link_yec">تبرع لمشروع Tor اليوم.</string>-->
+    <!--  <string name="body2_yec">حتى 31 ديسمبر، سيتم مضاعفة تبرعك،  بحد أقصى 250,000 دولار!</string>-->
+    <!--  <string name="no_donation_required_yec">سيكون متصفح Tor لنظام Android مجانيا دائما للاستخدام - لا يلزم التبرع لاستخدام هذا التطبيق.</string>-->
+</resources>

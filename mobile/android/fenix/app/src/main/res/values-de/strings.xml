@@ -73,8 +73,8 @@
         The first parameter is the name of the app defined in app_name (for example: Fenix) -->
     <string name="private_browsing_placeholder_description_2">%1$s leert die eingegebenen Suchbegriffe und besuchten Webseiten aller privaten Tabs wenn Sie diese schließen oder die App beenden. Das macht Sie gegenüber Website-Betreibern und Internetanbietern nicht anonym, aber erleichtert es Ihnen, dass andere Nutzer dieses Geräts Ihre Aktivitäten nicht einsehen können.</string>
     <string name="private_browsing_common_myths">
-       
-       
+
+
     Häufige Missverständnisse über das Surfen im Privaten Modus</string>
 
     <!-- True Private Browsing Mode -->
@@ -1413,7 +1413,7 @@
     <string name="toast_copy_link_to_clipboard">In Zwischenablage kopiert</string>
     <!-- An option from the share dialog to sign into sync -->
     <string name="sync_sign_in">Bei Sync anmelden</string>
-     <!-- An option from the three dot menu to sync and save data -->
+    <!-- An option from the three dot menu to sync and save data -->
     <string name="sync_menu_sync_and_save_data">Daten synchronisieren und speichern</string>
     <!-- An option from the share dialog to send link to all other sync devices -->
     <string name="sync_send_to_all">An alle Geräte senden</string>
@@ -1800,10 +1800,10 @@
     <string name="browser_toolbar_long_press_popup_paste_and_go">Einfügen &amp; Los</string>
     <!-- Paste the text in the clipboard -->
     <string name="browser_toolbar_long_press_popup_paste">Einfügen</string>
-  
+
     <!-- Snackbar message shown after an URL has been copied to clipboard. -->
     <string name="browser_toolbar_url_copied_to_clipboard_snackbar">URL in Zwischenablage kopiert</string>
-  
+
     <!-- Title text for the Add To Homescreen dialog -->
     <string name="add_to_homescreen_title">Zum Startbildschirm hinzufügen</string>
     <!-- Cancel button text for the Add to Homescreen dialog -->
@@ -2784,4 +2784,13 @@
     <string name="exit_fullscreen_with_gesture">Um den Vollbildmodus zu beenden, ziehen Sie von oben und verwenden Sie die Zurück-Geste</string>
     <!-- Message shown to explain how to exit fullscreen mode when using back button navigation -->
     <string name="exit_fullscreen_with_back_button">Um den Vollbildmodus zu beenden, ziehen Sie von oben und drücken Sie auf „Zurück“</string>
+
+    <!-- Not meant for production. Uncomment for the compose preview in [TorHomePage] -->
+    <!--  <string name="donate_now_yec">Jetzt spenden</string>-->
+    <!--  <string name="free_the_internet_yec">Befreit das Internet</string>-->
+    <!--  <string name="body1_yec">Unterstützen Sie Tools, die die Ketten der Zensur und Überwachung sprengen. %s</string>-->
+    <!--  <string name="body1_link_yec">Spenden Sie noch heute für das Tor-Projekt.</string>-->
+    <!--  <string name="body2_yec">Bis zum 31. Dezember wird Ihre Spende bis zu einer Höhe von 250.000 Dollar verdoppelt!</string>-->
+    <!--  <string name="no_donation_required_yec">Der Tor-Browser für Android wird immer kostenlos sein – es ist keine Spende erforderlich, um diese App zu nutzen.</string>-->
+
 </resources>
