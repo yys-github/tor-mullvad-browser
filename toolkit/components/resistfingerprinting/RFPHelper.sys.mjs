@@ -616,8 +616,8 @@ class _RFPHelper {
   _updateSizeForTabsInWindow(aWindow) {
     let tabBrowser = aWindow.gBrowser;
 
-    tabBrowser.tabpanels?.classList.add("letterboxing");
-    tabBrowser.tabpanels?.classList.toggle(
+    tabBrowser.tabbox.classList.add("letterboxing");
+    tabBrowser.tabbox.classList.toggle(
       "letterboxing-vcenter",
       Services.prefs.getBoolPref(kPrefLetterboxingVcenter, false)
     );
@@ -629,7 +629,7 @@ class _RFPHelper {
     // We need to add this class late because otherwise new windows get
     // maximized.
     aWindow.setTimeout(() => {
-      tabBrowser.tabpanels?.classList.add("letterboxing-ready");
+      tabBrowser.tabbox.classList.add("letterboxing-ready");
     });
   }
 
@@ -680,7 +680,7 @@ class _RFPHelper {
     aWindow.removeEventListener("TabOpen", this);
 
     // revert tabpanel's style to default
-    tabBrowser.tabpanels?.classList.remove("letterboxing");
+    tabBrowser.tabbox.classList.remove("letterboxing");
 
     // and restore default size on each browser element
     for (let tab of tabBrowser.tabs) {
