@@ -94,9 +94,9 @@ private fun Header() {
                 text = stringResource(R.string.app_name),
                 color = FirefoxTheme.colors.textPrimary,
                 fontWeight = FontWeight.Bold,
-                fontSize = 29.sp,
+                fontSize = 30.sp,
                 letterSpacing = 0.18.sp,
-                lineHeight = 52.sp,
+                lineHeight = 30.sp,
             )
         }
 
