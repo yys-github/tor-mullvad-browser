@@ -18,8 +18,6 @@ const kPrefLetterboxingTesting =
   "privacy.resistFingerprinting.letterboxing.testing";
 const kPrefLetterboxingVcenter =
   "privacy.resistFingerprinting.letterboxing.vcenter";
-const kPrefLetterboxingGradient =
-  "privacy.resistFingerprinting.letterboxing.gradient";
 const kPrefLetterboxingDidForceSize =
   "privacy.resistFingerprinting.letterboxing.didForceSize";
 const kPrefLetterboxingRememberSize =
@@ -155,7 +153,6 @@ class _RFPHelper {
     Services.prefs.addObserver(kPrefResistFingerprinting, this);
     Services.prefs.addObserver(kPrefLetterboxing, this);
     Services.prefs.addObserver(kPrefLetterboxingVcenter, this);
-    Services.prefs.addObserver(kPrefLetterboxingGradient, this);
 
     XPCOMUtils.defineLazyPreferenceGetter(
       this,
@@ -188,7 +185,6 @@ class _RFPHelper {
 
     // Remove unconditional observers
     Services.prefs.removeObserver(kPrefResistFingerprinting, this);
-    Services.prefs.removeObserver(kPrefLetterboxingGradient, this);
     Services.prefs.removeObserver(kPrefLetterboxingVcenter, this);
     Services.prefs.removeObserver(kPrefLetterboxing, this);
     // Remove the RFP observers, swallowing exceptions if they weren't present
@@ -245,7 +241,6 @@ class _RFPHelper {
         Services.prefs.clearUserPref(kPrefLetterboxingDidForceSize);
       // fall-through
       case kPrefLetterboxingVcenter:
-      case kPrefLetterboxingGradient:
         this._handleLetterboxingPrefChanged();
         break;
       default:
@@ -778,10 +773,6 @@ class _RFPHelper {
     tabBrowser.tabpanels?.classList.toggle(
       "letterboxing-vcenter",
       Services.prefs.getBoolPref(kPrefLetterboxingVcenter, false)
-    );
-    tabBrowser.tabpanels?.classList.toggle(
-      "letterboxing-gradient",
-      Services.prefs.getBoolPref(kPrefLetterboxingGradient, false)
     );
 
     for (let tab of tabBrowser.tabs) {
