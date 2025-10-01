@@ -20,7 +20,7 @@
 #tabbrowser-tabbox.letterboxing {
   --letterboxing-bgcolor: var(--tabpanel-background-color);
   --letterboxing-border-radius: 8px;
-  --letterboxing-border-top-radius: 0;
+  --letterboxing-border-radius-top: 0;
   --letterboxing-vertical-alignment: start;
   --letterboxing-shadow-color: rgba(12, 12, 13, 0.10);
   --letterboxing-border-color: var(--letterboxing-bgcolor);
@@ -36,7 +36,7 @@
   }
 
   &.letterboxing-vcenter {
-    --letterboxing-border-top-radius: var(--letterboxing-border-radius);
+    --letterboxing-border-radius-top: var(--letterboxing-border-radius);
     --letterboxing-vertical-alignment: center;
   }
 }
@@ -53,15 +53,15 @@
   :root:not([inDOMFullscreen]) .letterboxing &.letterboxing-show-outline {
     browser {
       border-radius: var(--letterboxing-border-radius);
-      border-top-left-radius: var(--letterboxing-border-top-radius);
-      border-top-right-radius: var(--letterboxing-border-top-radius);
+      border-top-left-radius: var(--letterboxing-border-radius-top);
+      border-top-right-radius: var(--letterboxing-border-radius-top);
     }
 
     .browserDecorator {
       display: initial;
       border-radius: var(--letterboxing-border-radius);
-      border-top-left-radius: var(--letterboxing-border-top-radius);
-      border-top-right-radius: var(--letterboxing-border-top-radius);
+      border-top-left-radius: var(--letterboxing-border-radius-top);
+      border-top-right-radius: var(--letterboxing-border-radius-top);
       box-shadow: var(--letterboxing-border-color) 0 0 .1px inset, var(--letterboxing-border-color) 0 0 .1px;
       border: .1px solid var(--letterboxing-border-color);
       outline: .1px solid var(--letterboxing-bgcolor);
