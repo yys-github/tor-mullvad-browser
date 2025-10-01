@@ -80,28 +80,29 @@
   TODO: switch to nested CSS selectors for conciseness when available (Firefox >= 117)
 */
 .letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing)
-  > #statuspanel:not([hidden]) {
+  > #statuspanel {
   position: relative;
-  place-self: end left;
+  place-self: end start;
   z-index: 2;
-  --letterboxing-status-left-radius: var(--letterboxing-border-radius);
-  --letterboxing-status-right-radius: 0;
 }
 .letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing)
-  > #statuspanel:not([mirror]):-moz-locale-dir(rtl),
-.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing)
-  > #statuspanel[mirror]:-moz-locale-dir(ltr) {
-  --letterboxing-status-right-radius: var(--letterboxing-border-radius);
-  --letterboxing-status-left-radius: 0;
-  justify-self: right;
+  > #statuspanel[mirror] {
+  justify-self: end;
 }
 
 .letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing)
 #statuspanel-label {
-  border-radius: 0 0 var(--letterboxing-status-right-radius) var(--letterboxing-status-left-radius);
   margin: 0;
   border: 1px solid var(--letterboxing-border-color);
   max-width: calc(var(--letterboxing-width) * .5);
+}
+
+.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) > #statuspanel:not([mirror]) #statuspanel-label {
+  border-end-start-radius: var(--letterboxing-border-radius);
+}
+
+.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) > #statuspanel[mirror] #statuspanel-label {
+  border-end-end-radius: var(--letterboxing-border-radius);
 }
 
 browser:fullscreen {
