@@ -14,8 +14,6 @@
   --letterboxing-border-top-radius: 0;
   --letterboxing-vertical-alignment: start;
   --letterboxing-shadow-color: rgba(12, 12, 13, 0.10);
-  --letterboxing-gradient-color1: var(--letterboxing-bgcolor);
-  --letterboxing-gradient-color2: color-mix(in srgb, var(--chrome-content-separator-color) 50%, var(--letterboxing-bgcolor));
   --letterboxing-border-color: var(--letterboxing-bgcolor);
   --letterboxing-decorator-visibility: visible;
 
@@ -36,7 +34,6 @@
     border-top-right-radius: var(--letterboxing-border-top-radius);
     width: var(--letterboxing-width) !important;
     height: var(--letterboxing-height) !important;
-    background: var(--letterboxing-gradient-color2);
   }
 }
 
@@ -51,10 +48,6 @@
 .letterboxing.letterboxing-vcenter .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) {
   --letterboxing-border-top-radius: var(--letterboxing-border-radius);
   --letterboxing-vertical-alignment: center;
-}
-
-.letterboxing.letterboxing-gradient .browserContainer {
-  background: linear-gradient(283deg, var(--letterboxing-gradient-color1) 0%, var(--letterboxing-gradient-color2) 100%), var(--letterboxing-bgcolor);
 }
 
 :root:not([inDOMFullscreen]) .letterboxing .browserContainer:not(.responsive-mode)
