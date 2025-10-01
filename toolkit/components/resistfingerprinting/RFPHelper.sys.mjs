@@ -683,26 +683,14 @@ class _RFPHelper {
 
     if (lastRoundedSize) {
       // Check whether the letterboxing margin is less than the border radius,
-      // and if so flatten the borders.
-      let borderRadius = parseInt(
-        win
-          .getComputedStyle(browserContainer)
-          .getPropertyValue("--letterboxing-border-radius")
+      // and if so do not show an outline.
+      const gapVertical = parentHeight - lastRoundedSize.height;
+      const gapHorizontal = parentWidth - lastRoundedSize.width;
+      browserParent.classList.toggle(
+        "letterboxing-show-outline",
+        gapVertical >= this._letterboxingBorderRadius ||
+          gapHorizontal >= this._letterboxingBorderRadius
       );
-      if (
-        borderRadius &&
-        parentWidth - lastRoundedSize.width < borderRadius &&
-        parentHeight - lastRoundedSize.height < borderRadius
-      ) {
-        borderRadius = 0;
-      } else {
-        borderRadius = "";
-      }
-      styleChanges.queueIfNeeded(browserParent, {
-        "--letterboxing-decorator-visibility":
-          borderRadius === 0 ? "hidden" : "",
-        "--letterboxing-border-radius": borderRadius,
-      });
       if (win.gBrowser.selectedBrowser == aBrowser) {
         const updateStatus = async args => {
           win.XULBrowserWindow.letterboxingStatus = args
@@ -764,6 +752,7 @@ class _RFPHelper {
 
   _resetContentSize(aBrowser) {
     aBrowser.parentElement.classList.add("exclude-letterboxing");
+    aBrowser.parentElement.classList.remove("letterboxing-show-outline");
   }
 
   _updateSizeForTabsInWindow(aWindow) {
@@ -774,6 +763,17 @@ class _RFPHelper {
       "letterboxing-vcenter",
       Services.prefs.getBoolPref(kPrefLetterboxingVcenter, false)
     );
+    if (this._letterboxingBorderRadius === undefined && tabBrowser.tabbox) {
+      // Cache the value since it is not expected to change in a session for any
+      // window.
+      this._letterboxingBorderRadius = Math.ceil(
+        parseFloat(
+          aWindow
+            .getComputedStyle(tabBrowser.tabbox)
+            .getPropertyValue("--letterboxing-border-radius")
+        )
+      );
+    }
 
     for (let tab of tabBrowser.tabs) {
       let browser = tab.linkedBrowser;
