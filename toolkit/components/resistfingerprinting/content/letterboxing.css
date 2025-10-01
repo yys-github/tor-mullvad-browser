@@ -73,13 +73,6 @@
   box-shadow: var(--letterboxing-border-color) 0 0 .1px inset, var(--letterboxing-border-color) 0 0 .1px;
   border: .1px solid var(--letterboxing-border-color);
   outline: .1px solid var(--letterboxing-bgcolor);
-  height: calc(var(--letterboxing-height) + 1px);
-  top: -1px;
-}
-
-.letterboxing-vcenter .browserDecorator {
-  height: auto !important;
-  top: 0 !important;
 }
 
 /*
@@ -90,8 +83,6 @@
   > #statuspanel:not([hidden]) {
   position: relative;
   place-self: end left;
-  left: 0;
-  right: 0;
   z-index: 2;
   --letterboxing-status-left-radius: var(--letterboxing-border-radius);
   --letterboxing-status-right-radius: 0;
@@ -100,8 +91,6 @@
   > #statuspanel:not([mirror]):-moz-locale-dir(rtl),
 .letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing)
   > #statuspanel[mirror]:-moz-locale-dir(ltr) {
-  left: 0;
-  right: 0;
   --letterboxing-status-right-radius: var(--letterboxing-border-radius);
   --letterboxing-status-left-radius: 0;
   justify-self: right;
