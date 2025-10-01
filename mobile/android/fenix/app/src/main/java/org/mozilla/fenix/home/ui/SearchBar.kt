@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import mozilla.components.compose.browser.toolbar.HomepageDisplayToolbar
 import org.mozilla.fenix.R
 import org.mozilla.fenix.theme.FirefoxTheme
+import org.mozilla.fenix.theme.Theme
 
 /**
  * Search bar.
@@ -34,8 +35,8 @@ internal fun SearchBar(
 
 @Composable
 @PreviewLightDark
-private fun SearchBarPreview() {
-    FirefoxTheme {
+fun SearchBarPreview() {
+    FirefoxTheme (theme = Theme.Private) {
         Column(
             modifier = Modifier.background(color = FirefoxTheme.colors.layer1),
         ) {

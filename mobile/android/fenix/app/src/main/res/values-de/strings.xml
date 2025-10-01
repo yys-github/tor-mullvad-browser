@@ -3733,4 +3733,11 @@
   <string name="review_prompt_feedback_header">Es tut uns leid, dass Sie Probleme haben. Sagen Sie uns, wie wir %1$s verbessern können.</string>
   <!-- Label for a button opening a feedback forum -->
   <string name="review_prompt_feedback_button">Feedback senden</string>
+  <!-- Not meant for production. Uncomment for the compose preview in [TorHomePage] -->
+<!--  <string name="donate_now_yec">Jetzt spenden</string>-->
+<!--  <string name="free_the_internet_yec">Befreit das Internet</string>-->
+<!--  <string name="body1_yec">Unterstützen Sie Tools, die die Ketten der Zensur und Überwachung sprengen. %s</string>-->
+<!--  <string name="body1_link_yec">Spenden Sie noch heute für das Tor-Projekt.</string>-->
+<!--  <string name="body2_yec">Bis zum 31. Dezember wird Ihre Spende bis zu einer Höhe von 250.000 Dollar verdoppelt!</string>-->
+<!--  <string name="no_donation_required_yec">Der Tor-Browser für Android wird immer kostenlos sein – es ist keine Spende erforderlich, um diese App zu nutzen.</string>-->
 </resources>
