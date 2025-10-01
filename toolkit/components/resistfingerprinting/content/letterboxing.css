@@ -61,10 +61,36 @@
       border-radius: var(--letterboxing-border-radius);
       border-top-left-radius: var(--letterboxing-border-top-radius);
       border-top-right-radius: var(--letterboxing-border-top-radius);
-      box-shadow: var(--letterboxing-border-color) 0 0 .1px inset, var(--letterboxing-border-color) 0 0 .1px;
-      border: .1px solid var(--letterboxing-border-color);
-      outline: .1px solid var(--letterboxing-bgcolor);
+      box-shadow:
+        var(--letterboxing-border-color) 0 0 0.1px inset,
+        var(--letterboxing-border-color) 0 0 0.1px;
+      border: 0.1px solid var(--letterboxing-border-color);
+      outline: 0.1px solid var(--letterboxing-bgcolor);
     }
+
+    #statuspanel:not([mirror]) #statuspanel-label {
+      border-end-start-radius: var(--letterboxing-border-radius);
+    }
+
+    #statuspanel[mirror] #statuspanel-label {
+      border-end-end-radius: var(--letterboxing-border-radius);
+    }
+  }
+
+  #statuspanel {
+    position: relative;
+    place-self: end start;
+    z-index: 2;
+
+    &[mirror] {
+      justify-self: end;
+    }
+  }
+
+  #statuspanel-label {
+    margin: 0;
+    border: 1px solid var(--letterboxing-border-color);
+    max-width: calc(var(--letterboxing-width) * 0.5);
   }
 }
 
@@ -74,33 +100,6 @@
   background: transparent;
   position: relative;
   z-index: 1;
-}
-
-/*
-  Align status bar with content.
-  TODO: switch to nested CSS selectors for conciseness when available (Firefox >= 117)
-*/
-.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) > #statuspanel {
-  position: relative;
-  place-self: end start;
-  z-index: 2;
-}
-.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) > #statuspanel[mirror] {
-  justify-self: end;
-}
-
-.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) #statuspanel-label {
-  margin: 0;
-  border: 1px solid var(--letterboxing-border-color);
-  max-width: calc(var(--letterboxing-width) * 0.5);
-}
-
-.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) > #statuspanel:not([mirror]) #statuspanel-label {
-  border-end-start-radius: var(--letterboxing-border-radius);
-}
-
-.letterboxing .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) > #statuspanel[mirror] #statuspanel-label {
-  border-end-end-radius: var(--letterboxing-border-radius);
 }
 
 browser:fullscreen {
