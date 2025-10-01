@@ -27,6 +27,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import org.mozilla.fenix.R
 import org.mozilla.fenix.theme.FirefoxTheme
+import org.mozilla.fenix.theme.Theme
 import mozilla.components.ui.icons.R as iconsR
 
 private val searchBarShape = RoundedCornerShape(28.dp)
@@ -83,8 +84,8 @@ internal fun SearchBar(
 
 @Composable
 @PreviewLightDark
-private fun SearchBarPreview() {
-    FirefoxTheme {
+fun SearchBarPreview() {
+    FirefoxTheme (theme = Theme.Private) {
         SearchBar(
             modifier = Modifier
                 .background(color = MaterialTheme.colorScheme.surface)
