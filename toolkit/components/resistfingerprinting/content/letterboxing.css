@@ -17,7 +17,7 @@
   }
 }
 
-.letterboxing {
+#tabbrowser-tabbox.letterboxing {
   --letterboxing-bgcolor: var(--tabpanel-background-color);
   --letterboxing-border-radius: 8px;
   --letterboxing-border-top-radius: 0;
