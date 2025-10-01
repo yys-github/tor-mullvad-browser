@@ -242,13 +242,17 @@
   }
 }
 
-#statuspanel[type=letterboxingStatus] > #statuspanel-label,
-#statuspanel[previoustype=letterboxingStatus][inactive] > #statuspanel-label {
+#statuspanel:is([type=letterboxingStatus], [previoustype=letterboxingStatus][inactive]) > #statuspanel-label {
   background-image: url("chrome://browser/skin/window.svg");
   background-size: 1em;
   background-repeat: no-repeat;
-  background-position-x: .5em;
   background-position-y: center;
+  background-position-x: left .5em;
+
+  &:-moz-locale-dir(rtl) {
+    background-position-x: right .5em;
+  }
+
   padding-inline-start: 2em;
   -moz-context-properties: fill;
   fill: var(--color-accent-primary);
