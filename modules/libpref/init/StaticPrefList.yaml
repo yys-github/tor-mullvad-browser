@@ -15032,11 +15032,7 @@
 # Has no effect unless security.tls.enable_kyber is true.
 - name: network.http.http3.enable_kyber
   type: RelaxedAtomicBool
-#ifdef ANDROID
-  value: @IS_NIGHTLY_BUILD@
-#else
   value: true
-#endif
   mirror: always
   rust: true
 
@@ -17086,11 +17082,7 @@
 
 - name: security.tls.enable_kyber
   type: RelaxedAtomicBool
-#ifdef ANDROID
-  value: @IS_NIGHTLY_BUILD@
-#else
   value: true
-#endif
   mirror: always
   rust: true
 
