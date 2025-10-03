@@ -1,13 +1,28 @@
 .. _mozilla_projects_nss_releases:
 
-Releases
-========
+Release Notes
+=============
 
 .. toctree::
    :maxdepth: 0
    :glob:
    :hidden:
 
+   nss_3_112_2.rst
+   nss_3_112_1.rst
+   nss_3_112.rst
+   nss_3_111.rst
+   nss_3_110.rst
+   nss_3_109.rst
+   nss_3_108.rst
+   nss_3_107.rst
+   nss_3_106.rst
+   nss_3_105.rst
+   nss_3_104.rst
+   nss_3_103.rst
+   nss_3_102_1.rst
+   nss_3_102.rst
+   nss_3_101_4.rst
    nss_3_101_3.rst
    nss_3_101_2.rst
    nss_3_101_1.rst
@@ -69,18 +84,9 @@ Releases
 
 .. note::
 
-   **NSS 3.101.3 (ESR)** is the latest ESR version of NSS.
-   Complete release notes are available here: :ref:`mozilla_projects_nss_nss_3_101_3_release_notes`
+   **NSS 3.112** is the latest version of NSS.
+   Complete release notes are available here: :ref:`mozilla_projects_nss_nss_3_112_release_notes`
 
-.. container::
+   **NSS 3.112.2 (ESR)** is the latest ESR version of NSS.
+   Complete release notes are available here: :ref:`mozilla_projects_nss_nss_3_112_2_release_notes`
 
-   Changes in 3.101.3 included in this release:
-
-   - Bug 1935984 - Ensure zero-initialization of collectArgs.cert
-   - Bug 1927953 - don't look for secmod.db in nssutil_ReadSecmodDB if NSS_DISABLE_DBM is set
-   - Bug 1926256 - fix build error from 9505f79d
-   - Bug 1926256 - simplify error handling in get_token_objects_for_cache.
-   - Bug 1923767 - pk12util: improve error handling in p12U_ReadPKCS12File.
-   - Bug 1909768 - UBSAN fix: applying zero offset to null pointer in sslsnce.c.
-   - Bug 1908623 - move list size check after lock acquisition in sftk_PutObjectToList.
-   - Bug 1899402 - Correctly destroy bulkkey in error scenario.
