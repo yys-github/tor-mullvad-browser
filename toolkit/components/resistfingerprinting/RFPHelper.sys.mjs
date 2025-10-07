@@ -447,7 +447,7 @@ class _RFPHelper {
     // If not already cached on the document object, traverse the CSSOM and
     // find the rule applying the default letterboxing styles to browsers
     // preemptively in order to beat race conditions on tab/window creation
-    return (document._letterboxingMarginsRule ||= (() => {
+    return (document._letterboxingDefaultRule ||= (() => {
       const LETTERBOX_CSS_SELECTOR = ".letterboxing";
       const LETTERBOX_CSS_URL =
         "chrome://global/content/resistfingerprinting/letterboxing.css";
