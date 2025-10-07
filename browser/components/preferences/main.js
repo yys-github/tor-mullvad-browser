@@ -733,6 +733,78 @@ var gMainPane = {
       gMainPane.updateColorsButton.bind(gMainPane)
     );
     gMainPane.updateColorsButton();
+
+    // Modify the contrast setting options when resist fingerprinting (RFP) is
+    // enabled because the custom colours will not be used in this state.
+    // Instead, some fixed set of stand-in colours is used. tor-browser#43850.
+    const resistFingerprintingPref = "privacy.resistFingerprinting";
+    const updateContrastControls = () => {
+      const rfpEnabled = Services.prefs.getBoolPref(
+        resistFingerprintingPref,
+        false
+      );
+      const autoOptionEl = document.getElementById("contrastSettingsAuto");
+      const onOptionEl = document.getElementById("contrastSettingsOn");
+      const onDescriptionEl = document.getElementById(
+        "contrastSettingsFixedColorsDescription"
+      );
+      const colorButtonEl = document.getElementById("colors");
+      for (const { element, hide } of [
+        {
+          element: autoOptionEl,
+          // Hide the "Automatic" option under RFP if it is not already
+          // selected. We generally want to discourage this reflection of system
+          // settings if RFP is enabled.
+          // NOTE: It would be unexpected for this value to be selected under
+          // RFP since there is no visible UI to do so in this state. It would
+          // likely require some direct preference manipulation.
+          hide:
+            rfpEnabled &&
+            autoOptionEl.value !==
+              String(
+                Preferences.get("browser.display.document_color_use").value
+              ),
+        },
+        { element: colorButtonEl, hide: rfpEnabled },
+        { element: onDescriptionEl, hide: !rfpEnabled },
+      ]) {
+        element.hidden = hide;
+        if (hide) {
+          element.setAttribute("data-hidden-from-search", "true");
+        } else {
+          element.removeAttribute("data-hidden-from-search");
+        }
+      }
+      if (rfpEnabled) {
+        onOptionEl.setAttribute(
+          "data-l10n-id",
+          "preferences-contrast-control-fixed-color"
+        );
+        onOptionEl.setAttribute("aria-describedby", onDescriptionEl.id);
+      } else {
+        onOptionEl.setAttribute(
+          "data-l10n-id",
+          "preferences-contrast-control-custom"
+        );
+        onOptionEl.removeAttribute("aria-describedby");
+      }
+    };
+    updateContrastControls();
+    Services.prefs.addObserver(
+      resistFingerprintingPref,
+      updateContrastControls
+    );
+    window.addEventListener(
+      "unload",
+      () => {
+        Services.prefs.removeObserver(
+          resistFingerprintingPref,
+          updateContrastControls
+        );
+      },
+      { once: true }
+    );
+
     Preferences.get("layers.acceleration.disabled").on(
       "change",
       gMainPane.updateHardwareAcceleration.bind(gMainPane)
