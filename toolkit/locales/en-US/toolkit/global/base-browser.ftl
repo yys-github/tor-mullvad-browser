@@ -101,6 +101,13 @@ letterboxing-enable-button =
 
 browser-layout-show-sidebar-desc-limited = Quickly access bookmarks and more without leaving your main view.
 
+## Preferences - Contrast Control.
+
+preferences-contrast-control-fixed-color =
+    .label = Fixed colors
+    .accesskey = F
+preferences-contrast-control-fixed-color-description = This will be detectable by websites and will make you appear more unique to web trackers.
+
 ## Security level toolbar button.
 ## Uses sentence case in English (US).
 ## ".label" is the accessible name, and shown in the overflow menu and when customizing the toolbar.
