@@ -12,6 +12,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -36,12 +37,12 @@ import org.mozilla.fenix.R
 @Composable
 @FlexibleWindowLightDarkPreview
 fun TorHomePage(
-    shouldInitiallyShowPromo: Boolean = false,
+    shouldInitiallyShowPromo: MutableState<Boolean> = mutableStateOf(false),
     onClicked: () -> Unit = {},
     toolBarAtTop: Boolean = true,
 ) {
     val shouldShowPromo = rememberSaveable {
-        mutableStateOf(shouldInitiallyShowPromo)
+        shouldInitiallyShowPromo
     }
     Column(
         modifier = Modifier
