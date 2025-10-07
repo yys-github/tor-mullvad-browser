@@ -1,8 +1,10 @@
 package org.mozilla.fenix.tor
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.PreviewParameter
@@ -10,6 +12,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import mozilla.components.compose.base.annotation.FlexibleWindowPreviewPortraitLandscapeEnglishArabicGerman
 import org.mozilla.fenix.home.ui.SearchBarPreview
 
+@SuppressLint("UnrememberedMutableState")
 @FlexibleWindowPreviewPortraitLandscapeEnglishArabicGerman
 @Composable
 /**
@@ -26,7 +29,7 @@ private fun TorHomePagePreview(
         SearchBarPreview() // unrestricted vertically so will follow contentAlignment
         TorHomePage(
             // restricted vertically so will not follow contentAlignment
-            shouldInitiallyShowPromo = booleanMatrix.first,
+            shouldInitiallyShowPromo = mutableStateOf(booleanMatrix.first),
             toolBarAtTop = toolbarAtTop,
         )
     }
