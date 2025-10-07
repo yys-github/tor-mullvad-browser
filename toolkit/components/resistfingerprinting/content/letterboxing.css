@@ -7,7 +7,16 @@
  * RFPHelper.sys.mjs (LETTERBOX_CSS_SELECTOR and LETTERBOX_CSS_URL,
  * respectively), where --letterboxing-width & --letterboxing-height are
  * actually set.
+ * Keep this block first and separate to the rules that do not necessarily
+ * require --letterboxing-width or --letterboxing-height.
  */
+.letterboxing {
+  .browserContainer:not(.responsive-mode) > .browserStack:not(.exclude-letterboxing) > browser {
+    width: var(--letterboxing-width) !important;
+    height: var(--letterboxing-height) !important;
+  }
+}
+
 .letterboxing {
   --letterboxing-bgcolor: var(--tabpanel-background-color);
   --letterboxing-border-radius: 8px;
@@ -32,8 +41,6 @@
     border-radius: var(--letterboxing-border-radius);
     border-top-left-radius: var(--letterboxing-border-top-radius);
     border-top-right-radius: var(--letterboxing-border-top-radius);
-    width: var(--letterboxing-width) !important;
-    height: var(--letterboxing-height) !important;
   }
 }
 
