@@ -558,9 +558,7 @@ class HomeFragment : Fragment(), UserInteractionHandler {
             listenForMicrosurveyMessage(requireContext())
         }
 
-        binding.torHomepageView.setContent {
-            initComposeTorHomePageView()
-        }
+        initComposeTorHomePageView()
 
         disableAppBarDragging()
 

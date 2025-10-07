@@ -47,8 +47,8 @@ fun TorHomePage(
         modifier = Modifier
             .fillMaxSize()
             .padding(
-                top = if (toolBarAtTop) dimensionResource(R.dimen.tab_strip_height) else 0.dp,
-                bottom = if (!toolBarAtTop) dimensionResource(R.dimen.tab_strip_height) else 0.dp,
+                top = if (toolBarAtTop) dimensionResource(R.dimen.browser_navbar_height) else 0.dp,
+                bottom = if (!toolBarAtTop) dimensionResource(R.dimen.browser_navbar_height) else 0.dp,
             )
             .paint(
                 BrushPainter(
