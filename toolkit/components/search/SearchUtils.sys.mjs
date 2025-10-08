@@ -253,21 +253,10 @@ export var SearchUtils = {
     }
     try {
       let uri = typeof url == "string" ? Services.io.newURI(url) : url;
-      let principal;
-      if (uri.scheme == "moz-extension") {
-        principal = Services.scriptSecurityManager.createContentPrincipal(
-          uri,
-          {}
-        );
-      } else {
-        let originAttributes = {};
-        try {
-          originAttributes.firstPartyDomain =
-            Services.eTLD.getSchemelessSite(uri);
-        } catch {}
-        principal =
-          Services.scriptSecurityManager.createNullPrincipal(originAttributes);
-      }
+      let principal =
+        uri.scheme == "moz-extension"
+          ? Services.scriptSecurityManager.createContentPrincipal(uri, {})
+          : Services.scriptSecurityManager.createNullPrincipal({});
 
       return Services.io.newChannelFromURI(
         uri,

@@ -762,15 +762,13 @@ export class SearchService {
     });
   }
 
-  async addOpenSearchEngine(engineURL, iconURL, originAttributes) {
+  async addOpenSearchEngine(engineURL, iconURL) {
     lazy.logConsole.debug("addOpenSearchEngine: Adding", engineURL);
     await this.init();
     let engine;
     try {
       let engineData = await lazy.loadAndParseOpenSearchEngine(
-        Services.io.newURI(engineURL),
-        null,
-        originAttributes
+        Services.io.newURI(engineURL)
       );
       engine = new lazy.OpenSearchEngine({ engineData, faviconURL: iconURL });
     } catch (ex) {
