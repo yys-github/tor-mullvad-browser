@@ -914,7 +914,8 @@ export let ProfileDataUpgrader = {
     // Version 3: 14.0a7: Reset general.smoothScroll. tor-browser#42070.
     // Version 4: 15.0a2: Drop ML components. tor-browser#44045.
     // Version 5: 15.0a3: Disable LaterRun using prefs. tor-browser#42630.
-    const MIGRATION_VERSION = 5;
+    // Version 6: 15.0a4: Reset browser colors. tor-browser#43850.
+    const MIGRATION_VERSION = 6;
     const MIGRATION_PREF = "basebrowser.migration.version";
 
     if (isNewProfile) {
@@ -980,6 +981,36 @@ export let ProfileDataUpgrader = {
         "browser.laterrun.bookkeeping.updateAppliedTime",
       ]) {
         Services.prefs.clearUserPref(prefName);
+      }
+    }
+    if (currentVersion < 6) {
+      // Clear the related preference that is no longer read by upstream's code.
+      Services.prefs.clearUserPref("browser.display.use_system_colors");
+      if (Services.prefs.getBoolPref("privacy.resistFingerprinting", true)) {
+        for (const prefName of [
+          // User has not switched off resist fingerprinting. We want to reset
+          // any "0" (automatic, use system colours) and "2" (always use browser
+          // colours) values.
+          // The "0" value cannot be set by the user under RFP in
+          // about:preferences. The "2" value can be set, but has a different
+          // name and a warning about website detectability. tor-browser#43850.
+          "browser.display.document_color_use",
+          // Under RFP, the following colours are ignored. So we clear them.
+          // NOTE: Only a subset of can be set via the colors.xhtml dialog in
+          // about:preferences.
+          "browser.anchor_color",
+          "browser.anchor_color.dark",
+          "browser.visited_color",
+          "browser.visited_color.dark",
+          "browser.display.foreground_color",
+          "browser.display.foreground_color.dark",
+          "browser.display.background_color",
+          "browser.display.background_color.dark",
+          "browser.active_color",
+          "browser.active_color.dark",
+        ]) {
+          Services.prefs.clearUserPref(prefName);
+        }
       }
     }
     Services.prefs.setIntPref(MIGRATION_PREF, MIGRATION_VERSION);
