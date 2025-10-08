@@ -97,17 +97,10 @@ const MOZSEARCH_LOCALNAME = "SearchPlugin";
  *   The uri from which to load the OpenSearch engine data.
  * @param {string} [lastModified]
  *   The UTC date when the engine was last updated, if any.
- * @param {object} [originAttributes]
- *   The first party domain of the site loading that manifest. The domain of the
- *   manifest will be used if not provided.
  * @returns {Promise<OpenSearchProperties>}
  *   The properties of the loaded OpenSearch engine.
  */
-export async function loadAndParseOpenSearchEngine(
-  sourceURI,
-  lastModified,
-  originAttributes
-) {
+export async function loadAndParseOpenSearchEngine(sourceURI, lastModified) {
   if (!sourceURI) {
     throw Components.Exception(
       "Must have URI when calling _install!",
@@ -123,7 +116,7 @@ export async function loadAndParseOpenSearchEngine(
 
   lazy.logConsole.debug("Downloading OpenSearch engine from:", sourceURI.spec);
 
-  let xmlData = await loadEngineXML(sourceURI, lastModified, originAttributes);
+  let xmlData = await loadEngineXML(sourceURI, lastModified);
   let xmlDocument = await parseXML(xmlData);
 
   lazy.logConsole.debug("Loading search plugin");
@@ -154,13 +147,11 @@ export async function loadAndParseOpenSearchEngine(
  *   The uri from which to load the OpenSearch engine data.
  * @param {string} [lastModified]
  *   The UTC date when the engine was last updated, if any.
- * @param {object} [originAttributes]
- *   The origin attributes to use to load the manifest.
  * @returns {Promise}
  *   A promise that is resolved with the data if the engine is successfully loaded
  *   and rejected otherwise.
  */
-function loadEngineXML(sourceURI, lastModified, originAttributes = null) {
+function loadEngineXML(sourceURI, lastModified) {
   var chan = lazy.SearchUtils.makeChannel(
     sourceURI,
     // OpenSearchEngine is loading a definition file for a search engine,
@@ -172,17 +163,6 @@ function loadEngineXML(sourceURI, lastModified, originAttributes = null) {
   chan.loadInfo.httpsUpgradeTelemetry = sourceURI.schemeIs("https")
     ? Ci.nsILoadInfo.ALREADY_HTTPS
     : Ci.nsILoadInfo.NO_UPGRADE;
-
-  if (!originAttributes) {
-    originAttributes = {};
-    try {
-      originAttributes.firstPartyDomain =
-        Services.eTLD.getSchemelessSite(sourceURI);
-    } catch (ex) {
-      console.error("Failed to get first party domain for the manifest", ex);
-    }
-  }
-  chan.loadInfo.originAttributes = originAttributes;
 
   if (lastModified && chan instanceof Ci.nsIHttpChannel) {
     chan.setRequestHeader("If-Modified-Since", lastModified, false);
