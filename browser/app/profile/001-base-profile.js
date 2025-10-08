@@ -975,7 +975,7 @@ pref("font.name-list.monospace.x-unicode", "Consolas, Noto Sans Balinese, Noto S
 #endif
 
 #ifdef XP_LINUX
-pref("font.system.whitelist", "Arimo, Cousine, Noto Color Emoji, Noto Naskh Arabic, Noto Sans Adlam, Noto Sans Armenian, Noto Sans Balinese, Noto Sans Bamum, Noto Sans Bassa Vah, Noto Sans Batak, Noto Sans Bengali, Noto Sans Buginese, Noto Sans Buhid, Noto Sans Canadian Aboriginal, Noto Sans Chakma, Noto Sans Cham, Noto Sans Cherokee, Noto Sans Coptic, Noto Sans Deseret, Noto Sans Devanagari, Noto Sans Elbasan, Noto Sans Ethiopic, Noto Sans Georgian, Noto Sans Grantha, Noto Sans Gujarati, Noto Sans Gunjala Gondi, Noto Sans Gurmukhi, Noto Sans Hanifi Rohingya, Noto Sans Hanunoo, Noto Sans Hebrew, Noto Sans JP, Noto Sans Javanese, Noto Sans KR, Noto Sans Kannada, Noto Sans Kayah Li, Noto Sans Khmer, Noto Sans Khojki, Noto Sans Khudawadi, Noto Sans Lao, Noto Sans Lepcha, Noto Sans Limbu, Noto Sans Lisu, Noto Sans Mahajani, Noto Sans Malayalam, Noto Sans Mandaic, Noto Sans Masaram Gondi, Noto Sans Medefaidrin, Noto Sans Meetei Mayek, Noto Sans Mende Kikakui, Noto Sans Miao, Noto Sans Modi, Noto Sans Mongolian, Noto Sans Mro, Noto Sans Multani, Noto Sans NKo, Noto Sans New Tai Lue, Noto Sans Newa, Noto Sans Ol Chiki, Noto Sans Oriya, Noto Sans Osage, Noto Sans Osmanya, Noto Sans Pahawh Hmong, Noto Sans Pau Cin Hau, Noto Sans Rejang, Noto Sans Runic, Noto Sans SC, Noto Sans Samaritan, Noto Sans Saurashtra, Noto Sans Sharada, Noto Sans Shavian, Noto Sans Sinhala, Noto Sans Sora Sompeng, Noto Sans Soyombo, Noto Sans Sundanese, Noto Sans Syloti Nagri, Noto Sans Symbols, Noto Sans Symbols 2, Noto Sans Syriac, Noto Sans TC, Noto Sans Tagalog, Noto Sans Tagbanwa, Noto Sans Tai Le, Noto Sans Tai Tham, Noto Sans Tai Viet, Noto Sans Takri, Noto Sans Tamil, Noto Sans Telugu, Noto Sans Thaana, Noto Sans Thai, Noto Sans Tifinagh, Noto Sans Tifinagh APT, Noto Sans Tifinagh Adrar, Noto Sans Tifinagh Agraw Imazighen, Noto Sans Tifinagh Ahaggar, Noto Sans Tifinagh Air, Noto Sans Tifinagh Azawagh, Noto Sans Tifinagh Ghat, Noto Sans Tifinagh Hawad, Noto Sans Tifinagh Rhissa Ixa, Noto Sans Tifinagh SIL, Noto Sans Tifinagh Tawellemmet, Noto Sans Tirhuta, Noto Sans Vai, Noto Sans Wancho, Noto Sans Warang Citi, Noto Sans Yi, Noto Sans Zanabazar Square, Noto Serif Armenian, Noto Serif Balinese, Noto Serif Bengali, Noto Serif Devanagari, Noto Serif Dogra, Noto Serif Ethiopic, Noto Serif Georgian, Noto Serif Grantha, Noto Serif Gujarati, Noto Serif Gurmukhi, Noto Serif Hebrew, Noto Serif Kannada, Noto Serif Khmer, Noto Serif Khojki, Noto Serif Lao, Noto Serif Malayalam, Noto Serif Myanmar, Noto Serif NP Hmong, Noto Serif Sinhala, Noto Serif Tamil, Noto Serif Telugu, Noto Serif Thai, Noto Serif Tibetan, Noto Serif Yezidi, Pyidaungsu, STIX Two Math, Tinos, Twemoji Mozilla");
+pref("font.system.whitelist", "Arimo, Cousine, Jigmo, Jigmo2, Jigmo3, Noto Color Emoji, Noto Naskh Arabic, Noto Sans Adlam, Noto Sans Armenian, Noto Sans Balinese, Noto Sans Bamum, Noto Sans Bassa Vah, Noto Sans Batak, Noto Sans Bengali, Noto Sans Buginese, Noto Sans Buhid, Noto Sans Canadian Aboriginal, Noto Sans Chakma, Noto Sans Cham, Noto Sans Cherokee, Noto Sans Coptic, Noto Sans Deseret, Noto Sans Devanagari, Noto Sans Elbasan, Noto Sans Ethiopic, Noto Sans Georgian, Noto Sans Grantha, Noto Sans Gujarati, Noto Sans Gunjala Gondi, Noto Sans Gurmukhi, Noto Sans Hanifi Rohingya, Noto Sans Hanunoo, Noto Sans Hebrew, Noto Sans Javanese, Noto Sans Kannada, Noto Sans Kayah Li, Noto Sans Khmer, Noto Sans Khojki, Noto Sans Khudawadi, Noto Sans Lao, Noto Sans Lepcha, Noto Sans Limbu, Noto Sans Lisu, Noto Sans Mahajani, Noto Sans Malayalam, Noto Sans Mandaic, Noto Sans Masaram Gondi, Noto Sans Medefaidrin, Noto Sans Meetei Mayek, Noto Sans Mende Kikakui, Noto Sans Miao, Noto Sans Modi, Noto Sans Mongolian, Noto Sans Mro, Noto Sans Multani, Noto Sans NKo, Noto Sans New Tai Lue, Noto Sans Newa, Noto Sans Ol Chiki, Noto Sans Oriya, Noto Sans Osage, Noto Sans Osmanya, Noto Sans Pahawh Hmong, Noto Sans Pau Cin Hau, Noto Sans Rejang, Noto Sans Runic, Noto Sans Samaritan, Noto Sans Saurashtra, Noto Sans Sharada, Noto Sans Shavian, Noto Sans Sinhala, Noto Sans Sora Sompeng, Noto Sans Soyombo, Noto Sans Sundanese, Noto Sans Syloti Nagri, Noto Sans Symbols, Noto Sans Symbols 2, Noto Sans Syriac, Noto Sans Tagalog, Noto Sans Tagbanwa, Noto Sans Tai Le, Noto Sans Tai Tham, Noto Sans Tai Viet, Noto Sans Takri, Noto Sans Tamil, Noto Sans Telugu, Noto Sans Thaana, Noto Sans Thai, Noto Sans Tifinagh, Noto Sans Tifinagh APT, Noto Sans Tifinagh Adrar, Noto Sans Tifinagh Agraw Imazighen, Noto Sans Tifinagh Ahaggar, Noto Sans Tifinagh Air, Noto Sans Tifinagh Azawagh, Noto Sans Tifinagh Ghat, Noto Sans Tifinagh Hawad, Noto Sans Tifinagh Rhissa Ixa, Noto Sans Tifinagh SIL, Noto Sans Tifinagh Tawellemmet, Noto Sans Tirhuta, Noto Sans Vai, Noto Sans Wancho, Noto Sans Warang Citi, Noto Sans Yi, Noto Sans Zanabazar Square, Noto Serif Armenian, Noto Serif Balinese, Noto Serif Bengali, Noto Serif Devanagari, Noto Serif Dogra, Noto Serif Ethiopic, Noto Serif Georgian, Noto Serif Grantha, Noto Serif Gujarati, Noto Serif Gurmukhi, Noto Serif Hebrew, Noto Serif Kannada, Noto Serif Khmer, Noto Serif Khojki, Noto Serif Lao, Noto Serif Malayalam, Noto Serif Myanmar, Noto Serif NP Hmong, Noto Serif Sinhala, Noto Serif Tamil, Noto Serif Telugu, Noto Serif Thai, Noto Serif Tibetan, Noto Serif Yezidi, Pyidaungsu, STIX Two Math, Tinos, Twemoji Mozilla");
 
 pref("font.name-list.emoji", "Noto Color Emoji, Twemoji Mozilla");
 // Arabic
@@ -999,13 +999,13 @@ pref("font.name-list.serif.zh-CN", "Noto Sans SC Regular, Tinos");
 pref("font.name-list.sans-serif.zh-CN", "Noto Sans SC Regular, Arimo");
 pref("font.name-list.monospace.zh-CN", "Noto Sans SC Regular, Cousine");
 // ChineseHK
-pref("font.name-list.serif.zh-HK", "Noto Sans TC Regular, Tinos");
-pref("font.name-list.sans-serif.zh-HK", "Noto Sans TC Regular, Arimo");
-pref("font.name-list.monospace.zh-HK", "Noto Sans TC Regular, Cousine");
+pref("font.name-list.serif.zh-HK", "Jigmo, Jigmo2, Jigmo3, Tinos");
+pref("font.name-list.sans-serif.zh-HK", "Jigmo, Jigmo2, Jigmo3, Arimo");
+pref("font.name-list.monospace.zh-HK", "Jigmo, Jigmo2, Jigmo3, Cousine");
 // ChineseTW
-pref("font.name-list.serif.zh-TW", "Noto Sans TC Regular, Tinos");
-pref("font.name-list.sans-serif.zh-TW", "Noto Sans TC Regular, Arimo");
-pref("font.name-list.monospace.zh-TW", "Noto Sans TC Regular, Cousine");
+pref("font.name-list.serif.zh-TW", "Jigmo, Jigmo2, Jigmo3, Tinos");
+pref("font.name-list.sans-serif.zh-TW", "Jigmo, Jigmo2, Jigmo3, Arimo");
+pref("font.name-list.monospace.zh-TW", "Jigmo, Jigmo2, Jigmo3, Cousine");
 // Cyrillic
 pref("font.name-list.serif.x-cyrillic", "Tinos");
 pref("font.name-list.sans-serif.x-cyrillic", "Arimo");
@@ -1039,9 +1039,9 @@ pref("font.name-list.serif.he", "Noto Serif Hebrew, Tinos");
 pref("font.name-list.sans-serif.he", "Noto Sans Hebrew, Arimo");
 pref("font.name-list.monospace.he", "Noto Sans Hebrew, Cousine");
 // Japanese
-pref("font.name-list.serif.ja", "Noto Sans JP Regular, Tinos");
-pref("font.name-list.sans-serif.ja", "Noto Sans JP Regular, Arimo");
-pref("font.name-list.monospace.ja", "Noto Sans JP Regular, Cousine");
+pref("font.name-list.serif.ja", "Jigmo, Jigmo2, Jigmo3, Tinos");
+pref("font.name-list.sans-serif.ja", "Jigmo, Jigmo2, Jigmo3, Arimo");
+pref("font.name-list.monospace.ja", "Jigmo, Jigmo2, Jigmo3, Cousine");
 // Kannada
 pref("font.name-list.serif.x-knda", "Noto Serif Kannada, Tinos");
 pref("font.name-list.sans-serif.x-knda", "Noto Sans Kannada, Arimo");
@@ -1051,9 +1051,9 @@ pref("font.name-list.serif.x-khmr", "Noto Serif Khmer, Tinos");
 pref("font.name-list.sans-serif.x-khmr", "Noto Sans Khmer, Arimo");
 pref("font.name-list.monospace.x-khmr", "Noto Sans Khmer, Cousine");
 // Korean
-pref("font.name-list.serif.ko", "Noto Sans KR Regular");
-pref("font.name-list.sans-serif.ko", "Noto Sans KR Regular");
-pref("font.name-list.monospace.ko", "Noto Sans KR Regular");
+pref("font.name-list.serif.ko", "Jigmo, Jigmo2, Jigmo3, Tinos");
+pref("font.name-list.sans-serif.ko", "Jigmo, Jigmo2, Jigmo3, Arimo");
+pref("font.name-list.monospace.ko", "Jigmo, Jigmo2, Jigmo3, Cousine");
 // Malayalam
 pref("font.name-list.serif.x-mlym", "Noto Serif Malayalam, Tinos");
 pref("font.name-list.sans-serif.x-mlym", "Noto Sans Malayalam, Arimo");
