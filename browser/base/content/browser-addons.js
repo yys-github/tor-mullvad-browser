@@ -20,7 +20,6 @@ ChromeUtils.defineESModuleGetters(lazy, {
   ExtensionPermissions: "resource://gre/modules/ExtensionPermissions.sys.mjs",
   OriginControls: "resource://gre/modules/ExtensionPermissions.sys.mjs",
   PERMISSION_L10N: "resource://gre/modules/ExtensionPermissionMessages.sys.mjs",
-  PrivateBrowsingUtils: "resource://gre/modules/PrivateBrowsingUtils.sys.mjs",
   SITEPERMS_ADDON_TYPE:
     "resource://gre/modules/addons/siteperms-addon-utils.sys.mjs",
 });
@@ -467,9 +466,7 @@ customElements.define(
         this.notification.options.customElementOptions;
 
       let checkboxEl = this.ownerDocument.createElement("moz-checkbox");
-      checkboxEl.checked =
-        grantPrivateBrowsingAllowed ||
-        lazy.PrivateBrowsingUtils.permanentPrivateBrowsing;
+      checkboxEl.checked = grantPrivateBrowsingAllowed;
       checkboxEl.addEventListener("change", () => {
         // NOTE: the popupnotification instances will be reused
         // and so the callback function is destructured here to
