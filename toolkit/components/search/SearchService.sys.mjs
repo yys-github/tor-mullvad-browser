@@ -757,7 +757,11 @@ export class SearchService {
       let engineData = await lazy.loadAndParseOpenSearchEngine(
         Services.io.newURI(engineURL)
       );
-      engine = new lazy.OpenSearchEngine({ engineData, faviconURL: iconURL });
+      engine = new lazy.OpenSearchEngine({
+        engineData,
+        faviconURL: iconURL,
+        originAttributes,
+      });
     } catch (ex) {
       throw Components.Exception(
         "addEngine: Error adding engine:\n" + ex,
