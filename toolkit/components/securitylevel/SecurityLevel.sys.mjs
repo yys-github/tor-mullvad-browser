@@ -79,6 +79,7 @@ const max_caps = [
   "object",
   "other",
   "script",
+  "wasm",
   "webgl",
   "noscript",
 ];
@@ -247,7 +248,6 @@ var initializeNoScriptControl = () => {
 // for each security setting. Note that 2-m and 3-m are identical,
 // corresponding to the old 2-medium-high setting. We also separately
 // bind NoScript settings to the browser.security_level.security_slider
-// (see noscript-control.js).
 /* eslint-disable */
 // prettier-ignore
 const kSecuritySettings = {
@@ -260,7 +260,9 @@ const kSecuritySettings = {
   "gfx.font_rendering.opentype_svg.enabled": [,  false, false, false, true ],
   "svg.disabled":                            [,  true,  false, false, false],
   "javascript.options.asmjs":                [,  false, false, false, true ],
-  "javascript.options.wasm":                 [,  false, false, false, true ],
+  // tor-browser#44234, tor-browser#44242: this interferes with the correct
+  // functioning of the browser. So, WASM is also handled by NoScript now.
+  "javascript.options.wasm":                 [,  true,  true,  true,  true ],
 };
 /* eslint-enable */
 
@@ -327,16 +329,19 @@ var write_setting_to_prefs = function (settingIndex) {
 // security settings matches. Otherwise return null.
 var read_setting_from_prefs = function (prefNames) {
   prefNames = prefNames || Object.keys(kSecuritySettings);
-  for (let settingIndex of [1, 2, 3, 4]) {
+  for (const settingIndex of [1, 2, 3, 4]) {
     let possibleSetting = true;
     // For the given settingIndex, check if all current pref values
     // match the setting.
-    for (let prefName of prefNames) {
-      if (
-        kSecuritySettings[prefName][settingIndex] !==
-        Services.prefs.getBoolPref(prefName)
-      ) {
+    for (const prefName of prefNames) {
+      const wanted = kSecuritySettings[prefName][settingIndex];
+      const actual = Services.prefs.getBoolPref(prefName);
+      if (wanted !== actual) {
         possibleSetting = false;
+        logger.info(
+          `${prefName} does not match level ${settingIndex}: ${actual}, should be ${wanted}!`
+        );
+        break;
       }
     }
     if (possibleSetting) {
@@ -361,7 +366,7 @@ var initializeSecurityPrefs = function () {
   if (initializedSecPrefs) {
     return;
   }
-  logger.info("Initializing security-prefs.js");
+  logger.info("Initializing security level");
   initializedSecPrefs = true;
 
   const wasCustom = Services.prefs.getBoolPref(kCustomPref, false);
@@ -369,6 +374,21 @@ var initializeSecurityPrefs = function () {
   // and it should not be custom.
   let desiredIndex = Services.prefs.getIntPref(kSliderPref, 4);
   desiredIndex = fixupIndex(desiredIndex);
+
+  if (!(wasCustom && desiredIndex == 4)) {
+    // The current level is non-customized Standard, or
+    // Safer / Safest (either customized or not): the global
+    // javascript.options.wasm pref interferes with the correct
+    // functioning of the browser, so instead we rely on NoScript
+    // to disable WebAssembly now (tor-browser#44234, tor-browser#44242).
+    // We skip flipping in customized Standard, because if its value was
+    // found false under such as circumstance, that would suggest
+    // an intentional user choice we don't want to interfere with.
+    // Unlike other javascript.options.* preferences, this one is safe
+    // to flip without a browser restart because it's checked whenever a
+    // context is created.
+    Services.prefs.setBoolPref("javascript.options.wasm", true);
+  }
   // Make sure the user has a set preference user value.
   Services.prefs.setIntPref(kSliderPref, desiredIndex);
   Services.prefs.setBoolPref(kCustomPref, wasCustom);
@@ -448,7 +468,7 @@ var initializeSecurityPrefs = function () {
     });
   }
 
-  logger.info("security-prefs.js initialization complete");
+  logger.info("Security level initialization complete");
 };
 
 // tor-browser#41460: we changed preference names in 12.0.
