@@ -64,7 +64,7 @@ body:not(.is-testing) #tor-browser-home-heading-testing {
   align-items: center;
   padding-inline: 23px;
   padding-block: 11px;
-  border-radius: 8px;
+  border-radius: var(--border-radius-medium);
   margin-block-start: 0;
   margin-block-end: 30px;
 }
@@ -182,7 +182,7 @@ body:not(.show-tor-check) #tor-check {
     "icon body close" auto
     ". buttons buttons" min-content
     / min-content 1fr min-content;
-  border-radius: 4px;
+  border-radius: var(--border-radius-small);
   /* Remove 1px from padding for border. */
   padding-block: 3px 11px;
   padding-inline: 15px 3px;
