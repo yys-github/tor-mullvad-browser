@@ -26,7 +26,7 @@
   display: inline-block;
   animation: fade-up-tt 450ms;
   background: #d70022;
-  border-radius: 2px;
+  border-radius: var(--border-radius-xsmall);
   color: #fff;
   inset-inline-start: 3px;
   padding: 5px 12px;
