@@ -41,6 +41,17 @@ ARTIFACT_NAME_MAP = {
 }
 
 
+def get_artifact_index(artifact_path):
+    """
+    Return a unique identifier for the given artifact based on its path.
+
+    In most cases, artifacts built by tor-browser-build include part of their
+    SHA sum or version in the filename, so the file name itself serves as a unique
+    identifier.
+    """
+    return artifact_path.rsplit("/", 1)[-1]
+
+
 def get_artifact_name(original_artifact_name, host):
     # These are not build artifacts, they are pre-built artifacts to be added to the final build,
     # therefore this check can come before the host check.
