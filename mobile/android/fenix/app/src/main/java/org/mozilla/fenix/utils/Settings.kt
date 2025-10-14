@@ -2090,7 +2090,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      */
     var enableUnifiedTrustPanel by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_unified_trust_panel),
-        default = FeatureFlags.UNIFIED_TRUST_PANEL,
+        default = false
     )
 
     /**
