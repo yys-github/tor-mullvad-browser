@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import mozunit
 
-from mozbuild.tbbutils import get_artifact_path, list_files_http
+from mozbuild.tbbutils import get_artifact_index, get_artifact_path, list_files_http
 
 
 class TestGetArtifactName(unittest.TestCase):
@@ -32,6 +32,13 @@ class TestGetArtifactName(unittest.TestCase):
 
         result = get_artifact_name(self.artifact, self.host)
         self.assertEqual(result, self.artifact[::-1])
+
+
+class TestGetArtifactIndex(unittest.TestCase):
+    def test_regular_artifact(self):
+        path = "https://tb-build-06.torproject.org/~tb-builder/tor-browser-build/out/tor/tor-b1f9824464dc-linux-x86_64-b0ffe2.tar.gz"
+        expected = "tor-b1f9824464dc-linux-x86_64-b0ffe2.tar.gz"
+        self.assertEqual(get_artifact_index(path), expected)
 
 
 class TestGetArtifactPath(unittest.TestCase):
