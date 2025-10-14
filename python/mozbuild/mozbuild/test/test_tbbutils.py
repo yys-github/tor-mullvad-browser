@@ -36,9 +36,16 @@ class TestGetArtifactName(unittest.TestCase):
 
 class TestGetArtifactIndex(unittest.TestCase):
     def test_regular_artifact(self):
+        artifact = "tor"
         path = "https://tb-build-06.torproject.org/~tb-builder/tor-browser-build/out/tor/tor-b1f9824464dc-linux-x86_64-b0ffe2.tar.gz"
         expected = "tor-b1f9824464dc-linux-x86_64-b0ffe2.tar.gz"
-        self.assertEqual(get_artifact_index(path), expected)
+        self.assertEqual(get_artifact_index(path, artifact), expected)
+
+    def test_expert_bundle_artifact(self):
+        artifact = "tor-expert-bundle"
+        path = "https://tb-build-06.torproject.org/~tb-builder/tor-browser-build/out/tor-expert-bundle/tor-expert-bundle-linux-x86_64-tbb-nightly.2025.10.14-d9aa09/"
+        expected = "tor-expert-bundle-linux-x86_64-tbb-nightly.2025.10.14-d9aa09"
+        self.assertEqual(get_artifact_index(path, artifact), expected)
 
 
 class TestGetArtifactPath(unittest.TestCase):

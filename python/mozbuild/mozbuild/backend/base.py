@@ -329,7 +329,7 @@ class BuildBackend(LoggingMixin):
 
                 # Set up Tor configuration files
                 paths["tor_config"].mkdir(parents=True, exist_ok=True)
-                for file in ["geoip", "geoip6"]:
+                for file in ["geoip", "geoip6", "torrc-defaults"]:
                     target = paths["tor_config"] / file
                     _infallible_symlink(expert_bundle_location / "data" / file, target)
 
