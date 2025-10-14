@@ -18,7 +18,7 @@ def list_files_http(url):
             continue
 
         if "tor-expert-bundle" in href:
-            href = f"{href}/tor-expert-bundle.tar.gz"
+            href = f"{href.rstrip('/')}/tor-expert-bundle.tar.gz"
 
         links.append(href)
 
@@ -45,14 +45,19 @@ ARTIFACT_NAME_MAP = {
 }
 
 
-def get_artifact_index(artifact_path):
+def get_artifact_index(artifact_path, artifact):
     """
     Return a unique identifier for the given artifact based on its path.
 
     In most cases, artifacts built by tor-browser-build include part of their
     SHA sum or version in the filename, so the file name itself serves as a unique
-    identifier.
+    identifier. However, some artifacts are stored within subfolders where the file
+    name alone is not unique — in those cases, the name of the parent directory
+    provides the unique identifier instead.
     """
+    if artifact in ["tor-expert-bundle"]:
+        return artifact_path.rsplit("/", 2)[-2]
+
     return artifact_path.rsplit("/", 1)[-1]
 
 
