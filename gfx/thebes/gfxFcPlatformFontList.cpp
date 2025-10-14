@@ -33,9 +33,9 @@
 #include "nsXULAppAPI.h"
 #include "SharedFontList-impl.h"
 #ifndef BASE_BROWSER_VERSION
-#define StandardFonts
-#include "StandardFonts-linux.inc"
-#undef StandardFonts
+#  define StandardFonts
+#  include "StandardFonts-linux.inc"
+#  undef StandardFonts
 #endif
 #include "mozilla/intl/Locale.h"
 
