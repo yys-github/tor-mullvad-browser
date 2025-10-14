@@ -497,12 +497,6 @@ pref("dom.webmidi.enabled", false); // Bug 41398: Disable Web MIDI API
 // randomized IDs when this pref is true).
 // Defense-in-depth (already the default value) from Firefox 119 or 120.
 pref("media.devices.enumerate.legacy.enabled", false);
-// Touch events (tor-browser#10286, tor-browser#42069, tor-browser#44062)
-#if defined(XP_WIN) || defined(ANDROID)
-pref("dom.w3c_touch_events.enabled", 1);
-#else
-pref("dom.w3c_touch_events.enabled", 0);
-#endif
 #ifndef ANDROID
 // Bug 42138: Disable touch-based overscroll UX
 pref("apz.overscroll.enabled", false);
