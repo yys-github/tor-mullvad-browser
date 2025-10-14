@@ -30,6 +30,7 @@
 #include "mozilla/dom/WindowContext.h"
 #include "mozilla/dom/WindowGlobalActorsBinding.h"
 #include "mozilla/dom/WindowGlobalParent.h"
+#include "mozilla/dom/nsMixedContentBlocker.h"
 #include "mozilla/ipc/Endpoint.h"
 #include "nsContentUtils.h"
 #include "nsDocShell.h"
@@ -44,8 +45,6 @@
 #include "nsScriptSecurityManager.h"
 #include "nsSerializationHelper.h"
 #include "nsURLHelper.h"
-
-#include "mozilla/dom/nsMixedContentBlocker.h"
 
 using namespace mozilla::ipc;
 using namespace mozilla::dom::ipc;

@@ -19,9 +19,9 @@
 #include "mozilla/dom/WindowContext.h"
 #include "mozilla/dom/WindowGlobalChild.h"
 #include "mozilla/dom/WindowGlobalParent.h"
+#include "mozilla/dom/nsMixedContentBlocker.h"
 #include "mozilla/net/CookieJarSettings.h"
 #include "nsContentUtils.h"
-#include "mozilla/dom/nsMixedContentBlocker.h"
 #include "nsGlobalWindowInner.h"
 #include "nsNetUtil.h"
 
