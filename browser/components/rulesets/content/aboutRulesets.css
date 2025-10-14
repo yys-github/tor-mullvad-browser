@@ -253,7 +253,7 @@ aside {
 
 #ruleset-jwk-value {
   padding: 8px;
-  border-radius: 2px;
+  border-radius: var(--border-radius-xsmall);
   background-color: var(--background-color-box);
   font-size: 85%;
   line-break: anywhere;
