@@ -105,6 +105,7 @@ ITEM_VALUE(DiskStorageLimit,            70)
 ITEM_VALUE(WebCodecs,                   71)
 ITEM_VALUE(NavigatorHWConcurrencyTiered,74)
 
+// !!! Adding a new target? Rename PointerId and repurpose it.
 
 // !!! Don't forget to update kDefaultFingerprintingProtections in nsRFPService.cpp
 // if necessary.
