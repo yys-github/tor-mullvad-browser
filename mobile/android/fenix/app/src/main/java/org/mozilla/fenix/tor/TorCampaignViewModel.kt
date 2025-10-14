@@ -1,12 +1,12 @@
 package org.mozilla.fenix.tor
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import java.text.SimpleDateFormat
 import java.util.Date
 import kotlin.getValue
-import org.mozilla.geckoview.BuildConfig
 
 class TorCampaignViewModel : ViewModel() {
     val shouldInitiallyShowPromo: MutableState<Boolean> by lazy {
@@ -26,7 +26,8 @@ class TorCampaignViewModel : ViewModel() {
         if (currentDate.before(startDate) || currentDate.after(endDate)) {
             return false
         }
-        if (BuildConfig.BUILD_TYPE == "release") {
+        Log.d("TorCampaignViewModel", "org.mozilla.fenix.BuildConfig.BUILD_TYPE = ${org.mozilla.fenix.BuildConfig.BUILD_TYPE}")
+        if (org.mozilla.fenix.BuildConfig.BUILD_TYPE == "release") {
             return true
         }
         return false
