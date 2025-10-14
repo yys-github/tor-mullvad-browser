@@ -31,7 +31,7 @@ body:not(.loaded) {
   align-items: center;
   cursor: pointer;
   color: var(--in-content-text-color);
-  border-radius: 4px;
+  border-radius: var(--border-radius-small);
 }
 
 .breadcrumb-item:hover {
