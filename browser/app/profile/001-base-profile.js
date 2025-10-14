@@ -216,6 +216,9 @@ pref("browser.safebrowsing.provider.mozilla.gethashURL", "");
 pref("browser.urlbar.recentsearches.featureGate", false);
 pref("browser.urlbar.suggest.recentsearches", false);
 
+// tor-browser#44262: Disable adding search engines from HTML forms
+pref("browser.urlbar.update2.engineAliasRefresh", false);
+
 // Disable the UITour API
 // See tor-browser#41457 and
 // https://bugzilla.mozilla.org/show_bug.cgi?id=1915280
