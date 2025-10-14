@@ -221,11 +221,7 @@ def bootstrap_path(path, **kwargs):
                 log.info("no path found in tbb/out for %s", artifact)
                 return False
 
-            # We will use the name of the artifact as the index.
-            #
-            # It's usually unique to the artifact version, but each artifact follows
-            # a different naming convention, so we can't really get more specific here.
-            artifact_index = artifact_path.rsplit("/", 1)[-1]
+            artifact_index = mozbuild.tbbutils.get_artifact_index(artifact_path)
             index_file = os.path.join(toolchains_base_dir, "indices", artifact)
             try:
                 with open(index_file) as fh:
