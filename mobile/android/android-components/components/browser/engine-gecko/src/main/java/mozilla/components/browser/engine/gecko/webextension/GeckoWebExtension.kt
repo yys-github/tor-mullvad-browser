@@ -379,6 +379,7 @@ class GeckoWebExtension(
                 temporary = it.temporary,
                 detailUrl = it.amoListingUrl,
                 incognito = Incognito.fromString(it.incognito),
+                defaultPrivateBrowsingAllowed = it.allowedInPrivateBrowsing,
             )
         }
     }
