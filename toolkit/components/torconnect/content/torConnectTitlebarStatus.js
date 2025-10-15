@@ -3,21 +3,15 @@
  */
 var gTorConnectTitlebarStatus = {
   /**
-   * The status element in the title bar.
+   * The status elements and their labels.
    *
-   * @type {Element}
+   * @type {{status: Element, label: Element}[]}
    */
-  node: null,
-  /**
-   * The status label.
-   *
-   * @type {Element}
-   */
-  label: null,
+  _elements: [],
   /**
    * Whether we are connected, or null if the connection state is not yet known.
    *
-   * @type {bool?}
+   * @type {boolean?}
    */
   connected: null,
 
@@ -31,21 +25,21 @@ var gTorConnectTitlebarStatus = {
 
     this._strings = TorStrings.torConnect;
 
-    this.node = document.getElementById("tor-connect-titlebar-status");
-    this.label = document.getElementById("tor-connect-titlebar-status-label");
+    this._elements = Array.from(
+      document.querySelectorAll(".tor-connect-titlebar-status"),
+      element => {
+        return {
+          status: element,
+          label: element.querySelector(".tor-connect-titlebar-status-label"),
+        };
+      }
+    );
     // The title also acts as an accessible name for the role="status".
-    this.node.setAttribute("title", this._strings.titlebarStatusName);
+    for (const { status } of this._elements) {
+      status.setAttribute("title", this._strings.titlebarStatusName);
+    }
 
-    this._observeTopic = TorConnectTopics.StageChange;
-    this._stateListener = {
-      observe: (subject, topic) => {
-        if (topic !== this._observeTopic) {
-          return;
-        }
-        this._torConnectStateChanged();
-      },
-    };
-    Services.obs.addObserver(this._stateListener, this._observeTopic);
+    Services.obs.addObserver(this, TorConnectTopics.StageChange);
 
     this._torConnectStateChanged();
   },
@@ -54,7 +48,15 @@ var gTorConnectTitlebarStatus = {
    * De-initialize the component.
    */
   uninit() {
-    Services.obs.removeObserver(this._stateListener, this._observeTopic);
+    Services.obs.removeObserver(this, TorConnectTopics.StageChange);
+  },
+
+  observe(subject, topic) {
+    switch (topic) {
+      case TorConnectTopics.StageChange:
+        this._torConnectStateChanged();
+        break;
+    }
   },
 
   /**
@@ -67,7 +69,7 @@ var gTorConnectTitlebarStatus = {
     switch (TorConnect.stageName) {
       case TorConnectStage.Disabled:
         // Hide immediately.
-        this.node.hidden = true;
+        this._setHidden(true);
         return;
       case TorConnectStage.Bootstrapped:
         textId = "titlebarStatusConnected";
@@ -85,7 +87,9 @@ var gTorConnectTitlebarStatus = {
         }
         break;
     }
-    this.label.textContent = this._strings[textId];
+    for (const { label } of this._elements) {
+      label.textContent = this._strings[textId];
+    }
     if (this.connected !== connected) {
       // When we are transitioning from
       //   this.connected = false
@@ -104,11 +108,13 @@ var gTorConnectTitlebarStatus = {
       //
       // We only expect this latter case when opening a new window after
       // bootstrapping has already completed. See tor-browser#41850.
-      this.node.classList.toggle(
-        "tor-connect-status-animate-transition",
-        connected && this.connected !== null
-      );
-      this.node.classList.toggle("tor-connect-status-connected", connected);
+      for (const { status } of this._elements) {
+        status.classList.toggle(
+          "tor-connect-status-animate-transition",
+          connected && this.connected !== null
+        );
+        status.classList.toggle("tor-connect-status-connected", connected);
+      }
       this.connected = connected;
       if (connected) {
         this._startHiding();
@@ -119,10 +125,23 @@ var gTorConnectTitlebarStatus = {
         this._stopHiding();
       }
     }
-    this.node.classList.toggle(
-      "tor-connect-status-potentially-blocked",
-      potentiallyBlocked
-    );
+    for (const { status } of this._elements) {
+      status.classList.toggle(
+        "tor-connect-status-potentially-blocked",
+        potentiallyBlocked
+      );
+    }
+  },
+
+  /**
+   * Hide or show the status.
+   *
+   * @param {boolean} hide - Whether to hide the status.
+   */
+  _setHidden(hide) {
+    for (const { status } of this._elements) {
+      status.hidden = hide;
+    }
   },
 
   /**
@@ -134,7 +153,7 @@ var gTorConnectTitlebarStatus = {
       return;
     }
     this._hidingTimeout = setTimeout(() => {
-      this.node.hidden = true;
+      this._setHidden(true);
     }, 5000);
   },
 
@@ -146,6 +165,6 @@ var gTorConnectTitlebarStatus = {
       clearTimeout(this._hidingTimeout);
       this._hidingTimeout = 0;
     }
-    this.node.hidden = false;
+    this._setHidden(false);
   },
 };
