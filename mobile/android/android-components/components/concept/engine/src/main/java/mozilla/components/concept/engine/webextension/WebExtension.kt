@@ -508,6 +508,11 @@ data class Metadata(
      * https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/manifest.json/incognito
      */
     val incognito: Incognito,
+
+    /**
+     * Wether this extension should default to pbm-allowed because being installed in global PBM
+     */
+    val defaultPrivateBrowsingAllowed : Boolean = false,
 )
 
 /**
