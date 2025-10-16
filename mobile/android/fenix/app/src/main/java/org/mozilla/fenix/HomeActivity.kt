@@ -870,17 +870,12 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
         if (existingDialog != null) {
             return existingDialog
         }
-
-        // TODO: This is a temporary solution to keep RR rebases in motion.
-        // We need to figure out a proper fix here and then apply it as a fixup to
-        // "TB 34378: [android] Port external helper app prompting"
         SimpleRedirectDialogFragment.newInstance(
-            dialogTitleString = "???",
-            dialogMessageString = "???"
-        ).also {
-            dialog = it
-            return it
-        }
+                getString(R.string.mozac_feature_applinks_normal_confirm_dialog_title),
+            ).also {
+                dialog = it
+                return it
+            }
     }
     private fun isAlreadyADialogCreated(): Boolean {
         return findPreviousDialogFragment() != null
