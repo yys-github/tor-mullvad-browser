@@ -179,6 +179,7 @@ import org.mozilla.fenix.utils.changeAppLauncherIcon
 import java.util.Locale
 
 import mozilla.components.browser.engine.gecko.GeckoEngine
+import mozilla.components.feature.app.links.R as appLinksR
 import org.mozilla.fenix.compose.core.Action
 import org.mozilla.fenix.compose.snackbar.SnackbarState
 import org.mozilla.fenix.compose.snackbar.Snackbar
@@ -917,17 +918,12 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
         if (existingDialog != null) {
             return existingDialog
         }
-
-        // TODO: This is a temporary solution to keep RR rebases in motion.
-        // We need to figure out a proper fix here and then apply it as a fixup to
-        // "TB 34378: [android] Port external helper app prompting"
         SimpleRedirectDialogFragment.newInstance(
-            dialogTitleString = "???",
-            dialogMessageString = "???"
-        ).also {
-            dialog = it
-            return it
-        }
+                getString(appLinksR.string.mozac_feature_applinks_normal_confirm_dialog_title),
+            ).also {
+                dialog = it
+                return it
+            }
     }
     private fun isAlreadyADialogCreated(): Boolean {
         return findPreviousDialogFragment() != null
