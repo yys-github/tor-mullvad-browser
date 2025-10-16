@@ -61,6 +61,7 @@ import mozilla.components.browser.state.state.WebExtensionState
 import mozilla.components.concept.engine.EngineSession
 import mozilla.components.concept.engine.EngineView
 import mozilla.components.concept.storage.HistoryMetadataKey
+import mozilla.components.feature.app.links.R as appLinksR
 import mozilla.components.feature.app.links.RedirectDialogFragment
 import mozilla.components.feature.app.links.SimpleRedirectDialogFragment
 import mozilla.components.feature.contextmenu.DefaultSelectionActionDelegate
@@ -908,10 +909,12 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             return existingDialog
         }
 
-        SimpleRedirectDialogFragment.newInstance().also {
-            dialog = it
-            return it
-        }
+        SimpleRedirectDialogFragment.newInstance(
+                getString(appLinksR.string.mozac_feature_applinks_normal_confirm_dialog_title),
+            ).also {
+                dialog = it
+                return it
+            }
     }
     private fun isAlreadyADialogCreated(): Boolean {
         return findPreviousDialogFragment() != null
