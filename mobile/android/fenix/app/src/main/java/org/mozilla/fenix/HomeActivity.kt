@@ -864,10 +864,12 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             return existingDialog
         }
 
-        SimpleRedirectDialogFragment.newInstance().also {
-            dialog = it
-            return it
-        }
+        SimpleRedirectDialogFragment.newInstance(
+                getString(R.string.mozac_feature_applinks_normal_confirm_dialog_title),
+            ).also {
+                dialog = it
+                return it
+            }
     }
     private fun isAlreadyADialogCreated(): Boolean {
         return findPreviousDialogFragment() != null
