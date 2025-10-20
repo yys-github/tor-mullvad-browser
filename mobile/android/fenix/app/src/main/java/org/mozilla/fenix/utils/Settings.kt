@@ -2098,7 +2098,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      */
     var isTrendingSearchesVisible by lazyFeatureFlagPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_trending_searches),
-        default = { FxNimbus.features.trendingSearches.value().enabled },
+        default = { false },
         featureFlag = true,
     )
 
