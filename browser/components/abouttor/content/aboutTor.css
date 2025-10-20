@@ -110,7 +110,7 @@ body:not(.show-tor-check) #tor-check {
   grid-area: form;
   /* Occupy the entire "form" block. */
   justify-self: stretch;
-  background: var(--in-content-page-background);
+  background: var(--background-color-canvas);
   display: flex;
   align-items: stretch;
   /* Padding between elements. */
