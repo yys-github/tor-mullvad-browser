@@ -139,7 +139,7 @@ export const ClipboardPrivacy = {
       }
     });
 
-    lazy.AsyncShutdown.quitApplicationGranted.addBlocker(
+    lazy.AsyncShutdown.appShutdownConfirmed.addBlocker(
       "ClipboardPrivacy: removing private data",
       () => {
         this._shuttingDown = true;
