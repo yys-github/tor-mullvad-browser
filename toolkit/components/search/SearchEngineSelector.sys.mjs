@@ -94,7 +94,7 @@ export class SearchEngineSelector {
 
     let { promise, resolve } = Promise.withResolvers();
     this.#getConfigurationPromise = promise;
-    this.#getConfigurationPromise = await (
+    this.#configuration = await (
       await fetch(
         "chrome://global/content/search/base-browser-search-engines.json"
       )
