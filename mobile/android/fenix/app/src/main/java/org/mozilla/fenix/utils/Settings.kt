@@ -953,7 +953,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      */
     var showFirstTimeTranslation: Boolean by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_first_time_translation),
-        default = true,
+        default = false,
     )
 
     /**
@@ -961,7 +961,7 @@ class Settings(private val appContext: Context) : PreferencesHolder {
      */
     var offerTranslation: Boolean by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_translations_offer),
-        default = true,
+        default = false,
     )
 
     /**
