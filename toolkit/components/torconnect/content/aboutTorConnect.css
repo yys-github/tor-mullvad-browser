@@ -191,7 +191,7 @@ form#locationDropdown select {
   width: var(--progress-percent);
   height: 66px;
   margin-block-start: -26px;
-  background-image: linear-gradient(var(--progressbar-shadow-start), var(--in-content-page-background) 100%), var(--progressbar-gradient);
+  background-image: linear-gradient(var(--progressbar-shadow-start), var(--background-color-canvas) 100%), var(--progressbar-gradient);
   animation: var(--progress-animation);
   filter: blur(5px);
   border-end-end-radius: 33px;
