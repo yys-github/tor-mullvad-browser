@@ -443,6 +443,7 @@
                           command="cmd_reportBrokenSite"
                           data-l10n-id="menu-report-broken-site"
                           disabled="true"
+                          hidden="true"
                           appmenu-data-l10n-id="appmenuitem-report-broken-site"/>
                 <menuitem id="feedbackPage"
                           hidden="true"
