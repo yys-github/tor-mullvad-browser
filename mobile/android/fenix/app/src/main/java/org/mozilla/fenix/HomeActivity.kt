@@ -1725,6 +1725,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
     }
 
     fun shutDown() : Nothing {
+        // If we don't manually stop the service, the persistent "close tabs" notification sometimes does not clear
+        applicationContext.stopService(Intent(applicationContext, PrivateNotificationService::class.java))
         finishAndRemoveTask()
         components.torController.shutdown()
         exitProcess(0)
