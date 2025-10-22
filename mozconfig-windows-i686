@@ -23,3 +23,5 @@ ac_add_options --disable-notification-server
 # Let's make sure no preference is enabling either Adobe's or Google's CDM.
 ac_add_options --disable-eme
 
+# tor-browser#44028: Disable zucchini for now, as it needs SEH.
+ac_add_options --disable-zucchini
