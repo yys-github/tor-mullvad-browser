@@ -338,14 +338,14 @@ var read_setting_from_prefs = function (prefNames) {
       const actual = Services.prefs.getBoolPref(prefName);
       if (wanted !== actual) {
         possibleSetting = false;
-        logger.info(
+        logger.debug(
           `${prefName} does not match level ${settingIndex}: ${actual}, should be ${wanted}!`
         );
         break;
       }
     }
     if (possibleSetting) {
-      // We have a match!
+      logger.debug(`Preferences match level ${settingIndex}.`);
       return settingIndex;
     }
   }
