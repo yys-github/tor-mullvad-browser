@@ -2118,7 +2118,10 @@ class Settings(private val appContext: Context) : PreferencesHolder {
 
     var shouldUseComposableToolbar by lazyFeatureFlagPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_composable_toolbar),
-        default = { FxNimbus.features.composableToolbar.value().enabled },
+        // tb-43918
+        // Setting to off for esr140 since we've done no work for it, but it appears moz has enabled
+        // by default in 144 so we'll likely be switching this to true and porting to it for esr-next
+        default = { false },
         featureFlag = true,
     )
 
