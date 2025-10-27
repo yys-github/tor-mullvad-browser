@@ -152,10 +152,6 @@ pref("network.http.referer.hideOnionSource", true);
 // [4] https://www.ssllabs.com/ssl-pulse/
 pref("security.ssl.require_safe_negotiation", true);
 
-// mullvad-browser#361: Disable TLS cyphersuites using SHA1 for signing (ECDSA)
-// see https://bugzilla.mozilla.org/show_bug.cgi?id=1600437
-pref("security.ssl3.ecdhe_ecdsa_aes_256_sha", false);
-pref("security.ssl3.ecdhe_ecdsa_aes_128_sha", false);
 // lock those disabled by https://bugzilla.mozilla.org/show_bug.cgi?id=1036765
 pref("security.ssl3.dhe_rsa_aes_128_sha", false, locked);
 pref("security.ssl3.dhe_rsa_aes_256_sha", false, locked);
