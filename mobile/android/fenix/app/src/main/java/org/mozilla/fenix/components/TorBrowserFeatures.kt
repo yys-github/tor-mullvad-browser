@@ -146,11 +146,10 @@ object TorBrowserFeatures {
             override fun onBootstrapped() {
                 // Enable automatic updates. This must be done on every startup (tor-browser#42353)
                 context.components.addonUpdater.registerForFutureUpdates(NOSCRIPT_ID)
-                // Force a one-time immediate update check for older installations
-                if (settings.noscriptUpdated < 2) {
-                    context.components.addonUpdater.update(NOSCRIPT_ID)
-                    settings.noscriptUpdated = 2
-                }
+                // Force an immediate update check for older installations
+                // and as belt-and-suspenders if scheduled updates fail (tor-browser#44293)
+                context.components.addonUpdater.update(NOSCRIPT_ID)
+                settings.noscriptUpdated = 2
             }
         })
     }
