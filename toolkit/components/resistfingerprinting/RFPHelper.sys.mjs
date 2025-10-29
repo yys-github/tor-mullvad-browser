@@ -704,20 +704,49 @@ class _RFPHelper {
    * @param {CSSStyleDeclaration} style - The computed style for the element we
    *   want to grab the color from.
    * @param {string} property - The name of the property we want.
+   * @param {object} [options] - Optional details.
+   * @param {string} [options.fallbackProperty] - A fallback to use instead if
+   *   the property doesn't have a computed value.
+   * @param {string} [options.currentColorProperty] - The name of a property to
+   *   use as the currentColor.
    *
    * @returns {InspectorRGBATuple} - The RGBA color. The "r", "g", "b" fields
    *   are relative to the 0-255 color range. The "a" field is in the 0-1 range.
    */
-  _convertToRGBA(win, style, property) {
+  _convertToRGBA(win, style, property, options) {
     let cssColor = style.getPropertyValue(property);
     if (!cssColor) {
+      if (options?.fallbackProperty) {
+        lazy.logConsole.debug(
+          "Using fallback property for RGBA.",
+          property,
+          options.fallbackProperty
+        );
+        return this._convertToRGBA(win, style, options.fallbackProperty);
+      }
       lazy.logConsole.error(`Missing color "${property}"`);
       return { r: 0, g: 0, b: 0, a: 0 };
     }
     const currentColorRegex =
       /(^|[^a-zA-Z0-9_-])currentColor($|[^a-zA-Z0-9_-])/g;
     if (currentColorRegex.test(cssColor)) {
-      const currentColor = style.color;
+      let currentColor;
+      if (options?.currentColorProperty) {
+        const currRGBA = this._convertToRGBA(
+          win,
+          style,
+          options.currentColorProperty
+        );
+        currentColor = `rgba(${currRGBA.r}, ${currRGBA.g}, ${currRGBA.b}, ${currRGBA.a})`;
+      } else {
+        lazy.logConsole.warning(
+          "Missing a specification for the currentColor, using computed color."
+        );
+        // Use the current "color" value. NOTE: this may not be exactly what we
+        // want since it's current value may be effected by :hover, :active,
+        // :focus, etc. But we want this to be a stable colour for the theme.
+        currentColor = style.color;
+      }
       cssColor = cssColor.replace(currentColorRegex, (_, pre, post) => {
         return pre + currentColor + post;
       });
@@ -728,7 +757,7 @@ class _RFPHelper {
         cssColor
       );
     }
-    /* Can drop the document argument after bugzilla bug 1973684 (142). */
+    // Can drop the document argument after bugzilla bug 1973684 (142).
     const colorRGBA = win.InspectorUtils.colorToRGBA(cssColor, win.document);
     if (!colorRGBA) {
       lazy.logConsole.error(
@@ -769,12 +798,13 @@ class _RFPHelper {
    * @param {Window} win - The window to calculate the color for.
    * @param {CSSStyleDeclaration} style - The computed style for the #nav-bar
    *   element.
+   * @param {boolean} verticalTabs - Whether vertical tabs are enabled.
    *
    * @returns {InspectorRGBATuple} - The calculated color, which will be opaque.
    */
-  _calculateUrlbarContainerColor(win, style) {
+  _calculateUrlbarContainerColor(win, style, verticalTabs) {
     let colorRGBA;
-    if (!Services.prefs.getBoolPref(kPrefVerticalTabs)) {
+    if (!verticalTabs) {
       lazy.logConsole.debug("Toolbar background used.");
       colorRGBA = this._convertToRGBA(win, style, "--toolbar-bgcolor");
       if (colorRGBA.a === 1) {
@@ -853,12 +883,19 @@ class _RFPHelper {
     if (letterboxingEnabled) {
       // Want the effective colour of various elements without any alpha values
       // so they can be used consistently.
+
+      const verticalTabs = Services.prefs.getBoolPref(kPrefVerticalTabs);
+      const chromeTextColorProperty = verticalTabs
+        ? "--toolbox-textcolor"
+        : "--toolbar-color";
+
       const navbarStyle = win.getComputedStyle(
         win.document.getElementById("nav-bar")
       );
       const containerRGBA = this._calculateUrlbarContainerColor(
         win,
-        navbarStyle
+        navbarStyle,
+        verticalTabs
       );
       urlbarBackgroundRGBA = this._composeRGBA(
         this._convertToRGBA(
@@ -868,17 +905,28 @@ class _RFPHelper {
         ),
         containerRGBA
       );
+      // NOTE: In the default theme (no "lwtheme" attribute) with
+      // browser.theme.native-theme set to false, --toolbar-field-color can be
+      // set to "inherit", which means it will have a blank computed value. We
+      // fallback to --toolbar-color or --toolbox-textcolor in this case.
+      // Similarly, for windows OS, it can be set to "currentColor".
       urlbarTextRGBA = this._composeRGBA(
-        this._convertToRGBA(win, navbarStyle, "--toolbar-field-color"),
+        this._convertToRGBA(win, navbarStyle, "--toolbar-field-color", {
+          fallbackProperty: chromeTextColorProperty,
+          currentColorProperty: chromeTextColorProperty,
+        }),
         urlbarBackgroundRGBA
       );
-      /* Separator between the urlbar container #nav-bar and the tabbox. */
+      // Separator between the urlbar container #nav-bar and the tabbox.
+      // For the default theme, this can be set to --border-color-card, which
+      // can use "currentColor".
       const tabboxStyle = win.getComputedStyle(win.gBrowser.tabbox);
       contentSeparatorRGBA = this._composeRGBA(
         this._convertToRGBA(
           win,
           tabboxStyle,
-          "--chrome-content-separator-color"
+          "--chrome-content-separator-color",
+          { currentColorProperty: chromeTextColorProperty }
         ),
         containerRGBA
       );
@@ -898,8 +946,8 @@ class _RFPHelper {
         contrastRatio
       );
       urlbarBackgroundDark = bgColor.relativeLuminance < 0.5;
-      /* Very low contrast ratio. For reference the default light theme has
-       * a contrast ratio of ~1.1. */
+      // Very low contrast ratio. For reference the default light theme has
+      // a contrast ratio of ~1.1.
       lowBackgroundOutlineContrast = contrastRatio < 1.05;
     }
     for (const { name, colorRGBA } of [
