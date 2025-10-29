@@ -203,11 +203,9 @@ open class DefaultToolbarMenu(
      */
     @VisibleForTesting(otherwise = PRIVATE)
     fun shouldShowTranslations(): Boolean {
-        val isEngineSupported = store.state.translationEngine.isEngineSupported
-        return selectedSession?.let {
-            isEngineSupported == true &&
-                FxNimbus.features.translations.value().mainFlowBrowserMenuEnabled
-        } ?: false
+        // We need this because in FxNimbus.kt, mainFlowToolbarEnabled defaults to true
+        // ```mainFlowToolbarEnabled: Boolean = true```
+        return false // bug_44304 Hide broken translat page action.
     }
 
     /**
