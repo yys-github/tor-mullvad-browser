@@ -6,11 +6,9 @@ export class AboutTorChild extends JSWindowActorChild {
     switch (event.type) {
       case "DOMContentLoaded":
         this.sendQuery("AboutTor:GetInitialData").then(data => {
-          const initialDataEvent = new this.contentWindow.CustomEvent(
-            "InitialData",
-            { detail: Cu.cloneInto(data, this.contentWindow) }
-          );
-          this.contentWindow.dispatchEvent(initialDataEvent);
+          if (data) {
+            this.#dispatchInitialData(data);
+          }
         });
         break;
       case "SubmitSearchOnionize":
@@ -36,6 +34,9 @@ export class AboutTorChild extends JSWindowActorChild {
 
   receiveMessage(message) {
     switch (message.name) {
+      case "AboutTor:DelayedInitialData":
+        this.#dispatchInitialData(message.data);
+        break;
       case "AboutTor:DismissYEC": {
         this.contentWindow.dispatchEvent(
           new this.contentWindow.CustomEvent("DismissYEC")
@@ -44,5 +45,17 @@ export class AboutTorChild extends JSWindowActorChild {
       }
     }
     return undefined;
+  }
+
+  /**
+   * Send the initial data to the page.
+   *
+   * @param {object} data - The data to send.
+   */
+  #dispatchInitialData(data) {
+    const initialDataEvent = new this.contentWindow.CustomEvent("InitialData", {
+      detail: Cu.cloneInto(data, this.contentWindow),
+    });
+    this.contentWindow.dispatchEvent(initialDataEvent);
   }
 }
