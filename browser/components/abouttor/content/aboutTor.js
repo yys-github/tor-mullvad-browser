@@ -562,11 +562,35 @@ const YecArea = {
   },
 };
 
+let gInitialData = false;
+let gLoaded = false;
+
+function maybeComplete() {
+  if (!gInitialData || !gLoaded) {
+    return;
+  }
+  // Wait to show the content when the l10n population has completed.
+  if (document.hasPendingL10nMutations) {
+    window.addEventListener(
+      "L10nMutationsFinished",
+      () => {
+        document.body.classList.add("initialized");
+      },
+      { once: true }
+    );
+  } else {
+    document.body.classList.add("initialized");
+  }
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   SearchWidget.init();
   MessageArea.init();
   SurveyArea.init();
   YecArea.init();
+
+  gLoaded = true;
+  maybeComplete();
 });
 
 window.addEventListener("InitialData", event => {
@@ -584,18 +608,8 @@ window.addEventListener("InitialData", event => {
   SurveyArea.potentiallyShow(surveyDismissVersion, isStable, appLocale);
   YecArea.potentiallyShow(dismissYEC, isStable, appLocale);
 
-  // Wait to show the content when the l10n population has completed.
-  if (document.hasPendingL10nMutations) {
-    window.addEventListener(
-      "L10nMutationsFinished",
-      () => {
-        document.body.classList.add("initialized");
-      },
-      { once: true }
-    );
-  } else {
-    document.body.classList.add("initialized");
-  }
+  gInitialData = true;
+  maybeComplete();
 });
 
 window.addEventListener("DismissYEC", () => {
