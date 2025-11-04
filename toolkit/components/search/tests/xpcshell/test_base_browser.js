@@ -4,12 +4,15 @@
 /**
  * This tests the SearchService to check our override of the remote settings is
  * working as expected.
+ *
+ * When adding new engines, it should be enough to change expectedURLs below.
  */
 
 "use strict";
 
 const expectedURLs = {
   ddg: "https://duckduckgo.com/?q=test",
+  "ddg-noai": "https://noai.duckduckgo.com/?q=test",
   "ddg-onion":
     "https://duckduckgogg42xjoc72x3sjasowoarfbgcmvfimaftt6twagswzczad.onion/?q=test",
   startpage: "https://www.startpage.com/sp/search?q=test",
@@ -48,5 +51,13 @@ add_task(function test_checkSearchURLs() {
     const engine = Services.search.getEngineById(id);
     const foundUrl = engine.getSubmission("test").uri.spec;
     Assert.equal(foundUrl, url, `The URL of ${engine.name} is not altered.`);
+  }
+});
+
+add_task(async function test_iconsDoesNotFail() {
+  for (const id of Object.keys(expectedURLs)) {
+    const engine = Services.search.getEngineById(id);
+    // No need to assert anything, as in case of error this method should throw.
+    await engine.getIconURL();
   }
 });
