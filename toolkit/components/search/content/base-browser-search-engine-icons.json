@@ -5,6 +5,9 @@
   "ddg-html": [
     { "url": "chrome://global/content/search/duckduckgo.ico", "imageSize": 32 }
   ],
+  "ddg-noai": [
+    { "url": "chrome://global/content/search/duckduckgo.ico", "imageSize": 32 }
+  ],
   "mullvad-leta": [
     {
       "url": "chrome://global/content/search/mullvad-leta.svg",
