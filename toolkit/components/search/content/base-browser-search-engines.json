@@ -55,6 +55,24 @@
   },
   {
     "base": {
+      "aliases": ["ddgnoai"],
+      "classification": "general",
+      "name": "DuckDuckGo (no AI)",
+      "urls": {
+        "search": {
+          "base": "https://noai.duckduckgo.com/",
+          "params": [],
+          "searchTermParamName": "q"
+        }
+      }
+    },
+    "id": "91687f02-56dd-4fef-ba26-bf139dff3166",
+    "identifier": "ddg-noai",
+    "recordType": "engine",
+    "variants": [{ "environment": { "allRegionsAndLocales": true } }]
+  },
+  {
+    "base": {
       "aliases": ["mojeek", "mj"],
       "classification": "general",
       "name": "Mojeek",
@@ -111,5 +129,14 @@
     "recordType": "defaultEngines",
     "globalDefault": "mullvad-leta",
     "globalDefaultPrivate": "mullvad-leta"
+  },
+  {
+    "recordType": "engineOrders",
+    "orders": [
+      {
+        "environment": { "allRegionsAndLocales": true },
+        "order": ["ddg", "ddg-noai", "startpage"]
+      }
+    ]
   }
 ]
