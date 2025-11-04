@@ -19,6 +19,24 @@
   },
   {
     "base": {
+      "aliases": ["ddgnoai"],
+      "classification": "general",
+      "name": "DuckDuckGo (no AI)",
+      "urls": {
+        "search": {
+          "base": "https://noai.duckduckgo.com/",
+          "params": [],
+          "searchTermParamName": "q"
+        }
+      }
+    },
+    "id": "91687f02-56dd-4fef-ba26-bf139dff3166",
+    "identifier": "ddg-noai",
+    "recordType": "engine",
+    "variants": [{ "environment": { "allRegionsAndLocales": true } }]
+  },
+  {
+    "base": {
       "aliases": ["startpage", "sp"],
       "classification": "general",
       "name": "Startpage",
@@ -39,5 +57,14 @@
     "recordType": "defaultEngines",
     "globalDefault": "ddg",
     "globalDefaultPrivate": "ddg"
+  },
+  {
+    "recordType": "engineOrders",
+    "orders": [
+      {
+        "environment": { "allRegionsAndLocales": true },
+        "order": ["ddg", "ddg-noai", "startpage"]
+      }
+    ]
   }
 ]
