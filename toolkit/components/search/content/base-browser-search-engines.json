@@ -136,9 +136,13 @@
       {
         "environment": { "allRegionsAndLocales": true },
         "order": [
+          "mullvad-leta",
           "ddg",
+          "ddg-html",
           "ddg-noai",
-          "startpage",
+          "mojeek",
+          "brave",
+          "startpage"
         ]
       }
     ]
