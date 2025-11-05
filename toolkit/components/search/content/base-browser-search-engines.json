@@ -135,7 +135,15 @@
     "orders": [
       {
         "environment": { "allRegionsAndLocales": true },
-        "order": ["ddg", "ddg-noai", "startpage"]
+        "order": [
+          "mullvad-leta",
+          "ddg",
+          "ddg-html",
+          "ddg-noai",
+          "mojeek",
+          "brave",
+          "startpage"
+        ]
       }
     ]
   }
