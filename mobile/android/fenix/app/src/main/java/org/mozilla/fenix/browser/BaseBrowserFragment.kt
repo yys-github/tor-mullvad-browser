@@ -1971,7 +1971,6 @@ abstract class BaseBrowserFragment :
                 requireContext().components.useCases.tabsUseCases.removeTab(currentTab.id)
                 (requireActivity() as HomeActivity).navigateToHome(
                     findNavController(),
-                    focusOnAddressBar = true
                 )
             } else {
                 // This just makes it not flash (be visible for a split second) before handleTabSelected() hides it again

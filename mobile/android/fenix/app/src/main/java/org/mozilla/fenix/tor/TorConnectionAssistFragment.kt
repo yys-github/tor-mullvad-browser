@@ -30,6 +30,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import kotlinx.coroutines.launch
 import mozilla.components.support.base.feature.UserInteractionHandler
+import mozilla.components.ui.colors.R as colorsR
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.databinding.FragmentTorConnectionAssistBinding
@@ -301,7 +302,7 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler {
                 setTextColor(
                     AppCompatResources.getColorStateList(
                         requireContext(),
-                        R.color.photonLightGrey05,
+                        colorsR.color.photonLightGrey05,
                     ),
                 )
             } else {

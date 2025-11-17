@@ -3,6 +3,7 @@ package org.mozilla.fenix.tor
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 
 enum class ConnectAssistUiState(
@@ -294,7 +295,7 @@ enum class ConnectAssistUiState(
         torBootstrapButton1TextStringResource = R.string.connection_assist_configure_connection_button,
         torBootstrapButton1ShouldOpenSettings = true,
         torBootstrapButton2Visible = true,
-        torBootstrapButton2TextStringResource = R.string.mozac_lib_crash_dialog_button_restart,
+        torBootstrapButton2TextStringResource = crashR.string.mozac_lib_crash_dialog_button_restart,
         torBootstrapButton2ShouldOpenSettings = false,
         torBootstrapButton2ShouldRestartApp = true,
     )
