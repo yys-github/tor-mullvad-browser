@@ -1286,7 +1286,7 @@ private fun BookmarkListItemMenu(
     bookmark: BookmarkItem.Bookmark,
     store: BookmarksStore,
 ) {
-    val menuItems = listOf(
+    val menuItems = listOfNotNull(
         MenuItem.TextItem(
             text = Text.Resource(R.string.bookmark_menu_edit_button),
             onClick = { store.dispatch(BookmarksListMenuAction.Bookmark.EditClicked(bookmark)) },
