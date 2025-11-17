@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
 import mozilla.components.compose.base.button.PrimaryButton
 import mozilla.components.compose.base.button.SecondaryButton
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.LinkText
 import org.mozilla.fenix.onboarding.view.Action
@@ -206,7 +207,7 @@ private fun OnboardingPagePreview() {
     FirefoxTheme {
         OnboardingPageRedesign(
             pageState = OnboardingPageState(
-                imageRes = R.drawable.ic_notification_permission,
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 title = stringResource(
                     id = R.string.juno_onboarding_default_browser_title_nimbus_2,
                 ),

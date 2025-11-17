@@ -34,6 +34,7 @@ import androidx.compose.ui.unit.dp
 import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
 import mozilla.components.compose.base.button.PrimaryButton
 import mozilla.components.compose.base.button.SecondaryButton
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.LinkText
 import org.mozilla.fenix.theme.FirefoxTheme
@@ -202,7 +203,7 @@ private fun OnboardingPagePreview() {
             pageState = OnboardingPageState(
                 // Removed to reduce APK size as part of https://gitlab.torproject.org/tpo/applications/tor-browser/-/issues/42386
                 // Set to something else to make the compiler happy
-                imageRes = R.drawable.mozac_lib_crash_notification,
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 title = stringResource(
                     id = R.string.juno_onboarding_default_browser_title_nimbus_2,
                 ),
