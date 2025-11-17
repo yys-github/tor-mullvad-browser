@@ -7,7 +7,6 @@ package mozilla.components.support.utils
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
-import mozilla.components.support.utils.PendingIntentUtils
 
 object TorUtils {
     const val TORBROWSER_START_ACTIVITY_PROMPT = "torbrowser_start_activity_prompt"
@@ -20,7 +19,7 @@ object TorUtils {
     fun startActivityPrompt(context: Context, intent: Intent) {
         val intentContainer = Intent()
         intentContainer.setPackage(context.applicationContext.packageName)
-        intentContainer.putExtra(TORBROWSER_START_ACTIVITY_PROMPT, PendingIntent.getActivity(context, 0, intent, PendingIntentUtils.defaultFlags))
+        intentContainer.putExtra(TORBROWSER_START_ACTIVITY_PROMPT, PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE))
         intentContainer.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intentContainer)
     }
