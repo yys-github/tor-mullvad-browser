@@ -163,7 +163,7 @@ class NimbusPlugin implements Plugin<Project> {
             group "Nimbus"
             description "Fetch the Nimbus FML tools from Application Services"
 
-            def asVersion = getProjectVersion(project)
+            def asVersion = getProjectVersion(project).replace("-TORBROWSER", "")
             def fmlRoot = getFMLRoot(project, asVersion)
 
             archiveFile = fmlRoot.map { it.file('nimbus-fml.zip') }
