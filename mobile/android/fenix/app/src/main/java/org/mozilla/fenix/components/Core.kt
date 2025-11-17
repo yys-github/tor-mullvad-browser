@@ -78,6 +78,7 @@ import mozilla.components.feature.sitepermissions.OnDiskSitePermissionsStorage
 import mozilla.components.feature.top.sites.DefaultTopSitesStorage
 import mozilla.components.feature.top.sites.PinnedSiteStorage
 import mozilla.components.feature.webnotifications.WebNotificationFeature
+import mozilla.components.lib.crash.R as crashR
 import mozilla.components.lib.dataprotect.SecureAbove22Preferences
 import mozilla.components.service.digitalassetlinks.RelationChecker
 import mozilla.components.service.digitalassetlinks.local.StatementApi
@@ -403,7 +404,7 @@ class Core(
                 context,
                 engine,
                 icons,
-                R.drawable.mozac_lib_crash_notification,
+                crashR.drawable.mozac_lib_crash_notification,
                 permissionStorage.permissionsStorage,
                 IntentReceiverActivity::class.java,
                 notificationsDelegate = context.components.notificationsDelegate,
