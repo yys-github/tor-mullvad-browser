@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.fragment.app.Fragment
+import mozilla.components.ui.colors.R as colorsR
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.ext.components
@@ -125,7 +126,7 @@ class TorSecurityLevelFragment : Fragment() {
                 setTextColor(
                     AppCompatResources.getColorStateList(
                         requireContext(),
-                        R.color.photonLightGrey05,
+                        colorsR.color.photonLightGrey05,
                     ),
                 )
             } else {
