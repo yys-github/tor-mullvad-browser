@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import mozilla.components.browser.state.state.CustomTabMenuItem
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.components.menu.MenuDialogTestTag.DESKTOP_SITE_OFF
 import org.mozilla.fenix.components.menu.MenuDialogTestTag.DESKTOP_SITE_ON
@@ -229,7 +230,7 @@ private fun PoweredByFirefoxItem(modifier: Modifier = Modifier) {
         modifier = modifier.fillMaxWidth(),
     ) {
         Image(
-            painter = painterResource(id = R.drawable.mozac_lib_crash_notification),
+            painter = painterResource(id = crashR.drawable.mozac_lib_crash_notification),
             contentDescription = null,
             modifier = Modifier
                 .size(16.dp)

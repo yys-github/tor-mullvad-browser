@@ -27,6 +27,7 @@ import kotlinx.coroutines.launch
 import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
 import mozilla.components.compose.base.button.FilledButton
 import mozilla.components.compose.base.button.TextButton
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.LinkText
 import org.mozilla.fenix.compose.LinkTextState
@@ -124,7 +125,7 @@ private fun BottomSheetContent(
             ),
     ) {
         Image(
-            painter = painterResource(id = R.drawable.mozac_lib_crash_notification),
+            painter = painterResource(id = crashR.drawable.mozac_lib_crash_notification),
             contentDescription = null,
             modifier = Modifier
                 .size(36.dp)
