@@ -79,7 +79,8 @@ class TorLogsViewModel(application: Application) : AndroidViewModel(application)
     private fun getAllTorLogs(): String {
         var ret = ""
         for (log in torLogs().value
-            ?: return getApplication<Application>().getString(R.string.default_error_msg)) {
+            // FIXME: It was default_error_msg, but I don't understand where this came in the first place?
+            ?: return getApplication<Application>().getString(R.string.preferences_tor_logs)) {
             ret += "${log.timestamp} [${log.type}] ${log.text}\n"
         }
         return ret
