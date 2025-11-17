@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import mozilla.components.compose.base.button.FilledButton
 import mozilla.components.compose.base.button.TextButton
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.onboarding.redesign.view.defaultbrowser.SetToDefaultMainImage
 import org.mozilla.fenix.onboarding.redesign.view.sync.SyncMainImage
@@ -161,7 +162,7 @@ private fun OnboardingPageSetToDefaultPreview() {
     FirefoxTheme {
         OnboardingPageRedesign(
             pageState = OnboardingPageState(
-                imageRes = R.drawable.ic_notification_permission,
+                imageRes = crashR.drawable.mozac_lib_crash_notification,
                 title = stringResource(R.string.onboarding_redesign_set_default_browser_title),
                 description = stringResource(R.string.onboarding_redesign_set_default_browser_body),
                 primaryButton = Action(
@@ -185,7 +186,7 @@ private fun OnboardingPageSyncPreview() {
     FirefoxTheme {
         OnboardingPageRedesign(
             pageState = OnboardingPageState(
-                imageRes = R.drawable.ic_notification_permission, // Unused in the redesign.
+                imageRes = crashR.drawable.mozac_lib_crash_notification, // Unused in the redesign.
                 title = stringResource(R.string.onboarding_redesign_sync_title),
                 description = stringResource(R.string.onboarding_redesign_sync_body),
                 primaryButton = Action(

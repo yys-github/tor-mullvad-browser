@@ -46,6 +46,7 @@ import mozilla.components.compose.base.menu.MenuItem
 import mozilla.components.compose.base.text.Text
 import mozilla.components.concept.base.images.ImageLoadRequest
 import mozilla.components.concept.sync.DeviceType
+import mozilla.components.lib.crash.R as crashR
 import mozilla.components.support.ktx.kotlin.trimmed
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.Image
@@ -150,7 +151,7 @@ fun RecentSyncedTab(
                             )
                         } else {
                             Image(
-                                painter = painterResource(R.drawable.mozac_lib_crash_notification),
+                                painter = painterResource(crashR.drawable.mozac_lib_crash_notification),
                                 contentDescription = stringResource(
                                     R.string.recent_tabs_synced_device_icon_content_description,
                                 ),

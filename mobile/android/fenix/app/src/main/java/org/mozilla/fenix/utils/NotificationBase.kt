@@ -25,7 +25,7 @@ fun createBaseNotification(
     bigTextStyle: Boolean = false,
 ): Notification {
     return NotificationCompat.Builder(context, channelId)
-        .setSmallIcon(R.drawable.mozac_lib_crash_notification)
+        .setSmallIcon(R.drawable.ic_addons_extensions)
         .setContentTitle(title)
         .setContentText(text)
         .setStyle(if (bigTextStyle) NotificationCompat.BigTextStyle().bigText(text) else null)

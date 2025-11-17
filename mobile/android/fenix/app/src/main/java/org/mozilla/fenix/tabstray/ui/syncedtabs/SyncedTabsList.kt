@@ -45,6 +45,7 @@ import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
 import mozilla.components.compose.base.button.FilledButton
 import mozilla.components.compose.base.modifier.dashedBorder
 import mozilla.components.feature.syncedtabs.view.SyncedTabsView
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.compose.list.ExpandableListHeader
 import org.mozilla.fenix.tabstray.TabsTrayTestTag
@@ -252,7 +253,7 @@ private fun SyncedTabsErrorItem(
                 FilledButton(
                     text = it.buttonText,
                     modifier = Modifier.fillMaxWidth(),
-                    icon = painterResource(R.drawable.mozac_lib_crash_notification),
+                    icon = painterResource(crashR.drawable.mozac_lib_crash_notification),
                     onClick = it.onClick,
                 )
             }
