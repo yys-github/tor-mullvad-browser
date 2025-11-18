@@ -1,24 +1,6 @@
 [
   {
     "base": {
-      "aliases": ["mullvad-leta", "leta", "mullvad", "ml"],
-      "classification": "general",
-      "name": "Mullvad Leta",
-      "urls": {
-        "search": {
-          "base": "https://leta.mullvad.net/",
-          "params": [],
-          "searchTermParamName": "q"
-        }
-      }
-    },
-    "id": "ee88d691-6d7a-4adb-9fec-5a205565505a",
-    "identifier": "mullvad-leta",
-    "recordType": "engine",
-    "variants": [{ "environment": { "allRegionsAndLocales": true } }]
-  },
-  {
-    "base": {
       "aliases": ["duckduckgo", "ddg"],
       "classification": "general",
       "name": "DuckDuckGo",
@@ -127,23 +109,15 @@
   },
   {
     "recordType": "defaultEngines",
-    "globalDefault": "mullvad-leta",
-    "globalDefaultPrivate": "mullvad-leta"
+    "globalDefault": "ddg",
+    "globalDefaultPrivate": "dgg"
   },
   {
     "recordType": "engineOrders",
     "orders": [
       {
         "environment": { "allRegionsAndLocales": true },
-        "order": [
-          "mullvad-leta",
-          "ddg",
-          "ddg-html",
-          "ddg-noai",
-          "mojeek",
-          "brave",
-          "startpage"
-        ]
+        "order": ["ddg", "ddg-html", "ddg-noai", "mojeek", "brave", "startpage"]
       }
     ]
   }

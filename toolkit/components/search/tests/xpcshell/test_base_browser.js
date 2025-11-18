@@ -11,7 +11,6 @@
 "use strict";
 
 const expectedURLs = {
-  "mullvad-leta": "https://leta.mullvad.net/?q=test",
   ddg: "https://duckduckgo.com/?q=test",
   "ddg-html": "https://html.duckduckgo.com/html/?q=test",
   "ddg-noai": "https://noai.duckduckgo.com/?q=test",
@@ -19,7 +18,7 @@ const expectedURLs = {
   brave: "https://search.brave.com/search?q=test",
   startpage: "https://www.startpage.com/sp/search?q=test",
 };
-const defaultEngine = "mullvad-leta";
+const defaultEngine = "ddg";
 
 add_setup(async function setup() {
   await Services.search.init();
