@@ -396,7 +396,7 @@ body.show-yec h1 {
 #yec-heading.all-jacquard12-chars {
   /* All characters are supported by Jacquard 12.
    * These have a high natural line-height. */
-  line-height: 1.0;
+  line-height: 1;
 }
 
 #yec-body {
