@@ -10,11 +10,11 @@ function getLocale() {
   return locale === "ja-JP-macos" ? "ja" : locale;
 }
 
-/*
-  Tor Property String Bundle
-
-  Property strings loaded from torbutton/tor-launcher, but provide a fallback in case they aren't available
-*/
+/**
+ * Tor Property String Bundle
+ *
+ * Property strings loaded from torbutton/tor-launcher, but provide a fallback in case they aren't available
+ */
 class TorPropertyStringBundle {
   constructor(aBundleURL, aPrefix) {
     try {
