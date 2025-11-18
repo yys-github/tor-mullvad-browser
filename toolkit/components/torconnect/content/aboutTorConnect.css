@@ -337,7 +337,7 @@ body.android {
 }
 
 .android h1 {
-  font-weight: normal;
+  font-weight: var(--font-weight);
   font-size: 100%;
   margin: 0 0 16px 0;
 }
