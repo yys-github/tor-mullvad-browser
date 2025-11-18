@@ -9,7 +9,7 @@
 
 // pid_t
 #if !defined(XP_WIN) || defined(__MINGW32__)
-#include <sys/types.h>
+#  include <sys/types.h>
 #else
 typedef int pid_t;
 #endif
