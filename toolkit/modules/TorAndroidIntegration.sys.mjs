@@ -48,6 +48,9 @@ const ListenedEvents = Object.freeze({
   shouldShowTorConnectGet: "GeckoView:Tor:ShouldShowTorConnect",
 });
 
+/**
+ * The implementation for the global `TorAndroidIntegration` object.
+ */
 class TorAndroidIntegrationImpl {
   #initialized = false;
 
