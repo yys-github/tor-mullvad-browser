@@ -218,6 +218,9 @@ function arrayShuffle(array) {
 
 /* TorSettings module */
 
+/**
+ * The implementation for the global `TorSettings` object.
+ */
 class TorSettingsImpl {
   /**
    * The default settings to use.
