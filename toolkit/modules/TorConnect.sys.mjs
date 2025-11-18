@@ -52,6 +52,9 @@ export const TorConnectState = Object.freeze({
   Disabled: "Disabled",
 });
 
+/**
+ * A class for exceptions thrown during the bootstrap process.
+ */
 export class TorConnectError extends Error {
   static get Offline() {
     return "Offline";
