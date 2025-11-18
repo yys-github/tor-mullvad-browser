@@ -127,12 +127,13 @@ const gLoxInvites = {
 
   observe(subject, topic) {
     switch (topic) {
-      case TorSettingsTopics.SettingsChanged:
+      case TorSettingsTopics.SettingsChanged: {
         const { changes } = subject.wrappedJSObject;
         if (changes.includes("bridges.source")) {
           this._updateLoxId();
         }
         break;
+      }
       case LoxTopics.UpdateActiveLoxId:
         this._updateLoxId();
         break;

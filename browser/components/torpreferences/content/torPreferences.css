@@ -672,7 +672,7 @@ button.spoof-button-disabled {
 }
 
 .tor-bridges-provider-name {
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
   font-size: 0.85em;
 }
 
