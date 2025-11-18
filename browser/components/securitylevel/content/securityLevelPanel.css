@@ -60,7 +60,7 @@
 
 #securityLevel-level {
   font-size: 1.25em;
-  font-weight: 600;
+  font-weight: var(--font-weight-bold);
   grid-area: title;
 }
 
