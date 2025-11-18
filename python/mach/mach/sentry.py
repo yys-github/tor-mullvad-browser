@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from threading import Thread
 
-import sentry_sdk
+# import sentry_sdk
 from mozversioncontrol import (
     InvalidRepoPath,
     MissingUpstreamRepo,

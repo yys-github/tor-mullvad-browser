@@ -11,7 +11,6 @@ import urllib.parse as urllib_parse
 from pathlib import Path
 from textwrap import dedent
 
-import requests
 from mozbuild.base import BuildEnvironmentNotFoundException, MozbuildObject
 from mozbuild.telemetry import filter_args
 from mozfile import json
@@ -92,10 +91,7 @@ def is_applicable_telemetry_environment():
 
 
 def is_telemetry_enabled(settings):
-    if os.environ.get("DISABLE_TELEMETRY") == "1":
-        return False
-
-    return settings.mach_telemetry.is_enabled
+    return False
 
 
 def arcrc_path():
@@ -132,6 +128,7 @@ def resolve_setting_from_arcconfig(topsrcdir: Path, setting):
 
 
 def resolve_is_employee_by_credentials(topsrcdir: Path):
+    return None
     try:
         phabricator_uri = resolve_setting_from_arcconfig(topsrcdir, "phabricator.uri")
 
