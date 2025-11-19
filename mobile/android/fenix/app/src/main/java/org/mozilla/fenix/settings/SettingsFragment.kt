@@ -186,7 +186,7 @@ class SettingsFragment : PreferenceFragmentCompat() {
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        requireContext().components.strictMode.resetAfter(StrictMode.allowThreadDiskReads()) {
+        requireContext().components.strictMode.allowViolation(StrictMode::allowThreadDiskReads) {
             setPreferencesFromResource(R.xml.preferences, rootKey)
         }
     }
