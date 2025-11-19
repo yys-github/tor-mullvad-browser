@@ -1928,7 +1928,11 @@ export const SearchService = new (class SearchService {
 
       this._showRemovalOfSearchEngineNotificationBox(
         prevCurrentEngineName || prevAppDefaultEngineName,
-        newCurrentEngineName
+        newCurrentEngineName,
+        {
+          removedMullvadLeta:
+            (prevCurrentEngineId || prevAppDefaultEngineId) === "mullvad-leta",
+        }
       );
     }
   }
@@ -2005,7 +2009,13 @@ export const SearchService = new (class SearchService {
       // the user changes their locale it causes a change in engines.
       // If there is no update to settings metadata then the engine change was
       // caused by an update to config rather than a user changing their locale.
-      if (!this.#didSettingsMetaDataUpdate(prevMetaData)) {
+      //
+      // For the removal of Mullvad Leta, we show the notification even if the
+      // locale also changed because this change is not locale-dependant.
+      if (
+        (prevCurrentEngineId || prevAppDefaultEngineId) === "mullvad-leta" ||
+        !this.#didSettingsMetaDataUpdate(prevMetaData)
+      ) {
         return true;
       }
     }
@@ -3834,16 +3844,22 @@ export const SearchService = new (class SearchService {
    *   The name of the previous default engine that will be replaced.
    * @param {string} newCurrentEngineName
    *   The name of the engine that will be the new default engine.
+   * @param {object} [details]
+   *   Additional details about the removed search engine.
+   * @param {boolean} [details.removedMullvadLeta]
+   *   Whether we removed Mullvad Leta.
    */
   _showRemovalOfSearchEngineNotificationBox(
     prevCurrentEngineName,
-    newCurrentEngineName
+    newCurrentEngineName,
+    details
   ) {
     lazy.BrowserUtils.callModulesFromCategory(
       { categoryName: "search-service-notification" },
       "search-engine-removal",
       prevCurrentEngineName,
-      newCurrentEngineName
+      newCurrentEngineName,
+      details
     );
   }
 
