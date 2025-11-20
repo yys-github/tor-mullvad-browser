@@ -58,6 +58,7 @@ class ActivationPing(
      * Fills the metrics and triggers the 'activation' ping.
      * This is a separate function to simplify unit-testing.
      */
+    @Suppress("SENSELESS_COMPARISON")
     @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
     internal fun triggerPing() {
         // Generate the activation_id.
