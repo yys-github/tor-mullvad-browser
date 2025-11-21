@@ -239,20 +239,58 @@ def get_upstream_basis_commit(search_from):
     return commit
 
 
-def get_changed_files(from_commit, staged=False):
+class FileChange:
+    """Represents a git change to a commit."""
+
+    def __init__(self, status, path, new_path):
+        self.status = status
+        self.path = path
+        self.new_path = new_path
+
+
+RAW_DIFF_PATH_PATTERN = r"(?P<path>[^\0]*)\0"
+RAW_DIFF_LINE_REGEX = re.compile(
+    r":[0-7]+ [0-7]+ [0-9a-f]+ [0-9a-f]+ (?P<status>[ADMTUXRC])[0-9]*\0"
+    + RAW_DIFF_PATH_PATTERN
+)
+RAW_DIFF_PATH_REGEX = re.compile(RAW_DIFF_PATH_PATTERN)
+
+
+def parse_raw_diff_line(raw_output):
     """
-    Get a list of filenames relative to the current working directory that have
+    Parse the --raw diff output from git into FileChange objects.
+    """
+    match = RAW_DIFF_LINE_REGEX.match(raw_output)
+    if not match:
+        raise ValueError(f"Invalid raw output: {raw_output[:50]}...")
+    path = os.path.relpath(os.path.join(get_local_root(), match.group("path")))
+    status = match.group("status")
+    if status == "R" or status == "C":
+        match = RAW_DIFF_PATH_REGEX.match(raw_output, pos=match.end())
+        if not match:
+            raise ValueError(f"Invalid raw output for rename: {raw_output[:50]}...")
+        new_path = os.path.relpath(os.path.join(get_local_root(), match.group("path")))
+    else:
+        new_path = path
+
+    return FileChange(status, path, new_path), match.end()
+
+
+def get_changed_files(from_commit=None, staged=False):
+    """
+    Get a list of file paths relative to the current working directory that have
     been changed since 'from_commit' (non-inclusive).
     """
-    args = ["diff"]
+    args = ["diff", "-z", "--raw"]
     if staged:
         args.append("--staged")
-    args.append("--name-only")
-    args.append(from_commit)
-    return [
-        os.path.relpath(os.path.join(get_local_root(), filename))
-        for filename in git_lines(args)
-    ]
+    if from_commit:
+        args.append(from_commit)
+    raw_output = git_get(args, strip=False)
+    while raw_output:
+        file_change, end = parse_raw_diff_line(raw_output)
+        yield file_change
+        raw_output = raw_output[end:]
 
 
 def file_contains(filename, regex):
@@ -349,22 +387,21 @@ def show_files_containing(args):
     except re.error as err:
         raise TbDevException(f"{args.regex} is not a valid python regex") from err
 
-    file_list = get_changed_files(get_firefox_ref("HEAD").commit)
-
-    for filename in file_list:
-        if not os.path.isfile(filename):
+    for file_change in get_changed_files(get_firefox_ref("HEAD").commit):
+        path = file_change.new_path
+        if not os.path.isfile(path):
             # deleted ofile
             continue
-        if file_contains(filename, regex):
-            print(filename)
+        if file_contains(path, regex):
+            print(path)
 
 
 def show_changed_files(_args):
     """
     List all the files that have been modified relative to upstream.
     """
-    for filename in get_changed_files(get_upstream_basis_commit("HEAD")):
-        print(filename)
+    for file_change in get_changed_files(get_upstream_basis_commit("HEAD")):
+        print(file_change.new_path)
 
 
 def lint_changed_files(args):
@@ -373,9 +410,9 @@ def lint_changed_files(args):
     """
     os.chdir(get_local_root())
     file_list = [
-        f
+        f.new_path
         for f in get_changed_files(get_upstream_basis_commit("HEAD"))
-        if os.path.isfile(f)  # Not deleted
+        if os.path.isfile(f.new_path)  # Not deleted
     ]
     # We add --warnings since clang only reports whitespace issues as warnings.
     subprocess.run(
@@ -494,12 +531,12 @@ def auto_fixup(_args):
     # Only want to search as far back as the firefox commit.
     firefox_commit = get_firefox_ref("HEAD").commit
 
-    staged_files = get_changed_files("HEAD", staged=True)
+    staged_files = [c.new_path for c in get_changed_files("HEAD", staged=True)]
     if staged_files:
         raise TbDevException(f"Have already staged files: {staged_files}")
 
     fixups = {}
-    for filename in get_changed_files("HEAD"):
+    for filename in (c.new_path for c in get_changed_files("HEAD")):
         commit = get_fixup_for_file(filename, firefox_commit)
         if commit is None:
             continue
