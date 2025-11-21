@@ -51,17 +51,30 @@ def git_run(args, check=True, env=None):
         raise TbDevException(str(err)) from err
 
 
-def git_get(args):
+def git_get(args, strip=True, check=True):
     """
-    Run a git command with each non-empty line returned in a list.
+    Return the output from a git command.
     """
     try:
         git_process = subprocess.run(
-            [GIT_PATH, *args], text=True, stdout=subprocess.PIPE, check=True
+            [GIT_PATH, *args], text=True, stdout=subprocess.PIPE, check=check
         )
     except subprocess.CalledProcessError as err:
         raise TbDevException(str(err)) from err
-    return [line for line in git_process.stdout.split("\n") if line]
+    ret = git_process.stdout
+    if strip:
+        ret = ret.strip()
+    return ret
+
+
+def git_lines(args):
+    """
+    Yields the non-empty lines returned by the git command.
+    """
+    for line in git_get(args, strip=False).split("\n"):
+        if not line:
+            continue
+        yield line
 
 
 local_root = None
@@ -76,7 +89,7 @@ def get_local_root():
         try:
             # Make sure we have a matching remote in this git repository.
             if get_upstream_details()["is-browser-repo"]:
-                local_root = git_get(["rev-parse", "--show-toplevel"])[0]
+                local_root = git_get(["rev-parse", "--show-toplevel"])
             else:
                 local_root = ""
         except TbDevException:
@@ -89,8 +102,8 @@ def determine_upstream_details():
     Determine details about the upstream.
     """
     remote_urls = {
-        remote: git_get(["remote", "get-url", remote])[0]
-        for remote in git_get(["remote"])
+        remote: git_get(["remote", "get-url", remote])
+        for remote in git_lines(["remote"])
     }
 
     matches = {
@@ -175,7 +188,7 @@ def get_refs(ref_type, name_start):
 
     return [
         line_to_ref(line)
-        for line in git_get(["for-each-ref", f"--format={fstring}", pattern])
+        for line in git_lines(["for-each-ref", f"--format={fstring}", pattern])
     ]
 
 
@@ -186,7 +199,7 @@ def get_nearest_ref(ref_type, name_start, search_from):
     """
     ref_list = get_refs(ref_type, name_start)
 
-    for commit in git_get(["rev-list", "-1000", search_from]):
+    for commit in git_lines(["rev-list", "-1000", search_from]):
         for ref in ref_list:
             if commit == ref.commit:
                 return ref
@@ -203,7 +216,7 @@ def get_firefox_ref(search_from):
 
 
 def get_upstream_tracking_branch(search_from):
-    return git_get(["rev-parse", "--abbrev-ref", f"{search_from}@{{upstream}}"])[0]
+    return git_get(["rev-parse", "--abbrev-ref", f"{search_from}@{{upstream}}"])
 
 
 def get_upstream_basis_commit(search_from):
@@ -212,7 +225,7 @@ def get_upstream_basis_commit(search_from):
     branch.
     """
     upstream_branch = get_upstream_tracking_branch(search_from)
-    commit = git_get(["merge-base", search_from, upstream_branch])[0]
+    commit = git_get(["merge-base", search_from, upstream_branch])
     # Verify that the upstream commit shares the same firefox basis. Otherwise,
     # this would indicate that the upstream is on an early or later FIREFOX
     # base.
@@ -238,7 +251,7 @@ def get_changed_files(from_commit, staged=False):
     args.append(from_commit)
     return [
         os.path.relpath(os.path.join(get_local_root(), filename))
-        for filename in git_get(args)
+        for filename in git_lines(args)
     ]
 
 
@@ -408,7 +421,7 @@ def get_fixup_for_file(filename, firefox_commit):
 
     options = [
         parse_log_line(line)
-        for line in git_get(
+        for line in git_lines(
             [
                 "log",
                 "--pretty=format:%H,%h,%s",
@@ -513,7 +526,7 @@ def clean_fixups(_args):
     Perform an interactive rebase that automatically applies fixups, similar to
     --autosquash but also works on fixups of fixups.
     """
-    user_editor = git_get(["var", "GIT_SEQUENCE_EDITOR"])[0]
+    user_editor = git_get(["var", "GIT_SEQUENCE_EDITOR"])
     sub_editor = os.path.join(
         os.path.dirname(os.path.realpath(__file__)), FIXUP_PREPROCESSOR_EDITOR
     )
@@ -569,7 +582,7 @@ def move_to_default(args):
     if branch_name is None:
         # Use current branch as default.
         try:
-            branch_name = git_get(["branch", "--show-current"])[0]
+            branch_name = git_get(["branch", "--show-current"])
         except IndexError:
             raise TbDevException("No current branch")
 
@@ -629,10 +642,10 @@ def show_diff_diff(args):
     Show the diff between the diffs of two branches, relative to their firefox
     bases.
     """
-    config_res = git_get(["config", "--get", "diff.tool"])
-    if not config_res:
+    try:
+        diff_tool = next(git_lines(["config", "--get", "diff.tool"]))
+    except StopIteration:
         raise TbDevException("No diff.tool configured for git")
-    diff_tool = config_res[0]
 
     # Filter out parts of the diff we expect to be different.
     index_regex = re.compile(r"index [0-9a-f]{12}\.\.[0-9a-f]{12}")
