@@ -14,6 +14,8 @@ import sys
 import tempfile
 import termios
 import urllib.request
+from collections.abc import Callable, Iterable, Iterator
+from typing import Any, NotRequired, TypedDict, TypeVar
 
 import argcomplete
 
@@ -36,9 +38,14 @@ class TbDevException(Exception):
     pass
 
 
-def git_run(args, check=True, env=None):
+def git_run(
+    args: list[str], check: bool = True, env: None | dict[str, str] = None
+) -> None:
     """
     Run a git command with output sent to stdout.
+    :param args: The arguments to pass to git.
+    :param check: Whether to check for success.
+    :param env: Optional environment to set.
     """
     if env is not None:
         tmp_env = dict(os.environ)
@@ -51,9 +58,13 @@ def git_run(args, check=True, env=None):
         raise TbDevException(str(err)) from err
 
 
-def git_get(args, strip=True, check=True):
+def git_get(args: list[str], strip: bool = True, check: bool = True) -> str:
     """
     Return the output from a git command.
+    :param args: The arguments to send to git.
+    :param strip: Whether to strip the whitespace from the output.
+    :param check: Whether to check for success.
+    :returns: The stdout.
     """
     try:
         git_process = subprocess.run(
@@ -67,9 +78,11 @@ def git_get(args, strip=True, check=True):
     return ret
 
 
-def git_lines(args):
+def git_lines(args: list[str]) -> Iterator[str]:
     """
     Yields the non-empty lines returned by the git command.
+    :param args: The arguments to send to git.
+    :yield: The lines.
     """
     for line in git_get(args, strip=False).split("\n"):
         if not line:
@@ -77,18 +90,19 @@ def git_lines(args):
         yield line
 
 
-local_root = None
+local_root: str | None = None
 
 
-def get_local_root():
+def get_local_root() -> str:
     """
     Get the path for the tor-browser root directory.
+    :returns: The local root.
     """
     global local_root
     if local_root is None:
         try:
             # Make sure we have a matching remote in this git repository.
-            if get_upstream_details()["is-browser-repo"]:
+            if get_upstream_details()["is-browser-repo"] == "True":
                 local_root = git_get(["rev-parse", "--show-toplevel"])
             else:
                 local_root = ""
@@ -97,9 +111,9 @@ def get_local_root():
     return local_root
 
 
-def determine_upstream_details():
+def determine_upstream_details() -> dict[str, str]:
     """
-    Determine details about the upstream.
+    :returns: Details about the upstream branch.
     """
     remote_urls = {
         remote: git_get(["remote", "get-url", remote])
@@ -115,7 +129,7 @@ def determine_upstream_details():
     }
 
     is_browser_repo = len(matches) > 0
-    details = {"is-browser-repo": is_browser_repo}
+    details = {"is-browser-repo": str(is_browser_repo)}
 
     origin_remote_repo = matches.get("origin", None)
     upstream_remote_repo = matches.get("upstream", None)
@@ -138,12 +152,13 @@ def determine_upstream_details():
     return details
 
 
-cached_upstream_details = None
+cached_upstream_details: None | dict[str, str] = None
 
 
-def get_upstream_details():
+def get_upstream_details() -> dict[str, str]:
     """
     Get details about the upstream repository.
+    :returns: The details.
     """
     global cached_upstream_details
     if cached_upstream_details is None:
@@ -154,15 +169,21 @@ def get_upstream_details():
 class Reference:
     """Represents a git reference to a commit."""
 
-    def __init__(self, name, commit):
+    def __init__(self, name: str, commit: str) -> None:
+        """
+        :param name: The reference name.
+        :param commit: The commit hash for the commit this reference points to.
+        """
         self.name = name
         self.commit = commit
 
 
-def get_refs(ref_type, name_start):
+def get_refs(ref_type: str, name_start: str) -> Iterator[Reference]:
     """
-    Get a list of references that match the given 'ref_type' ("tag" or "remote"
-    or "head") that starts with the given 'name_start'.
+    Get a list of references that match the given conditions.
+    :param ref_type: The ref type to search for ("tag" or "remote" or "head").
+    :param name_start: The ref name start to match against.
+    :yield: The matching references.
     """
     if ref_type == "tag":
         ref_start = "refs/tags/"
@@ -176,7 +197,7 @@ def get_refs(ref_type, name_start):
     fstring = "%(*objectname),%(objectname),%(refname)"
     pattern = f"{ref_start}{name_start}**"
 
-    def line_to_ref(line):
+    def line_to_ref(line: str) -> Reference:
         [objectname_reference, objectname, ref_name] = line.split(",", 2)
         # For annotated tags, the objectname_reference is non-empty and points
         # to an actual commit.
@@ -186,18 +207,22 @@ def get_refs(ref_type, name_start):
             ref_name.replace(ref_start, "", 1), objectname_reference or objectname
         )
 
-    return [
+    return (
         line_to_ref(line)
         for line in git_lines(["for-each-ref", f"--format={fstring}", pattern])
-    ]
+    )
 
 
-def get_nearest_ref(ref_type, name_start, search_from):
+def get_nearest_ref(ref_type: str, name_start: str, search_from: str) -> Reference:
     """
-    Search backwards from the 'search_from' commit to find the first commit
-    that matches the given 'ref_type' that starts with the given 'name_start'.
+    Search backwards from the given commit to find the first commit that matches
+    the given conditions.
+    :param ref_type: The ref type to search for ("tag" or "remote" or "head").
+    :param name_start: The ref name start to match against.
+    :param search_from: The commit to search backwards from.
+    :returns: The matching reference.
     """
-    ref_list = get_refs(ref_type, name_start)
+    ref_list = list(get_refs(ref_type, name_start))
 
     for commit in git_lines(["rev-list", "-1000", search_from]):
         for ref in ref_list:
@@ -207,22 +232,29 @@ def get_nearest_ref(ref_type, name_start, search_from):
     raise TbDevException(f"No {name_start} commit found in the last 1000 commits")
 
 
-def get_firefox_ref(search_from):
+def get_firefox_ref(search_from: str) -> Reference:
     """
-    Search backwards from the 'search_from' commit to find the commit that comes
-    from firefox.
+    Search for the commit that comes from firefox.
+    :param search_from: The commit to search backwards from.
+    :returns: The firefox reference.
     """
     return get_nearest_ref("tag", "FIREFOX_", search_from)
 
 
-def get_upstream_tracking_branch(search_from):
+def get_upstream_tracking_branch(search_from: str) -> str:
+    """
+    :param search_from: The commit reference.
+    :returns: The upstream branch reference name.
+    """
     return git_get(["rev-parse", "--abbrev-ref", f"{search_from}@{{upstream}}"])
 
 
-def get_upstream_basis_commit(search_from):
+def get_upstream_basis_commit(search_from: str) -> str:
     """
     Get the first common ancestor of search_from that is also in its upstream
     branch.
+    :param search_from: The commit reference.
+    :returns: The upstream commit hash.
     """
     upstream_branch = get_upstream_tracking_branch(search_from)
     commit = git_get(["merge-base", search_from, upstream_branch])
@@ -242,7 +274,13 @@ def get_upstream_basis_commit(search_from):
 class FileChange:
     """Represents a git change to a commit."""
 
-    def __init__(self, status, path, new_path):
+    def __init__(self, status: str, path: str, new_path: str) -> None:
+        """
+        :param status: The file change status used within git diff. E.g. "M" for
+          modified, or "D" for deleted.
+        :param path: The source file path.
+        :param new_path: The file path after the change.
+        """
         self.status = status
         self.path = path
         self.new_path = new_path
@@ -256,16 +294,19 @@ RAW_DIFF_LINE_REGEX = re.compile(
 RAW_DIFF_PATH_REGEX = re.compile(RAW_DIFF_PATH_PATTERN)
 
 
-def parse_raw_diff_line(raw_output):
+def parse_raw_diff_line(raw_output: str) -> tuple[FileChange, int]:
     """
-    Parse the --raw diff output from git into FileChange objects.
+    Parse the --raw diff output from git.
+    :param raw_output: The raw output.
+    :returns: The change for this line, and the offset for the end of the raw
+      diff line.
     """
     match = RAW_DIFF_LINE_REGEX.match(raw_output)
     if not match:
         raise ValueError(f"Invalid raw output: {raw_output[:50]}...")
     path = os.path.relpath(os.path.join(get_local_root(), match.group("path")))
     status = match.group("status")
-    if status == "R" or status == "C":
+    if status in ("R", "C"):
         match = RAW_DIFF_PATH_REGEX.match(raw_output, pos=match.end())
         if not match:
             raise ValueError(f"Invalid raw output for rename: {raw_output[:50]}...")
@@ -276,10 +317,16 @@ def parse_raw_diff_line(raw_output):
     return FileChange(status, path, new_path), match.end()
 
 
-def get_changed_files(from_commit=None, staged=False):
+def get_changed_files(
+    from_commit: None | str = None, staged: bool = False
+) -> Iterator[FileChange]:
     """
-    Get a list of file paths relative to the current working directory that have
+    Get a list of file changes relative to the current working directory that have
     been changed since 'from_commit' (non-inclusive).
+    :param from_commit: The commit to compare against, otherwise use the git
+      diff default.
+    :param staged: Whether to limit the diff to staged changes.
+    :yield: The file changes.
     """
     args = ["diff", "-z", "--raw"]
     if staged:
@@ -293,10 +340,13 @@ def get_changed_files(from_commit=None, staged=False):
         raw_output = raw_output[end:]
 
 
-def file_contains(filename, regex):
+def file_contains(filename: str, regex: re.Pattern[str]) -> bool:
     """
     Return whether the file is a utf-8 text file containing the regular
     expression given by 'regex'.
+    :param filename: The file path.
+    :param regex: The pattern to search for.
+    :returns: Whether the pattern was matched.
     """
     with open(filename, encoding="utf-8") as file:
         try:
@@ -309,9 +359,10 @@ def file_contains(filename, regex):
     return False
 
 
-def get_gitlab_default():
+def get_gitlab_default() -> str:
     """
     Get the name of the default branch on gitlab.
+    :returns: The branch name.
     """
     repo_name = get_upstream_details().get("repo-name", None)
     if repo_name is None:
@@ -334,12 +385,14 @@ def get_gitlab_default():
     )
 
     with urllib.request.urlopen(gitlab_request, timeout=20) as response:
-        return json.load(response)["data"]["project"]["repository"]["rootRef"]
+        default = json.load(response)["data"]["project"]["repository"]["rootRef"]
+        assert isinstance(default, str)
+        return default
 
 
-def within_browser_root():
+def within_browser_root() -> bool:
     """
-    Whether we are with the tor browser root.
+    :returns: Whether we are with the tor browser root.
     """
     root = get_local_root()
     if not root:
@@ -352,7 +405,7 @@ def within_browser_root():
 # * -------------------- *
 
 
-def show_firefox_commit(_args):
+def show_firefox_commit(_args: argparse.Namespace) -> None:
     """
     Print the tag name and commit for the last firefox commit below the current
     HEAD.
@@ -362,14 +415,14 @@ def show_firefox_commit(_args):
     print(ref.commit)
 
 
-def show_upstream_basis_commit(_args):
+def show_upstream_basis_commit(_args: argparse.Namespace) -> None:
     """
     Print the last upstream commit for the current HEAD.
     """
     print(get_upstream_basis_commit("HEAD"))
 
 
-def show_log(args):
+def show_log(args: argparse.Namespace) -> None:
     """
     Show the git log between the current HEAD and the last firefox commit.
     """
@@ -377,7 +430,7 @@ def show_log(args):
     git_run(["log", f"{commit}..HEAD", *args.gitargs], check=False)
 
 
-def show_files_containing(args):
+def show_files_containing(args: argparse.Namespace) -> None:
     """
     List all the files that that have been modified for tor browser, that also
     contain a regular expression.
@@ -396,7 +449,7 @@ def show_files_containing(args):
             print(path)
 
 
-def show_changed_files(_args):
+def show_changed_files(_args: argparse.Namespace) -> None:
     """
     List all the files that have been modified relative to upstream.
     """
@@ -404,7 +457,7 @@ def show_changed_files(_args):
         print(file_change.new_path)
 
 
-def lint_changed_files(args):
+def lint_changed_files(args: argparse.Namespace) -> None:
     """
     Lint all the files that have been modified relative to upstream.
     """
@@ -421,10 +474,18 @@ def lint_changed_files(args):
     )
 
 
-def prompt_user(prompt, convert):
+# TODO: replace with "prompt_user[T](..., T]) -> T" after python 3.12 is the
+# minimum mach version.
+T = TypeVar("T")
+
+
+def prompt_user(prompt: str, convert: Callable[[str], T]) -> T:
     """
-    Ask the user for some input until the given converter returns without
-    throwing a ValueError.
+    Ask the user for some input.
+    :param prompt: The prompt to show the user.
+    :param convert: A method to convert the response into a type. Should
+      throw `ValueError` if the user should be re-prompted for a valid input.
+    :returns: The first valid user response.
     """
     while True:
         # Flush out stdin.
@@ -438,8 +499,12 @@ def prompt_user(prompt, convert):
             pass
 
 
-def binary_reply_default_no(value):
-    """Process a 'y' or 'n' reply, defaulting to 'n' if empty."""
+def binary_reply_default_no(value: str) -> bool:
+    """
+    Process a 'y' or 'n' reply, defaulting to 'n' if empty.
+    :param value: The user input.
+    :returns: Whether the answer is yes.
+    """
     if value == "":
         return False
     if value.lower() == "y":
@@ -449,10 +514,15 @@ def binary_reply_default_no(value):
     raise ValueError()
 
 
-def get_fixup_for_file(filename, firefox_commit):
-    """Find the commit the given file should fix up."""
+def get_fixup_for_file(filename: str, firefox_commit: str) -> str | None:
+    """
+    Find the commit the given file should fix up.
+    :param filename: The file path.
+    :param firefox_commit: The commit hash for the firefox commit.
+    :returns: The chosen commit to fixup, or `None` if it should be skipped.
+    """
 
-    def parse_log_line(line):
+    def parse_log_line(line: str) -> dict[str, str]:
         [commit, short_ref, title] = line.split(",", 2)
         return {"commit": commit, "short-ref": short_ref, "title": title}
 
@@ -472,7 +542,7 @@ def get_fixup_for_file(filename, firefox_commit):
         print(f"No commit found for {filename}")
         return None
 
-    def valid_index(val):
+    def valid_index(val: str) -> None | str | tuple[bool, str]:
         if val == "d":
             return val
 
@@ -516,6 +586,7 @@ def get_fixup_for_file(filename, firefox_commit):
             git_run(["diff", "--", filename])
             continue
 
+        assert isinstance(response, tuple)
         view_patch, commit = response
         if view_patch:
             git_run(["log", "-p", "-1", commit, "--", filename])
@@ -524,7 +595,7 @@ def get_fixup_for_file(filename, firefox_commit):
         return commit
 
 
-def auto_fixup(_args):
+def auto_fixup(_args: argparse.Namespace) -> None:
     """
     Automatically find and fix up commits using the current unstaged changes.
     """
@@ -535,7 +606,7 @@ def auto_fixup(_args):
     if staged_files:
         raise TbDevException(f"Have already staged files: {staged_files}")
 
-    fixups = {}
+    fixups: dict[str, list[str]] = {}
     for filename in (c.new_path for c in get_changed_files("HEAD")):
         commit = get_fixup_for_file(filename, firefox_commit)
         if commit is None:
@@ -558,7 +629,7 @@ def auto_fixup(_args):
             git_run(["commit", "--amend"])
 
 
-def clean_fixups(_args):
+def clean_fixups(_args: argparse.Namespace) -> None:
     """
     Perform an interactive rebase that automatically applies fixups, similar to
     --autosquash but also works on fixups of fixups.
@@ -575,7 +646,7 @@ def clean_fixups(_args):
     )
 
 
-def show_default(_args):
+def show_default(_args: argparse.Namespace) -> None:
     """
     Print the default branch name from gitlab.
     """
@@ -586,7 +657,7 @@ def show_default(_args):
     print(f"{upstream}/{default_branch}")
 
 
-def branch_from_default(args):
+def branch_from_default(args: argparse.Namespace) -> None:
     """
     Fetch the default gitlab branch from upstream and create a new local branch.
     """
@@ -607,7 +678,7 @@ def branch_from_default(args):
     )
 
 
-def move_to_default(args):
+def move_to_default(args: argparse.Namespace) -> None:
     """
     Fetch the default gitlab branch from upstream and move the specified
     branch's commits on top. A new branch will be created tracking the default
@@ -658,7 +729,7 @@ def move_to_default(args):
     git_run(["cherry-pick", f"{current_basis}..{old_branch_name}"], check=False)
 
 
-def show_range_diff(args):
+def show_range_diff(args: argparse.Namespace) -> None:
     """
     Show the range diff between two branches, from their firefox bases.
     """
@@ -674,7 +745,7 @@ def show_range_diff(args):
     )
 
 
-def show_diff_diff(args):
+def show_diff_diff(args: argparse.Namespace) -> None:
     """
     Show the diff between the diffs of two branches, relative to their firefox
     bases.
@@ -688,7 +759,7 @@ def show_diff_diff(args):
     index_regex = re.compile(r"index [0-9a-f]{12}\.\.[0-9a-f]{12}")
     lines_regex = re.compile(r"@@ -[0-9]+,[0-9]+ \+[0-9]+,[0-9]+ @@(?P<rest>.*)")
 
-    def save_diff(branch):
+    def save_diff(branch: str) -> str:
         firefox_commit = get_firefox_ref(branch).commit
         file_desc, file_name = tempfile.mkstemp(
             text=True, prefix=f'{branch.split("/")[-1]}-'
@@ -703,6 +774,7 @@ def show_diff_diff(args):
         )
 
         with os.fdopen(file_desc, "w") as file:
+            assert diff_process.stdout is not None
             for line in diff_process.stdout:
                 if index_regex.match(line):
                     # Fake data that will match.
@@ -731,7 +803,7 @@ def show_diff_diff(args):
 # * -------------------- *
 
 
-def branch_complete(prefix, parsed_args, **kwargs):
+def branch_complete(prefix: str, **_kwargs: Any) -> list[str]:
     """
     Complete the argument with a branch name.
     """
@@ -739,7 +811,7 @@ def branch_complete(prefix, parsed_args, **kwargs):
         return []
     try:
         branches = [ref.name for ref in get_refs("head", "")]
-        branches.extend([ref.name for ref in get_refs("remote", "")])
+        branches.extend(ref.name for ref in get_refs("remote", ""))
         branches.append("HEAD")
     except Exception:
         return []
@@ -749,7 +821,20 @@ def branch_complete(prefix, parsed_args, **kwargs):
 parser = argparse.ArgumentParser()
 subparsers = parser.add_subparsers(required=True)
 
-for name, details in {
+
+class ArgConfig(TypedDict):
+    help: str
+    metavar: NotRequired[str]
+    nargs: NotRequired[str]
+    completer: NotRequired[Callable[[str], list[str]]]
+
+
+class CommandConfig(TypedDict):
+    func: Callable[[argparse.Namespace], None]
+    args: NotRequired[dict[str, ArgConfig]]
+
+
+all_commands: dict[str, CommandConfig] = {
     "show-upstream-basis-commit": {
         "func": show_upstream_basis_commit,
     },
@@ -844,18 +929,22 @@ for name, details in {
             "regex": {"help": "the regex that the files must contain"},
         },
     },
-}.items():
-    help_message = re.sub(r"\s+", " ", details["func"].__doc__).strip()
+}
+
+for name, command_config in all_commands.items():
+    help_message = command_config["func"].__doc__
+    assert isinstance(help_message, str)
+    help_message = re.sub(r"\s+", " ", help_message).strip()
     sub = subparsers.add_parser(name, help=help_message)
-    sub.set_defaults(func=details["func"])
-    for arg, keywords in details.get("args", {}).items():
+    sub.set_defaults(func=command_config["func"])
+    for arg, keywords in command_config.get("args", {}).items():
         completer = None
         if "completer" in keywords:
             completer = keywords["completer"]
             del keywords["completer"]
         sub_arg = sub.add_argument(arg, **keywords)
         if completer is not None:
-            sub_arg.completer = completer
+            sub_arg.completer = completer  # type: ignore
 
 argcomplete.autocomplete(parser)
 
