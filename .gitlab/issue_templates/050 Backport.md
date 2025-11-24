@@ -13,12 +13,12 @@ please ensure the title has the following format:
 ## Bookkeeping
 
 ### Issue(s)
-- tor-browser#12345
-- mullvad-browser#123
-- https://bugzilla.mozilla.org/show_bug.cgi?id=1234567
+- tor-browser#xxxxx
+- mullvad-browser#xyz
+- https://bugzilla.mozilla.org/show_bug.cgi?id=xxxxxxx
 
 ### Merge Request(s)
-- tor-browser!123
+- tor-browser!xxxx
 
 ### Target Channels
 
