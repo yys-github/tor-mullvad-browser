@@ -9,11 +9,11 @@ This is an issue for tracking uplift of a patch-set to Firefox
 ## Book-keeping
 
 ### Gitlab Issue(s)
-- tor-browser#12345
-- mullvad-browser#123
+- tor-browser#xxxxx
+- mullvad-browser#xyz
 
 ### Merge Request(s)
-- tor-browser!123
+- tor-browser!xyz
 
 ### Upstream Mozilla Issue(s):
 - https://bugzilla.mozilla.org/show_bug.cgi?id=12345

@@ -18,11 +18,11 @@ Provide an overview of the technical/implementation aspects of this feature
 
 ### Proposal
 <!-- Add links to associated proposal issues (or delete block) -->
-- tor-browser#12345
+- tor-browser#xxxxx
 
 ### Design
 <!-- Add links to associated design issues (or delete block) -->
-- tpo/UX/Design#123
+- tpo/UX/Design#xyz
 
 <!-- Do not edit beneath this line <3 -->
 
