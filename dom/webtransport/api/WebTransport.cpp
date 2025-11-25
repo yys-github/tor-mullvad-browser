@@ -258,6 +258,7 @@ void WebTransport::Init(const GlobalObject& aGlobal, const nsAString& aURL,
   PBackgroundChild* backgroundChild =
       BackgroundChild::GetOrCreateForCurrentThread();
   if (NS_WARN_IF(!backgroundChild)) {
+    aError.Throw(NS_ERROR_FAILURE);
     return;
   }
 
@@ -276,11 +277,13 @@ void WebTransport::Init(const GlobalObject& aGlobal, const nsAString& aURL,
   RefPtr<WebTransportChild> child = new WebTransportChild(this);
   if (NS_IsMainThread()) {
     if (!childEndpoint.Bind(child)) {
+      aError.Throw(NS_ERROR_FAILURE);
       return;
     }
   } else {
     if (!childEndpoint.Bind(child,
                             mGlobal->EventTargetFor(TaskCategory::Other))) {
+      aError.Throw(NS_ERROR_FAILURE);
       return;
     }
   }
