@@ -59,7 +59,7 @@
 }
 
 #securityLevel-level {
-  font-size: 1.25em;
+  font-size: larger;
   font-weight: var(--font-weight-bold);
   grid-area: title;
 }
