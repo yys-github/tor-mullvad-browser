@@ -4,18 +4,8 @@
 
 html,
 body {
-  margin: 0;
-  padding: 0;
   width: 100%;
   height: 100%;
-}
-
-body {
-  font: message-box;
-  background-color: var(--background-color-canvas);
-  color: var(--in-content-page-color);
-  font-size: 15px;
-  cursor: default;
 }
 
 label {
@@ -39,14 +29,14 @@ textarea {
 
 select,
 option {
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 dt {
   margin: var(--ruleset-vmargin) 0 0 0;
   padding: 0;
   color: var(--text-color-deemphasized);
-  font-size: 85%;
+  font-size: var(--font-size-small);
 }
 
 dd {
@@ -60,7 +50,7 @@ hr {
   width: 40px;
   margin: 0;
   border: none;
-  border-top: 1px solid var(--in-content-border-color);
+  border-top: 1px solid var(--border-color);
 }
 
 .hidden {
@@ -132,15 +122,15 @@ section {
   width: var(--content-width);
   max-width: 100%;
   padding-bottom: 16px;
-  border-bottom: 1px solid var(--in-content-border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 .title h1 {
   margin: 0;
   padding: 0;
   padding-inline-start: 35px;
-  font-size: 20px;
-  font-weight: 700;
+  font-size: var(--font-size-xlarge);
+  font-weight: var(--font-weight-bold);
   background-image: url("chrome://browser/content/rulesets/securedrop.svg");
   background-position: 0 center;
   background-size: 22px;
@@ -160,15 +150,15 @@ aside {
   flex: 0 0 var(--sidebar-width);
   box-sizing: border-box;
 
-  border-inline-end: 1px solid var(--in-content-border-color);
+  border-inline-end: 1px solid var(--border-color);
   background-color: var(--background-color-box);
 }
 
 #ruleset-heading {
   padding: 16px;
   text-align: center;
-  font-weight: 700;
-  border-bottom: 1px solid var(--in-content-border-color);
+  font-weight: var(--font-weight-bold);
+  border-bottom: 1px solid var(--border-color);
 }
 
 #ruleset-list-container {
@@ -181,7 +171,7 @@ aside {
 }
 
 #ruleset-list-empty-description {
-  font-size: 80%;
+  font-size: var(--font-size-small);
 }
 
 #ruleset-list {
@@ -196,7 +186,7 @@ aside {
   padding: 10px 18px;
   list-style: none;
   border-inline-start: 4px solid transparent;
-  border-bottom: 1px solid var(--in-content-border-color);
+  border-bottom: 1px solid var(--border-color);
 }
 
 #ruleset-list li:last-child {
@@ -216,29 +206,30 @@ aside {
 }
 
 #ruleset-list .name {
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 #ruleset-list .description {
-  font-size: 85%;
+  font-size: var(--font-size-small);
   color: var(--text-color-deemphasized);
 }
 
 #ruleset-list .selected {
+  /* stylelint-disable-next-line stylelint-plugin-mozilla/use-border-color-tokens */
   border-inline-start-color: var(--color-accent-primary);
 }
 
 #ruleset-list .selected.disabled {
-  border-inline-start-color: var(--in-content-border-color);
+  border-inline-start-color: var(--border-color);
 }
 
 #ruleset-list li:not(.selected):hover {
-  background-color: var(--in-content-button-background-hover);
-  color: var(--in-content-button-text-color-hover);
+  background-color: var(--button-background-color-hover);
+  color: var(--button-text-color-hover);
 }
 
 #ruleset-list li:not(.selected):hover:active {
-  background-color: var(--in-content-button-background-active);
+  background-color: var(--button-background-color-active);
 }
 
 #ruleset-list #ruleset-template {
@@ -255,7 +246,7 @@ aside {
   padding: 8px;
   border-radius: var(--border-radius-xsmall);
   background-color: var(--background-color-box);
-  font-size: 85%;
+  font-size: var(--font-size-small);
   line-break: anywhere;
   /* ASCII-only text, so can set line-height. */
   line-height: 1.4;
@@ -284,7 +275,7 @@ aside {
 #ruleset-updated {
   margin-top: 24px;
   color: var(--text-color-deemphasized);
-  font-size: 85%;
+  font-size: var(--font-size-small);
 }
 
 /* Edit ruleset */
