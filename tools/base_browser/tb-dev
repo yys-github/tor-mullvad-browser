@@ -6,6 +6,7 @@ Useful tools for working on tor-browser repository.
 
 import argparse
 import atexit
+import functools
 import json
 import os
 import re
@@ -95,30 +96,27 @@ def git_lines(args: list[str]) -> Iterator[str]:
         yield line
 
 
-local_root: str | None = None
-
-
+@functools.cache
 def get_local_root() -> str:
     """
     Get the path for the tor-browser root directory.
     :returns: The local root.
     """
-    global local_root
-    if local_root is None:
-        try:
-            # Make sure we have a matching remote in this git repository.
-            if get_upstream_details()["is-browser-repo"] == "True":
-                local_root = git_get(["rev-parse", "--show-toplevel"])
-            else:
-                local_root = ""
-        except TbDevException:
-            local_root = ""
-    return local_root
+    try:
+        # Make sure we have a matching remote in this git repository.
+        if get_upstream_details()["is-browser-repo"] == "True":
+            return git_get(["rev-parse", "--show-toplevel"])
+        else:
+            return ""
+    except TbDevException:
+        return ""
 
 
-def determine_upstream_details() -> dict[str, str]:
+@functools.cache
+def get_upstream_details() -> dict[str, str]:
     """
-    :returns: Details about the upstream branch.
+    Get details about the upstream repository.
+    :returns: The details.
     """
     remote_urls = {
         remote: git_get(["remote", "get-url", remote])
@@ -155,20 +153,6 @@ def determine_upstream_details() -> dict[str, str]:
     # Else, the upstream is ambiguous.
 
     return details
-
-
-cached_upstream_details: None | dict[str, str] = None
-
-
-def get_upstream_details() -> dict[str, str]:
-    """
-    Get details about the upstream repository.
-    :returns: The details.
-    """
-    global cached_upstream_details
-    if cached_upstream_details is None:
-        cached_upstream_details = determine_upstream_details()
-    return cached_upstream_details
 
 
 class Reference:
