@@ -20,7 +20,6 @@ const BreadcrumbStatus = Object.freeze({
   Disabled: "disabled",
   Default: "default",
   Active: "active",
-  Error: "error",
 });
 
 /**
@@ -257,7 +256,6 @@ class AboutTorConnect {
       elem.classList.remove(BreadcrumbStatus.Hidden);
       elem.classList.remove(BreadcrumbStatus.Disabled);
       elem.classList.remove(BreadcrumbStatus.Active);
-      elem.classList.remove(BreadcrumbStatus.Error);
       if (status !== "") {
         elem.classList.add(status);
       }
