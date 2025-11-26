@@ -17,6 +17,9 @@
   }
 }
 
+/* stylelint-disable stylelint-plugin-mozilla/use-border-color-tokens */
+/* stylelint-disable stylelint-plugin-mozilla/use-border-radius-tokens */
+
 #tabbrowser-tabbox.letterboxing {
   --letterboxing-bgcolor: var(--background-color-canvas);
   /* Match the border radius used for the sidebar. */
