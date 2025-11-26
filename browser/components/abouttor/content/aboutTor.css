@@ -38,6 +38,7 @@ h1 {
   display: flex;
   align-items: center;
   gap: 16px;
+  /* stylelint-disable-next-line stylelint-plugin-mozilla/use-font-size-tokens */
   font-size: 40px;
   margin-block-start: 0;
   margin-block-end: 40px;
@@ -70,8 +71,8 @@ body:not(.is-testing) #tor-browser-home-heading-testing {
 }
 
 .tor-home-box {
-  border: 1px solid var(--in-content-box-border-color);
-  background-color: var(--in-content-box-info-background);
+  border: 1px solid var(--border-color);
+  background-color: var(--background-color-box-info);
   max-width: var(--form-max-width);
   width: -moz-available;
   box-sizing: border-box;
@@ -95,7 +96,6 @@ body:not(.show-tor-check) #tor-check {
 
 .home-message {
   grid-area: message;
-  font-weight: 400;
   text-align: center;
   margin-block: 1.6em;
 }
@@ -118,12 +118,14 @@ body:not(.show-tor-check) #tor-check {
   --form-border-width: 1px;
   /* Padding between elements and the parent's border edge. */
   --form-outer-padding: calc(var(--form-padding) - var(--form-border-width));
-  --form-radius: 7px;
+  --form-radius-container: var(--border-radius-medium);
+  --form-radius: calc(var(--form-radius-container) - var(--form-border-width));
   --logo-size: 30px;
-  border-radius: calc(var(--form-radius) + var(--form-border-width));
+  /* stylelint-disable-next-line stylelint-plugin-mozilla/use-border-radius-tokens */
+  border-radius: var(--form-radius-container);
   border-width: var(--form-border-width);
   border-style: solid;
-  border-color: var(--in-content-box-border-color);
+  border-color: var(--border-color);
 }
 
 #search-form:has(#search-input:focus-visible) {
@@ -149,10 +151,12 @@ body:not(.show-tor-check) #tor-check {
   padding-inline-end: var(--form-padding);
   padding-inline-start: calc(var(--form-outer-padding) + var(--logo-size) /* logo */ + var(--form-padding) /* padding after logo. */);
   /* Make sure clickable area does not extend beyond the form's border. */
+  /* stylelint-disable stylelint-plugin-mozilla/use-border-radius-tokens */
   border-start-start-radius: var(--form-radius);
   border-end-start-radius: var(--form-radius);
   border-start-end-radius: 0;
   border-end-end-radius: 0;
+  /* stylelint-enable stylelint-plugin-mozilla/use-border-radius-tokens */
   /* Focus and outline styling move to the parent. */
   background: none;
   border: none;
@@ -161,14 +165,15 @@ body:not(.show-tor-check) #tor-check {
 
 #onionize-toggle {
   flex: 0 0 auto;
-  font-weight: 500;
   align-content: center;
   padding-block: var(--form-outer-padding);
   padding-inline-end: var(--form-outer-padding);
+  /* stylelint-disable stylelint-plugin-mozilla/use-border-radius-tokens */
   border-start-end-radius: var(--form-radius);
   border-end-end-radius: var(--form-radius);
   border-start-start-radius: 0;
   border-end-start-radius: 0;
+  /* stylelint-enable stylelint-plugin-mozilla/use-border-radius-tokens */
   padding-inline-start: 0;
   /* Non-clickable gap between input and toggle. */
   margin-inline-start: 0.5em;
@@ -203,7 +208,7 @@ body:not(.show-survey) #survey {
   width: 24px;
   height: 24px;
   padding: 8px;
-  border-radius: 20px;
+  border-radius: var(--border-radius-circle);
 }
 
 #survey-heading {
@@ -245,10 +250,12 @@ body:not(.show-survey) #survey {
     background-color: #2c0449;
     --focus-outline-color: var(--tor-focus-outline-color-dark);
     --focus-outline: var(--focus-outline-width) solid var(--focus-outline-color);
-    --in-content-focus-outline-color: var(--focus-outline-color);
-    --in-content-focus-outline: var(--focus-outline);
     --onion-pattern-stroke-color: #3e0663;
     --onion-pattern-fill-color: #350556;
+    /* Same as --text-color when "prefers-color-scheme: light" */
+    --text-color-light: var(--color-gray-100);
+    /* Same as --text-color when "prefers-color-scheme: dark" */
+    --text-color-dark: var(--color-gray-05);
   }
 
   #tor-check {
@@ -257,13 +264,10 @@ body:not(.show-survey) #survey {
   }
 
   body > :not(#search-form) {
-    /* Same as --in-content-page-color when "prefers-color-scheme: dark" */
-    --in-content-page-color-dark: var(--color-gray-05);
-    color: var(--in-content-page-color-dark);
+    color: var(--text-color-dark);
     --button-text-color: currentColor;
-    --in-content-button-text-color: var(--button-text-color);
-    --in-content-button-text-color-hover: var(--button-text-color);
-    --in-content-button-text-color-active: var(--button-text-color);
+    --button-text-color-hover: var(--button-text-color);
+    --button-text-color-active: var(--button-text-color);
     --button-text-color-ghost: var(--button-text-color);
     --button-text-color-ghost-hover: var(--button-text-color);
     --button-text-color-ghost-active: var(--button-text-color);
@@ -275,15 +279,14 @@ body:not(.show-survey) #survey {
   #search-form {
     /* Use light color for background and moz-toggle shadow root. */
     color-scheme: light;
-    /* Same as --in-content-page-color when "prefers-color-scheme: light" */
-    --in-content-page-color-light: var(--color-gray-100);
-    color: var(--in-content-page-color-light);
+    color: var(--text-color-light);
     border-color: transparent;
   }
 
   #search-form:has(#search-input:focus-visible) {
     /* Use a light-themed inner-border to contrast with the dark-themed
      * focus outline. */
+    /* stylelint-disable-next-line stylelint-plugin-mozilla/use-border-color-tokens */
     border-color: var(--tor-focus-outline-color-light);
   }
 
@@ -297,8 +300,6 @@ body:not(.show-survey) #survey {
   #search-form > * {
     --focus-outline-color: var(--tor-focus-outline-color-light);
     --focus-outline: var(--focus-outline-width) solid var(--focus-outline-color);
-    --in-content-focus-outline-color: var(--focus-outline-color);
-    --in-content-focus-outline: var(--focus-outline);
     /* Variables used for --toggle- variables. */
     --color-accent-primary: var(--tor-button-background-color-light);
     --color-accent-primary-hover: var(--tor-button-background-color-hover-light);
@@ -319,10 +320,10 @@ body:not(.show-survey) #survey {
   }
 
   #survey-launch {
-    color: var(--in-content-page-color-light);
-    --in-content-primary-button-background: var(--tor-button-background-color-dark);
-    --in-content-primary-button-background-hover: var(--tor-button-background-color-hover-dark);
-    --in-content-primary-button-background-active: var(--tor-button-background-color-active-dark);
+    color: var(--text-color-light);
+    --button-background-color-primary: var(--tor-button-background-color-dark);
+    --button-background-color-primary-hover: var(--tor-button-background-color-hover-dark);
+    --button-background-color-primary-active: var(--tor-button-background-color-active-dark);
   }
 }
 
@@ -341,7 +342,7 @@ body.show-yec h1 {
 #yec-banner {
   grid-area: heading;
   border-radius: var(--border-radius-medium);
-  border: 1px solid var(--in-content-box-border-color);
+  border: 1px solid var(--border-color);
   display: grid;
   grid-template:
     "yec-heading yec-image" auto
@@ -388,8 +389,9 @@ body.show-yec h1 {
 #yec-heading {
   grid-area: yec-heading;
   margin-block: 0 16px;
+  /* stylelint-disable-next-line stylelint-plugin-mozilla/use-font-size-tokens */
   font-size: 64px;
-  font-weight: 400;
+  font-weight: var(--font-weight);
   font-family: "Jacquard 12", serif;
 }
 
@@ -418,10 +420,10 @@ body.show-yec h1 {
   justify-self: start;
   /* Style like a button. */
   font-weight: var(--button-font-weight);
-  color: var(--in-content-button-text-color);
-  border: 1px solid var(--in-content-button-border-color);
-  border-radius: var(--border-radius-small);
-  background-color: var(--in-content-button-background);
+  color: var(--button-text-color);
+  border: 1px solid var(--button-border-color);
+  border-radius: var(--button-border-radius);
+  background-color: var(--button-background-color);
   padding: var(--button-padding);
   box-sizing: border-box;
   min-height: var(--button-min-height);
@@ -437,15 +439,15 @@ body.show-yec h1 {
 }
 
 #yec-donate-link:hover {
-  background-color: var(--in-content-button-background-hover);
-  color: var(--in-content-button-text-color-hover);
-  border-color: var(--in-content-button-border-color-hover);
+  background-color: var(--button-background-color-hover);
+  color: var(--button-text-color-hover);
+  border-color: var(--button-border-color-hover);
 }
 
 #yec-donate-link:hover:active {
-  background-color: var(--in-content-button-background-active);
-  color: var(--in-content-button-text-color-active);
-  border-color: var(--in-content-button-border-color-active);
+  background-color: var(--button-background-color-active);
+  color: var(--button-text-color-active);
+  border-color: var(--button-border-color-active);
 }
 
 #yec-donate-icon {
@@ -487,7 +489,8 @@ body.show-yec h1 {
   }
 
   #yec-heading {
-    font-size: 3.5rem;
+    /* stylelint-disable-next-line stylelint-plugin-mozilla/use-font-size-tokens */
+    font-size: 50px;
   }
 
   #yec-matching {
@@ -502,7 +505,7 @@ body.show-yec h1 {
 @media ((prefers-contrast) or (forced-colors)) and (prefers-color-scheme: dark) {
   #yec-image {
     /* Give the dark image a light border to separate from background. */
-    border-color: var(--in-content-box-border-color);
+    border-color: var(--border-color);
   }
 }
 
@@ -523,11 +526,11 @@ body.show-yec h1 {
   }
 
   #yec-donate-link {
-    --in-content-button-text-color: var(--yec-button-text);
-    --in-content-button-text-color-hover: var(--yec-button-text);
-    --in-content-button-text-color-active: var(--yec-button-text);
-    --in-content-button-background: var(--yec-button-background);
-    --in-content-button-background-hover: var(--yec-button-background-hover);
-    --in-content-button-background-active: var(--yec-button-background-active);
+    --button-text-color: var(--yec-button-text);
+    --button-text-color-hover: var(--yec-button-text);
+    --button-text-color-active: var(--yec-button-text);
+    --button-background-color: var(--yec-button-background);
+    --button-background-color-hover: var(--yec-button-background-hover);
+    --button-background-color-active: var(--yec-button-background-active);
   }
 }
