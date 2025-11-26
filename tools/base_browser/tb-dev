@@ -15,9 +15,14 @@ import tempfile
 import termios
 import urllib.request
 from collections.abc import Callable, Iterable, Iterator
+from types import ModuleType
 from typing import Any, NotRequired, TypedDict, TypeVar
 
-import argcomplete
+argcomplete: None | ModuleType = None
+try:
+    import argcomplete
+except ImportError:
+    pass
 
 GIT_PATH = "/usr/bin/git"
 UPSTREAM_URLS = {
@@ -943,10 +948,11 @@ for name, command_config in all_commands.items():
             completer = keywords["completer"]
             del keywords["completer"]
         sub_arg = sub.add_argument(arg, **keywords)
-        if completer is not None:
+        if completer is not None and argcomplete is not None:
             sub_arg.completer = completer  # type: ignore
 
-argcomplete.autocomplete(parser)
+if argcomplete is not None:
+    argcomplete.autocomplete(parser)
 
 try:
     if not within_browser_root():
