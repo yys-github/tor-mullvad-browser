@@ -33,6 +33,7 @@ INACTIVE_LINTERS = [
     "rejected-words",
     "rst",
     "updatebot",
+    "typescript",
     "wpt",
 ]
 
