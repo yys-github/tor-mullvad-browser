@@ -20,6 +20,12 @@ import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
+import java.io.File
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+
 import javax.inject.Inject
 
 import groovy.transform.Immutable
@@ -84,6 +90,17 @@ abstract class NimbusAssembleToolsTask extends DefaultTask {
 
     @TaskAction
     void assembleTools() {
+        String nimbusFml = System.getenv("NIMBUS_FML")
+        if (nimbusFml == null || "".equals(nimbusFml)) {
+            nimbusFml = System.getProperty("nimbusFml")
+        }
+        if (nimbusFml != null && !"".equals(nimbusFml)) {
+            Path source = (new File(nimbusFml)).toPath()
+            Path dest = fmlBinary.get().asFile.toPath()
+            Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING)
+            return
+        }
+
         def sources = [fetchSpec, *fetchSpec.fallbackSources.get()].collect {
             new Source(new URI(it.archive.get()), new URI(it.hash.get()))
         }
