@@ -2,7 +2,8 @@
   display: flex;
   align-items: center;
   gap: 0.5em;
-  border-radius: var(--urlbar-icon-border-radius);
+  /* stylelint-disable-next-line stylelint-plugin-mozilla/use-border-radius-tokens */
+  border-radius: var(--urlbar-inner-border-radius);
   --tor-urlbar-button-inline-padding: 8px;
   padding-inline: var(--tor-urlbar-button-inline-padding);
   margin: 0;
