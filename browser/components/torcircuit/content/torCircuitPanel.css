@@ -167,6 +167,9 @@
 }
 
 .tor-circuit-addresses {
+  /* FIXME: Use a standard font size. Likely will be replaced with the conflux
+   * design. */
+  /* stylelint-disable-next-line stylelint-plugin-mozilla/use-font-size-tokens */
   font-size: 0.9em;
   font-family: monospace;
   margin-inline-start: 0.75em;
