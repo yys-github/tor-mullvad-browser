@@ -35,18 +35,18 @@ body:not(.loaded) {
 .breadcrumb-item {
   align-items: center;
   cursor: pointer;
-  color: var(--in-content-text-color);
+  color: var(--text-color);
   border-radius: var(--border-radius-small);
 }
 
 .breadcrumb-item:hover {
   color: var(--color-accent-primary);
-  background-color: var(--in-content-button-background-hover);
+  background-color: var(--button-background-color-hover);
 }
 
 .breadcrumb-item:active {
   color: var(--color-accent-primary-active);
-  background-color: var(--in-content-button-background-active);
+  background-color: var(--button-background-color-active);
 }
 
 .breadcrumb-separator {
@@ -74,21 +74,9 @@ body:not(.loaded) {
 .breadcrumb-item.disabled,
 .breadcrumb-item.disabled:hover,
 .breadcrumb-item.disabled:active {
-  color: var(--in-content-text-color);
+  color: var(--text-color);
   opacity: 0.4;
   cursor: default;
-}
-
-.breadcrumb-item.error {
-  color: var(--in-content-danger-button-background);
-}
-
-.breadcrumb-item.error:hover {
-  color: var(--in-content-danger-button-background-hover);
-}
-
-.breadcrumb-item.error:active {
-  color: var(--in-content-danger-button-background-active);
 }
 
 .breadcrumb-item.hidden,
@@ -157,7 +145,7 @@ form#locationDropdown {
 form#locationDropdown select {
   max-width: 100%;
   margin-inline: 0;
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 :root {
@@ -188,7 +176,7 @@ form#locationDropdown select {
 #progressBarBackground {
   width: 100%;
   height: var(--progress-bar-height);
-  background: var(--in-content-box-info-background);
+  background: var(--background-color-box-info);
 }
 
 #progressBackground {
@@ -199,6 +187,7 @@ form#locationDropdown select {
   background-image: linear-gradient(var(--progressbar-shadow-start), var(--background-color-canvas) 100%), var(--progressbar-gradient);
   animation: var(--progress-animation);
   filter: blur(5px);
+  /* stylelint-disable-next-line stylelint-plugin-mozilla/use-border-radius-tokens */
   border-end-end-radius: 33px;
 }
 
@@ -206,8 +195,10 @@ form#locationDropdown select {
   z-index: 2;
   width: var(--progress-percent);
   height: var(--progress-bar-height);
+  /* stylelint-disable stylelint-plugin-mozilla/use-border-radius-tokens */
   border-start-end-radius: calc(var(--progress-bar-height) / 2);
   border-end-end-radius: calc(var(--progress-bar-height) / 2);
+  /* stylelint-enable stylelint-plugin-mozilla/use-border-radius-tokens */
   background-image: var(--progressbar-gradient);
   animation: var(--progress-animation);
 }
