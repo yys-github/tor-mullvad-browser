@@ -82,7 +82,7 @@ button.spoof-button-disabled {
 }
 
 .network-status-label {
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
   margin-inline-end: 0.75em;
 }
 
@@ -142,7 +142,7 @@ button.spoof-button-disabled {
   min-width: max-content;
   align-items: center;
   gap: 0.5em;
-  font-size: 0.85em;
+  font-size: var(--font-size-small);
 }
 
 .bridge-status-badge:not(.bridge-status-connected, .bridge-status-none, .bridge-status-current-built-in) {
@@ -210,7 +210,7 @@ button.spoof-button-disabled {
   gap: 16px;
   border-radius: var(--border-radius-small);
   color: var(--text-color-deemphasized);
-  border: 2px dashed color-mix(in srgb, currentColor 20%, transparent);
+  border: 2px dashed var(--border-color-deemphasized);
 }
 
 #tor-bridges-none-icon {
@@ -225,8 +225,8 @@ button.spoof-button-disabled {
 .tor-bridges-details-box {
   padding: 16px;
   border-radius: var(--border-radius-small);
-  background: var(--in-content-box-info-background);
-  border: 1px solid var(--in-content-box-border-color);
+  background: var(--background-color-box-info);
+  border: 1px solid var(--border-color);
 }
 
 @media not forced-colors {
@@ -240,7 +240,7 @@ button.spoof-button-disabled {
   min-width: max-content;
   grid-template: "heading source button" min-content / max-content 1fr max-content;
   align-items: center;
-  border-block-end: 1px solid var(--in-content-border-color);
+  border-block-end: 1px solid var(--border-color);
   padding-block-end: 16px;
   margin-block-end: 16px;
   white-space: nowrap;
@@ -307,7 +307,7 @@ button.spoof-button-disabled {
 }
 
 #tor-bridges-built-in-type-name {
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
   grid-area: type;
 }
 
@@ -525,7 +525,7 @@ button.spoof-button-disabled {
   /* fill is the progress, stroke is the empty ring. */
   -moz-context-properties: fill, stroke;
   fill: var(--icon-color-success);
-  stroke: var(--in-content-border-color);
+  stroke: var(--border-color);
   content: url("chrome://browser/content/torpreferences/lox-progress-ring.svg");
 }
 
@@ -602,7 +602,7 @@ button.spoof-button-disabled {
 }
 
 #tor-bridges-lox-details .tor-bridges-lox-list-item::before {
-  stroke: var(--in-content-border-color);
+  stroke: var(--border-color);
 }
 
 #tor-bridges-lox-unlock-alert .tor-bridges-lox-list-item::before {
@@ -673,7 +673,7 @@ button.spoof-button-disabled {
 
 .tor-bridges-provider-name {
   font-weight: var(--font-weight-bold);
-  font-size: 0.85em;
+  font-size: var(--font-size-small);
 }
 
 .tor-bridges-provider-instruction {
@@ -707,8 +707,8 @@ button.spoof-button-disabled {
 }
 
 #torPreferences-bridges-location menuitem[disabled="true"] {
-  color: var(--in-content-button-text-color, inherit);
-  font-weight: 700;
+  color: var(--button-text-color, inherit);
+  font-weight: var(--font-weight-bold);
 }
 
 /* Request bridges */
@@ -849,7 +849,7 @@ dialog#torPreferences-requestBridge-dialog > hbox {
 }
 
 #lox-invite-dialog-list-label {
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 #lox-invite-dialog-list {
@@ -882,7 +882,7 @@ dialog#torPreferences-requestBridge-dialog > hbox {
 }
 
 #torPreferences-builtinBridge-typeSelection radio label {
-  font-weight: 700;
+  font-weight: var(--font-weight-bold);
 }
 
 /* Request bridge dialog */
@@ -954,8 +954,8 @@ groupbox#torPreferences-bridges-group textarea {
 }
 
 #user-provide-bridge-textarea.invalid-input {
-  border-color: var(--in-content-danger-button-background);
-  outline-color: var(--in-content-danger-button-background);
+  border-color: var(--outline-color-error);
+  outline-color: var(--outline-color-error);
 }
 
 #user-provide-bridge-error-message {
@@ -1047,7 +1047,7 @@ groupbox#torPreferences-bridges-group textarea {
   flex-direction: column;
   padding: var(--space-small);
   margin-block-end: 4px;
-  border: 1px solid var(--in-content-box-border-color);
+  border: 1px solid var(--border-color);
   border-radius: var(--border-radius-small);
   font-size: var(--font-size-small);
 }
