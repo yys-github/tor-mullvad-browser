@@ -5,7 +5,7 @@
 }
 
 #onionservices-savedkeys-tree treechildren::-moz-tree-cell-text {
-  font-size: 80%;
+  font-size: var(--font-size-small);
 }
 
 #onionservices-savedkeys-errorContainer {

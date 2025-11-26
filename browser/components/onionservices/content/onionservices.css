@@ -1,7 +1,7 @@
 /* Copyright (c) 2020, The Tor Project, Inc. */
 
 #tor-clientauth-notification-desc {
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
 }
 
 #tor-clientauth-notification-key {
@@ -16,18 +16,16 @@
  * use the same rules).
  */
 #tor-clientauth-notification-key.invalid {
-  border: 1px solid #d70022;
-  box-shadow:
-    0 0 0 1px #d70022,
-    0 0 0 4px rgba(215, 0, 34, 0.3);
+  border: 1px solid var(--outline-color-error);
 }
 
 #tor-clientauth-warning {
   display: inline-block;
   animation: fade-up-tt 450ms;
-  background: #d70022;
+  /* FIXME: This warning block does not follow upstream's styling. */
+  background: var(--button-background-color-destructive);
+  color: var(--button-text-color-destructive);
   border-radius: var(--border-radius-xsmall);
-  color: #fff;
   inset-inline-start: 3px;
   padding: 5px 12px;
   position: relative;
@@ -40,7 +38,7 @@
 }
 
 #tor-clientauth-warning::before {
-  background: #d70022;
+  background: var(--button-background-color-destructive);
   bottom: -8px;
   content: ".";
   height: 16px;
