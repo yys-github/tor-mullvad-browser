@@ -297,7 +297,7 @@ body.android {
   color: var(--android-dark-text-primary);
   background: linear-gradient(194deg, #692e9d -0.93%, #393270 48.91%);
   font: menu;
-  font-size: 14px;
+  font-size: var(--font-size-small);
   display: flex;
 }
 
@@ -323,13 +323,13 @@ body.android {
   background-repeat: no-repeat;
   background-size: 40px;
   padding-top: 64px;
-  font-size: 22px;
+  font-size: var(--font-size-xlarge);
   line-height: 28px;
 }
 
 .android h1 {
   font-weight: var(--font-weight);
-  font-size: 100%;
+  font-size: inherit;
   margin: 0 0 16px 0;
 }
 
@@ -358,6 +358,7 @@ body.android {
 .android select {
   background: transparent;
   border: none;
+  /* stylelint-disable-next-line stylelint-plugin-mozilla/use-border-color-tokens */
   border-bottom: 1px solid var(--android-dark-text-primary);
   color: var(--android-dark-text-primary);
   display: block;
@@ -387,8 +388,8 @@ body:not(.android) #connectButtonContainer {
   width: 100%;
   margin: 4px 0;
   padding: 11px 30px;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: var(--font-size-small);
+  font-weight: var(--font-weight);
   border: none;
   border-radius: var(--border-radius-small);
 }
