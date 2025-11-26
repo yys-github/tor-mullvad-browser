@@ -158,12 +158,18 @@ def get_upstream_details() -> dict[str, str]:
 class Reference:
     """Represents a git reference to a commit."""
 
-    def __init__(self, name: str, commit: str) -> None:
+    _REFS_REGEX = re.compile(r"refs/[a-z]+/")
+
+    def __init__(self, full_name: str, commit: str) -> None:
         """
-        :param name: The reference name.
+        :param full_name: The full reference name. E.g. "refs/tags/MyTag".
         :param commit: The commit hash for the commit this reference points to.
         """
-        self.name = name
+        match = self.__class__._REFS_REGEX.match(full_name)
+        if not match:
+            raise ValueError(f"Invalid reference name {full_name}")
+        self.full_name = full_name
+        self.name = full_name[match.end() :]
         self.commit = commit
 
 
@@ -192,33 +198,12 @@ def get_refs(ref_type: str, name_start: str) -> Iterator[Reference]:
         # to an actual commit.
         # For remotes, heads and lightweight tags, the objectname_reference will
         # be empty and objectname will point directly to the commit.
-        return Reference(
-            ref_name.replace(ref_start, "", 1), objectname_reference or objectname
-        )
+        return Reference(ref_name, objectname_reference or objectname)
 
     return (
         line_to_ref(line)
         for line in git_lines(["for-each-ref", f"--format={fstring}", pattern])
     )
-
-
-def get_nearest_ref(ref_type: str, name_start: str, search_from: str) -> Reference:
-    """
-    Search backwards from the given commit to find the first commit that matches
-    the given conditions.
-    :param ref_type: The ref type to search for ("tag" or "remote" or "head").
-    :param name_start: The ref name start to match against.
-    :param search_from: The commit to search backwards from.
-    :returns: The matching reference.
-    """
-    ref_list = list(get_refs(ref_type, name_start))
-
-    for commit in git_lines(["rev-list", "-1000", search_from]):
-        for ref in ref_list:
-            if commit == ref.commit:
-                return ref
-
-    raise TbDevException(f"No {name_start} commit found in the last 1000 commits")
 
 
 def get_firefox_ref(search_from: str) -> Reference:
@@ -227,7 +212,44 @@ def get_firefox_ref(search_from: str) -> Reference:
     :param search_from: The commit to search backwards from.
     :returns: The firefox reference.
     """
-    return get_nearest_ref("tag", "FIREFOX_", search_from)
+    # Only search a limited history that should include the FIREFOX_ tag.
+    search_commits = [c for c in git_lines(["rev-list", "-1000", search_from])]
+
+    firefox_tag_prefix = "FIREFOX_"
+
+    existing_tags = list(get_refs("tag", firefox_tag_prefix))
+    for commit in search_commits:
+        for ref in existing_tags:
+            if commit == ref.commit:
+                return ref
+
+    # Might just need to fetch tags from the remote.
+    upstream = get_upstream_details().get("remote", None)
+    if upstream:
+        remote_ref: None | Reference = None
+        search_index = len(search_commits)
+        # Search the remote for a tag that is in our history.
+        # We want to avoid triggering a long fetch, so we just want to grab the
+        # tag that already points to a commit in our history.
+        for line in git_lines(
+            ["ls-remote", upstream, f"refs/tags/{firefox_tag_prefix}*"]
+        ):
+            objectname, name = line.split("\t", 1)
+            for index in range(search_index):
+                if search_commits[index] == objectname:
+                    # Remove trailing "^{}" for commits pointed to by
+                    # annotated tags.
+                    remote_ref = Reference(re.sub(r"\^\{\}$", "", name), objectname)
+                    # Only continue to search for references that are even
+                    # closer to `search_from`.
+                    search_index = index
+                    break
+        if remote_ref is not None:
+            # Get a local copy of just this tag.
+            git_run(["fetch", "--no-tags", upstream, "tag", remote_ref.name])
+            return ref
+
+    raise TbDevException("Unable to find FIREFOX_ tag")
 
 
 def get_upstream_tracking_branch(search_from: str) -> str:
@@ -400,7 +422,7 @@ def show_firefox_commit(_args: argparse.Namespace) -> None:
     HEAD.
     """
     ref = get_firefox_ref("HEAD")
-    print(ref.name)
+    print(ref.full_name)
     print(ref.commit)
 
 
