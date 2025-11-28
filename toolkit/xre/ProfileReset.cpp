@@ -49,7 +49,7 @@ nsresult ProfileResetCleanup(nsToolkitProfileService* aService,
   if (!sbs) return NS_ERROR_FAILURE;
 
   nsCOMPtr<nsIStringBundle> brandBundle;
-  Unused << sbs->CreateBundle(kBrandProperties, getter_AddRefs(brandBundle));
+  (void)sbs->CreateBundle(kBrandProperties, getter_AddRefs(brandBundle));
   if (!brandBundle) return NS_ERROR_FAILURE;
 
   nsCOMPtr<nsIStringBundle> sb;
