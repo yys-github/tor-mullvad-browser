@@ -326,7 +326,6 @@ class DefaultFenixSettingsIndexer(private val context: Context) : SettingsIndexe
             PreferenceFileInformation.DefaultSearchEnginePreferences,
             PreferenceFileInformation.DownloadsSettingsPreferences,
             PreferenceFileInformation.HomePreferences,
-            PreferenceFileInformation.OpenLinksInAppsPreferences,
             PreferenceFileInformation.PrivateBrowsingPreferences,
             PreferenceFileInformation.SearchSettingsPreferences,
             PreferenceFileInformation.TabsPreferences,
