@@ -7,7 +7,6 @@ import importlib.util
 import os
 import subprocess
 import sys
-import urllib.parse as urllib_parse
 from pathlib import Path
 from textwrap import dedent
 
@@ -129,40 +128,6 @@ def resolve_setting_from_arcconfig(topsrcdir: Path, setting):
 
 def resolve_is_employee_by_credentials(topsrcdir: Path):
     return None
-    try:
-        phabricator_uri = resolve_setting_from_arcconfig(topsrcdir, "phabricator.uri")
-
-        if not phabricator_uri:
-            return None
-
-        with arcrc_path().open() as arcrc_file:
-            arcrc = json.load(arcrc_file)
-
-        phabricator_token = (
-            arcrc.get("hosts", {})
-            .get(urllib_parse.urljoin(phabricator_uri, "api/"), {})
-            .get("token")
-        )
-
-        if not phabricator_token:
-            return None
-
-        bmo_uri = (
-            resolve_setting_from_arcconfig(topsrcdir, "bmo_url")
-            or "https://bugzilla.mozilla.org"
-        )
-        bmo_api_url = urllib_parse.urljoin(bmo_uri, "rest/whoami")
-        bmo_result = requests.get(
-            bmo_api_url, headers={"X-PHABRICATOR-TOKEN": phabricator_token}
-        )
-
-        return "mozilla-employee-confidential" in bmo_result.json().get("groups", [])
-    except (
-        FileNotFoundError,
-        json.JSONDecodeError,
-        requests.exceptions.RequestException,
-    ):
-        return None
 
 
 def resolve_is_employee_by_vcs(topsrcdir: Path):
