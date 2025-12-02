@@ -16,8 +16,11 @@ from mozlint.formatters import all_formatters
 # Below is a list of linters we do not use,
 # these will be skipped when running `./mach lint` commands.
 INACTIVE_LINTERS = [
+    "android-ac",
     "android-api-lint",
     "android-checkstyle",
+    "android-fenix",
+    "android-focus",
     "android-format",
     "android-javadoc",
     "android-lint",
@@ -35,6 +38,8 @@ INACTIVE_LINTERS = [
     "updatebot",
     "typescript",
     "wpt",
+    "stylelint",
+    "glean-parser",
 ]
 
 
