@@ -1131,7 +1131,7 @@ export class TorController {
       return;
     }
     switch (data.groups.type) {
-      case "STATUS_CLIENT":
+      case "STATUS_CLIENT": {
         let status;
         try {
           status = this.#parseBootstrapStatus(data.groups.data);
@@ -1142,7 +1142,8 @@ export class TorController {
         }
         this.#eventHandler.onBootstrapStatus(status);
         break;
-      case "CIRC":
+      }
+      case "CIRC": {
         const maybeCircuit = this.#parseCircBuilt(data.groups.data);
         const closedEvent = /^(?<ID>[a-zA-Z0-9]{1,16})\sCLOSED/.exec(
           data.groups.data
@@ -1156,7 +1157,8 @@ export class TorController {
           this.#eventHandler.onCircuitClosed(closedEvent.groups.ID);
         }
         break;
-      case "STREAM":
+      }
+      case "STREAM": {
         const sentConnectEvent =
           /^(?<StreamID>[a-zA-Z0-9]{1,16})\sSENTCONNECT\s(?<CircuitID>[a-zA-Z0-9]{1,16})/.exec(
             data.groups.data
@@ -1171,6 +1173,7 @@ export class TorController {
           );
         }
         break;
+      }
       case "NOTICE":
       case "WARN":
       case "ERR":
