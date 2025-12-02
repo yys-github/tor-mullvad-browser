@@ -15,7 +15,7 @@ const surveyDismissVersionPref = "torbrowser.homepage.survey.dismiss_version";
  * Actor parent class for the about:tor page.
  */
 export class AboutTorParent extends JSWindowActorParent {
-  /*
+  /**
    * Whether the user has dismissed the Year End Campaign (YEC) banner this
    * session.
    *
