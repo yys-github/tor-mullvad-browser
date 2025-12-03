@@ -7,19 +7,15 @@
 - [ ] Generate Bugzilla triage CSV
   - Run (from `tor-browser-build` root):
   ```bash
-    ./tools/browser/generate-bugzilla-triage-csv ${FIREFOX_VERSION} ${PREVIOUS_NIGHTLY_TAG} ${NEXT_NIGHLTY_TAG} ${TRIAGE_ISSUE_NUMBER} > out.csv
+    ./tools/browser/generate-bugzilla-triage-csv ${FIREFOX_VERSION} ${TRIAGE_ISSUE_NUMBER} > out.csv
   ```
   - `${FIREFOX_VERSION}`: the major Firefox version of the nightly to review
     - **Example**: 129
-  - `${PREVIOUS_NIGHTLY_TAG}`: the nightly 'end' tag of the previous major Firefox version
-    - **Example**: `FIREFOX_NIGHTLY_128_END`
-  - `${NEXT_NIGHLTY_TAG}`: the nightly 'end' tag of the next major Firefox version we are reviewing
-    - **Example**: `FIREFOX_NIGHTLY_129_END`
   - `${TRIAGE_ISSUE_NUMBER}`: this `tor-browser` issue
     - **Example**: `43303`
   - **Example**:
     ```bash
-    ./tools/browser/generate-bugzilla-triage-csv 129 FIREFOX_NIGHTLY_128_END FIREFOX_NIGHTLY_129_END 43303 > 129.csv
+    ./tools/browser/generate-bugzilla-triage-csv 129 43303 > 129.csv
     ```
 - [ ] Attach the generated CSV file to the triage isssue
 - [ ] Import to Google Sheets ( https://sheets.google.com )
@@ -38,24 +34,29 @@
       - Change `Restricted` to `Anyone with the link`
     - Post link in an internal note on this issue
 - [ ] Assign requested reviewers to this issue
+  - **NOTE**: We currently have 3 blocks of reviewers in rotation:
+    - bea, boklm, ma1
+    - dan_b, henry-x, pierov
+    - clairehurst, morgan, jwilde
+- [ ] Set the issue's `Due Date` to 10 weeks after this version's "Beta starts" date or 2 weeks after the next ESR's "Beta starts" date (whichever is sooner)
+  - **Release Calendar**: https://whattrainisitnow.com/calendar/
 
 ## Release Notes Review
 
 <!--
   Ticket author! Find and post links to the release notes here!
-    - Release notes for users: https://www.mozilla.org/en-US/firefox/releases/
+    - Release notes for users: https://www.firefox.com/en-US/releases/
     - Release notes for developers: https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Releases
 -->
 
 - [ ] Release Notes for Users (often includes multiple point releases):
-  - https://www.mozilla.org/en-US/firefox/${FIREFOX_VERSION}/releasenotes/
+  - https://www.firefox.com/firefox/${FIREFOX_VERSION}/releasenotes/
 - [ ] Release Notes for Developers
   - https://developer.mozilla.org/en-US/docs/Mozilla/Firefox/Releases/${FIREFOX_VERSION}
 
 ---
 
 - Bugzilla Triage and Release Notes Review Completed by:
-  <!-- try and distribute the review responsibilities somehow fairly across the team -->
   - [ ] reviewer 1 <!-- replace with reviewer name :) -->
   - [ ] reviewer 2 <!-- replace with reviewer name :) -->
   - [ ] reviewer 3 <!-- replace with reviewer name :) -->
