@@ -14,8 +14,8 @@ Title:
 
 ---
 
-<!-- Make sure the "esr-" label is the correct version: -->
-/label ~"esr-140"
+/label ~"esr-153"
 /label ~"Apps::Product::TorBrowser"
 /label ~"Apps::Type::Audit"
 /label ~"Priority::Blocker"
+/milestone %"Tor Browser 16.0"
