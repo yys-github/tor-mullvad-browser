@@ -31,7 +31,7 @@
 
 - [ ] Link this issue to the appropriate [Release Prep](https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/issues/?sort=updated_desc&state=opened&label_name%5B%5D=Apps%3A%3AType%3A%3AReleasePreparation) issue.
 
-### Update Branch Protection Rules
+### **Update Branch Protection Rules**
 
 - [ ] In [Repository Settings](https://gitlab.torproject.org/tpo/applications/tor-browser/-/settings/repository):
   - [ ] Remove previous alpha `base-browser` and `tor-browser` branch protection rules (this will prevent pushing new changes to the branches being rebased)
