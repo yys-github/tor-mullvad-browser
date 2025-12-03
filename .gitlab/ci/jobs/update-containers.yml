@@ -9,8 +9,4 @@ build-base-image:
     - |
       echo -e "\e[33mPushing new image to registry as ${TAG}\e[0m"
       podman push ${TAG}
-  rules:
-    - if: ($CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PROJECT_NAMESPACE == 'tpo/applications')
-      changes:
-          - '.gitlab/ci/containers/base/Containerfile'
-          - '.gitlab-ci.yml'
+  when: manual
