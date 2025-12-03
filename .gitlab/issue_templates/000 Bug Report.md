@@ -29,6 +29,11 @@ to be working.
 Provide a description of what actually occurs.
 -->
 
+## User impact
+<!--
+Provide an overview of consequences to users due to this bug.
+-->
+
 ## Bookkeeping
 <!--
 Please provide the following information:
@@ -45,10 +50,13 @@ Please provide the following information:
   - [ ] other (please specify):
 - Operating System:
   - [ ] Windows
+    - Version:
   - [ ] macOS
+    - Version:
   - [ ] Linux
+    - Distribution + Version:
+    - Desktop Environment + Version:
   - [ ] Other (please specify):
-- Operating System Version:
 
 ### Browser UI language
 <!--
