@@ -984,17 +984,17 @@ pref("font.name-list.serif.x-cans", "Noto Serif Canadian Aboriginal, Tinos");
 pref("font.name-list.sans-serif.x-cans", "Noto Sans Canadian Aboriginal, Arimo");
 pref("font.name-list.monospace.x-cans", "Noto Sans Canadian Aboriginal, Cousine");
 // ChineseCN
-pref("font.name-list.serif.zh-CN", "Noto Sans SC Regular, Tinos");
-pref("font.name-list.sans-serif.zh-CN", "Noto Sans SC Regular, Arimo");
-pref("font.name-list.monospace.zh-CN", "Noto Sans SC Regular, Cousine");
+pref("font.name-list.serif.zh-CN", "Noto Sans SC, Tinos");
+pref("font.name-list.sans-serif.zh-CN", "Noto Sans SC, Arimo");
+pref("font.name-list.monospace.zh-CN", "Noto Sans SC, Cousine");
 // ChineseHK
-pref("font.name-list.serif.zh-HK", "Noto Sans TC Regular, Tinos");
-pref("font.name-list.sans-serif.zh-HK", "Noto Sans TC Regular, Arimo");
-pref("font.name-list.monospace.zh-HK", "Noto Sans TC Regular, Cousine");
+pref("font.name-list.serif.zh-HK", "Noto Sans TC, Tinos");
+pref("font.name-list.sans-serif.zh-HK", "Noto Sans TC, Arimo");
+pref("font.name-list.monospace.zh-HK", "Noto Sans TC, Cousine");
 // ChineseTW
-pref("font.name-list.serif.zh-TW", "Noto Sans TC Regular, Tinos");
-pref("font.name-list.sans-serif.zh-TW", "Noto Sans TC Regular, Arimo");
-pref("font.name-list.monospace.zh-TW", "Noto Sans TC Regular, Cousine");
+pref("font.name-list.serif.zh-TW", "Noto Sans TC, Tinos");
+pref("font.name-list.sans-serif.zh-TW", "Noto Sans TC, Arimo");
+pref("font.name-list.monospace.zh-TW", "Noto Sans TC, Cousine");
 // Cyrillic
 pref("font.name-list.serif.x-cyrillic", "Tinos");
 pref("font.name-list.sans-serif.x-cyrillic", "Arimo");
@@ -1028,9 +1028,9 @@ pref("font.name-list.serif.he", "Noto Serif Hebrew, Tinos");
 pref("font.name-list.sans-serif.he", "Noto Sans Hebrew, Arimo");
 pref("font.name-list.monospace.he", "Noto Sans Hebrew, Cousine");
 // Japanese
-pref("font.name-list.serif.ja", "Noto Sans JP Regular, Tinos");
-pref("font.name-list.sans-serif.ja", "Noto Sans JP Regular, Arimo");
-pref("font.name-list.monospace.ja", "Noto Sans JP Regular, Cousine");
+pref("font.name-list.serif.ja", "Noto Sans JP, Tinos");
+pref("font.name-list.sans-serif.ja", "Noto Sans JP, Arimo");
+pref("font.name-list.monospace.ja", "Noto Sans JP, Cousine");
 // Kannada
 pref("font.name-list.serif.x-knda", "Noto Serif Kannada, Tinos");
 pref("font.name-list.sans-serif.x-knda", "Noto Sans Kannada, Arimo");
