@@ -30,6 +30,8 @@
 ### **Bookkeeping**
 
 - [ ] Link this issue to the appropriate [Release Prep](https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/issues/?sort=updated_desc&state=opened&label_name%5B%5D=Apps%3A%3AType%3A%3AReleasePreparation) issue.
+- [ ] Create "Firefox Release Review" issue for this version
+  - **NOTE**: We have issues open through Firefox 153 so this can be skipped until we get to Firefox 154
 
 ### **Update Branch Protection Rules**
 
