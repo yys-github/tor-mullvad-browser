@@ -185,6 +185,14 @@ Manual QA test check-list for major desktop releases. Please copy/paste form int
   - [ ] UI shouldn't accept bad ports (e.g. invalid port numbers, non-numbers, etc)
 - [ ] Each individual setting type has it's own validation (i.e. not all or nothing anymore)
 
+## Upgrades
+- [ ] Build-to-Build upgrade from:
+  - [ ] Previous minor version
+  - [ ] Previous major version
+  - [ ] Previous watershed release
+    - **NOTE**: a watershed release is a release which all previous versions will first update to before updating to latest; the most recent watershed is Tor Browser 14.0
+    - Updater Documentation: https://gitlab.torproject.org/tpo/applications/wiki/-/wikis/Development-Information/Tor-Browser/Updater
+
 ```
 
 </details>
@@ -200,8 +208,8 @@ Please lay claim to a platform in the comments:
   - x86_64
   - aarch64
 - Linux
-  - x86
   - x86_64
+  - aarch64
 
 <!-- Do not edit beneath this line <3 -->
 
@@ -209,4 +217,5 @@ Please lay claim to a platform in the comments:
 
 /label ~"Apps::Product::TorBrowser"
 /label ~"Apps::Type::Test"
+/label ~"Apps::Impact::High"
 /label ~"Priority::Blocker"
