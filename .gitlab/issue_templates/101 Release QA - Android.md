@@ -86,6 +86,12 @@ Manual QA test check-list for major android releases. Please copy/paste form int
   - [ ] Not removable from about:addons
   - [ ] Tests: https://test-data.tbb.torproject.org/test-data/noscript/
     - **TODO**: fix test pages
+
+## Upgrades
+- [ ] Build-to-Build upgrade from:
+  - [ ] Previous minor version
+  - [ ] Previous major version
+
 ```
 
 </details>
@@ -93,7 +99,6 @@ Manual QA test check-list for major android releases. Please copy/paste form int
 Please lay claim to an architecture in the comments:
 
 Architectures:
-- x86
 - x86_64
 - arm32
 - aarch64
@@ -104,4 +109,5 @@ Architectures:
 
 /label ~"Apps::Product::TorBrowser"
 /label ~"Apps::Type::Test"
+/label ~"Apps::Impact::High"
 /label ~"Priority::Blocker"
