@@ -50,16 +50,13 @@
  -->
 
 ## **tor-browser**: https://gitlab.torproject.org/tpo/applications/tor-browser.git
-- [ ] Backport any Android-specific security fixes from Firefox rapid-release
+- [ ] Backport security fixes from Firefox rapid-release
   - [ ] Backport patches to `tor-browser` stable branch
   - [ ] Open MR
   - [ ] Merge
   - [ ] cherry-pick patches onto:
     - [ ] `base-browser` stable
     - [ ] `mullvad-browser` stable
-    - [ ] `tor-browser` alpha
-    - [ ] `base-browser` alpha
-    - [ ] `mullvad-browser` alpha
   - [ ] Sign/Tag commits:
     - In **tor-browser-build.git**, run signing script:
       ```bash
@@ -68,9 +65,6 @@
     - [ ] `base-browser` stable
     - [ ] `tor-browser` stable
     - [ ] `mullvad-browser` stable
-    - [ ] `base-browser` alpha
-    - [ ] `tor-browser` alpha
-    - [ ] `mullvad-browser` alpha
 
   - [ ] Push tags to `upstream`
 - **OR**
@@ -84,4 +78,5 @@
 /label ~"Apps::Product::TorBrowser"
 /label ~"Apps::Product::MullvadBrowser"
 /label ~"Apps::Type::Backport"
+/label ~"Apps::Impact::High"
 /label ~"Priority::Blocker"
