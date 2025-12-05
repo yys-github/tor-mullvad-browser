@@ -18,9 +18,7 @@ import mozilla.components.concept.engine.webextension.WebExtension
 import mozilla.components.concept.engine.webextension.WebExtensionRuntime
 import mozilla.components.support.webextensions.WebExtensionSupport
 import mozilla.components.support.base.log.logger.Logger
-import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.settings
-import org.mozilla.fenix.tor.RunOnceBootstrapped
 
 object TorBrowserFeatures {
     private val logger = Logger("torbrowser-features")
@@ -133,26 +131,5 @@ object TorBrowserFeatures {
                 }
             )
         }
-
-        /**
-         *  Enable automatic updates for NoScript and, if we've not done it yet, force a
-         *  one-time immediate update check, in order to upgrade old profiles and ensure we've got
-         *  the latest stable AMO version available on first startup.
-         *  We will do it as soon as the Tor is connected, to prevent early addonUpdater activation
-         *  causing automatic update checks failures (components.addonUpdater being a lazy prop).
-         *  The extension, from then on, should behave as if the user had installed it manually.
-         */
-        context.components.torController.registerRunOnceBootstrapped(object : RunOnceBootstrapped {
-            override fun onBootstrapped() {
-                // Enable automatic updates. This must be done on every startup (tor-browser#42353)
-                context.components.addonUpdater.registerForFutureUpdates(NOSCRIPT_ID)
-                // Force an immediate update check for older installations
-                // and as belt-and-suspenders if scheduled updates fail (tor-browser#44293)
-                context.components.addonUpdater.update(NOSCRIPT_ID)
-                settings.noscriptUpdated = 2
-            }
-        })
     }
-
-
 }
