@@ -18,7 +18,9 @@ import mozilla.components.concept.engine.webextension.WebExtension
 import mozilla.components.concept.engine.webextension.WebExtensionRuntime
 import mozilla.components.support.webextensions.WebExtensionSupport
 import mozilla.components.support.base.log.logger.Logger
+import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.settings
+import org.mozilla.fenix.tor.RunOnceBootstrapped
 
 object TorBrowserFeatures {
     private val logger = Logger("torbrowser-features")
@@ -133,6 +135,17 @@ object TorBrowserFeatures {
                 onError = { throwable ->
                     logger.error("Could not install NoScript extension", throwable)
                 }
+            )
+            // This covers the edge case of when noscript is installed but a newer version is available
+            // i.e. A user downloads tba, but doesn't run it or update it for a while but in that time
+            // a newer version of noscript is available. It also covers the test case of purposefully
+            // installing an older version to test the update feature.
+            context.components.torController.registerRunOnceBootstrapped(
+                object : RunOnceBootstrapped {
+                    override fun onBootstrapped() {
+                        context.components.addonUpdater.registerForFutureUpdates(NOSCRIPT_ID)
+                    }
+                },
             )
         }
     }
