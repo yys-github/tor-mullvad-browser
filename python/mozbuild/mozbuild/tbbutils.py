@@ -1,35 +1,5 @@
-import os
 import re
-from pathlib import Path
 from urllib.request import Request, urlopen
-
-
-def symlink_tree(src_dir, target_dir):
-    """
-    Recursively mirror the directory tree from `src_dir` into `target_dir`
-    using symbolic links.
-
-    Equivalent to: `cp -rs src_dir/* target_dir`
-
-    Notes:
-        - If a file or symlink already exists in the destination, it overwritten.
-        - The symlinks created here use absolute paths i.e. not relocatable.
-    """
-    src = Path(src_dir)
-    target = Path(target_dir)
-
-    target.mkdir(parents=True, exist_ok=True)
-
-    for root, _, files in os.walk(src):
-        target_path = target / Path(root).relative_to(src)
-        target_path.mkdir(parents=True, exist_ok=True)
-
-        for file in files:
-            src_file = Path(root) / file
-            target_file = target_path / file
-            if target_file.exists() or target_file.is_symlink():
-                target_file.unlink()
-            os.symlink(src_file, target_file)
 
 
 def list_files_http(url):

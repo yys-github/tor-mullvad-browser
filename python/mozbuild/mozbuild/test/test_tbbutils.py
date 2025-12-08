@@ -1,8 +1,4 @@
-import os
-import shutil
-import tempfile
 import unittest
-from pathlib import Path
 from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
@@ -12,87 +8,7 @@ from mozbuild.tbbutils import (
     get_artifact_index,
     get_artifact_path,
     list_files_http,
-    symlink_tree,
 )
-
-
-class TestSymlinkTree(unittest.TestCase):
-    def _create_sample_tree(self, base: Path):
-        (base / "subdir").mkdir()
-        (base / "file1.txt").write_text("content1")
-        (base / "subdir" / "file2.txt").write_text("content2")
-
-    def setUp(self):
-        self.tmpdir = tempfile.mkdtemp()
-        self.src = Path(self.tmpdir) / "src"
-        self.dst = Path(self.tmpdir) / "dst"
-        self.src.mkdir()
-        self.dst.mkdir()
-
-    def tearDown(self):
-        shutil.rmtree(self.tmpdir)
-
-    def test_symlinks_created_correctly(self):
-        self._create_sample_tree(self.src)
-
-        symlink_tree(self.src, self.dst)
-
-        self.assertTrue((self.dst / "file1.txt").is_symlink())
-        self.assertTrue((self.dst / "subdir" / "file2.txt").is_symlink())
-
-        self.assertEqual(
-            os.readlink(self.dst / "file1.txt"),
-            str(self.src / "file1.txt"),
-        )
-        self.assertEqual(
-            os.readlink(self.dst / "subdir" / "file2.txt"),
-            str(self.src / "subdir" / "file2.txt"),
-        )
-
-    def test_overwrites_existing_files(self):
-        self._create_sample_tree(self.src)
-
-        # Create a conflicting file in destination
-        (self.dst / "file1.txt").write_text("old")
-
-        symlink_tree(self.src, self.dst)
-
-        self.assertTrue((self.dst / "file1.txt").is_symlink())
-        self.assertEqual(
-            os.readlink(self.dst / "file1.txt"),
-            str(self.src / "file1.txt"),
-        )
-
-    def test_nested_directories_are_mirrored(self):
-        (self.src / "a" / "b" / "c").mkdir(parents=True)
-        (self.src / "a" / "b" / "c" / "deep.txt").write_text("deep content")
-
-        symlink_tree(self.src, self.dst)
-
-        deep_link = self.dst / "a" / "b" / "c" / "deep.txt"
-        self.assertTrue(deep_link.is_symlink())
-        self.assertEqual(
-            os.readlink(deep_link),
-            str(self.src / "a" / "b" / "c" / "deep.txt"),
-        )
-
-    def test_idempotence(self):
-        self._create_sample_tree(self.src)
-
-        symlink_tree(self.src, self.dst)
-        symlink_tree(self.src, self.dst)  # Run again
-
-        self.assertTrue((self.dst / "file1.txt").is_symlink())
-        self.assertTrue((self.dst / "subdir" / "file2.txt").is_symlink())
-
-    def test_symlinks_use_absolute_paths(self):
-        (self.src / "file.txt").write_text("absolute")
-
-        symlink_tree(self.src, self.dst)
-
-        link_target = os.readlink(self.dst / "file.txt")
-        self.assertTrue(Path(link_target).is_absolute())
-        self.assertEqual(Path(link_target), self.src / "file.txt")
 
 
 class TestGetArtifactName(unittest.TestCase):

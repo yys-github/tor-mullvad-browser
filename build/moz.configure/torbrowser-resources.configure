@@ -50,25 +50,6 @@ def is_android_build(build_project):
     return build_project == "mobile/android"
 
 
-@imports(_from="pathlib", _import="Path")
-def maven_local_default():
-    return str(Path.home() / ".m2/repository")
-
-
-option(
-    "--with-maven-local",
-    nargs=1,
-    default=maven_local_default(),
-    help="Path the maven local directory. Defaults to $HOME/.m2/repository",
-)
-
-
-@depends("--with-maven-local")
-def maven_local(value):
-    if value:
-        return value[0]
-
-
 option(
     "--with-tor-expert-bundle-aar",
     env="TOR_EXPERT_BUNDLE_AAR",
@@ -124,7 +105,6 @@ option(
 
 
 @depends(
-    maven_local,
     "--with-application-services",
     mozbuild_state_path,
     bootstrap_path(
@@ -138,7 +118,7 @@ option(
 @checking("for application-services")
 @imports(_from="pathlib", _import="Path")
 @imports("mozbuild.tbbutils")
-def application_services(maven_local, value, mozbuild_state_path, _bootstrapped):
+def application_services(value, mozbuild_state_path, _bootstrapped):
     as_location = None
 
     if value:
@@ -153,14 +133,11 @@ def application_services(maven_local, value, mozbuild_state_path, _bootstrapped)
             as_location = bootstrapped_location
 
     if not as_location:
-        # application-services is not required for building.
+        # application-services is required for building.
         die(
             "application-services not found. Either enable bootstrap, or provide a path with --with-application-services."
         )
 
-    # Symlink a-s in the maven local repository.
-    # Note that this _overwrites_ whatever is already in there.
-    mozbuild.tbbutils.symlink_tree(as_location, maven_local)
     return as_location
 
 
