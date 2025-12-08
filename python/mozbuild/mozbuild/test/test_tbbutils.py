@@ -4,7 +4,11 @@ from unittest.mock import MagicMock, patch
 
 import mozunit
 
-from mozbuild.tbbutils import get_artifact_index, get_artifact_path, list_files_http
+from mozbuild.tbbutils import (
+    get_artifact_index,
+    get_artifact_path,
+    list_files_http,
+)
 
 
 class TestGetArtifactName(unittest.TestCase):
