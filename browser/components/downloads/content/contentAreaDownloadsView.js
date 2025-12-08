@@ -9,7 +9,7 @@ const { PrivateBrowsingUtils } = ChromeUtils.importESModule(
 );
 
 const { DownloadsTorWarning } = ChromeUtils.importESModule(
-  "resource:///modules/DownloadsTorWarning.sys.mjs"
+  "moz-src:///browser/components/downloads/DownloadsTorWarning.sys.mjs"
 );
 
 var ContentAreaDownloadsView = {

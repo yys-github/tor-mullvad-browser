@@ -41,7 +41,8 @@ ChromeUtils.defineESModuleGetters(this, {
   NetUtil: "resource://gre/modules/NetUtil.sys.mjs",
   PlacesUtils: "resource://gre/modules/PlacesUtils.sys.mjs",
   PrivateBrowsingUtils: "resource://gre/modules/PrivateBrowsingUtils.sys.mjs",
-  DownloadsTorWarning: "resource:///modules/DownloadsTorWarning.sys.mjs",
+  DownloadsTorWarning:
+    "moz-src:///browser/components/downloads/DownloadsTorWarning.sys.mjs",
 });
 
 const { Integration } = ChromeUtils.importESModule(

@@ -17,7 +17,8 @@ ChromeUtils.defineESModuleGetters(this, {
   PlacesBackups: "resource://gre/modules/PlacesBackups.sys.mjs",
   PrivateBrowsingUtils: "resource://gre/modules/PrivateBrowsingUtils.sys.mjs",
   DownloadUtils: "resource://gre/modules/DownloadUtils.sys.mjs",
-  DownloadsTorWarning: "resource:///modules/DownloadsTorWarning.sys.mjs",
+  DownloadsTorWarning:
+    "moz-src:///browser/components/downloads/DownloadsTorWarning.sys.mjs",
 });
 XPCOMUtils.defineLazyScriptGetter(
   this,
