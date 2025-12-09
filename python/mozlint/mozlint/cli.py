@@ -38,7 +38,6 @@ INACTIVE_LINTERS = [
     "updatebot",
     "typescript",
     "wpt",
-    "stylelint",
     "glean-parser",
 ]
 
