@@ -1103,7 +1103,7 @@ def milestone(build_env, build_project, version_path, as_milestone, _):
                 die("Could not find a version number in {}".format(p))
             versions.append(content[-1])
 
-    is_early_beta_or_earlier = False
+    is_early_beta_or_earlier = None
     if as_milestone:
         if "a1" not in versions[0]:
             # We could make this work with some effort
