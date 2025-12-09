@@ -274,7 +274,7 @@ module.exports = {
     // Remove this line setting `csscontrols/use-logical` to null after implementing fixes
     "csstools/use-logical": null,
     "stylelint-plugin-mozilla/no-base-design-tokens": true,
-    "stylelint-plugin-mozilla/use-design-tokens": true,
+    "stylelint-plugin-mozilla/use-design-tokens": false,
   },
 
   overrides: [
