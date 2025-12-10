@@ -1,4 +1,4 @@
-@import url("chrome://global/skin/tor-colors.css");
+@import url("chrome://global/skin/tor-common.css");
 
 #category-connection > .category-icon {
   list-style-image: url("chrome://global/content/torconnect/tor-connect.svg");
@@ -16,29 +16,32 @@ button.spoof-button-disabled {
 }
 
 .tor-loading-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   -moz-context-properties: fill;
-  /* Use --tor-text-color. This will have good contrast for this small icon
-   * against the background. And it will match the surrounding text for high
-   * contrast and forced colour themes. */
-  fill: var(--tor-text-color);
+  /* Use --text-color-tor. This will have good contrast for this small icon
+   * against the background. */
+  fill: var(--text-color-tor);
   content: url("chrome://global/skin/icons/loading.svg");
+
+  @media (forced-colors) or (prefers-contrast) {
+    fill: currentColor;
+  }
 }
 
 .tor-toggle {
-  margin-block: 16px;
+  margin-block: var(--space-large);
   width: max-content;
 }
 
 /* Status */
 
 #network-status-internet-area {
-  margin-block: 16px;
+  margin-block: var(--space-large);
 }
 
 #network-status-tor-area {
-  margin-block: 0 32px;
+  margin-block: 0 var(--space-xxlarge);
 }
 
 .network-status-area {
@@ -52,9 +55,9 @@ button.spoof-button-disabled {
 }
 
 .network-status-icon {
-  width: 18px;
-  height: 18px;
-  margin-inline-end: 8px;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  margin-inline-end: var(--space-small);
   -moz-context-properties: fill, stroke;
   fill: var(--icon-color);
   stroke: var(--icon-color);
@@ -83,11 +86,11 @@ button.spoof-button-disabled {
 
 .network-status-label {
   font-weight: var(--font-weight-bold);
-  margin-inline-end: 0.75em;
+  margin-inline-end: var(--space-medium);
 }
 
 .network-status-result {
-  margin-inline-end: 0.75em;
+  margin-inline-end: var(--space-medium);
 }
 
 #network-status-tor-area.status-connected #network-status-tor-connect-button {
@@ -141,7 +144,7 @@ button.spoof-button-disabled {
   display: flex;
   min-width: max-content;
   align-items: center;
-  gap: 0.5em;
+  gap: var(--space-small);
   font-size: var(--font-size-small);
 }
 
@@ -154,10 +157,12 @@ button.spoof-button-disabled {
    * using it for text colors, so we only enable these rules when not using a
    * high contrast theme or forced colors. */
   .bridge-status-badge.bridge-status-connected {
-    color: var(--tor-text-color);
+    color: var(--text-color-tor);
   }
 
   .bridge-status-badge.bridge-status-current-built-in {
+    /* Using the accent colour should be avoided. Will likely be replaced in
+     * tor-browser#44421. */
     color: var(--color-accent-primary);
   }
 }
@@ -167,8 +172,8 @@ button.spoof-button-disabled {
 }
 
 .bridge-status-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   background-repeat: no-repeat;
   background-position: center center;
   -moz-context-properties: fill;
@@ -198,7 +203,7 @@ button.spoof-button-disabled {
 #tor-bridges-none,
 #tor-bridges-current {
   margin-inline: 0;
-  margin-block: 32px;
+  margin-block: var(--space-xxlarge);
 }
 
 #tor-bridges-none:not([hidden]) {
@@ -206,16 +211,16 @@ button.spoof-button-disabled {
   justify-items: center;
   text-align: center;
   padding-block: 64px;
-  padding-inline: 32px;
-  gap: 16px;
+  padding-inline: var(--space-xxlarge);
+  gap: var(--space-large);
   border-radius: var(--border-radius-small);
   color: var(--text-color-deemphasized);
   border: 2px dashed var(--border-color-deemphasized);
 }
 
 #tor-bridges-none-icon {
-  width: 20px;
-  height: 20px;
+  width: var(--icon-size-medium);
+  height: var(--icon-size-medium);
   content: url("chrome://browser/content/torpreferences/bridge.svg");
   -moz-context-properties: fill;
   fill: currentColor;
@@ -223,10 +228,10 @@ button.spoof-button-disabled {
 
 .tor-bridges-box,
 .tor-bridges-details-box {
-  padding: 16px;
+  padding: var(--space-large);
   border-radius: var(--border-radius-small);
   background: var(--background-color-box-info);
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
 }
 
 @media not forced-colors {
@@ -240,9 +245,9 @@ button.spoof-button-disabled {
   min-width: max-content;
   grid-template: "heading source button" min-content / max-content 1fr max-content;
   align-items: center;
-  border-block-end: 1px solid var(--border-color);
-  padding-block-end: 16px;
-  margin-block-end: 16px;
+  border-block-end: var(--border-width) solid var(--border-color);
+  padding-block-end: var(--space-large);
+  margin-block-end: var(--space-large);
   white-space: nowrap;
 }
 
@@ -251,8 +256,8 @@ button.spoof-button-disabled {
 }
 
 .tor-bridges-source-label {
-  margin-inline-start: 2em;
-  margin-inline-end: 8px;
+  margin-inline-start: var(--space-xxlarge);
+  margin-inline-end: var(--space-small);
   grid-area: source;
   justify-self: end;
 }
@@ -264,7 +269,7 @@ button.spoof-button-disabled {
 #tor-bridges-lox-label:not([hidden]) {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-small);
 }
 
 #tor-bridges-lox-label > * {
@@ -273,20 +278,20 @@ button.spoof-button-disabled {
 
 #tor-bridges-lox-label-icon {
   content: url("chrome://browser/content/torpreferences/lox-bridge-pass.svg");
-  width: 16px;
-  height: 16px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   -moz-context-properties: fill;
   fill: var(--icon-color);
 }
 
 .tor-bridges-options-button {
-  padding: 3px;
+  padding: var(--space-xsmall);
   margin: 0;
   min-height: auto;
   min-width: auto;
   box-sizing: content-box;
-  width: 16px;
-  height: 16px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   background-image: url("chrome://global/skin/icons/more.svg");
   background-repeat: no-repeat;
   background-position: center center;
@@ -302,8 +307,8 @@ button.spoof-button-disabled {
     "type status" min-content
     "description description" auto
     / max-content 1fr;
-  gap: 12px 1.5em;
-  margin-block-end: 16px;
+  gap: var(--space-medium) var(--space-xlarge);
+  margin-block-end: var(--space-large);
 }
 
 #tor-bridges-built-in-type-name {
@@ -323,8 +328,8 @@ button.spoof-button-disabled {
 .tor-bridges-grid:not([hidden]) {
   display: grid;
   grid-template-columns: max-content repeat(4, max-content) 1fr;
-  --tor-bridges-grid-column-gap: 8px;
-  --tor-bridges-grid-column-short-gap: 4px;
+  --tor-bridges-grid-column-gap: var(--space-small);
+  --tor-bridges-grid-column-short-gap: var(--space-xsmall);
   /* For #tor-bridges-grid-display we want each grid item to have the same
    * height so that their focus outlines match. */
   align-items: stretch;
@@ -358,7 +363,7 @@ button.spoof-button-disabled {
   grid-column: 1 / -1;
   grid-template-columns: subgrid;
   /* Add 16px gap between rows, plus 8px at the start and end of the grid. */
-  padding-block: 8px;
+  padding-block: var(--space-small);
 }
 
 #tor-bridges-grid-display .tor-bridges-grid-cell:focus-visible {
@@ -391,12 +396,12 @@ button.spoof-button-disabled {
 .tor-bridges-emoji-icon {
   display: block;
   box-sizing: content-box;
-  width: 16px;
-  height: 16px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   /* color-light-gray-10, color-dark-gray-60 */
   background: light-dark(#f9f9fb, #2b2a33);
   border-radius: var(--border-radius-small);
-  padding: 8px;
+  padding: var(--space-small);
 }
 
 .tor-bridges-grid-end-block {
@@ -414,7 +419,7 @@ button.spoof-button-disabled {
 
 .tor-bridges-address-cell {
   /* base size */
-  width: 10em;
+  width: 150px;
   flex: 1 0 auto;
 }
 
@@ -448,7 +453,7 @@ button.spoof-button-disabled {
 }
 
 .tor-bridges-details-box {
-  margin-block-start: 24px;
+  margin-block-start: var(--space-xlarge);
 }
 
 #tor-bridges-share:not([hidden]) {
@@ -460,13 +465,13 @@ button.spoof-button-disabled {
     "description . ." 1fr
     "description copy qr" min-content
     / 1fr max-content max-content;
-  gap: 0 8px;
+  gap: 0 var(--space-small);
   align-items: center;
 }
 
 .tor-bridges-share-heading {
   grid-area: heading;
-  margin-block-end: 4px;
+  margin-block-end: var(--space-xsmall);
 }
 
 #tor-bridges-share-description {
@@ -483,13 +488,13 @@ button.spoof-button-disabled {
 
 #tor-bridges-qr-addresses-button {
   grid-area: qr;
-  padding: 5px;
+  padding: var(--space-xsmall);
   margin: 0;
   min-height: auto;
   min-width: auto;
   box-sizing: content-box;
-  width: 24px;
-  height: 24px;
+  width: var(--icon-size-large);
+  height: var(--icon-size-large);
   background-image: url("chrome://browser/content/torpreferences/bridge-qr.svg");
   background-repeat: no-repeat;
   background-position: center center;
@@ -500,7 +505,7 @@ button.spoof-button-disabled {
 }
 
 #tor-bridges-lox-status {
-  margin-block-start: 8px;
+  margin-block-start: var(--space-small);
 }
 
 .tor-bridges-lox-box:not([hidden]) {
@@ -511,7 +516,7 @@ button.spoof-button-disabled {
     ". invites button" min-content
     / min-content 1fr max-content;
   align-items: start;
-  gap: 8px;
+  gap: var(--space-small);
 }
 
 .tor-bridges-lox-image-outer {
@@ -535,9 +540,8 @@ button.spoof-button-disabled {
 
 .tor-bridges-lox-image-inner {
   grid-area: image;
-  /* Extra 4px space for gaussian blur. */
-  width: 16px;
-  height: 16px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   align-self: center;
   justify-self: center;
   -moz-context-properties: fill;
@@ -570,7 +574,7 @@ button.spoof-button-disabled {
   /* Align the icons, as if list markers. */
   grid-template-columns: max-content 1fr;
   align-items: start;
-  gap: 8px 0;
+  gap: var(--space-small) 0;
 }
 
 .tor-bridges-lox-list-item:not([hidden]) {
@@ -580,11 +584,11 @@ button.spoof-button-disabled {
 .tor-bridges-lox-list-item:not([hidden])::before {
   /* We use ::before rather than list-style-image to have more control. */
   box-sizing: content-box;
-  width: 18px;
-  height: 18px;
-  margin-inline: 4px 6px;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  margin-inline: var(--space-xsmall) var(--space-small);
   /* We want the icons to be center-aligned relative to the *first* line. */
-  margin-block-start: calc((1lh - 18px) / 2);
+  margin-block-start: calc((1lh - var(--icon-size)) / 2);
   /* We use display: grid rather than display: block. Otherwise the content will
    * be offset vertically by the line-height. */
   display: grid;
@@ -622,23 +626,22 @@ button.spoof-button-disabled {
 }
 
 .tor-bridges-provider-heading {
-  margin-block: 48px 8px;
+  margin-block: var(--space-xxlarge) var(--space-small);
 }
 
 #tor-bridges-provider-area {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: var(--space-large);
   align-items: start;
-  margin-block-start: 24px;
+  margin-block-start: var(--space-xlarge);
 }
 
 #tor-bridges-provider-list {
   display: grid;
   grid-template-columns: max-content max-content;
-  /* 24px gap between items. */
-  gap: 24px 12px;
-  margin-block: 16px;
+  gap: var(--space-xlarge) var(--space-medium);
+  margin-block: var(--space-large);
   padding: 0;
 }
 
@@ -648,13 +651,12 @@ button.spoof-button-disabled {
   grid-template-columns: subgrid;
   align-items: center;
   justify-items: start;
-  /* 8px gap between the name and instruction. */
-  gap: 8px 12px;
+  gap: var(--space-small) var(--space-medium);
 }
 
 .tor-bridges-provider-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   -moz-context-properties: fill;
   fill: var(--icon-color);
 }
@@ -695,7 +697,7 @@ button.spoof-button-disabled {
 }
 
 #tor-bridges-request-description {
-  margin-block: 12px 16px;
+  margin-block: var(--space-medium) var(--space-large);
 }
 
 #tor-bridges-open-request-dialog-button {
@@ -714,7 +716,7 @@ button.spoof-button-disabled {
 /* Request bridges */
 
 image#torPreferences-requestBridge-captchaImage {
-  margin: 16px 0 8px 0;
+  margin: var(--space-large) 0 var(--space-small) 0;
   min-height: 140px;
 }
 
@@ -732,15 +734,15 @@ button#torPreferences-requestBridge-refreshCaptchaButton {
 }
 
 dialog#torPreferences-requestBridge-dialog > hbox {
-  margin-bottom: 1em;
+  margin-bottom: var(--space-large);
 }
 
 /*
  Various elements that really should be lining up don't because they have inconsistent margins
 */
 .torMarginFix {
-  margin-left: 4px;
-  margin-right: 4px;
+  margin-left: var(--space-xsmall);
+  margin-right: var(--space-xsmall);
 }
 
 /* Show bridge QR dialog */
@@ -756,8 +758,8 @@ dialog#torPreferences-requestBridge-dialog > hbox {
   background: var(--qr-zero);
   /* Padding is needed in case the dark theme is used so the bits don't blend
   with whatever the default background color is. */
-  padding: 10px;
-  margin-block: 4px 8px;
+  padding: var(--space-medium);
+  margin-block: var(--space-xsmall) var(--space-small);
   border-radius: var(--border-radius-small);
   display: grid;
   align-items: center;
@@ -777,7 +779,7 @@ dialog#torPreferences-requestBridge-dialog > hbox {
   /* Share the same grid area as #bridgeQr-target. */
   grid-area: qr;
   content: url("chrome://browser/content/torpreferences/bridge.svg");
-  padding: 10px;
+  padding: var(--space-small);
   border-radius: var(--border-radius-medium);
   box-sizing: content-box;
   width: 52px;
@@ -796,8 +798,8 @@ dialog#torPreferences-requestBridge-dialog > hbox {
     ". remaining button" min-content
     "message message message" auto
     / 1fr max-content max-content;
-  gap: 8px;
-  margin-block: 16px 8px;
+  gap: var(--space-small);
+  margin-block: var(--space-large) var(--space-small);
   align-items: center;
 }
 
@@ -832,7 +834,7 @@ dialog#torPreferences-requestBridge-dialog > hbox {
 #lox-invite-dialog-connecting {
   color: var(--text-color-deemphasized);
   /* Gap with #user-provide-bridge-loading-icon. */
-  margin-inline-start: 0.5em;
+  margin-inline-start: var(--space-small);
 }
 
 #lox-invite-dialog-generate-area:not(.show-connecting) #lox-invite-dialog-connecting {
@@ -855,8 +857,8 @@ dialog#torPreferences-requestBridge-dialog > hbox {
 #lox-invite-dialog-list {
   flex: 1 1 auto;
   /* basis height */
-  height: 10em;
-  margin-block: 8px;
+  height: 160px;
+  margin-block: var(--space-small);
 }
 
 .lox-invite-dialog-list-item {
@@ -864,21 +866,13 @@ dialog#torPreferences-requestBridge-dialog > hbox {
   overflow-x: hidden;
   /* FIXME: ellipsis does not show. */
   text-overflow: ellipsis;
-  padding-block: 6px;
-  padding-inline: 8px;
+  padding-block: var(--space-small);
+  padding-inline: var(--space-small);
 }
 
 /* Builtin bridge dialog */
-#torPreferences-builtinBridge-header {
-  margin: 8px 0 10px 0;
-}
-
-#torPreferences-builtinBridge-description {
-  margin-bottom: 18px;
-}
-
 #torPreferences-builtinBridge-typeSelection {
-  margin-bottom: 16px;
+  margin-block-end: var(--space-large);
 }
 
 #torPreferences-builtinBridge-typeSelection radio label {
@@ -927,7 +921,7 @@ groupbox#torPreferences-bridges-group textarea {
 }
 
 #user-provide-bridge-textarea-label {
-  margin-block: 16px 6px;
+  margin-block: var(--space-large) var(--space-small);
   flex: 0 0 auto;
   align-self: start;
 }
@@ -942,7 +936,7 @@ groupbox#torPreferences-bridges-group textarea {
 
 #user-provide-bridge-message-area {
   flex: 0 0 auto;
-  margin-block: 8px 12px;
+  margin-block: var(--space-small) var(--space-medium);
   align-self: end;
   display: flex;
   align-items: center;
@@ -969,7 +963,7 @@ groupbox#torPreferences-bridges-group textarea {
 #user-provide-bridge-connecting {
   color: var(--text-color-deemphasized);
   /* Gap with #user-provide-bridge-loading-icon. */
-  margin-inline-start: 0.5em;
+  margin-inline-start: var(--space-small);
 }
 
 #user-provide-bridge-dialog:not(.show-connecting) #user-provide-bridge-connecting {
@@ -999,7 +993,7 @@ groupbox#torPreferences-bridges-group textarea {
 #user-provide-bridge-grid-display {
   flex: 0 1 auto;
   overflow: auto;
-  margin-block: 8px;
+  margin-block: var(--space-small);
 }
 
 #user-provide-bridge-grid-display:focus-visible {
@@ -1014,7 +1008,7 @@ groupbox#torPreferences-bridges-group textarea {
 }
 
 #torPreferences-connection-header {
-  margin: 4px 0 14px 0;
+  margin: var(--space-xsmall) 0 var(--space-large) 0;
 }
 
 #torPreferences-connection-grid {
@@ -1041,13 +1035,13 @@ groupbox#torPreferences-bridges-group textarea {
 #tor-log-table {
   flex: 1 0 auto;
   overflow: auto;
-  min-height: 20em;
-  height: 20em;
+  min-height: 300px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   padding: var(--space-small);
-  margin-block-end: 4px;
-  border: 1px solid var(--border-color);
+  margin-block-end: var(--space-xsmall);
+  border: var(--border-width) solid var(--border-color);
   border-radius: var(--border-radius-small);
   font-size: var(--font-size-small);
 }
