@@ -17,9 +17,6 @@
   }
 }
 
-/* stylelint-disable stylelint-plugin-mozilla/use-border-color-tokens */
-/* stylelint-disable stylelint-plugin-mozilla/use-border-radius-tokens */
-
 #tabbrowser-tabbox.letterboxing {
   --letterboxing-bgcolor: var(--background-color-canvas);
   /* Match the border radius used for the sidebar. */
@@ -28,7 +25,7 @@
   --letterboxing-vertical-alignment: start;
   --letterboxing-shadow: none;
   --letterboxing-outline-color: var(--border-color);
-  --letterboxing-outline-width: 1px;
+  --letterboxing-outline-width: var(--border-width);
 
   @media not ((prefers-contrast) or (forced-colors)) {
     /* Match the #sidebar outline width. */
