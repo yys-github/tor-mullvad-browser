@@ -1,10 +1,9 @@
 .tor-urlbar-button:not([hidden]) {
   display: flex;
   align-items: center;
-  gap: 0.5em;
-  /* stylelint-disable-next-line stylelint-plugin-mozilla/use-border-radius-tokens */
+  gap: var(--space-small);
   border-radius: var(--urlbar-inner-border-radius);
-  --tor-urlbar-button-inline-padding: 8px;
+  --tor-urlbar-button-inline-padding: var(--space-small);
   padding-inline: var(--tor-urlbar-button-inline-padding);
   margin: 0;
 }
