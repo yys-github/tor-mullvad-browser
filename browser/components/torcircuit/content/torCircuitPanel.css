@@ -1,8 +1,8 @@
 /* Toolbar button */
 
 #tor-circuit-button-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   /* We want to set flat fill if we have prefers-contrast. Otherwise, we want a
    * gradient fill depending on the dark mode.
    * context-fill is insufficient for a linear gradient, so we instead use the
@@ -69,10 +69,10 @@
 #tor-circuit-alias img {
   -moz-context-properties: fill;
   fill: currentColor;
-  width: 14px;
-  height: 14px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   flex: 0 0 auto;
-  margin-inline-end: 0.25em;
+  margin-inline-end: var(--space-xsmall);
 }
 
 #tor-circuit-alias-label {
@@ -107,8 +107,8 @@
    * list item so that the different parts visually connect.
    * Using list-style-image does not give us enough control over sizing the
    * image. So instead we use a background-image. */
-  padding-inline-start: 1.5em;
-  padding-block: 6px;
+  padding-inline-start: var(--space-xlarge);
+  padding-block: var(--space-small);
   background-image: url("chrome://browser/content/tor-circuit-node-middle.svg");
   -moz-context-properties: fill;
   /* Light Gray 50 */
@@ -118,7 +118,7 @@
   /* Bump the size by small amount to prevent rendering gaps.
    * We're assuming here that each line will have the same height so that each
    * image has the same size. */
-  background-size: auto calc(100% + 0.5px);
+  background-size: auto calc(100% + 2px);
   background-repeat: no-repeat;
 }
 
@@ -155,11 +155,11 @@
 }
 
 .tor-circuit-region-flag {
-  margin-inline-end: 0.5em;
-  height: 16px;
+  margin-inline-end: var(--space-small);
+  height: var(--icon-size);
   align-self: center;
   /* Don't occupy any vertical height. */
-  margin-block: -8px;
+  margin-block: calc(-0.5 * var(--icon-size));
 }
 
 .tor-circuit-region-flag.no-region-flag-src {
@@ -169,10 +169,9 @@
 .tor-circuit-addresses {
   /* FIXME: Use a standard font size. Likely will be replaced with the conflux
    * design. */
-  /* stylelint-disable-next-line stylelint-plugin-mozilla/use-font-size-tokens */
   font-size: 0.9em;
   font-family: monospace;
-  margin-inline-start: 0.75em;
+  margin-inline-start: var(--space-medium);
 }
 
 .tor-circuit-ip-address {
