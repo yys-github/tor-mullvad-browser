@@ -1,25 +1,25 @@
 /* Security Level CSS */
 
 #securityLevel-background {
-  min-height: 10em;
-  padding-inline: 16px;
-  column-gap: 0.5em;
+  min-height: 150px;
+  padding-inline: var(--space-large);
+  column-gap: var(--space-small);
   display: grid;
   grid-template:
-    "top-pad icon" 16px
+    "top-pad icon" var(--space-large)
     "title icon" auto
     "body icon" auto
     "learn-more icon" auto
-    "bottom-pad icon" minmax(8px, 1fr)
+    "bottom-pad icon" minmax(var(--space-small), 1fr)
     / auto auto;
 }
 
 #securityLevel-background-image {
   grid-area: icon;
-  --security-level-icon-size: 9em;
+  --security-level-icon-size: 130px;
   width: var(--security-level-icon-size);
   height: var(--security-level-icon-size);
-  margin-block: 0.4em;
+  margin-block: var(--space-small);
   /* Middle of shield aligns with the panel padding: */
   margin-inline-end: calc(-0.5 * var(--security-level-icon-size));
   align-self: start;
@@ -50,12 +50,12 @@
 }
 
 #securityLevel-background p {
-  margin-block: 0 16px;
+  margin-block: 0 var(--space-large);
 }
 
 /* Override margin in panelUI-shared.css */
 #securityLevel-panel toolbarseparator#securityLevel-separator {
-  margin-inline: 16px;
+  margin-inline: var(--space-large);
 }
 
 #securityLevel-level {
@@ -65,7 +65,7 @@
 }
 
 #securityLevel-summary {
-  max-width: 20em;
+  max-width: 300px;
   grid-area: body;
 }
 
