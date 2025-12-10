@@ -12,9 +12,8 @@
 #define RTC_BASE_WIN_CREATE_DIRECT3D_DEVICE_H_
 
 #include <windows.graphics.directx.direct3d11.h>
-#ifndef __MINGW32__
-#  include <windows.graphics.directX.direct3d11.interop.h>
-#else
+#include <windows.graphics.directx.direct3d11.interop.h>
+#ifdef __MINGW32__
 #  include <dxgi.h>
 #  include <inspectable.h>
 extern "C" {
@@ -23,6 +22,7 @@ HRESULT __stdcall CreateDirect3D11DeviceFromDXGIDevice(
     ::IDXGIDevice* dxgiDevice, ::IInspectable** graphicsDevice);
 }
 #endif
+
 #include <winerror.h>
 #include <wrl/client.h>
 
