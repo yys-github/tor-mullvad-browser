@@ -1,8 +1,7 @@
 .tor-connect-titlebar-status:not([hidden]) {
   display: flex;
   align-items: center;
-  /* Want same as .private-browsing-indicator-with-label */
-  margin-inline: 7px;
+  margin-inline: var(--space-small);
 
   #navigator-toolbox[tabs-hidden] #TabsToolbar > & {
     /* Hide in the tabs bar when the tabs bar is hidden. E.g. when using
@@ -18,7 +17,7 @@
 }
 
 .tor-connect-titlebar-status-label {
-  margin-inline: 6px;
+  margin-inline: var(--space-small);
   white-space: nowrap;
 }
 
@@ -26,8 +25,8 @@
   -moz-context-properties: fill, stroke;
   fill: var(--icon-color);
   stroke: var(--icon-color);
-  width: 16px;
-  height: 16px;
+  width: var(--icon-size);
+  height: var(--icon-size);
   object-fit: none;
   --num-animation-steps: 8;
   /* First frame has no offset. */
@@ -52,12 +51,12 @@
 @media not ((prefers-contrast) or (forced-colors)) {
   /* Make the connected text and icon purple. */
   .tor-connect-titlebar-status.tor-connect-status-connected {
-    color: var(--tor-text-color);
+    color: var(--text-color-tor);
   }
 
   .tor-connect-titlebar-status.tor-connect-status-connected img {
-    fill: var(--tor-text-color);
-    stroke: var(--tor-text-color);
+    fill: var(--text-color-tor);
+    stroke: var(--text-color-tor);
   }
 }
 
