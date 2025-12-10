@@ -11,7 +11,7 @@ body {
 label {
   display: flex;
   align-items: center;
-  padding: 6px 0;
+  padding: var(--space-small) 0;
 }
 
 input[type="text"] {
@@ -40,7 +40,7 @@ dt {
 }
 
 dd {
-  margin: 8px 0 0 0;
+  margin: var(--space-small) 0 0 0;
   padding: 0;
   max-width: 600px;
   box-sizing: border-box;
@@ -50,7 +50,7 @@ hr {
   width: 40px;
   margin: 0;
   border: none;
-  border-top: 1px solid var(--border-color);
+  border-block-start: var(--border-width) solid var(--border-color);
 }
 
 .hidden {
@@ -85,11 +85,11 @@ hr {
 }
 
 #warning-description {
-  margin: 30px 0 16px 0;
+  margin: var(--space-xxlarge) 0 var(--space-large) 0;
 }
 
 #warning-buttonbar {
-  margin-top: 30px;
+  margin-top: var(--space-xxlarge);
   text-align: right;
 }
 
@@ -113,7 +113,7 @@ hr {
 section {
   display: none;
   flex: 1 0 auto;
-  padding: 40px;
+  padding: var(--space-xxlarge);
 }
 
 .title {
@@ -121,25 +121,25 @@ section {
   align-items: center;
   width: var(--content-width);
   max-width: 100%;
-  padding-bottom: 16px;
-  border-bottom: 1px solid var(--border-color);
+  padding-bottom: var(--space-large);
+  border-bottom: var(--border-width) solid var(--border-color);
 }
 
 .title h1 {
   margin: 0;
   padding: 0;
-  padding-inline-start: 35px;
+  padding-inline-start: var(--space-xxlarge);
   font-size: var(--font-size-xlarge);
   font-weight: var(--font-weight-bold);
   background-image: url("chrome://browser/content/rulesets/securedrop.svg");
   background-position: 0 center;
-  background-size: 22px;
-  min-height: 22px;
+  background-size: var(--icon-size-large);
+  min-height: var(--icon-size-large);
   background-repeat: no-repeat;
 }
 
 #main-content h1:dir(rtl) {
-  background-position: right 0 top 4px;
+  background-position: right 0 center;
 }
 
 /* Ruleset list */
@@ -150,15 +150,15 @@ aside {
   flex: 0 0 var(--sidebar-width);
   box-sizing: border-box;
 
-  border-inline-end: 1px solid var(--border-color);
+  border-inline-end: var(--border-width) solid var(--border-color);
   background-color: var(--background-color-box);
 }
 
 #ruleset-heading {
-  padding: 16px;
+  padding: var(--space-large);
   text-align: center;
   font-weight: var(--font-weight-bold);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: var(--border-width) solid var(--border-color);
 }
 
 #ruleset-list-container {
@@ -166,7 +166,7 @@ aside {
 }
 
 #ruleset-list-empty {
-  padding: 16px;
+  padding: var(--space-large);
   text-align: center;
 }
 
@@ -183,10 +183,10 @@ aside {
   display: flex;
   align-items: center;
   margin: 0;
-  padding: 10px 18px;
+  padding: var(--space-medium) var(--space-large);
   list-style: none;
   border-inline-start: 4px solid transparent;
-  border-bottom: 1px solid var(--border-color);
+  border-block-end: var(--border-width) solid var(--border-color);
 }
 
 #ruleset-list li:last-child {
@@ -194,11 +194,11 @@ aside {
 }
 
 #ruleset-list .icon {
-  width: 16px;
-  height: 16px;
-  margin-inline-end: 12px;
+  width: var(--icon-size);
+  height: var(--icon-size);
+  margin-inline-end: var(--space-medium);
   background-image: url("chrome://browser/content/rulesets/securedrop.svg");
-  background-size: 16px;
+  background-size: var(--icon-size);
 }
 
 #ruleset-list .icon.has-favicon {
@@ -215,7 +215,6 @@ aside {
 }
 
 #ruleset-list .selected {
-  /* stylelint-disable-next-line stylelint-plugin-mozilla/use-border-color-tokens */
   border-inline-start-color: var(--color-accent-primary);
 }
 
@@ -243,7 +242,7 @@ aside {
 }
 
 #ruleset-jwk-value {
-  padding: 8px;
+  padding: var(--space-small);
   border-radius: var(--border-radius-xsmall);
   background-color: var(--background-color-box);
   font-size: var(--font-size-small);
@@ -254,10 +253,10 @@ aside {
 
 #ruleset-edit {
   margin-inline-start: auto;
-  padding-inline-start: 32px;
+  padding-inline-start: var(--space-xxlarge);
   background-image: url("chrome://global/skin/icons/edit.svg");
   background-repeat: no-repeat;
-  background-position: 8px;
+  background-position: var(--space-small);
   -moz-context-properties: fill;
   fill: currentColor;
   min-width: auto;
@@ -273,7 +272,7 @@ aside {
 }
 
 #ruleset-updated {
-  margin-top: 24px;
+  margin-top: var(--space-xlarge);
   color: var(--text-color-deemphasized);
   font-size: var(--font-size-small);
 }
