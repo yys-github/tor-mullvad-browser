@@ -10,8 +10,8 @@
 .security-level-icon {
   grid-area: icon;
   align-self: start;
-  width: 24px;
-  height: 24px;
+  width: var(--icon-size-large);
+  height: var(--icon-size-large);
   -moz-context-properties: fill;
   fill: var(--icon-color);
   margin-block-start: var(--space-xsmall);
@@ -97,7 +97,7 @@
 #security-level-current {
   margin-block-start: var(--space-large);
   background: var(--background-color-box);
-  border: 1px solid var(--border-color);
+  border: var(--border-width) solid var(--border-color);
   border-radius: var(--border-radius-small);
   padding: var(--space-medium);
 }
