@@ -189,6 +189,21 @@
     "dark": "{Theme$button/background/color/active}",
     "forcedColors": "{Theme$button/background/color/active}"
   },
+  "button/background/color/tor": {
+    "light": "{Primitives$button/background/color/tor/light}",
+    "dark": "{Primitives$button/background/color/tor/dark}",
+    "forcedColors": "{Theme$button/background/color/primary}"
+  },
+  "button/background/color/tor/hover": {
+    "light": "{Primitives$button/background/color/tor/hover/light}",
+    "dark": "{Primitives$button/background/color/tor/hover/dark}",
+    "forcedColors": "{Theme$button/background/color/primary/hover}"
+  },
+  "button/background/color/tor/active": {
+    "light": "{Primitives$button/background/color/tor/active/light}",
+    "dark": "{Primitives$button/background/color/tor/active/dark}",
+    "forcedColors": "{Theme$button/background/color/primary/active}"
+  },
   "button/border": {
     "light": "{Primitives$border/width} solid {Theme$button/border/color}",
     "dark": "{Primitives$border/width} solid {Theme$button/border/color}",
@@ -401,6 +416,21 @@
     "dark": "{Theme$button/text/color/active}",
     "forcedColors": "{Theme$button/text/color/active}"
   },
+  "button/text/color/tor": {
+    "light": "{Primitives$button/text/color/tor/light}",
+    "dark": "{Primitives$button/text/color/tor/dark}",
+    "forcedColors": "{Theme$button/text/color/primary}"
+  },
+  "button/text/color/tor/hover": {
+    "light": "{Primitives$button/text/color/tor/hover/light}",
+    "dark": "{Primitives$button/text/color/tor/hover/dark}",
+    "forcedColors": "{Theme$button/text/color/primary/hover}"
+  },
+  "button/text/color/tor/active": {
+    "light": "{Primitives$button/text/color/tor/active/light}",
+    "dark": "{Primitives$button/text/color/tor/active/dark}",
+    "forcedColors": "{Theme$button/text/color/primary/active}"
+  },
   "color/accent/primary": {
     "light": "{Colors$color/blue/60}",
     "dark": "{Colors$color/cyan/30}",
@@ -421,6 +451,21 @@
     "dark": "{Colors$color/cyan/30}",
     "forcedColors": "{HCM Theme$SelectedItem}"
   },
+  "color/accent/tor": {
+    "light": "{Colors$color/accent/tor/light}",
+    "dark": "{Colors$color/accent/tor/dark}",
+    "forcedColors": "{Theme$color/accent/primary}"
+  },
+  "color/accent/tor/hover": {
+    "light": "{Colors$color/accent/tor/hover/light}",
+    "dark": "{Colors$color/accent/tor/hover/dark}",
+    "forcedColors": "{Theme$color/accent/primary/hover}"
+  },
+  "color/accent/tor/active": {
+    "light": "{Colors$color/accent/tor/active/light}",
+    "dark": "{Colors$color/accent/tor/active/dark}",
+    "forcedColors": "{Theme$color/accent/primary/active}"
+  },
   "focus/outline": {
     "light": "{Primitives$focus/outline/width} solid {Theme$focus/outline/color}",
     "dark": "{Primitives$focus/outline/width} solid {Theme$focus/outline/color}",
@@ -430,6 +475,11 @@
     "light": "{Theme$color/accent/primary}",
     "dark": "{Theme$color/accent/primary}",
     "forcedColors": "{Theme$text/color}"
+  },
+  "focus/outline/color/tor": {
+    "light": "{Primitives$focus/outline/color/tor/light}",
+    "dark": "{Primitives$focus/outline/color/tor/dark}",
+    "forcedColors": "{Theme$focus/outline/color}"
   },
   "icon/color": {
     "light": "{Colors$color/gray/70}",
@@ -475,6 +525,21 @@
     "light": "{Theme$link/color}",
     "dark": "{Theme$link/color}",
     "forcedColors": "{Theme$link/color}"
+  },
+  "link/color/tor": {
+    "light": "{Primitives$link/color/tor/light}",
+    "dark": "{Primitives$link/color/tor/dark}",
+    "forcedColors": "{Theme$link/color}"
+  },
+  "link/color/tor/hover": {
+    "light": "{Primitives$link/color/tor/hover/light}",
+    "dark": "{Primitives$link/color/tor/hover/dark}",
+    "forcedColors": "{Theme$link/color/hover}"
+  },
+  "link/color/tor/active": {
+    "light": "{Primitives$link/color/tor/active/light}",
+    "dark": "{Primitives$link/color/tor/active/dark}",
+    "forcedColors": "{Theme$link/color/active}"
   },
   "outline/color/error": {
     "light": "{Colors$color/red/70}",
@@ -553,5 +618,10 @@
     "light": "{Theme$text/color}",
     "dark": "{Theme$text/color}",
     "forcedColors": "{HCM Theme$SelectedItemText}"
+  },
+  "text/color/tor": {
+    "light": "{Primitives$text/color/tor/light}",
+    "dark": "{Primitives$text/color/tor/dark}",
+    "forcedColors": "inherit"
   }
 }
