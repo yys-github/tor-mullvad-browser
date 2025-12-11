@@ -32,8 +32,6 @@ export class GeckoViewContentChild extends GeckoViewActorChild {
   }
 
   actorCreated() {
-    super.actorCreated();
-
     this.pageShow = new Promise(resolve => {
       this.receivedPageShow = resolve;
     });
@@ -334,8 +332,7 @@ export class GeckoViewContentChild extends GeckoViewActorChild {
           aEvent.reason === "presscaret" ||
           aEvent.reason === "releasecaret"
         ) {
-          this.eventDispatcher.sendRequest({
-            type: "GeckoView:PinOnScreen",
+          this.sendAsyncMessage("GeckoView:PinOnScreen", {
             pinned: aEvent.reason === "presscaret",
           });
         }
