@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 from threading import Thread
 
-# import sentry_sdk
+import sentry_sdk
 from mozversioncontrol import (
     InvalidRepoPath,
     MissingUpstreamRepo,
@@ -35,8 +35,7 @@ class SentryErrorReporter(ErrorReporter):
     """Reports errors using Sentry."""
 
     def report_exception(self, exception):
-        pass
-        # return sentry_sdk.capture_exception(exception)
+        return sentry_sdk.capture_exception(exception)
 
 
 class NoopErrorReporter(ErrorReporter):
@@ -62,10 +61,10 @@ def register_sentry(argv, settings, topsrcdir: Path):
     )
     _is_unmodified_mach_core_thread.start()
 
-    # sentry_sdk.init(
-    #     _SENTRY_DSN, before_send=lambda event, _: _process_event(event, topsrcdir)
-    # )
-    # sentry_sdk.add_breadcrumb(message="./mach {}".format(" ".join(argv)))
+    sentry_sdk.init(
+        _SENTRY_DSN, before_send=lambda event, _: _process_event(event, topsrcdir)
+    )
+    sentry_sdk.add_breadcrumb(message="./mach {}".format(" ".join(argv)))
     return SentryErrorReporter()
 
 
