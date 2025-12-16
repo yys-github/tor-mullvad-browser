@@ -8,6 +8,9 @@ TOR_BOOTSTRAP_TIMEOUT = 30000  # 30s
 
 
 class TestCircuitIsolation(MarionetteTestCase):
+    def tearDown(self):
+        self.marionette.restart(in_app=False, clean=True)
+        super(TestCircuitIsolation, self).tearDown()
 
     def bootstrap(self):
         with self.marionette.using_context("chrome"):

@@ -14,6 +14,10 @@ class TestNetworkCheck(MarionetteTestCase):
 
         self.l10n = L10n(self.marionette)
 
+    def tearDown(self):
+        self.marionette.restart(in_app=False, clean=True)
+        super(TestNetworkCheck, self).tearDown()
+
     def attemptConnection(self, tries=1):
         if tries > 3:
             self.assertTrue(False, "Failed to connect to Tor after 3 attempts")
