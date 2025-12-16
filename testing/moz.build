@@ -24,4 +24,4 @@ PERFTESTS_MANIFESTS += [
     "performance/perftest.toml",
 ]
 
-MARIONETTE_MANIFESTS += ["tor/marionette.toml"]
+MARIONETTE_MANIFESTS += ["tor/manifest.toml"]
