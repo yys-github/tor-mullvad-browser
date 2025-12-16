@@ -1,4 +1,5 @@
 [DEFAULT]
+tags = "tor"
 
 ["test_circuit_isolation.py"]
 
