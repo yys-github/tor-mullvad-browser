@@ -204,7 +204,7 @@ private fun OnboardingPageNotificationPreview() {
     FirefoxTheme {
         OnboardingPageRedesign(
             pageState = OnboardingPageState(
-                imageRes = R.drawable.ic_notification_permission, // Unused in the redesign.
+                imageRes = crashR.drawable.mozac_lib_crash_notification, // Unused in the redesign.
                 title = stringResource(R.string.juno_onboarding_enable_notifications_title_nimbus_2),
                 description = stringResource(R.string.juno_onboarding_enable_notifications_description_nimbus_2),
                 primaryButton = Action(
@@ -228,7 +228,7 @@ private fun OnboardingPageSearchWidgetPreview() {
     FirefoxTheme {
         OnboardingPageRedesign(
             pageState = OnboardingPageState(
-                imageRes = R.drawable.ic_notification_permission, // Unused in the redesign.
+                imageRes = crashR.drawable.mozac_lib_crash_notification, // Unused in the redesign.
                 title = stringResource(R.string.juno_onboarding_add_search_widget_title),
                 description = stringResource(R.string.juno_onboarding_add_search_widget_description),
                 primaryButton = Action(

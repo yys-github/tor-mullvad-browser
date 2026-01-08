@@ -9,6 +9,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
 import org.mozilla.fenix.theme.FirefoxTheme
 
@@ -20,7 +21,7 @@ import org.mozilla.fenix.theme.FirefoxTheme
 @Composable
 fun NotificationMainImage() {
     Image(
-        painter = painterResource(R.drawable.ic_notification_permission),
+        painter = painterResource(crashR.drawable.mozac_lib_crash_notification),
         contentDescription = null, // Decorative only
     )
 }
