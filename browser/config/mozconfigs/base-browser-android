@@ -20,8 +20,6 @@ if test -n "$ANDROID_NDK_HOME"; then
   ac_add_options --with-android-ndk=$ANDROID_NDK_HOME
 fi
 
-ac_add_options --with-android-min-sdk=21
-
 if test -n "$GRADLE_HOME"; then
     ac_add_options --with-gradle=$GRADLE_HOME/bin/gradle
 fi
