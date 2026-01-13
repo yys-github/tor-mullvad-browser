@@ -206,6 +206,7 @@ class WindowSpamProtection {
 class DownloadSpamEnabler {
   /**
    * Constructs a DownloadSpamEnabler object
+   *
    * @param {nsIPrincipal} principal
    * @param {DownloadSpamProtection} downloadSpamProtection
    */
@@ -215,6 +216,7 @@ class DownloadSpamEnabler {
   }
   /**
    * Allows a DownloadSpam item
+   *
    * @param {DownloadSpam} downloadSpam
    */
   allow(downloadSpam) {
