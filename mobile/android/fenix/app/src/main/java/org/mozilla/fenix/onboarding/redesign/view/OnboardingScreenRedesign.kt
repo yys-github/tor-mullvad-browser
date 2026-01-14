@@ -609,7 +609,7 @@ private fun touPageUIData() = OnboardingPageUiData(
         lineThreeText = stringResource(id = R.string.onboarding_redesign_tou_body_three),
         lineThreeLinkText = stringResource(id = R.string.onboarding_redesign_tou_body_three_link_text),
     ),
-    imageRes = R.drawable.ic_firefox,
+    imageRes = R.mipmap.ic_launcher_foreground,
     primaryButtonLabel = stringResource(
         id = R.string.onboarding_redesign_tou_agree_and_continue_button_label,
     ),

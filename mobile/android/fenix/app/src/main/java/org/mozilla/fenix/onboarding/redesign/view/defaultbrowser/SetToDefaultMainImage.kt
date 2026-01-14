@@ -80,7 +80,7 @@ private fun RowScope.BrowserDetailsRow(selected: Boolean = false) {
     ) {
         if (selected) {
             Image(
-                painter = painterResource(R.drawable.ic_firefox),
+                painter = painterResource(R.mipmap.ic_launcher_foreground),
                 contentDescription = null, // Decorative only.
                 modifier = Modifier.size(24.dp),
             )
