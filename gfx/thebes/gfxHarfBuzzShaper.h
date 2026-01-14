@@ -103,7 +103,8 @@ class gfxHarfBuzzShaper : public gfxFontShaper {
   // bounds, etc; if not, the built-in hb_ot font functions will be used.
   static hb_font_t* CreateHBFont(gfxFont* aFont,
                                  hb_font_funcs_t* aFontFuncs = nullptr,
-                                 void* aCallbackData = nullptr);
+                                 void* aCallbackData = nullptr,
+                                 bool aCreateSubfont = false);
 
  protected:
   // Initializes the shaper and returns whether this was successful.
