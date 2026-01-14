@@ -139,7 +139,7 @@
         android:contentDescription="@string/app_name"
         android:scaleX="1.8"
         android:scaleY="1.8"
-        app:srcCompat="@drawable/ic_launcher_foreground"
+        app:srcCompat="@mipmap/ic_launcher_foreground"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
