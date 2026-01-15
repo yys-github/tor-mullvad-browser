@@ -1896,6 +1896,7 @@ Preferences.addSetting(
 );
 Preferences.addSetting({
   id: "cookieExceptions",
+  deps: ["privateBrowsingAutoStart"],
   onUserClick() {
     gSubDialog.open(
       "chrome://browser/content/preferences/dialogs/permissions.xhtml",
@@ -1908,6 +1909,9 @@ Preferences.addSetting({
         permissionType: "cookie",
       }
     );
+  },
+  disabled({ privateBrowsingAutoStart }) {
+    return privateBrowsingAutoStart.value;
   },
 });
 
@@ -4148,14 +4152,12 @@ var gPrivacyPane = {
   networkCookieBehaviorReadPrefs() {
     let behavior = Services.cookies.getCookieBehavior(false);
     let blockCookiesMenu = document.getElementById("blockCookiesMenu");
-    let cookieExceptions = document.getElementById("cookieExceptions");
     let blockCookies = behavior != Ci.nsICookieService.BEHAVIOR_ACCEPT;
     let cookieBehaviorLocked = Services.prefs.prefIsLocked(
       "network.cookie.cookieBehavior"
     );
     let blockCookiesControlsDisabled = !blockCookies || cookieBehaviorLocked;
     blockCookiesMenu.disabled = blockCookiesControlsDisabled;
-    cookieExceptions.disabled = privateBrowsing;
 
     switch (behavior) {
       case Ci.nsICookieService.BEHAVIOR_ACCEPT:
