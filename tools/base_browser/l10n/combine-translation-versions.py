@@ -103,10 +103,11 @@ class BrowserBranch:
 
         self.name = branch_name
         self.prefix = version_match.group("prefix")
-        self.browser_version = version_match.group("browser")
+        browser_version_str = version_match.group("browser")
+        self.browser_version = float(browser_version_str)
         # Convert tor-browser to "Tor Browser", and similar.
         browser_name = self.prefix.replace("-", " ").title()
-        self.browser_version_name = f"{browser_name} {self.browser_version}"
+        self.browser_version_name = f"{browser_name} {browser_version_str}"
 
         self._is_head = is_head
         self._ref = "HEAD" if is_head else f"origin/{branch_name}"
@@ -114,7 +115,7 @@ class BrowserBranch:
         firefox_nums = [int(n) for n in version_match.group("firefox").split(".")]
         if len(firefox_nums) == 2:
             firefox_nums.append(0)
-        browser_nums = [int(n) for n in self.browser_version.split(".")]
+        browser_nums = [int(n) for n in browser_version_str.split(".")]
         branch_number = int(version_match.group("number"))
         # Prioritise the firefox ESR version, then the browser version then the
         # branch number.
@@ -127,24 +128,7 @@ class BrowserBranch:
             branch_number,
         )
 
-        # Minor version for browser is only ever "0" or "5", so we can convert
-        # the version to an integer.
-        self._browser_int_version = int(2 * float(self.browser_version))
-
         self._file_paths: list[str] | None = None
-
-    def release_below(self, other: "BrowserBranch", num: int) -> bool:
-        """Determine whether another branch is within range of a previous
-        browser release.
-
-        The browser versions are expected to increment by "0.5", and a previous
-        release branch's version is expected to be `num * 0.5` behind the
-        current one.
-
-        :param other: The branch to compare.
-        :param num: The number of "0.5" releases behind to test with.
-        """
-        return other._browser_int_version == self._browser_int_version - num
 
     def __lt__(self, other: "BrowserBranch") -> bool:
         return self._ordered < other._ordered
@@ -259,16 +243,14 @@ def get_stable_branch(
             # Stable can be one release version behind.
             # NOTE: In principle, when switching between versions there may be a
             # window of time where the development branch has not yet progressed
-            # to the next "0.5" release, so has the same browser version as the
+            # to the next ".0" release, so has the same browser version as the
             # stable branch. So we also allow for matching browser versions.
             # NOTE:
             # 1. The "Will be unused in" message will not make sense, but we do
             #    not expect string differences in this scenario.
             # 2. We do not expect this scenario to last for long.
-            if not (
-                compare_version.release_below(branch, 1)
-                or compare_version.release_below(branch, 0)
-            ):
+            release_diff = compare_version.browser_version - branch.browser_version
+            if release_diff < 0.0 or release_diff > 1.0:
                 continue
             stable_branches.append(branch)
         elif is_legacy:
