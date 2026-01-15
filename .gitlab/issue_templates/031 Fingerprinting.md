@@ -145,5 +145,5 @@ some other non-standard browser configuration?
 
 /confidential
 /label ~"Apps::Product::BaseBrowser"
-/label ~"Project 131"
+/label ~"Project 196"
 /label ~"Fingerprinting"
