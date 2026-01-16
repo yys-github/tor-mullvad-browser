@@ -185,7 +185,6 @@ import org.mozilla.fenix.compose.core.Action
 import org.mozilla.fenix.compose.snackbar.SnackbarState
 import org.mozilla.fenix.compose.snackbar.Snackbar
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
-import org.mozilla.geckoview.TorAndroidIntegration
 import org.mozilla.geckoview.TorAndroidIntegration.BootstrapStateChangeListener
 import org.mozilla.geckoview.TorConnectStage
 import kotlin.system.exitProcess
@@ -197,7 +196,7 @@ import kotlin.system.exitProcess
  * - browser screen
  */
 @SuppressWarnings("TooManyFunctions", "LargeClass", "LongMethod")
-open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAndroidIntegration.BootstrapStateChangeListener {
+open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
     @VisibleForTesting
     internal lateinit var binding: ActivityHomeBinding
     lateinit var themeManager: ThemeManager
@@ -610,14 +609,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
             owner = this,
             onBackPressedCallback = onBackPressedCallback,
         )
-
-        if (settings().useHtmlConnectionUi) {
-            val engine = components.core.engine
-            if (engine is GeckoEngine) {
-                val torIntegration = engine.getTorIntegrationController()
-                torIntegration.registerBootstrapStateChangeListener(this)
-            }
-        }
 
         StartupTimeline.onActivityCreateEndHome(this) // DO NOT MOVE ANYTHING BELOW HERE.
     }
@@ -1388,20 +1379,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
 
     @VisibleForTesting
     internal fun navigateToHome(navController: NavController) {
-        // if (this is ExternalAppBrowserActivity) {
-        //     return
-        // }
-
-        if (!settings().useHtmlConnectionUi) {
-            navController.navigate(NavGraphDirections.actionStartupTorConnectionAssist())
-        } else {
-            navController.navigate(NavGraphDirections.actionStartupHome())
-            openToBrowserAndLoad(
-                searchTermOrURL = "about:torconnect",
-                newTab = true,
-                from = BrowserDirection.FromHome,
-            )
-        }
+        navController.navigate(NavGraphDirections.actionStartupTorConnectionAssist())
     }
 
     final override fun attachBaseContext(base: Context) {
@@ -1608,14 +1586,4 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, TorAn
         finishAndRemoveTask()
         exitProcess(0)
     }
-
-    override fun onBootstrapStageChange(stage: TorConnectStage)  {
-        if (stage.isBootstrapped) {
-            if (settings().useHtmlConnectionUi) {
-                components.useCases.tabsUseCases.removeAllTabs()
-                navHost.navController.navigate(NavGraphDirections.actionStartupHome())
-            }
-        }
-    }
-    override fun onBootstrapProgress(progress: Double, hasWarnings: Boolean) = Unit
 }
