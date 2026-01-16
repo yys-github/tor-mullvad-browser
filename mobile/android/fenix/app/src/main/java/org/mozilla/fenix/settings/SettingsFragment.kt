@@ -10,7 +10,6 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.os.StrictMode
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
@@ -31,7 +30,6 @@ import androidx.preference.SwitchPreference
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import mozilla.components.browser.state.state.selectedOrDefaultSearchEngine
@@ -739,20 +737,6 @@ class SettingsFragment : PreferenceFragmentCompat(), UserInteractionHandler {
 
     @VisibleForTesting
     internal fun setupHomepagePreference(settings: Settings) {
-        /*with(requirePreference<Preference>(R.string.pref_key_home)) {
-            summary = when {
-                settings.alwaysOpenTheHomepageWhenOpeningTheApp ->
-                    getString(R.string.opening_screen_homepage_summary)
-
-                settings.openHomepageAfterFourHoursOfInactivity ->
-                    getString(R.string.opening_screen_after_four_hours_of_inactivity_summary)
-
-                settings.alwaysOpenTheLastTabWhenOpeningTheApp ->
-                    getString(R.string.opening_screen_last_tab_summary)
-
-                else -> null
-            }
-        }*/
     }
 
     @VisibleForTesting
@@ -809,11 +793,6 @@ class SettingsFragment : PreferenceFragmentCompat(), UserInteractionHandler {
                 )
                 true
             }
-        }
-
-        requirePreference<Preference>(R.string.pref_key_use_html_connection_ui).apply {
-            onPreferenceChangeListener = object : SharedPreferenceUpdater() {}
-            isVisible = Config.channel != ReleaseChannel.Release
         }
 
         requirePreference<Preference>(R.string.pref_key_tor_logs).apply {
