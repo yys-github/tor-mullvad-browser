@@ -1409,63 +1409,102 @@ def move_to_default(args: argparse.Namespace) -> None:
     git_run(["cherry-pick", f"{current_basis}..{old_branch_name}"], check=False)
 
 
+def convert_ref_to_range(ref: str) -> str:
+    """
+    Convert a reference given by the user into a reference range, defaulting to
+    the last firefox reference.
+
+    :param ref: The reference to convert to a range, if it isn't one already.
+    :returns: The reference range.
+    """
+    if ".." in ref:
+        return ref
+    firefox_commit = get_firefox_ref(ref).commit
+    return f"{firefox_commit}..{ref}"
+
+
 def show_range_diff(args: argparse.Namespace) -> None:
     """
-    Show the range diff between two branches, from their firefox bases.
+    Show the range diff. If a single reference is given as one of the arguments,
+    its last "FIREFOX_" tag is used as the range start.
     """
-    firefox_commit_1 = get_firefox_ref(args.branch1).commit
-    firefox_commit_2 = get_firefox_ref(args.branch2).commit
+    range1 = convert_ref_to_range(args.ref1)
+    range2 = convert_ref_to_range(args.ref2)
     git_run(
-        [
-            "range-diff",
-            f"{firefox_commit_1}..{args.branch1}",
-            f"{firefox_commit_2}..{args.branch2}",
-        ],
-        check=False,
+        ["range-diff", *args.gitargs, range1, range2, "--", *args.path], check=False
     )
 
 
 def show_diff_diff(args: argparse.Namespace) -> None:
     """
-    Show the diff between the diffs of two branches, relative to their firefox
-    bases.
+    Show the diff between the diffs of two ranges. If a single reference is
+    given as one of the arguments, its last "FIREFOX_" tag is used as the range
+    start.
     """
     try:
         diff_tool = next(git_lines(["config", "--get", "diff.tool"]))
     except StopIteration:
         raise TbDevException("No diff.tool configured for git")
 
+    drop_context = not args.keep_context
+
     # Filter out parts of the diff we expect to be different.
     index_regex = re.compile(r"index [0-9a-f]{12}\.\.[0-9a-f]{12}")
-    lines_regex = re.compile(r"@@ -[0-9]+,[0-9]+ \+[0-9]+,[0-9]+ @@(?P<rest>.*)")
+    context_regex = re.compile(r"@@ -[0-9]+(:?,[0-9]+)? \+[0-9]+(:?,[0-9]+)? @@")
 
-    def save_diff(branch: str) -> str:
-        firefox_commit = get_firefox_ref(branch).commit
+    # Limit a line length. E.g. "meld" has a line length limit.
+    LINE_LIMIT = 1024
+
+    def save_diff(ref_range: str) -> str:
         file_desc, file_name = tempfile.mkstemp(
-            text=True, prefix=f'{branch.split("/")[-1]}-'
+            text=True, prefix=f'{ref_range.replace("/", "_")}'
         )
         # Register deleting the file at exit.
         atexit.register(os.remove, file_name)
 
         diff_process = subprocess.Popen(
-            [GIT_PATH, "diff", f"{firefox_commit}..{branch}"],
+            # --unified=1 will reduce the context to just directly neighbouring
+            # lines.
+            [
+                GIT_PATH,
+                "diff",
+                "--binary",
+                "--unified=1",
+                *args.gitargs,
+                ref_range,
+                "--",
+                *args.path,
+            ],
             stdout=subprocess.PIPE,
             text=True,
+            encoding="utf-8",
+            errors="replace",
         )
 
         with os.fdopen(file_desc, "w") as file:
             assert diff_process.stdout is not None
             for line in diff_process.stdout:
-                if index_regex.match(line):
-                    # Fake data that will match.
-                    file.write("index ????????????..????????????\n")
-                    continue
-                lines_match = lines_regex.match(line)
-                if lines_match:
-                    # Fake data that will match.
-                    file.write("@@ ?,? ?,? @@" + lines_match.group("rest"))
-                    continue
-                file.write(line)
+                if drop_context:
+                    if index_regex.match(line):
+                        # Fake data that will match.
+                        file.write("index ????????????..????????????\n")
+                        continue
+                    if context_regex.match(line):
+                        # Fake data that will match.
+                        file.write("@@ ?,? ?,? @@\n")
+                        continue
+
+                remaining_line = line
+                while True:
+                    if len(remaining_line) - 1 > LINE_LIMIT:
+                        # NOTE: we use `len() - 1` to not count the trailing
+                        # '\n', which we assume all lines in the diff have.
+                        # Long line, split with a newline character.
+                        file.write(remaining_line[:LINE_LIMIT] + "\n")
+                        remaining_line = remaining_line[:LINE_LIMIT]
+                    else:
+                        file.write(remaining_line)
+                        break
 
         status = diff_process.wait()
         if status != 0:
@@ -1473,14 +1512,38 @@ def show_diff_diff(args: argparse.Namespace) -> None:
 
         return file_name
 
-    file_1 = save_diff(args.branch1)
-    file_2 = save_diff(args.branch2)
+    range1 = convert_ref_to_range(args.ref1)
+    range2 = convert_ref_to_range(args.ref2)
+    file_1 = save_diff(range1)
+    file_2 = save_diff(range2)
     subprocess.run([diff_tool, file_1, file_2], check=False)
 
 
 # * -------------------- *
 # | Command line parsing |
 # * -------------------- *
+
+
+def ref_complete(prefix: str, **_kwargs: Any) -> list[str]:
+    """
+    Complete the argument with a reference name.
+    """
+    if not within_browser_root():
+        return []
+    try:
+        matching = []
+        for symbolic_ref in ("HEAD",):
+            if symbolic_ref.startswith(prefix):
+                matching.append(symbolic_ref)
+        for ref_type in ("head", "remote", "tag"):
+            for ref in get_refs(ref_type, ""):
+                if ref.name.startswith(prefix):
+                    matching.append(ref.name)
+                if ref.full_name.startswith(prefix):
+                    matching.append(ref.full_name)
+        return matching
+    except Exception:
+        return []
 
 
 def branch_complete(prefix: str, **_kwargs: Any) -> list[str]:
@@ -1490,12 +1553,9 @@ def branch_complete(prefix: str, **_kwargs: Any) -> list[str]:
     if not within_browser_root():
         return []
     try:
-        branches = [ref.name for ref in get_refs("head", "")]
-        branches.extend(ref.name for ref in get_refs("remote", ""))
-        branches.append("HEAD")
+        return [ref.name for ref in get_refs("head", "") if ref.name.startswith(prefix)]
     except Exception:
         return []
-    return [br for br in branches if br.startswith(prefix)]
 
 
 parser = argparse.ArgumentParser()
@@ -1506,6 +1566,8 @@ class ArgConfig(TypedDict):
     help: str
     metavar: NotRequired[str]
     nargs: NotRequired[str]
+    action: NotRequired[str]
+    default: NotRequired[Any]
     completer: NotRequired[Callable[[str], list[str]]]
 
 
@@ -1573,33 +1635,59 @@ all_commands: dict[str, CommandConfig] = {
             },
         },
     },
-    "branch-range-diff": {
+    "range-diff": {
         "func": show_range_diff,
         "args": {
-            "branch1": {
-                "help": "the first branch to compare",
-                "metavar": "<branch-1>",
-                "completer": branch_complete,
+            "ref1": {
+                "help": "the first range to compare",
+                "metavar": "<ref-1>",
+                "completer": ref_complete,
             },
-            "branch2": {
-                "help": "the second branch to compare",
-                "metavar": "<branch-2>",
-                "completer": branch_complete,
+            "ref2": {
+                "help": "the second range to compare",
+                "metavar": "<ref-2>",
+                "completer": ref_complete,
+            },
+            "--path": {
+                "help": "path filter to pass to git range-diff. Can be given multiple times",
+                "metavar": "<path>",
+                "action": "append",
+                "default": [],
+            },
+            "gitargs": {
+                "help": "additional argument to pass to git range-diff",
+                "metavar": "-- git-range-diff-arg",
+                "nargs": "*",
             },
         },
     },
-    "branch-diff-diff": {
+    "diff-diff": {
         "func": show_diff_diff,
         "args": {
-            "branch1": {
-                "help": "the first branch to compare",
-                "metavar": "<branch-1>",
-                "completer": branch_complete,
+            "--keep-context": {
+                "help": "keep the git context lines as they are, otherwise they are trivialised to reduce differences. You may want to use this if your diff tool, like meld, can filter out these lines from the diff without erasing them",
+                "action": "store_true",
             },
-            "branch2": {
+            "ref1": {
+                "help": "the first branch to compare",
+                "metavar": "<ref-1>",
+                "completer": ref_complete,
+            },
+            "ref2": {
                 "help": "the second branch to compare",
-                "metavar": "<branch-2>",
-                "completer": branch_complete,
+                "metavar": "<ref-2>",
+                "completer": ref_complete,
+            },
+            "--path": {
+                "help": "path filter to pass to git diff. Can be given multiple times",
+                "metavar": "<path>",
+                "action": "append",
+                "default": [],
+            },
+            "gitargs": {
+                "help": "additional argument to pass to git diff",
+                "metavar": "-- git-diff-arg",
+                "nargs": "*",
             },
         },
     },
