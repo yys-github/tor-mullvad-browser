@@ -219,5 +219,3 @@ toolkit.jar:
    content/global/vendor/react-transition-group.js (vendor/react/react-transition-group.js)
    content/global/vendor/redux.js (vendor/react/redux.js)
    content/global/vendor/react-redux.js (vendor/react/react-redux.js)
-
-   content/global/aboutRights.xhtml           (aboutRightsMullvad.xhtml)
