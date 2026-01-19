@@ -5,9 +5,13 @@
 /* License Illustration */
 
 .license-header {
-  /* Adjust the header to remove the background, which is out of place without
-   * the app-license.html content. */
-  align-self: start;
+  background-image: url("chrome://global/skin/illustrations/about-license.svg");
+  background-repeat: no-repeat;
+  background-position: right center;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  padding-inline-end: 320px;
 }
 
 td:nth-child(1),
