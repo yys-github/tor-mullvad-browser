@@ -63,11 +63,7 @@
     "orders": [
       {
         "environment": { "allRegionsAndLocales": true },
-        "order": [
-          "ddg",
-          "ddg-noai",
-          "startpage"
-        ]
+        "order": ["ddg", "ddg-noai", "startpage"]
       }
     ]
   }
