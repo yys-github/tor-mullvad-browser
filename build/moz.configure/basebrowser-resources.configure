@@ -27,7 +27,7 @@ option(
         "noscript", no_unpack=True, when=depends("--with-noscript")(lambda x: not x)
     ),
 )
-@checking("for noscript")
+@checking("for noscript extension")
 @imports(_from="pathlib", _import="Path")
 def noscript(value, mozbuild_state_path, _bootstrapped):
     if value:
