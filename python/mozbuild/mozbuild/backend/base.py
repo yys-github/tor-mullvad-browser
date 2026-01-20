@@ -242,28 +242,41 @@ class BuildBackend(LoggingMixin):
             with open(mozpath.join(dir, ".purgecaches"), "w") as f:
                 f.write("\n")
 
-    def _setup_tor_browser_environment(self, config):
+    def _create_or_replace_symlink(self, src, dst):
+        try:
+            os.symlink(src, dst)
+        except OSError as e:
+            if e.errno == errno.EEXIST:
+                # If the symlink already exists, remove it and try again.
+                os.remove(dst)
+                os.symlink(src, dst)
+            else:
+                return
+
+    def _setup_extension_symlink(self, location, target_filename, exts_path):
+        if not location:
+            return
+
+        target = exts_path / target_filename
+
+        self.log(
+            logging.INFO,
+            "_setup_extension_symlink",
+            {
+                "location": location,
+                "target": str(target),
+            },
+            "Creating symlink for extension from {location} to {target}",
+        )
+
+        exts_path.mkdir(parents=True, exist_ok=True)
+        self._create_or_replace_symlink(location, target)
+
+    def _setup_base_browser_environment(self, config):
         app = config.substs["MOZ_BUILD_APP"]
 
         noscript_target_filename = "{73a6fe31-595d-460b-a920-fcc0f8843232}.xpi"
         noscript_location = config.substs.get("NOSCRIPT")
-
-        def _infallible_symlink(src, dst):
-            try:
-                os.symlink(src, dst)
-            except OSError as e:
-                if e.errno == errno.EEXIST:
-                    # If the symlink already exists, remove it and try again.
-                    os.remove(dst)
-                    os.symlink(src, dst)
-                else:
-                    self.log(
-                        logging.ERROR,
-                        "_setup_tor_browser_environment",
-                        {},
-                        "Error creating symlink.",
-                    )
-                    return
 
         if app == "mobile/android":
             # Set up NoScript extension
@@ -311,7 +324,7 @@ class BuildBackend(LoggingMixin):
             if fonts_location:
                 self.log(
                     logging.INFO,
-                    "_setup_tor_browser_environment",
+                    "_setup_base_browser_environment",
                     {
                         "fonts_location": fonts_location,
                         "fonts_target": str(paths["fonts"]),
@@ -321,23 +334,13 @@ class BuildBackend(LoggingMixin):
 
                 for file in Path(fonts_location).iterdir():
                     target = paths["fonts"] / file.name
-                    _infallible_symlink(file, target)
+                    self._create_or_replace_symlink(file, target)
 
-            # Set up NoScript extension
-            if noscript_location:
-                noscript_target = paths["exts"] / noscript_target_filename
-                self.log(
-                    logging.INFO,
-                    "_setup_tor_browser_environment",
-                    {
-                        "noscript_location": noscript_location,
-                        "noscript_target": str(noscript_target),
-                    },
-                    "Creating symlink for NoScript from {noscript_location} to {noscript_target}",
-                )
-
-                paths["exts"].mkdir(parents=True, exist_ok=True)
-                _infallible_symlink(noscript_location, noscript_target)
+            self._setup_extension_symlink(
+                noscript_location,
+                noscript_target_filename,
+                paths["exts"],
+            )
 
             expert_bundle_location = config.substs.get("TOR_EXPERT_BUNDLE")
             if expert_bundle_location:
@@ -416,7 +419,7 @@ class BuildBackend(LoggingMixin):
         self._write_purgecaches(config)
 
         if status == 0:
-            self._setup_tor_browser_environment(config)
+            self._setup_base_browser_environment(config)
 
         return status
 
