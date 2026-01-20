@@ -184,6 +184,7 @@ import mozilla.components.browser.engine.gecko.GeckoEngine
 import org.mozilla.fenix.compose.core.Action
 import org.mozilla.fenix.compose.snackbar.SnackbarState
 import org.mozilla.fenix.compose.snackbar.Snackbar
+import org.mozilla.fenix.tor.TorController
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 import org.mozilla.geckoview.TorAndroidIntegration.BootstrapStateChangeListener
 import org.mozilla.geckoview.TorConnectStage
@@ -1586,6 +1587,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
         // If we don't manually stop the service, the persistent "close tabs" notification sometimes does not clear
         applicationContext.stopService(Intent(applicationContext, PrivateNotificationService::class.java))
         finishAndRemoveTask()
+        components.torController.shutdown()
         exitProcess(0)
     }
 }

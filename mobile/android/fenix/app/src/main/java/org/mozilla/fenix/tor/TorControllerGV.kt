@@ -176,6 +176,10 @@ class TorControllerGV(
         getTorIntegration().cancelBootstrap()
     }
 
+    override fun shutdown() {
+        getTorIntegration().shutdown()
+    }
+
     // TorEventsBootstrapStateChangeListener
     override fun onBootstrapStageChange(stage: TorConnectStage) {
         Log.d(TAG, "onBootstrapStageChange(stage = $stage)")
