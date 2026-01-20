@@ -197,8 +197,8 @@ def bootstrap_path(path, **kwargs):
         if path_parts[0] == "clang-tools":
             path_prefix = path_parts.pop(0)
 
-        # Small hack because noscript is inside the browser folder.
-        if path_parts[0] == "noscript":
+        # Small hack because extensions are inside the browser folder.
+        if path_parts[0] in ("noscript", ):
             path_prefix = "browser"
 
         def try_tbb_bootstrap(exists):
