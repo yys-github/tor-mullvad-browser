@@ -102,8 +102,8 @@ public class TorAndroidIntegration implements BundleEventListener {
     registerListener();
   }
 
-  /* package */ synchronized void shutdown() {
-    // FIXME: It seems this never gets called
+  // To be called when the app is shutting down only
+  public synchronized void shutdown() {
     if (mTorProcess != null) {
       mTorProcess.shutdown();
       mTorProcess = null;
@@ -329,7 +329,7 @@ public class TorAndroidIntegration implements BundleEventListener {
           Log.i(TAG, "[tor-" + mHandle + "] " + line);
         }
       } catch (IOException e) {
-        Log.e(TAG, "Failed to read stdout of the tor process " + mHandle, e);
+        Log.e(TAG, "Failed to read stdout of the tor process " + mHandle + " (expected when program is exiting)", e);
       }
       Log.d(TAG, "Exiting the stdout loop for process " + mHandle);
       final GeckoBundle data = new GeckoBundle(2);
