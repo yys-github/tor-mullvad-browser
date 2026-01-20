@@ -184,6 +184,7 @@ import mozilla.components.browser.engine.gecko.GeckoEngine
 import org.mozilla.fenix.compose.core.Action
 import org.mozilla.fenix.compose.snackbar.SnackbarState
 import org.mozilla.fenix.compose.snackbar.Snackbar
+import org.mozilla.fenix.tor.TorController
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 import org.mozilla.geckoview.TorAndroidIntegration.BootstrapStateChangeListener
 import org.mozilla.geckoview.TorConnectStage
@@ -1584,6 +1585,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
 
     fun shutDown() : Nothing {
         finishAndRemoveTask()
+        components.torController.shutdown()
         exitProcess(0)
     }
 }
