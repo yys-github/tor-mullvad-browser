@@ -1939,20 +1939,6 @@ projects:
     - components:support-utils
     - components:tooling-lint
     - components:ui-icons
-  components:lib-crash-sentry:
-    description: A crash reporter for Sentry.io that that uses lib-crash.
-    path: components/lib/crash-sentry
-    publish: true
-    upstream_dependencies:
-    - components:concept-base
-    - components:concept-fetch
-    - components:lib-crash
-    - components:lib-publicsuffixlist
-    - components:support-base
-    - components:support-ktx
-    - components:support-test
-    - components:support-utils
-    - components:tooling-lint
   components:lib-dataprotect:
     description: A component using AndroidKeyStore to protect user data.
     path: components/lib/dataprotect
