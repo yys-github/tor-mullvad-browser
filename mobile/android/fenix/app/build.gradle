@@ -651,7 +651,6 @@ dependencies {
     implementation project(':components:ui-tabcounter')
     implementation project(':components:ui-widgets')
     implementation project(':components:lib-crash')
-    implementation project(':components:lib-crash-sentry')
     implementation project(':components:lib-dataprotect')
     implementation project(':components:lib-push-firebase')
     implementation project(':components:lib-state')
@@ -712,7 +711,6 @@ dependencies {
     implementation libs.play.review
     implementation libs.play.review.ktx
     implementation libs.protobuf.javalite
-    implementation libs.sentry
 
     debugImplementation libs.androidx.compose.ui.tooling
     debugImplementation libs.leakcanary
