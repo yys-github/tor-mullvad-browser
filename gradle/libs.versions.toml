@@ -112,7 +112,6 @@ json = "20251224"
 jsoup = "1.22.2"
 okhttp = "5.3.2"
 okio = "3.17.0"
-sentry = "8.41.0"
 zxing = "3.5.4"
 
 [libraries]
@@ -300,7 +299,6 @@ mockwebserver = { module = "com.squareup.okhttp3:mockwebserver3", version.ref = 
 okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
 okhttp-urlconnection = { module = "com.squareup.okhttp3:okhttp-urlconnection", version.ref = "okhttp" }
 okio = { module = "com.squareup.okio:okio", version.ref = "okio" }
-sentry = { module = "io.sentry:sentry-android-core", version.ref = "sentry" }
 zxing = { module = "com.google.zxing:core", version.ref = "zxing" }
 
 [plugins]

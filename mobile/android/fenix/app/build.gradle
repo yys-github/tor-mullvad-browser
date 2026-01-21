@@ -635,7 +635,6 @@ dependencies {
     implementation project(':components:lib-bookmarks-file')
     implementation project(':components:lib-bookmark-parser-jsoup')
     implementation project(':components:lib-crash')
-    implementation project(':components:lib-crash-sentry')
     implementation project(':components:lib-dataprotect')
     implementation project(':components:lib-push-firebase')
     implementation project(':components:lib-state')
@@ -702,7 +701,6 @@ dependencies {
     implementation libs.play.review
     implementation libs.play.review.ktx
     implementation libs.protobuf.javalite
-    implementation libs.sentry
     implementation libs.androidx.documentfile
     implementation libs.zxing
 
