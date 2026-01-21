@@ -14,8 +14,6 @@ import mozilla.components.lib.crash.runtimetagproviders.BuildRuntimeTagProvider
 import mozilla.components.lib.crash.runtimetagproviders.EnvironmentRuntimeProvider
 import mozilla.components.lib.crash.runtimetagproviders.ExperimentDataRuntimeTagProvider
 import mozilla.components.lib.crash.runtimetagproviders.VersionInfoProvider
-import mozilla.components.lib.crash.sentry.SentryService
-import mozilla.components.lib.crash.sentry.eventprocessors.CrashMetadataEventProcessor
 import mozilla.components.lib.crash.service.CrashReporterService
 import mozilla.components.lib.crash.service.GleanCrashReporterService
 import mozilla.components.lib.crash.service.socorro.MozillaSocorroService
@@ -61,37 +59,9 @@ class Analytics(
         val services = mutableListOf<CrashReporterService>()
         val distributionId = "Mozilla"
 
-        if (isSentryEnabled()) {
-            // We treat caught exceptions similar to debug logging.
-            // On the release channel volume of these is too high for our Sentry instances, and
-            // we get most value out of nightly/beta logging anyway.
-            val shouldSendCaughtExceptions = when (Config.channel) {
-                ReleaseChannel.Release -> false
-                else -> true
-            }
-            val sentryService = SentryService(
-                context,
-                BuildConfig.SENTRY_TOKEN,
-                tags = mapOf(
-                    "geckoview" to "$MOZ_APP_VERSION-$MOZ_APP_BUILDID",
-                    "fenix.git" to BuildConfig.VCS_HASH,
-                ),
-                environment = BuildConfig.BUILD_TYPE,
-                sendEventForNativeCrashes = false, // Do not send native crashes to Sentry
-                sendCaughtExceptions = shouldSendCaughtExceptions,
-                sentryProjectUrl = getSentryProjectUrl(),
-                crashMetadataEventProcessor = CrashMetadataEventProcessor(),
-            )
-
-            // We only want to initialize Sentry on startup on the main process.
-            if (context.isMainProcess()) {
-                runWhenReadyQueue.runIfReadyOrQueue {
-                    sentryService.initIfNeeded()
-                }
-            }
-
-            services.add(sentryService)
-        }
+        // Bug 44507: Drop Sentry as a dependency
+        // Since we've removed sentry and it's library (for defence in depth as well as spave saving)
+        // We can't keep any code that calls a now non existent library
 
         // The name "Fenix" here matches the product name on Socorro and is unrelated to the actual app name:
         // https://bugzilla.mozilla.org/show_bug.cgi?id=1523284
