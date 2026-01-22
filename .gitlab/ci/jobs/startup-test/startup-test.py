@@ -97,5 +97,6 @@ subprocess.run(
         download_url,
         "--thing-to-run",
         binary,
-    ]
+    ],
+    check=True,
 )
