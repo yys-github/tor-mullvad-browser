@@ -49,67 +49,6 @@ internal fun MoreSettingsSubmenu(
     Column(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
-        if (translationInfo.isTranslationSupported) {
-            TranslationMenuItem(
-                translationInfo = translationInfo,
-                isReaderViewActive = isReaderViewActive,
-            )
-        }
-
-        if (isWebCompatReporterSupported) {
-            MenuItem(
-                label = stringResource(id = R.string.browser_menu_webcompat_reporter_2),
-                beforeIconPainter = painterResource(id = iconsR.drawable.mozac_ic_lightbulb_24),
-                state = if (isWebCompatEnabled) MenuItemState.ENABLED else MenuItemState.DISABLED,
-                onClick = onWebCompatReporterClick,
-            )
-        }
-
-        if (showShortcuts) {
-            ShortcutsMenuItem(
-                isPinned = isPinned,
-                onShortcutsMenuClick = onShortcutsMenuClick,
-            )
-        }
-
-        if (isAddToHomeScreenSupported) {
-            MenuItem(
-                label = if (isInstallable) {
-                    stringResource(id = R.string.browser_menu_add_app_to_homescreen)
-                } else {
-                    stringResource(id = R.string.browser_menu_add_to_homescreen)
-                },
-                beforeIconPainter = painterResource(id = iconsR.drawable.mozac_ic_add_to_homescreen_24),
-                onClick = onAddToHomeScreenMenuClick,
-            )
-        }
-
-        MenuItem(
-            label = stringResource(id = R.string.browser_menu_save_to_collection_2),
-            beforeIconPainter = painterResource(id = iconsR.drawable.mozac_ic_collection_24),
-            onClick = onSaveToCollectionMenuClick,
-        )
-
-        if (hasExternalApp) {
-            MenuItem(
-                label = if (externalAppName != "") {
-                    stringResource(id = R.string.browser_menu_open_in_fenix, externalAppName)
-                } else {
-                    stringResource(id = R.string.browser_menu_open_app_link)
-                },
-                beforeIconPainter = painterResource(id = iconsR.drawable.mozac_ic_more_grid_24),
-                isBeforeIconHighlighted = isOpenInAppMenuHighlighted,
-                state = MenuItemState.ENABLED,
-                onClick = onOpenInAppMenuClick,
-            )
-        } else {
-            MenuItem(
-                label = stringResource(id = R.string.browser_menu_open_app_link),
-                beforeIconPainter = painterResource(id = iconsR.drawable.mozac_ic_more_grid_24),
-                state = MenuItemState.DISABLED,
-            )
-        }
-
         MenuItem(
             label = stringResource(id = R.string.browser_menu_save_as_pdf_2),
             beforeIconPainter = painterResource(id = iconsR.drawable.mozac_ic_save_file_24),

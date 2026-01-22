@@ -118,6 +118,7 @@ import com.google.android.material.R as materialR
 
 import mozilla.components.browser.engine.gecko.GeckoEngineSession
 import android.util.Log
+import org.mozilla.fenix.HomeActivity
 
 // EXPANDED_MIN_RATIO is used for BottomSheetBehavior.halfExpandedRatio().
 // That value needs to be less than the PEEK_HEIGHT.
@@ -321,7 +322,7 @@ class MenuDialogFragment : BottomSheetDialogFragment() {
                                     activity?.let { activity ->
                                         activity.lifecycleScope.launch {
                                             deleteBrowsingDataController.clearBrowsingDataOnQuit {
-                                                activity.finishAndRemoveTask()
+                                                (activity as HomeActivity).shutDown()
                                             }
                                         }
                                     }
