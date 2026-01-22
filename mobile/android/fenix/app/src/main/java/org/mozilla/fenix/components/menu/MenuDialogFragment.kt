@@ -131,6 +131,7 @@ import org.mozilla.fenix.webcompat.middleware.DefaultWebCompatReporterRetrievalS
 
 import mozilla.components.browser.engine.gecko.GeckoEngineSession
 import android.util.Log
+import org.mozilla.fenix.HomeActivity
 
 private const val EXPANDED_OFFSET = 56
 private const val HIDING_FRICTION = 0.9f
@@ -984,7 +985,7 @@ class MenuDialogFragment : BottomSheetDialogFragment() {
                 activity?.let { activity ->
                     activity.lifecycleScope.launch {
                         deleteBrowsingDataController.clearBrowsingDataOnQuit {
-                            activity.finishAndRemoveTask()
+                            (activity as HomeActivity).shutDown()
                         }
                     }
                 }

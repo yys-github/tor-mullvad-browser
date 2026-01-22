@@ -252,30 +252,6 @@ internal fun CustomTabMenu(
                     state = menuItemState,
                 )
             }
-
-            if (shouldShowExtensionsMenu) {
-                ExtensionsMenuItem(
-                    inCustomTab = true,
-                    isExtensionsProcessDisabled = isExtensionsProcessDisabled,
-                    isExtensionsExpanded = isExtensionsExpanded,
-                    isAllWebExtensionsDisabled = isAllWebExtensionsDisabled,
-                    webExtensionMenuCount = webExtensionMenuCount,
-                    extensionsMenuItemDescription = extensionsMenuDescription,
-                    onExtensionsMenuClick = onExtensionsMenuClick,
-                    extensionSubmenu = extensionSubmenu,
-                )
-            }
-
-            TranslationMenuItem(
-                translationInfo = translationInfo,
-                isReaderViewActive = isReaderViewActive,
-            )
-
-            SummarizationMenuItem(
-                summarizationMenuState = summarizationMenuState,
-                onSummarizePageMenuExposed = onSummarizePageMenuExposed,
-                onSummarizePageClick = onSummarizePageClick,
-            )
         }
 
         if (!customTabMenuItems.isNullOrEmpty()) {
