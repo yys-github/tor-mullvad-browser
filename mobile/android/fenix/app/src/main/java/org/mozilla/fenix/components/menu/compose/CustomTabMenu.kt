@@ -221,20 +221,6 @@ internal fun CustomTabMenu(
                     state = menuItemState,
                 )
             }
-
-            if (shouldShowExtensionsMenu) {
-                ExtensionsMenuItem(
-                    inCustomTab = true,
-                    isPrivate = isPrivate,
-                    isExtensionsProcessDisabled = isExtensionsProcessDisabled,
-                    isExtensionsExpanded = isExtensionsExpanded,
-                    isAllWebExtensionsDisabled = isAllWebExtensionsDisabled,
-                    webExtensionMenuCount = webExtensionMenuCount,
-                    extensionsMenuItemDescription = extensionsMenuDescription,
-                    onExtensionsMenuClick = onExtensionsMenuClick,
-                    extensionSubmenu = extensionSubmenu,
-                )
-            }
         }
 
         if (!customTabMenuItems.isNullOrEmpty()) {
