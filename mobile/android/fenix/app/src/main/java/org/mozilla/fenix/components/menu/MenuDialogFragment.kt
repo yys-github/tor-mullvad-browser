@@ -333,7 +333,7 @@ class MenuDialogFragment : BottomSheetDialogFragment() {
                                     activity?.let { activity ->
                                         activity.lifecycleScope.launch {
                                             deleteBrowsingDataController.clearBrowsingDataOnQuit {
-                                                activity.finishAndRemoveTask()
+                                                (activity as HomeActivity).shutDown()
                                             }
                                         }
                                     }
