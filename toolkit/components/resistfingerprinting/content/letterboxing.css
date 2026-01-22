@@ -80,13 +80,9 @@
     outline-width: var(--letterboxing-outline-width);
   }
 
-  #tabbrowser-tabpanels {
-    /* Override the --tabpanel-background-color.
-     * Also, make sure this remains transparent, otherwise it will overlap the
-     * parent's corner's border-radius due to it's "position: relative" rule. */
-    /* TODO: FIX this for newtab pages. tor-browser#44085 */
-    background: transparent;
-  }
+  /* Override the --tabpanel-background-color. */
+  /* TODO: FIX this for newtab pages. tor-browser#44085 */
+  --tabpanel-background-color: transparent;
 
   /* stylelint-disable-next-line media-query-no-invalid */
   @media -moz-pref("sidebar.revamp") {
