@@ -16,7 +16,7 @@ class TestNetworkCheck(MarionetteTestCase):
 
     def tearDown(self):
         self.marionette.restart(in_app=False, clean=True)
-        super(TestNetworkCheck, self).tearDown()
+        super().tearDown()
 
     def attemptConnection(self, tries=1):
         if tries > 3:
