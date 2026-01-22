@@ -95,14 +95,6 @@ internal fun MenuNavigation(
             onLongClick = { onForwardButtonClick(true) },
         )
 
-        MenuNavItem(
-            modifier = Modifier.weight(1f),
-            state = state,
-            painter = painterResource(id = iconsR.drawable.mozac_ic_share_android_24),
-            label = stringResource(id = R.string.browser_menu_share),
-            onClick = onShareButtonClick,
-        )
-
         if (isSiteLoading) {
             MenuNavItem(
                 modifier = Modifier.weight(1f),
