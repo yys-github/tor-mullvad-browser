@@ -228,6 +228,7 @@ open class DefaultToolbarMenu(
         onItemTapped.invoke(ToolbarMenu.Item.NewTab)
     }
 
+    // Remove once moz deletes this old UI (Toolbar Menu is being replaced by MainMenu)
     private val newCircuitItem = BrowserMenuImageText(
         context.getString(R.string.library_new_circuit),
         R.drawable.new_circuit,
@@ -409,6 +410,7 @@ open class DefaultToolbarMenu(
             listOfNotNull(
                 if (shouldUseBottomToolbar) null else menuToolbar,
                 newTabItem,
+                // Remove once moz deletes this old UI (Toolbar Menu is being replaced by MainMenu)
                 BrowserMenuDivider(),
                 newCircuitItem,
                 BrowserMenuDivider(),

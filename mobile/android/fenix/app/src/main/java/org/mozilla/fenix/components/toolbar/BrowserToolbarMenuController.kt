@@ -453,6 +453,7 @@ class DefaultBrowserToolbarMenuController(
                 navController.navigateSafe(R.id.browserFragment, directions)
             }
 
+            // Remove once moz deletes this old UI (Toolbar Menu is being replaced by MainMenu)
             ToolbarMenu.Item.NewTorCircuit -> {
                 currentSession?.let {
                     sessionUseCases.reload.invoke(it.id)
@@ -612,6 +613,7 @@ class DefaultBrowserToolbarMenuController(
                 ),
             )
 
+            // Remove once moz deletes this old UI (Toolbar Menu is being replaced by MainMenu)
             ToolbarMenu.Item.NewTorCircuit -> {
                 /* Tor doesn't use telemetry and therefore this doesn't need to be implemented */
             }
