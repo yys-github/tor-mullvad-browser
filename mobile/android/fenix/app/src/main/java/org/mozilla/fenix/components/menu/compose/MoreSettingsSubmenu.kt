@@ -57,39 +57,6 @@ internal fun MoreSettingsSubmenu(
     Column(
         verticalArrangement = Arrangement.spacedBy(2.dp),
     ) {
-        TranslationSection(
-            translationInfo = translationInfo,
-            isReaderViewActive = isReaderViewActive,
-        )
-        SummarizationMenuItem(
-            summarizationMenuState = summarizationMenuState,
-            onSummarizePageMenuExposed = onSummarizePageMenuExposed,
-            onSummarizePageClick = onSummarizePageClick,
-        )
-        WebCompatReporterMenuItem(
-            isWebCompatReporterSupported = isWebCompatReporterSupported,
-            isWebCompatEnabled = isWebCompatEnabled,
-            onWebCompatReporterClick = onWebCompatReporterClick,
-        )
-        ShortcutsSection(
-            showShortcuts = showShortcuts,
-            isPinned = isPinned,
-            onShortcutsMenuClick = onShortcutsMenuClick,
-        )
-        AddToHomeScreenMenuItem(
-            isAddToHomeScreenSupported = isAddToHomeScreenSupported,
-            isInstallable = isInstallable,
-            onAddToHomeScreenMenuClick = onAddToHomeScreenMenuClick,
-        )
-        SaveToCollectionMenuItem(
-            onSaveToCollectionMenuClick = onSaveToCollectionMenuClick,
-        )
-        OpenInAppMenuItem(
-            hasExternalApp = hasExternalApp,
-            externalAppName = externalAppName,
-            isOpenInAppMenuHighlighted = isOpenInAppMenuHighlighted,
-            onOpenInAppMenuClick = onOpenInAppMenuClick,
-        )
         SaveAsPdfMenuItem(
             onSaveAsPDFMenuClick = onSaveAsPDFMenuClick,
         )
