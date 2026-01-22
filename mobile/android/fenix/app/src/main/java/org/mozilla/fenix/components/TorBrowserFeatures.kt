@@ -115,15 +115,19 @@ object TorBrowserFeatures {
             )
         }
         /**
-         *  Install NoScript as a user WebExtension if we have not already done so.
+         *  Install NoScript if we have not done it yet for this browser version.
          *  AMO signature is checked, but automatic updates still need to be enabled.
          */
-        if (!settings.noscriptInstalled) {
+        val extensionsVersion =
+            org.mozilla.geckoview.BuildConfig.MOZ_APP_VERSION + "-" +
+            org.mozilla.geckoview.BuildConfig.MOZ_APP_BUILDID + "-" +
+            org.mozilla.fenix.BuildConfig.VCS_HASH
+        if (settings.extensionsVersion != extensionsVersion) {
             installNoScript(
                 context,
                 runtime,
                 onSuccess = {
-                    settings.noscriptInstalled = true
+                    settings.extensionsVersion = extensionsVersion
                     logger.debug("NoScript extension was installed successfully")
                 },
                 onError = { throwable ->
