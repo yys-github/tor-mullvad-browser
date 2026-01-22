@@ -2491,14 +2491,9 @@ class Settings(
         default = false,
     )
 
-    var noscriptInstalled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_noscript_installed),
-        default = false
-    )
-
-    var noscriptUpdated by intPreference(
-        appContext.getPreferenceKey(R.string.pref_key_noscript_updated),
-        default = 0
+    var extensionsVersion by stringPreference(
+        appContext.getPreferenceKey(R.string.pref_key_extensions_version),
+        default = ""
     )
 
     var httpsEverywhereRemoved by booleanPreference(
