@@ -53,43 +53,6 @@ internal fun MoreSettingsSubmenu(
     onMoveToNonPrivateTabMenuClick: () -> Unit,
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
-        TranslationMenuItem(
-            translationInfo = translationInfo,
-            isReaderViewActive = isReaderViewActive,
-        )
-        SummarizationMenuItem(
-            summarizationMenuState = summarizationMenuState,
-            onSummarizePageMenuExposed = onSummarizePageMenuExposed,
-            onSummarizePageClick = onSummarizePageClick,
-        )
-        MoveToNonPrivateTabMenuItem(
-            isPrivate = isPrivate,
-            onMoveToNonPrivateTabMenuClick = onMoveToNonPrivateTabMenuClick,
-        )
-        WebCompatReporterMenuItem(
-            isWebCompatEnabled = isWebCompatEnabled,
-            onWebCompatReporterClick = onWebCompatReporterClick,
-        )
-        ShortcutsSection(
-            showShortcuts = showShortcuts,
-            isPinned = isPinned,
-            onShortcutsMenuClick = onShortcutsMenuClick,
-        )
-        AddToHomeScreenMenuItem(
-            isAddToHomeScreenSupported = isAddToHomeScreenSupported,
-            isInstallable = isInstallable,
-            onAddToHomeScreenMenuClick = onAddToHomeScreenMenuClick,
-        )
-        SaveToCollectionMenuItem(
-            showSaveToCollection = showSaveToCollection,
-            onSaveToCollectionMenuClick = onSaveToCollectionMenuClick,
-        )
-        OpenInAppMenuItem(
-            hasExternalApp = hasExternalApp,
-            externalAppName = externalAppName,
-            isOpenInAppMenuHighlighted = isOpenInAppMenuHighlighted,
-            onOpenInAppMenuClick = onOpenInAppMenuClick,
-        )
         SaveAsPdfMenuItem(onSaveAsPDFMenuClick = onSaveAsPDFMenuClick)
         PrintMenuItem(
             isAndroidAutomotiveAvailable = isAndroidAutomotiveAvailable,
