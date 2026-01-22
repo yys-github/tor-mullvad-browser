@@ -536,6 +536,7 @@
     <!-- Tab Manager-->
     <string name="pref_key_tab_manager_opening_animation" translatable="false">pref_key_tab_manager_opening_animation</string>
 
+
     <!-- Tab Search -->
     <string name="pref_key_tab_search" translatable="false">pref_key_tab_search_feature</string>
 
@@ -545,7 +546,6 @@
     <string name="pref_key_search_optimization_feature" translatable="false">pref_key_search_optimization_feature</string>
     <string name="pref_key_search_optimization_stocks" translatable="false">pref_key_search_optimization_stocks</string>
 
-    <string name="pref_key_noscript_installed" translatable="false">pref_key_noscript_installed</string>
-    <string name="pref_key_noscript_updated" translatable="false">pref_key_noscript_updated</string>
+    <string name="pref_key_extensions_version" translatable="false">pref_key_extensions_version</string>
     <string name="pref_key_https_everywhere_removed" translatable="false">pref_key_https_everywhere_removed</string>
 </resources>
