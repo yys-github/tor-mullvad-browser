@@ -251,17 +251,6 @@ fun MainMenu(
             }
         }
 
-        if (accessPoint == MenuAccessPoint.Home && showBanner) {
-            MenuBanner(
-                onDismiss = {
-                    onBannerDismiss()
-                },
-                onClick = {
-                    onBannerClick()
-                },
-            )
-        }
-
         if (showIPProtection) {
             MenuGroup {
                 IPProtectionMenuItem(
@@ -320,12 +309,6 @@ fun MainMenu(
         )
 
         MenuGroup {
-            MozillaAccountMenuItem(
-                account = account,
-                accountState = accountState,
-                onClick = onMozillaAccountButtonClick,
-            )
-
             if (accessPoint == MenuAccessPoint.Home) {
                 MenuItem(
                     label = stringResource(id = R.string.browser_menu_change_wallpaper),
@@ -339,30 +322,16 @@ fun MainMenu(
                 beforeIconPainter = painterResource(id = iconsR.drawable.mozac_ic_settings_24),
                 onClick = onSettingsButtonClick,
             )
-        }
-
-        if (showQuitMenu) {
-            QuitMenuGroup(
-                onQuitMenuClick = onQuitMenuClick,
+            MenuItem(
+                label = stringResource(
+                    id = R.string.browser_menu_delete_browsing_data_on_quit,
+                    stringResource(id = R.string.app_name),
+                ),
+                beforeIconPainter = painterResource(id = iconsR.drawable.mozac_ic_cross_circle_24),
+                state = MenuItemState.WARNING,
+                onClick = onQuitMenuClick,
             )
         }
-    }
-}
-
-@Composable
-private fun QuitMenuGroup(
-    onQuitMenuClick: () -> Unit,
-) {
-    MenuGroup {
-        MenuItem(
-            label = stringResource(
-                id = R.string.browser_menu_delete_browsing_data_on_quit,
-                stringResource(id = R.string.app_name),
-            ),
-            beforeIconPainter = painterResource(id = iconsR.drawable.mozac_ic_cross_circle_fill_24),
-            state = MenuItemState.WARNING,
-            onClick = onQuitMenuClick,
-        )
     }
 }
 
@@ -466,7 +435,7 @@ private fun ToolsAndActionsMenuGroup(
 
         if (!moreMenuExpanded) {
             MoreMenuButtonGroup(
-                isMoreMenuHighlighted = isMoreMenuHighlighted,
+                isMoreMenuHighlighted = false, // This prevents a dot from incorrectly showing e.g. "open in app" is available, even though we disable it.
                 onMoreMenuClick = onMoreMenuClick,
             )
         }
@@ -541,7 +510,7 @@ private fun LibraryMenuGroup(
             .semantics {
                 this.collectionInfo = CollectionInfo(
                     rowCount = 1,
-                    columnCount = 4,
+                    columnCount = 2,
                 )
             },
         horizontalArrangement = Arrangement.SpaceEvenly,
@@ -551,23 +520,10 @@ private fun LibraryMenuGroup(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxHeight(),
-            iconRes = iconsR.drawable.mozac_ic_history_24,
-            labelRes = R.string.library_history,
-            shape = leftShape,
-            index = 0,
-            onClick = onHistoryMenuClick,
-        )
-
-        Spacer(Modifier.width(spacerWidth))
-
-        LibraryMenuItem(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
             iconRes = iconsR.drawable.mozac_ic_bookmark_tray_fill_24,
             labelRes = R.string.library_bookmarks,
-            shape = middleShape,
-            index = 1,
+            shape = leftShape,
+            index = 0,
             onClick = onBookmarksMenuClick,
         )
 
@@ -580,22 +536,9 @@ private fun LibraryMenuGroup(
             isHighlighted = isDownloadHighlighted,
             iconRes = iconsR.drawable.mozac_ic_download_24,
             labelRes = R.string.library_downloads,
-            shape = middleShape,
-            index = 2,
-            onClick = onDownloadsMenuClick,
-        )
-
-        Spacer(Modifier.width(spacerWidth))
-
-        LibraryMenuItem(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
-            iconRes = iconsR.drawable.mozac_ic_login_24,
-            labelRes = R.string.browser_menu_passwords,
             shape = rightShape,
-            index = 3,
-            onClick = onPasswordsMenuClick,
+            index = 1,
+            onClick = onDownloadsMenuClick,
         )
     }
 }
