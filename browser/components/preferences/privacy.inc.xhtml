@@ -560,7 +560,14 @@
 
 <!-- The form autofill section is inserted in to this box
      after the form autofill extension has initialized. -->
+<!-- This is configured by FormAutofillPreferences.sys.mjs via
+   - FormAutofillStatus. But since the "autofill" extension is excluded from the
+   - build, FormAutofillStatus is never initialised. So we add the would-be
+   - data-hidden-* attributes explicitly here instead.
+   - See tor-browser#44460. -->
 <groupbox id="formAutofillGroupBox"
+          data-hidden-from-search="true"
+          data-hidden-by-setting-group=""
           data-category="panePrivacy"
           data-subcategory="form-autofill" hidden="true">
   <label><html:h2 data-l10n-id="autofill-payment-methods-title" class="subsection-heading"/></label>
