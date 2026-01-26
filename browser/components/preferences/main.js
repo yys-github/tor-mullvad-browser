@@ -1527,6 +1527,10 @@ const DefaultBrowserHelper = {
    * @type {boolean}
    */
   get canCheck() {
+    if (AppConstants.BASE_BROWSER_VERSION) {
+      // Disabled for Tor Browser. tor-browser#44343 and tor-browser#41822.
+      return false;
+    }
     return (
       this.shellSvc &&
       /**
