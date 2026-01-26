@@ -414,6 +414,9 @@ pref("browser.urlbar.dnsResolveSingleWordsAfterSearch", 0);
 pref("messaging-system.rsexperimentloader.enabled", false);
 // true means that you are *not* opting out. See its usage in various file.
 pref("app.shield.optoutstudies.enabled", false);
+// Disable nimbus rollouts.
+// See bugzilla bug 2003350. See tor-browser#44520.
+pref("nimbus.rollouts.enabled", false);
 // Disable Normandy/Shield
 pref("app.normandy.enabled", false);
 pref("app.normandy.api_url", "");
