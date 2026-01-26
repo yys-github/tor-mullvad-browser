@@ -281,23 +281,12 @@ class BuildBackend(LoggingMixin):
         if app == "mobile/android":
             # Set up NoScript extension
             # We put it in the srcdir... It will be moved to the APK in the gradle build.
-            if noscript_location:
-                noscript_target = (
-                    Path(config.topsrcdir)
-                    / "mobile/android/fenix/app/src/main/assets/extensions"
-                    / noscript_target_filename
-                )
-                self.log(
-                    logging.INFO,
-                    "_setup_tor_browser_environment",
-                    {
-                        "noscript_location": noscript_location,
-                        "noscript_target": str(noscript_target),
-                    },
-                    "Creating symlink for NoScript from {noscript_location} to {noscript_target}",
-                )
-
-                _infallible_symlink(noscript_location, noscript_target)
+            self._setup_extension_symlink(
+                noscript_location,
+                noscript_target_filename,
+                Path(config.topsrcdir)
+                / "mobile/android/fenix/app/src/main/assets/extensions",
+            )
 
         if app == "browser":
             tbdir = Path(config.topobjdir) / "dist" / "bin"
@@ -361,13 +350,15 @@ class BuildBackend(LoggingMixin):
                 paths["tor_config"].mkdir(parents=True, exist_ok=True)
                 for file in ["geoip", "geoip6", "torrc-defaults"]:
                     target = paths["tor_config"] / file
-                    _infallible_symlink(expert_bundle_location / "data" / file, target)
+                    self._create_or_replace_symlink(
+                        expert_bundle_location / "data" / file, target
+                    )
 
                 # Set up Conjure documentation
                 conjust_docs_location = paths["docs"] / "conjure"
                 conjust_docs_location.mkdir(parents=True, exist_ok=True)
                 conjure_readme = conjust_docs_location / "README.CONJURE.md"
-                _infallible_symlink(
+                self._create_or_replace_symlink(
                     expert_bundle_location
                     / "tor/pluggable_transports/README.CONJURE.md",
                     conjure_readme,
@@ -384,21 +375,21 @@ class BuildBackend(LoggingMixin):
                     # We only want the PT executables.
                     if os.access(file, os.X_OK) or file.suffix.lower() == ".exe":
                         target = pluggable_transports_target / file.name
-                        _infallible_symlink(file, target)
+                        self._create_or_replace_symlink(file, target)
 
                 # Setup Tor binary
                 for item in Path(expert_bundle_location / "tor").iterdir():
                     target = paths["tor_bin"] / item.name
 
                     if item.is_file():
-                        _infallible_symlink(item, target)
+                        self._create_or_replace_symlink(item, target)
 
                 # Set up licenses
                 licenses_location = paths["docs"] / "Licenses"
                 licenses_location.mkdir(parents=True, exist_ok=True)
                 for item in (expert_bundle_location / "docs").iterdir():
                     target = licenses_location / item.name
-                    _infallible_symlink(item, target)
+                    self._create_or_replace_symlink(item, target)
 
     def post_build(self, config, output, jobs, verbose, status):
         """Called late during 'mach build' execution, after `build(...)` has finished.
