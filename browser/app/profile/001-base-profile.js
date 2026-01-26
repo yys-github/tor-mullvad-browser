@@ -83,8 +83,18 @@ pref("signon.rememberSignons", false);
 pref("browser.formfill.enable", false);
 pref("signon.formlessCapture.enabled", false); // Added with tor-browser#41496
 pref("signon.autofillForms", false);
+// NOTE: extensions.formautofill.available is a legacy preference that upstream
+// has not removed yet, and is only used for a migration to the newer
+// "*.supported" preferences. See bugzilla bug 1745248.
 pref("extensions.formautofill.available", "");
+// Suppress formautofill component. tor-browser#44460.
+// NOTE: With the "formautofill" built-in extension removed from Base Browser
+// builds, some of these preferences have almost no effect at the time of
+// implementation, but we include them in case they help with future-proofing.
+pref("extensions.formautofill.addresses.supported", "off");
+pref("extensions.formautofill.addresses.experiments.enabled", false);
 pref("extensions.formautofill.addresses.enabled", false);
+pref("extensions.formautofill.creditCards.supported", "off");
 pref("extensions.formautofill.creditCards.enabled", false);
 // Do not store extra data (form, scrollbar positions, cookies, POST data) for
 // the session restore functionality.
