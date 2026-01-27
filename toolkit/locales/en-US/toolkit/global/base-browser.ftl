@@ -81,17 +81,22 @@ letterboxing-header = Letterboxing
 # "Letterboxing" should be treated as a feature/product name, and likely not changed in other languages.
 letterboxing-overview = { -brand-short-name }'s Letterboxing feature restricts websites to display at specific sizes, making it harder to single out users on the basis of their window or screen size.
 letterboxing-learn-more = Learn more
-letterboxing-window-size-header = Window size
+letterboxing-window-size-group =
+    .label = Window size
 letterboxing-remember-size =
     .label = Reuse last window size when opening a new window
     .accesskey = R
-letterboxing-alignment-header = Content alignment
-letterboxing-alignment-description = Choose where you want to align the website’s content.
-letterboxing-alignment-top = Top
-letterboxing-alignment-middle = Middle
+letterboxing-alignment-group =
+    .label = Content alignment
+    .description = Choose where you want to align the website’s content.
+letterboxing-alignment-top-option =
+    .label = Top
+letterboxing-alignment-middle-option =
+    .label = Middle
 # The word "Letterboxing" is the proper noun for the Tor Browser feature, and is therefore capitalised.
 # "Letterboxing" should be treated as a feature/product name, and likely not changed in other languages.
-letterboxing-disabled-description = Letterboxing is currently disabled.
+letterboxing-disabled-message =
+    .message = Letterboxing is currently disabled.
 # The word "Letterboxing" is the proper noun for the Tor Browser feature, and is therefore capitalised.
 # "Letterboxing" should be treated as a feature/product name, and likely not changed in other languages.
 letterboxing-enable-button =
