@@ -10,6 +10,7 @@ mullvad-about-readMore = Read more
 #   $emailAddress (String) - The email address of Mullvad's support
 mullvad-about-feedback2 = Help & feedback: { $emailAddress }
 mullvad-about-telemetryLink = Telemetry
+mullvad-about-privacy-policy = Privacy Policy
 
 ## Mullvad browser home page.
 
