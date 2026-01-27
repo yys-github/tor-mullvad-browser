@@ -6823,8 +6823,6 @@ var gMainPane = {
       this._translationsView.destroy();
       this._translationsView = null;
     }
-
-    gLetterboxingPrefs.destroy();
   },
 
   // nsISupports
