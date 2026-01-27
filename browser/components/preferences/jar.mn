@@ -45,7 +45,5 @@ browser.jar:
 
    content/browser/preferences/letterboxing.js
    content/browser/preferences/letterboxing.css
-   content/browser/preferences/letterboxing-middle-dark.svg
-   content/browser/preferences/letterboxing-middle-light.svg
-   content/browser/preferences/letterboxing-top-dark.svg
-   content/browser/preferences/letterboxing-top-light.svg
+   content/browser/preferences/letterboxing-middle.svg
+   content/browser/preferences/letterboxing-top.svg
