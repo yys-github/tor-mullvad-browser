@@ -16,7 +16,6 @@ Please select the appropriate issue template from the **Description** drop-down.
 - 🕰️ **Time-Gated Feature** - implement a new feature which must be enabled for a particular window in time
 - ⬅️ **Backport** - cherry-pick change to other release channels
 - ❌ **Revert** - revert a change
-- ⤵️ **Rebase - Alpha** - rebase alpha to latest Firefox ESR version
+- ⤵️ **Rebase - Alpha** - rebase alpha to latest Firefox Nightly version
 - ⤵️ **Rebase - Stable** - rebase stable to latest Firefox ESR version
-- ⤵️ **Rebase - Rapid** - rebase rapid to latest Firefox Nightly version
 - 🚨 **Emergency Security Issue** - manage fixing and publishing a critical security fix
