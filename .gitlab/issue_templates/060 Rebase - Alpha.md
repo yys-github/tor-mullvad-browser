@@ -1,0 +1,104 @@
+# ⤵️ Rebase Alpha
+
+## **Bookkeeping**
+
+- [ ] Link this issue to the appropriate [Release Prep](https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/issues/?sort=updated_desc&state=opened&label_name%5B%5D=Apps%3A%3AType%3A%3AReleasePreparation) issue.
+- [ ] Create "Firefox Release Review" issue for this version
+  - **NOTE**: We have issues open through Firefox 153 so this can be skipped until we get to Firefox 154
+
+## **Rebase**
+
+The step-by-step rebase process is detailed on the [Rebase Process](https://gitlab.torproject.org/tpo/applications/wiki/-/wikis/Development-Information/Rebase/Rebase-Process) wiki page. Refer to it for detailed instructions on how to perform each step.
+
+- Rebase application-services
+  - uniffi-rs
+    - Prepare the rebase
+      - [ ] Verify if application-services has updated it's uniffi-rs version
+      - [ ] Get the [upstream](https://github.com/mozilla/uniffi-rs) tag
+      - [ ] Freeze the current default branch
+      - [ ] Create the target branch (`X.XX.X`)
+    - [ ] Rebase
+    - Merge
+      - [ ] Perform a self-review
+      - [ ] Build
+      - [ ] File a merge request
+    - Tag and update the repository
+      - [ ] Tag `vX.XX.X`
+      - [ ] Make `X.XX.X` the default branch
+  - application-services
+    - Prepare the rebase
+      - [ ] Get the [upstream](github.com/mozilla/application-services) tag
+      - [ ] Freeze the current default branch
+      - [ ] Create the target branch (`XXX.X-TORBROWSER`)
+    - Do the rebase
+      - [ ] Cherry-pick commits
+      - [ ] Squash _all_ `fixup!` commits
+    - Merge
+      - [ ] Perform a self-review
+      - [ ] Build
+      - [ ] File a merge request
+    - [ ] Tag and update the repository
+      - [ ] Tag `vXXX.X-TORBROWSER-build1`
+      - [ ] Make `XXX.X-TORBROWSER` the default branch
+
+- Rebase Tor Browser
+  - Prepare the rebase
+    - [ ] Get the [Firefox](https://github.com/mozilla-firefox/firefox) tag
+  - Do the rebase [Part 1]
+    - [ ] Create the target branch (`tor-browser-...-1`)
+    - [ ] Cherry-pick commits until `tor-browser-...-build1`
+    - [ ] Freeze the current default branch
+    - [ ] Cherry-pick remaining commits
+    - Merge
+      - [ ] Perform a self-review (`git range-diff`)
+      - [ ] Run linters
+      - [ ] Build and test
+        - [ ] Desktop
+        - [ ] Android
+      - [ ] File a merge request
+    - Tag and update the repository
+      - [ ] Tag `tor-browser-...-1-build1`
+      - [ ] Tag `tor-browser-...-1-build2`
+      - [ ] Make `tor-browser-...-1` the default branch and freeze it
+  - Do the rebase [Part 2]
+    - [ ] Create the target branch (`tor-browser-...-2`)
+    - [ ] Cherry-pick commits until `tor-browser-...-1-build1`
+    - [ ] Squash (`git rebase --autosquash FIREFOX_...`)
+    - [ ] Cherry-pick the remaining commits
+    - [ ] Reorder commits
+    - Merge
+      - [ ] Perform a self-review (`git range-diff` + diff of diffs)
+      - [ ] Run linters
+      - [ ] Build and test
+        - [ ] Desktop
+        - [ ] Android
+      - [ ] File a merge request
+    - Tag and update the repository
+      - [ ] `tor-browser-...-2-build1`
+      - [ ] `base-browser-...-2-build1`
+      - [ ] Make `tor-browser-...-2` the default branch
+
+- Rebase Mullvad Browser
+  - Prepare the rebase
+    - [ ] Push the `base-browser-*` tag
+    - [ ] Freeze the current default branch
+    - [ ] Create the target branch (`mullvad-browser-...-1`)
+  - Do the rebase
+    - [ ] Cherry-pick commits until `mullvad-browser-...-build1`
+    - [ ] Squash (`git rebase --autosquash base-browser-...-build1`)
+    - [ ] Cherry-pick the remaining commits
+    - [ ] Reorder commits
+  - Merge
+    - [ ] Perform a self-review  (`git range-diff` + diff of diffs)
+    - [ ] Run linters
+    - [ ] File a merge request
+  - [ ] Tag and update the repository
+    - [ ] Tag `mullvad-browser-...-build1`
+    - [ ] Make `mullvad-browser-...-2` the default branch
+
+---
+
+/label ~"Apps::Product::TorBrowser"
+/label ~"Apps::Type::Rebase"
+/label ~"Apps::Impact::High"
+/label ~"Priority::Blocker"
