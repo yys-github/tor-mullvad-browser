@@ -124,6 +124,8 @@
     <string name="connection_assist_connect_to_tor_before_opening_links_confirmation">CONNECT</string>
     <!-- Connection assist. Content Description for back button. Button will start the connection assist process again -->
     <string name="connection_assist_back_button_content_description_start_again">Start again</string>
+    <!-- Connection assist. Bootstrap succeeded toast message-->
+    <string name="connection_assist_bootstrap_succeeded_toast_message">Connected to Tor</string>
 
     <!-- Notification title for closing browser tabs. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
     <string name="notification_close_tor_browser_tabs">Close %s’s tabs?</string>
