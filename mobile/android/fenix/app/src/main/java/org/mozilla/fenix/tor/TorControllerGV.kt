@@ -3,6 +3,7 @@ package org.mozilla.fenix.tor
 
 import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.LifecycleCoroutineScope
 import mozilla.components.browser.engine.gecko.GeckoEngine
 import org.mozilla.fenix.ext.components
@@ -190,6 +191,11 @@ class TorControllerGV(
                     runOnceBootstrappedHandlers.remove(it)
                 }
             }
+            Toast.makeText(
+                context,
+                context.getString(org.mozilla.fenix.R.string.connection_assist_bootstrap_succeeded_toast_message),
+                Toast.LENGTH_LONG,
+            ).show()
         }
     }
 
