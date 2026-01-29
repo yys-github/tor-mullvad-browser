@@ -9943,10 +9943,7 @@ var TabContextMenu = {
       !this.contextTab.pinned || !this.multiselected;
 
     // Build Ask Chat items
-    TabContextMenu.GenAI.buildTabMenu(
-      document.getElementById("context_askChat"),
-      this
-    );
+    // GenAI is missing. tor-browser#44045.
 
     // Move Tab items
     let contextMoveTabOptions = document.getElementById(
@@ -10427,6 +10424,6 @@ var TabContextMenu = {
 };
 
 ChromeUtils.defineESModuleGetters(TabContextMenu, {
-  GenAI: "resource:///modules/GenAI.sys.mjs",
+  // GenAI.sys.mjs is missing. tor-browser#44045.
   TabNotes: "moz-src:///browser/components/tabnotes/TabNotes.sys.mjs",
 });
