@@ -1066,7 +1066,7 @@ class Settings(
 
     var whatsappLinkSharingEnabled by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_link_sharing),
-        default = { false },
+        default = { FxNimbus.features.sentFromFirefox.value().enabled },
     )
 
     var linkSharingSettingsSnackbarShown by booleanPreference(

@@ -228,7 +228,6 @@
         <androidx.preference.Preference
             android:key="@string/pref_key_link_sharing"
             app:iconSpaceReserved="false"
-            app:isPreferenceVisible="false"
             android:title="@string/preferences_link_sharing" />
 
         <!--
