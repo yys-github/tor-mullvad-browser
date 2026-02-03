@@ -343,23 +343,6 @@ private fun TabPageBanner(
                             style = FirefoxTheme.typography.button,
                         )
                     }
-
-                    Tab(
-                        selected = selectedPage == Page.SyncedTabs,
-                        onClick = { onTabPageIndicatorClicked(Page.SyncedTabs) },
-                        modifier = Modifier
-                            .testTag(TabsTrayTestTag.SYNCED_TABS_PAGE_BUTTON)
-                            .semantics {
-                                contentDescription = syncedTabDescription
-                            }
-                            .height(RowHeight),
-                        unselectedContentColor = inactiveColor,
-                    ) {
-                        Text(
-                            text = stringResource(id = R.string.tabs_header_synced_tabs_title),
-                            style = FirefoxTheme.typography.button,
-                        )
-                    }
                 }
             }
         },
