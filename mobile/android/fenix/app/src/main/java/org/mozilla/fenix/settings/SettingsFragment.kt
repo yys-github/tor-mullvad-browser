@@ -256,7 +256,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment,
         val suffix = nimbusValidation.settingsPunctuation
         val toolbarTitle = "$title$suffix"
 
-        val showSearch = !args.searchInProgress
+        val showSearch = false
 
         if (showSearch) {
             showToolbarWithIconButton(
