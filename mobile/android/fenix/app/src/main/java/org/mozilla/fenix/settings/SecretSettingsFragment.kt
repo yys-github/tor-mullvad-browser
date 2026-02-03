@@ -104,7 +104,7 @@ class SecretSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFra
     override fun onResume() {
         super.onResume()
 
-        val showSearch = !args.searchInProgress
+        val showSearch = false
 
         if (showSearch) {
             showToolbarWithIconButton(
