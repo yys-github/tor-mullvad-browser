@@ -2025,7 +2025,7 @@ class Settings(
 
     var isSettingsSearchEnabled by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_allow_settings_search),
-        default = { FxNimbus.features.settingsSearch.value().enabled },
+        default = false,
     )
 
     var isSearchOptimizationEnabled by booleanPreference(
