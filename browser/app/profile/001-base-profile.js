@@ -547,6 +547,11 @@ pref("browser.display.use_system_colors", false);
 pref("widget.non-native-theme.use-theme-accent", false);
 // tor-browser#43236: Disable vsync on Wayland to prevent refresh rate leaks.
 pref("widget.wayland.vsync.enabled", false);
+// tor-browser#44571: Disable HTML rating attribute for filtering web content.
+// This could potentially be used as a fingerprinting vector based on if content
+// marked with a specific rating is loaded or not.
+pref("security.restrict_to_adults.always", false);
+pref("security.restrict_to_adults.respect_platform", false);
 
 // tor-browser#41943: defense-in-depth, but do not lock anymore (enabled in Firefox 119, http://bugzil.la/1851162)
 pref("javascript.options.spectre.disable_for_isolated_content", false);
@@ -729,6 +734,8 @@ pref("browser.menu.share_url.allow", false, locked);
 // Disable special URL bar behaviors
 pref("browser.urlbar.suggest.topsites", false);
 pref("browser.urlbar.quicksuggest.enabled", false);
+pref("browser.urlbar.quicksuggest.online.available", false);
+pref("browser.urlbar.quicksuggest.online.enabled", false);
 pref("browser.urlbar.richSuggestions.featureGate", false);
 pref("browser.urlbar.yelp.featureGate", false);
 pref("browser.urlbar.mdn.featureGate", false);
