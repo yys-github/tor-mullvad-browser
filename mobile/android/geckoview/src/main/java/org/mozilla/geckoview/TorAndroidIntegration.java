@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.InterruptedIOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermissions;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -97,7 +99,7 @@ public class TorAndroidIntegration implements BundleEventListener {
   /* package */ TorAndroidIntegration(Context context) {
     mLibraryDir = context.getApplicationInfo().nativeLibraryDir;
     mCacheDir = context.getCacheDir().getAbsolutePath();
-    mIpcDirectory = mCacheDir + "/tor-private";
+    mIpcDirectory = new File(context.getFilesDir(), "tor-ipc").getAbsolutePath();
     mDataDir = new File(context.getFilesDir(), "tor");
     registerListener();
   }
@@ -354,15 +356,8 @@ public class TorAndroidIntegration implements BundleEventListener {
           return;
         }
         try {
-          // First remove the permissions for everybody...
-          directory.setReadable(false, false);
-          directory.setWritable(false, false);
-          directory.setExecutable(false, false);
-          // ... then add them back, but only for the owner.
-          directory.setReadable(true, true);
-          directory.setWritable(true, true);
-          directory.setExecutable(true, true);
-        } catch (SecurityException e) {
+          Files.setPosixFilePermissions(directory.toPath(), PosixFilePermissions.fromString("rwx------"));
+        } catch (IOException | SecurityException e) {
           Log.e(TAG, "Could not set the permissions to the IPC directory.", e);
         }
         return;
