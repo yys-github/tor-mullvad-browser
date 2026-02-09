@@ -100,7 +100,7 @@ public class TorAndroidIntegration implements BundleEventListener {
   /* package */ TorAndroidIntegration(Context context) {
     mLibraryDir = context.getApplicationInfo().nativeLibraryDir;
     mCacheDir = context.getCacheDir().getAbsolutePath();
-    mIpcDirectory = mCacheDir + "/tor-private";
+    mIpcDirectory = new File(context.getFilesDir(), "tor-ipc").getAbsolutePath();
     mDataDir = new File(context.getFilesDir(), "tor");
     registerListener();
   }
