@@ -141,8 +141,17 @@ export class TorProcess {
       this.#status = TorProcessStatus.Exited;
       this.#subprocess = null;
       logger.error("startTor error:", e);
+      lazy.TorLauncherUtil.log(
+        "PARENT-ERR",
+        "Failed to start a tor process (more information in the browser console)."
+      );
       throw e;
     }
+
+    lazy.TorLauncherUtil.log(
+      "PARENT-INFO",
+      `New tor process started with pid ${this.#subprocess.pid}.`
+    );
 
     // Do not await the following functions, as they will return only when the
     // process exits.
@@ -189,8 +198,15 @@ export class TorProcess {
       const { exitCode } = await watched.wait();
       processExitCode = exitCode;
 
+      lazy.TorLauncherUtil.log(
+        exitCode !== 0 ? "PARENT-WARN" : "PARENT-INFO",
+        `The tor process with pid ${this.#subprocess.pid} exited with code ${exitCode}.`
+      );
+
       if (watched !== this.#subprocess) {
-        logger.debug(`A Tor process exited with code ${exitCode}.`);
+        logger.debug(
+          `The tor process ${watched.pid} exited with code ${exitCode}.`
+        );
       } else if (exitCode) {
         logger.warn(`The watched Tor process exited with code ${exitCode}.`);
       } else {
