@@ -207,8 +207,15 @@ export class TorProvider {
       await this.#firstConnection();
     } catch (e) {
       logger.error("Cannot connect to the control port", e);
+      // Log this also to the UI, as getting console logs from Android
+      // makes troubleshooting more difficult and involved.
+      TorLauncherUtil.log(
+        "PARENT-ERR",
+        `Connection to the control port failed: ${e.message}.`
+      );
       throw e;
     }
+    TorLauncherUtil.log("PARENT-INFO", "Connected to the control port.", false);
 
     if (this.ownsTorDaemon) {
       try {
@@ -1021,21 +1028,7 @@ export class TorProvider {
    * @param {string} msg The message
    */
   onLogMessage(type, msg) {
-    if (type === "WARN" || type === "ERR") {
-      // Notify so that Copy Log can be enabled.
-      Services.obs.notifyObservers(null, TorProviderTopics.HasWarnOrErr);
-    }
-
-    const timestamp = new Date()
-      .toISOString()
-      .replace("T", " ")
-      .replace("Z", "");
-
-    Services.obs.notifyObservers(
-      { type, msg, timestamp },
-      TorProviderTopics.TorLog
-    );
-
+    TorLauncherUtil.log(type, msg);
     switch (type) {
       case "ERR":
         logger.error(`[Tor error] ${msg}`);

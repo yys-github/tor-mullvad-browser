@@ -6,6 +6,7 @@ const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
   EventDispatcher: "resource://gre/modules/Messaging.sys.mjs",
+  TorLauncherUtil: "resource://gre/modules/TorLauncherUtil.sys.mjs",
 });
 
 const logger = console.createInstance({
@@ -107,6 +108,27 @@ export class TorProcessAndroid {
   }
 
   onEvent(event, data, _callback) {
+    switch (event) {
+      case TorIncomingEvents.started:
+        lazy.TorLauncherUtil.log(
+          "PARENT-INFO",
+          `New tor process with handle ${data.handle} started.`
+        );
+        break;
+      case TorIncomingEvents.startFailed:
+        lazy.TorLauncherUtil.log(
+          "PARENT-ERR",
+          `Failed to start a tor process: ${data.error}`
+        );
+        break;
+      case TorIncomingEvents.exited:
+        lazy.TorLauncherUtil.log(
+          data.status !== 0 ? "PARENT-WARN" : "PARENT-INFO",
+          `The tor process with handle ${data.handle} exited with status ${data.status}.`
+        );
+        break;
+    }
+
     if (data?.handle !== this.#processHandle) {
       logger.debug(`Ignoring event ${event} with another handle`, data);
       return;
