@@ -11,6 +11,7 @@ const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
   FileUtils: "resource://gre/modules/FileUtils.sys.mjs",
+  TorProviderTopics: "resource://gre/modules/TorProviderBuilder.sys.mjs",
 });
 
 const kPropBundleURI = "chrome://torbutton/locale/torlauncher.properties";
@@ -697,6 +698,29 @@ export const TorLauncherUtil = {
       }
     } catch (e) {
       console.warn("Could not remove the IPC directory", e);
+    }
+  },
+
+  /**
+   * Broadcast a tor log message. This message will be visible to the user.
+   *
+   * NOTE: Users are likely to copy and paste their tor log to forums, etc.
+   * Therefore, the messages should avoid containing any information that might
+   * identify information about the user.
+   *
+   * @param {string} type The log type (ERR, WARN, etc...)
+   * @param {string} msg The log message
+   */
+  log(type, msg) {
+    const timestamp =
+      new Date().toISOString().replace("T", " ").replace("Z", "") + " UTC";
+    Services.obs.notifyObservers(
+      { type, msg, timestamp },
+      lazy.TorProviderTopics.TorLog
+    );
+    if (type === "WARN" || type === "ERR") {
+      // Notify so that Copy Log can be enabled.
+      Services.obs.notifyObservers(null, lazy.TorProviderTopics.HasWarnOrErr);
     }
   },
 };
