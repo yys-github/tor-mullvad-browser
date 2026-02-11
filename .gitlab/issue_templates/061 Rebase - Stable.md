@@ -25,20 +25,6 @@ The step-by-step rebase process is detailed on the [Rebase Process](https://gitl
     - [ ] `tor-browser-...-build1`
     - [ ] `base-browser-...-build1`
 
-- Rebase Mullvad Browser
-  - Prepare the rebase
-    - [ ] Push the `base-browser-*` tag
-  - Do the rebase
-    - [ ] Cherry-pick commits until `mullvad-browser-...-build1`
-    - [ ] Squash (`git rebase --autosquash base-browser-...-build1`)
-    - [ ] Cherry-pick the remaining commits
-    - [ ] Reorder commits
-  - Merge
-    - [ ] Perform a self-review  (`git range-diff` + diff of diffs)
-    - [ ] Run linters
-  - Tag
-    - [ ] `mullvad-browser-...-build1`
-
 ---
 
 /label ~"Apps::Product::TorBrowser"
