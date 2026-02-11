@@ -78,24 +78,6 @@ The step-by-step rebase process is detailed on the [Rebase Process](https://gitl
       - [ ] `base-browser-...-2-build1`
       - [ ] Make `tor-browser-...-2` the default branch
 
-- Rebase Mullvad Browser
-  - Prepare the rebase
-    - [ ] Push the `base-browser-*` tag
-    - [ ] Freeze the current default branch
-    - [ ] Create the target branch (`mullvad-browser-...-1`)
-  - Do the rebase
-    - [ ] Cherry-pick commits until `mullvad-browser-...-build1`
-    - [ ] Squash (`git rebase --autosquash base-browser-...-build1`)
-    - [ ] Cherry-pick the remaining commits
-    - [ ] Reorder commits
-  - Merge
-    - [ ] Perform a self-review  (`git range-diff` + diff of diffs)
-    - [ ] Run linters
-    - [ ] File a merge request
-  - [ ] Tag and update the repository
-    - [ ] Tag `mullvad-browser-...-build1`
-    - [ ] Make `mullvad-browser-...-2` the default branch
-
 ---
 
 /label ~"Apps::Product::TorBrowser"
