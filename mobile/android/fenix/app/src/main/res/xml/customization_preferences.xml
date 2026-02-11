@@ -99,9 +99,6 @@
             android:title="@string/preference_gestures_website_pull_to_refresh"
             app:isPreferenceVisible="false" />
         <androidx.preference.SwitchPreferenceCompat
-            android:key="@string/pref_key_dynamic_toolbar"
-            android:title="@string/preference_gestures_dynamic_toolbar" />
-        <androidx.preference.SwitchPreferenceCompat
             android:key="@string/pref_key_swipe_toolbar_switch_tabs"
             android:title="@string/preference_gestures_swipe_toolbar_switch_tabs_2" />
         <androidx.preference.SwitchPreferenceCompat
