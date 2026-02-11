@@ -2172,10 +2172,7 @@ class Settings(
                 (isTabStripEligible(appContext) || FxNimbus.features.tabStrip.value().allowOnAllDevices),
     )
 
-    var isDynamicToolbarEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_dynamic_toolbar),
-        default = true,
-    )
+    var isDynamicToolbarEnabled = false
 
     var useNewDynamicToolbarBehaviour by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_use_scroll_data_for_dynamic_toolbar),

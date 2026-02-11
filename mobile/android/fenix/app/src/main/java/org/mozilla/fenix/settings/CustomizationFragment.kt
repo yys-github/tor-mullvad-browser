@@ -319,10 +319,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
             isChecked = context.settings().isPullToRefreshEnabledInBrowser
             onPreferenceChangeListener = SharedPreferenceUpdater()
         }
-        requirePreference<SwitchPreferenceCompat>(R.string.pref_key_dynamic_toolbar).apply {
-            isChecked = context.settings().isDynamicToolbarEnabled
-            onPreferenceChangeListener = SharedPreferenceUpdater()
-        }
         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_swipe_toolbar_switch_tabs).apply {
             isChecked = context.settings().isSwipeToolbarToSwitchTabsEnabled
             isVisible = isSwipeToolbarToSwitchTabsVisible
@@ -356,9 +352,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         when (preference.key) {
             resources.getString(R.string.pref_key_website_pull_to_refresh) -> {
                 PullToRefreshInBrowser.enabled.set(requireContext().settings().isPullToRefreshEnabledInBrowser)
-            }
-            resources.getString(R.string.pref_key_dynamic_toolbar) -> {
-                CustomizationSettings.dynamicToolbar.set(requireContext().settings().isDynamicToolbarEnabled)
             }
         }
         return super.onPreferenceTreeClick(preference)
