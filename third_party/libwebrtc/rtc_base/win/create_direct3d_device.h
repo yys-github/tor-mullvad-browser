@@ -13,15 +13,6 @@
 
 #include <windows.graphics.directx.direct3d11.h>
 #include <windows.graphics.directx.direct3d11.interop.h>
-#ifdef __MINGW32__
-#  include <dxgi.h>
-#  include <inspectable.h>
-extern "C" {
-// This function is only used in decltype(..)
-HRESULT __stdcall CreateDirect3D11DeviceFromDXGIDevice(
-    ::IDXGIDevice* dxgiDevice, ::IInspectable** graphicsDevice);
-}
-#endif
 
 #include <winerror.h>
 #include <wrl/client.h>
