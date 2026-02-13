@@ -248,7 +248,7 @@ class AsyncSocket {
  */
 /**
  * The ID of a circuit.
- * From control-spec.txt:
+ * From the control port specs:
  *   CircuitID = 1*16 IDChar
  *   IDChar = ALPHA / DIGIT
  *   Currently, Tor only uses digits, but this may change.
@@ -256,8 +256,15 @@ class AsyncSocket {
  * @typedef {string} CircuitID
  */
 /**
+ * The ID to match paired conflux circuits.
+ * From the control port specs:
+ *   ConfluxID = 32*HEXDIG
+ *
+ * @typedef {string} ConfluxID
+ */
+/**
  * The ID of a stream.
- * From control-spec.txt:
+ * From the control port specs:
  *   CircuitID = 1*16 IDChar
  *   IDChar = ALPHA / DIGIT
  *   Currently, Tor only uses digits, but this may change.
@@ -266,7 +273,7 @@ class AsyncSocket {
  */
 /**
  * The fingerprint of a node.
- * From control-spec.txt:
+ * From the control port specs:
  *   Fingerprint = "$" 40*HEXDIG
  * However, we do not keep the $ in our structures.
  *
@@ -275,7 +282,10 @@ class AsyncSocket {
 /**
  * @typedef {object} CircuitInfo
  * @property {CircuitID} id The ID of a circuit
- * @property {NodeFingerprint[]} nodes List of node fingerprints
+ * @property {NodeFingerprint[]} nodes List of node fingerprints, ordered from
+ * guard/bridge to exit.
+ * @property {ConfluxID} [confluxId] The conflux ID, for associating conflux
+ * circuits.
  */
 /**
  * @typedef {object} Bridge
@@ -823,8 +833,8 @@ export class TorController {
     }
     const cmd = `GETCONF ${key}`;
     const reply = await this.#sendCommand(cmd);
-    // From control-spec.txt: a 'default' value semantically different from an
-    // empty string will not have an equal sign, just `250 $key`.
+    // From the control port specs: a 'default' value semantically different
+    // from an empty string will not have an equal sign, just `250 $key`.
     const defaultRe = new RegExp(`^250[-\\s]${key}$`, "gim");
     if (reply.match(defaultRe)) {
       return [];
@@ -1222,7 +1232,7 @@ export class TorController {
    */
   #parseCircBuilt(line) {
     const builtEvent =
-      /^(?<ID>[a-zA-Z0-9]{1,16})\sBUILT\s(?<Path>(,?\$([0-9a-fA-F]{40})(?:~[a-zA-Z0-9]{1,19})?)+)/.exec(
+      /^(?<ID>[a-zA-Z0-9]{1,16})\sBUILT\s(?<Path>(,?\$([0-9a-fA-F]{40})(?:~[a-zA-Z0-9]{1,19})?)+)(?<details>.*)/.exec(
         line
       );
     if (!builtEvent) {
@@ -1232,6 +1242,8 @@ export class TorController {
     const nodes = Array.from(builtEvent.groups.Path.matchAll(fp), g =>
       g[1].toUpperCase()
     );
+    const circuit = { id: builtEvent.groups.ID, nodes };
+
     // In some cases, we might already receive SOCKS credentials in the
     // line. However, this might be a problem with Onion services: we get
     // also a 4-hop circuit that we likely do not want to show to the
@@ -1239,7 +1251,22 @@ export class TorController {
     // need a technical explaination.
     // So we do not try to extract them for now. Otherwise, we could do
     // const credentials = this.#parseCredentials(line);
-    return { id: builtEvent.groups.ID, nodes };
+
+    // NOTE: We use a greedy leading ".*" to skip over previous fields that
+    // can contain arbitrary strings, like SOCKS_USERNAME and SOCKS_PASSWORD,
+    // which allows them to contain " CONFLUX_ID=" within their values.
+    // Although such a value is not expected from the usernames and passwords we
+    // set in Tor Browser, it may be set by an external tor user.
+    // NOTE: This assumes there is no other arbitrary string field after
+    // CONFLUX_ID.
+    const maybeConfluxId = builtEvent.groups.details.match(
+      /.* CONFLUX_ID=([0-9a-fA-F]{32,})(?:$| )/
+    );
+    if (maybeConfluxId) {
+      circuit.confluxId = maybeConfluxId[1];
+    }
+
+    return circuit;
   }
 
   /**
