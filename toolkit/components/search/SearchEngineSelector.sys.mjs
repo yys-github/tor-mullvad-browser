@@ -92,19 +92,42 @@ export class SearchEngineSelector {
       return this.#getConfigurationPromise;
     }
 
-    let { promise, resolve } = Promise.withResolvers();
-    this.#getConfigurationPromise = promise;
-    this.#configuration = await (
-      await fetch(
-        "chrome://global/content/search/base-browser-search-engines.json"
-      )
-    ).json();
-    resolve(this.#configuration);
+    this.#getConfigurationPromise = Promise.all([
+      this.#getConfiguration(),
+      this.#getConfigurationOverrides(),
+    ]);
+    let remoteSettingsData = await this.#getConfigurationPromise;
+    this.#configuration = remoteSettingsData[0];
+    this.#getConfigurationPromise = null;
+
+    if (!this.#configuration?.length) {
+      throw Components.Exception(
+        "Failed to get engine data from Remote Settings",
+        Cr.NS_ERROR_UNEXPECTED
+      );
+    }
+
+    /**
+     * Records whether the listeners have been added or not.
+     */
+    if (!this.#listenerAdded) {
+      this.#remoteConfig.on("sync", this.#boundOnConfigurationUpdated);
+      this.#remoteConfigOverrides.on(
+        "sync",
+        this.#boundOnConfigurationOverridesUpdated
+      );
+      /**
+       * Records whether the listeners have been added or not.
+       */
+      this.#listenerAdded = true;
+    }
 
     this.#selector.setSearchConfig(
       JSON.stringify({ data: this.#configuration })
     );
-    this.#selector.setConfigOverrides(JSON.stringify({ data: [] }));
+    this.#selector.setConfigOverrides(
+      JSON.stringify({ data: remoteSettingsData[1] })
+    );
 
     return this.#configuration;
   }
@@ -392,6 +415,23 @@ export class SearchEngineSelector {
     if (this.#changeListener) {
       this.#changeListener();
     }
+  }
+
+  /**
+   * Obtains the configuration overrides from remote settings.
+   *
+   * @returns {Promise<object[]>}
+   *   An array of objects in the database, or an empty array if none
+   *   could be obtained.
+   */
+  async #getConfigurationOverrides() {
+    let result = [];
+    try {
+      result = await this.#remoteConfigOverrides.get();
+    } catch (ex) {
+      // This data is remote only, so we just return an empty array if it fails.
+    }
+    return result;
   }
 
   /**
