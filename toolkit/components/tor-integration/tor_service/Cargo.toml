@@ -14,3 +14,5 @@ edition = "2021"
 nserror = { path = "../../../../xpcom/rust/nserror" }
 nsstring = { path = "../../../../xpcom/rust/nsstring" }
 xpcom = { path = "../../../../xpcom/rust/xpcom" }
+
+tor_provider = { path = "../tor_provider" }
