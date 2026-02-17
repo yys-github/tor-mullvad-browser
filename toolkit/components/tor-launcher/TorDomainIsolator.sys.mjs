@@ -51,10 +51,9 @@ const TOR_CIRCUIT_TOPIC = "TorCircuitChange";
 const CLEAR_TIMEOUT = 600_000;
 
 /**
- * @typedef {string} CircuitId A string that we use to identify a circuit.
- * Currently, it is a string that combines SOCKS credentials, to make it easier
- * to use as a map key.
- * It is not related to Tor's CircuitIDs.
+ * @typedef {string} IsolationKey A string that we use to identify an isolation
+ * key. Currently, it is a string that combines SOCKS credentials.
+ * Each isolation key is used to identify a set of circuits.
  */
 /**
  * @typedef {number} BrowserId
@@ -66,11 +65,11 @@ const CLEAR_TIMEOUT = 600_000;
 /**
  * @typedef BrowserCircuits Circuits related to a certain combination of
  * isolators (first-party domain and user context ID, currently).
- * @property {CircuitId} current The id of the last known circuit that has been
- * used to fetch data for the isolated context.
- * @property {CircuitId?} pending The id of the last used circuit for this
- * isolation context. We might or might not know data about it, yet. But if we
- * know it, we should move this id into current.
+ * @property {IsolationKey} current The last isolation key for which circuit
+ * information is known.
+ * @property {IsolationKey?} pending The last used isolation key.
+ * We might or might not know data about it, yet. But if we know it, we should
+ * move this key into current, and pending should be made null.
  */
 
 /**
@@ -112,9 +111,9 @@ class TorDomainIsolatorImpl {
   #catchallDirtySince = Date.now();
 
   /**
-   * A map that associates circuit ids to the circuit information.
+   * A map that associates an isolation context to its circuits.
    *
-   * @type {Map<CircuitId, CircuitData>}
+   * @type {Map<IsolationKey, CircuitData>}
    */
   #knownCircuits = new Map();
 
@@ -421,10 +420,10 @@ class TorDomainIsolatorImpl {
    *
    * @param {string} username The SOCKS username
    * @param {string} password The SOCKS password
-   * @returns {CircuitId} A string that combines username and password and can
-   * be used for map lookups.
+   * @returns {IsolationKey} A string that combines username and password and
+   * can be used as a key for maps.
    */
-  #credentialsToId(username, password) {
+  #credentialsToKey(username, password) {
     return `${username}|${password}`;
   }
 
@@ -540,7 +539,7 @@ class TorDomainIsolatorImpl {
       this.#browsers.set(browser.browserId, browserCircuits);
     }
     const circuitIds = browserCircuits.get(username) ?? {};
-    const id = this.#credentialsToId(username, password);
+    const id = this.#credentialsToKey(username, password);
     if (circuitIds.current === id) {
       // The circuit with these credentials was already built (we already knew
       // its nodes, or we would not have promoted it to the current circuit).
@@ -594,8 +593,8 @@ class TorDomainIsolatorImpl {
    * compose the circuit
    */
   async #updateCircuit(username, password, circuit) {
-    const id = this.#credentialsToId(username, password);
-    let data = this.#knownCircuits.get(id) ?? [];
+    const key = this.#credentialsToKey(username, password);
+    let data = this.#knownCircuits.get(key) ?? [];
     // Should we modify the lower layer to send a circuit identifier, instead?
     if (
       circuit.length === data.length &&
