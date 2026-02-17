@@ -293,11 +293,14 @@ var gTorCircuitPanel = {
   _updateCurrentBrowser() {
     const browser = gBrowser.selectedBrowser;
     const domain = TorDomainIsolator.getDomainForBrowser(browser);
-    const nodes = TorDomainIsolator.getCircuit(
+    const circuits = TorDomainIsolator.getCircuits(
       browser,
       domain,
       browser.contentPrincipal.originAttributes.userContextId
     );
+    // TODO: Handle multiple circuits (for conflux). Only show the primary
+    // circuit until the UI for that is developed.
+    const nodes = circuits.length ? circuits[0] : [];
     // We choose the currentURI, which matches what is shown in the URL bar and
     // will match up with the domain.
     // In contrast, documentURI corresponds to the shown page. E.g. it could
