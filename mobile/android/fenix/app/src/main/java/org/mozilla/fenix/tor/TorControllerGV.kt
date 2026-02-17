@@ -89,7 +89,6 @@ class TorControllerGV(
                         TorBridgeTransportConfig.BUILTIN_OBFS4 -> BridgeBuiltinType.Obfs4
                         TorBridgeTransportConfig.BUILTIN_MEEK -> BridgeBuiltinType.Meek
                         TorBridgeTransportConfig.BUILTIN_SNOWFLAKE -> BridgeBuiltinType.Snowflake
-                        else -> BridgeBuiltinType.Invalid
                     }
                     it.bridgesBuiltinType = bbt
                 }
