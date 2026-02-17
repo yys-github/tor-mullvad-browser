@@ -508,8 +508,8 @@ class Settings(
     )
 
     var privateBrowsingLockedFeatureEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_private_browsing_locked_enabled),
-        default = false,
+        key = appContext.getPreferenceKey(R.string.pref_key_private_browsing_locked_enabled),
+        default = { false },
     )
 
     var privateBrowsingModeLocked by booleanPreference(
