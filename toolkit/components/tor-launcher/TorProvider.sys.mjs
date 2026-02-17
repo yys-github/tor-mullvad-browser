@@ -154,9 +154,24 @@ export class TorProvider {
    * built before the new identity but not yet used. If we cleaned the map, we
    * risked of not having the data about it.
    *
-   * @type {Map<CircuitID, Promise<NodeFingerprint[]>>}
+   * @type {Map<CircuitID, CircuitInfo>}
    */
   #circuits = new Map();
+
+  /**
+   * Cache with node information.
+   *
+   * As a matter of fact, the circuit display backend continuously ask for
+   * information about the same nodes (e.g., the guards/bridges, and the exit
+   * for conflux circuits).
+   * Therefore, we can keep a cache of them to avoid a few control port lookups.
+   * And since it is likely we will get asked information about all nodes that
+   * appear in circuits, we can build this cache proactively.
+   *
+   * @type {Map<NodeFingerprint, Promise<NodeData>>}
+   */
+  #nodeInfo = new Map();
+
   /**
    * The last used bridge, or null if bridges are not in use or if it was not
    * possible to detect the bridge. This needs the user to have specified bridge
@@ -455,50 +470,6 @@ export class TorProvider {
       await this.#controller.getBootstrapPhase(),
       false
     );
-  }
-
-  /**
-   * Returns tha data about a relay or a bridge.
-   *
-   * @param {string} id The fingerprint of the node to get data about
-   * @returns {Promise<NodeData>}
-   */
-  async getNodeInfo(id) {
-    const node = {
-      fingerprint: id,
-      ipAddrs: [],
-      bridgeType: null,
-      regionCode: null,
-    };
-    const bridge = (await this.#controller.getBridges())?.find(
-      foundBridge => foundBridge.id?.toUpperCase() === id.toUpperCase()
-    );
-    if (bridge) {
-      node.bridgeType = bridge.transport ?? "";
-      // Attempt to get an IP address from bridge address string.
-      const ip = bridge.addr.match(/^\[?([^\]]+)\]?:\d+$/)?.[1];
-      if (ip && !ip.startsWith("0.")) {
-        node.ipAddrs.push(ip);
-      }
-    } else {
-      node.ipAddrs = await this.#controller.getNodeAddresses(id);
-    }
-    // tor-browser#43116, tor-browser-build#41224: on Android, we do not ship
-    // the GeoIP databases to save some space. So skip it for now.
-    if (node.ipAddrs.length && !TorLauncherUtil.isAndroid) {
-      // Get the country code for the node's IP address.
-      try {
-        // Expect a 2-letter ISO3166-1 code, which should also be a valid
-        // BCP47 Region subtag.
-        const regionCode = await this.#controller.getIPCountry(node.ipAddrs[0]);
-        if (regionCode && regionCode !== "??") {
-          node.regionCode = regionCode.toUpperCase();
-        }
-      } catch (e) {
-        logger.warn(`Cannot get a country for IP ${node.ipAddrs[0]}`, e);
-      }
-    }
-    return node;
   }
 
   /**
@@ -936,14 +907,76 @@ export class TorProvider {
     return crypto.getRandomValues(new Uint8Array(kPasswordLen));
   }
 
+  // Circuit handling.
+
   /**
    * Ask Tor the circuits it already knows to populate our circuit map with the
    * circuits that were already open before we started listening for events.
    */
   async #fetchCircuits() {
-    for (const { id, nodes } of await this.#controller.getCircuits()) {
-      this.onCircuitBuilt(id, nodes);
+    for (const circuit of await this.#controller.getCircuits()) {
+      this.onCircuitBuilt(circuit);
     }
+  }
+
+  /**
+   * Returns tha data about a relay or a bridge.
+   *
+   * @param {string} id The fingerprint of the node to get data about
+   * @returns {Promise<NodeData>}
+   */
+  #getNodeInfo(id) {
+    // This is an async method, so it will not insert the result, but a promise.
+    // However, this is what we want.
+    const info = this.#nodeInfo.getOrInsertComputed(id, async () => {
+      const node = {
+        fingerprint: id,
+        ipAddrs: [],
+        bridgeType: null,
+        regionCode: null,
+      };
+
+      const bridge = (await this.#controller.getBridges())?.find(
+        foundBridge => foundBridge.id?.toUpperCase() === id.toUpperCase()
+      );
+      if (bridge) {
+        node.bridgeType = bridge.transport ?? "";
+        // Attempt to get an IP address from bridge address string.
+        const ip = bridge.addr.match(/^\[?([^\]]+)\]?:\d+$/)?.[1];
+        if (ip && !ip.startsWith("0.")) {
+          node.ipAddrs.push(ip);
+        }
+      } else {
+        node.ipAddrs = await this.#controller.getNodeAddresses(id);
+      }
+
+      // tor-browser#43116, tor-browser-build#41224: on Android, we do not ship
+      // the GeoIP databases to save some space. So skip it for now.
+      if (node.ipAddrs.length && !TorLauncherUtil.isAndroid) {
+        // Get the country code for the node's IP address.
+        try {
+          // Expect a 2-letter ISO3166-1 code, which should also be a valid
+          // BCP47 Region subtag.
+          const regionCode = await this.#controller.getIPCountry(
+            node.ipAddrs[0]
+          );
+          if (regionCode && regionCode !== "??") {
+            node.regionCode = regionCode.toUpperCase();
+          }
+        } catch (e) {
+          logger.warn(`Cannot get a country for IP ${node.ipAddrs[0]}`, e);
+        }
+      }
+      return node;
+    });
+
+    const MAX_NODES = 300;
+    while (this.#nodeInfo.size > MAX_NODES) {
+      const oldestKey = this.#nodeInfo.keys().next().value;
+      this.#nodeInfo.delete(oldestKey);
+    }
+
+    return info;
   }
 
   // Notification handlers
@@ -1046,24 +1079,43 @@ export class TorProvider {
    * If a change of bridge is detected (including a change from bridge to a
    * normal guard), a notification is broadcast.
    *
-   * @param {CircuitID} id The circuit ID
-   * @param {NodeFingerprint[]} nodes The nodes that compose the circuit
+   * @param {CircuitInfo} circuit The information about the circuit
    */
-  async onCircuitBuilt(id, nodes) {
-    this.#circuits.set(id, nodes);
-    logger.debug(`Built tor circuit ${id}`, nodes);
+  onCircuitBuilt(circuit) {
+    logger.debug(`Built tor circuit ${circuit.id}`, circuit);
+
     // Ignore circuits of length 1, that are used, for example, to probe
     // bridges. So, only store them, since we might see streams that use them,
     // but then early-return.
-    if (nodes.length === 1) {
+    if (circuit.nodes.length === 1) {
       return;
     }
 
-    if (this.#currentBridge?.fingerprint !== nodes[0]) {
-      const nodeInfo = await this.getNodeInfo(nodes[0]);
+    this.#circuits.set(circuit.id, circuit);
+
+    for (const fingerprint of circuit.nodes) {
+      // To make the pending onStreamSentConnect call for this circuit faster,
+      // we pre-fetch the node data, which should be cached by the time it is
+      // called. No need to await here.
+      this.#getNodeInfo(fingerprint);
+    }
+
+    this.#maybeBridgeChanged(circuit);
+  }
+
+  /**
+   * Broadcast a bridge change, if needed.
+   *
+   * @param {CircuitInfo} circuit The information about the circuit
+   */
+  #maybeBridgeChanged(circuit) {
+    if (this.#currentBridge?.fingerprint === circuit.nodes[0]) {
+      return;
+    }
+    this.#getNodeInfo(circuit.nodes[0]).then(nodeInfo => {
       let notify = false;
       if (nodeInfo?.bridgeType) {
-        logger.info(`Bridge changed to ${nodes[0]}`);
+        logger.info(`Bridge changed to ${circuit.nodes[0]}`);
         this.#currentBridge = nodeInfo;
         notify = true;
       } else if (this.#currentBridge) {
@@ -1074,7 +1126,7 @@ export class TorProvider {
       if (notify) {
         Services.obs.notifyObservers(null, TorProviderTopics.BridgeChanged);
       }
-    }
+    });
   }
 
   /**
@@ -1091,48 +1143,60 @@ export class TorProvider {
   /**
    * Handle a notification about a stream switching to the sentconnect status.
    *
-   * @param {StreamID} streamId The ID of the stream that switched to the
+   * @param {StreamID} _streamId The ID of the stream that switched to the
    * sentconnect status.
    * @param {CircuitID} circuitId The ID of the circuit used by the stream
    * @param {string} username The SOCKS username
    * @param {string} password The SOCKS password
    */
-  async onStreamSentConnect(streamId, circuitId, username, password) {
+  async onStreamSentConnect(_streamId, circuitId, username, password) {
     if (!username || !password) {
       return;
     }
     logger.debug("Stream sentconnect event", username, password, circuitId);
-    let circuit = this.#circuits.get(circuitId);
-    if (!circuit) {
-      circuit = new Promise((resolve, reject) => {
-        this.#controlConnection.getCircuits().then(circuits => {
-          for (const { id, nodes } of circuits) {
-            if (id === circuitId) {
-              resolve(nodes);
-              return;
-            }
-            // Opportunistically collect circuits, since we are iterating them.
-            this.#circuits.set(id, nodes);
-          }
-          logger.error(
-            `Seen a STREAM SENTCONNECT with circuit ${circuitId}, but Tor did not send information about it.`
-          );
-          reject();
-        });
-      });
-      this.#circuits.set(circuitId, circuit);
+    if (!this.#circuits.has(circuitId)) {
+      // tor-browser#42132: When using onion-grater (e.g., in Tails), we might
+      // not receive the CIRC BUILT event, as it is impossible to know whether
+      // that circuit will be the browser's at that point. So, we will have to
+      // poll circuits and wait for that to finish to be able to get the data.
+      try {
+        await this.#fetchCircuits();
+      } catch {
+        return;
+      }
     }
-    try {
-      circuit = await circuit;
-    } catch {
+
+    const primaryCircuit = this.#circuits.get(circuitId);
+    if (!primaryCircuit) {
+      logger.error(
+        `Seen a STREAM SENTCONNECT with circuit ${circuitId}, but Tor did not send information about it.`
+      );
       return;
     }
+
+    const circuitIds = [circuitId];
+    if (primaryCircuit.confluxId) {
+      circuitIds.push(
+        ...this.#circuits
+          .entries()
+          .filter(
+            ([id, circ]) =>
+              circ.confluxId === primaryCircuit.confluxId && id != circuitId
+          )
+          .map(([id]) => id)
+      );
+    }
+    const circuits = await Promise.all(
+      circuitIds.map(id =>
+        Promise.all(this.#circuits.get(id).nodes.map(n => this.#getNodeInfo(n)))
+      )
+    );
     Services.obs.notifyObservers(
       {
         wrappedJSObject: {
           username,
           password,
-          circuit,
+          circuits,
         },
       },
       TorProviderTopics.CircuitCredentialsMatched
