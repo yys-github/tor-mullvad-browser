@@ -2201,7 +2201,6 @@ class Settings(
 
     var shouldUseComposableToolbar by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_composable_toolbar),
-<<<<<<< HEAD
         default = { FxNimbus.features.composableToolbar.value().enabled },
     )
 
