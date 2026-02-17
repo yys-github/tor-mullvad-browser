@@ -12,6 +12,7 @@ import {
 const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
+  ObjectUtils: "resource://gre/modules/ObjectUtils.sys.mjs",
   TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
   TorProviderTopics: "resource://gre/modules/TorProviderBuilder.sys.mjs",
 });
@@ -57,10 +58,6 @@ const CLEAR_TIMEOUT = 600_000;
  */
 /**
  * @typedef {number} BrowserId
- */
-/**
- * @typedef {NodeData[]} CircuitData The data about the nodes, ordered from
- * guard (or bridge) to exit.
  */
 /**
  * @typedef BrowserCircuits Circuits related to a certain combination of
@@ -113,7 +110,14 @@ class TorDomainIsolatorImpl {
   /**
    * A map that associates an isolation context to its circuits.
    *
-   * @type {Map<IsolationKey, CircuitData>}
+   * The circuits are represented with a multidimensional array.
+   * The outer layer contains an array for each circuit of the isolation context
+   * (when conflux is in use, a certain isolation context might use more than a
+   * circuit).
+   * The inner layer contains the data about a certain circuit, ordered from
+   * guard/bridge to exit.
+   *
+   * @type {Map<IsolationKey, NodeData[][]>}
    */
   #knownCircuits = new Map();
 
@@ -190,8 +194,11 @@ class TorDomainIsolatorImpl {
   }
 
   /**
-   * Get the last circuit used in a certain browser.
-   * The returned data is created when the circuit is first seen, therefore it
+   * Get the circuits being used for a certain browser. There may be multiple
+   * if conflux is being used.
+   *
+   * Note, this returns the last known circuits for the browser. In particular,
+   * the returned data is created when the circuit is first seen, therefore it
    * could be stale (i.e., the circuit might not be available anymore).
    *
    * @param {MozBrowser} browser The browser to get data for
@@ -199,10 +206,12 @@ class TorDomainIsolatorImpl {
    * for
    * @param {number} userContextId The user context domain we want to get the
    * circuit for
-   * @returns {NodeData[]} The node data, or an empty array if we do not have
-   * data for the requested key.
+   * @returns {NodeData[][]} An array of all the circuits being used for this
+   * context. Each circuit is represented by an array of nodes, ordered from
+   * the guard/bridge to the exit. If the context has no known circuits, then
+   * this will be an empty array.
    */
-  getCircuit(browser, domain, userContextId) {
+  getCircuits(browser, domain, userContextId) {
     const username = this.#makeUsername(domain, userContextId);
     const circuits = this.#browsers.get(browser.browserId)?.get(username);
     // This is the only place where circuit data can go out, so the only place
@@ -277,8 +286,8 @@ class TorDomainIsolatorImpl {
         // TODO: What UX to use here? See tor-browser#41708
       }
     } else if (topic === lazy.TorProviderTopics.CircuitCredentialsMatched) {
-      const { username, password, circuit } = subject.wrappedJSObject;
-      this.#updateCircuit(username, password, circuit);
+      const { username, password, circuits } = subject.wrappedJSObject;
+      this.#updateCircuits(username, password, circuits);
     }
   }
 
@@ -579,36 +588,25 @@ class TorDomainIsolatorImpl {
   }
 
   /**
-   * Update a circuit, and notify the related circuit displays if it changed.
+   * Update the circuits associated to a certain isolation context, and notify
+   * the related circuit displays if they changed.
    *
    * This function is called when a certain stream has succeeded and so we can
-   * associate its SOCKS credential to the circuit it is using.
-   * We receive only the fingerprints of the circuit nodes, but they are enough
-   * to check if the circuit has changed. If it has, we also get the nodes'
-   * information through the control port.
+   * associate its SOCKS credentials to the circuit it is using.
    *
    * @param {string} username The SOCKS username
    * @param {string} password The SOCKS password
-   * @param {NodeFingerprint[]} circuit The fingerprints of the nodes that
-   * compose the circuit
+   * @param {NodeData[][]} circuits The circuits being used for this isolation
+   * context. Each is represented by an array of nodes.
    */
-  async #updateCircuit(username, password, circuit) {
+  async #updateCircuits(username, password, circuits) {
     const key = this.#credentialsToKey(username, password);
-    let data = this.#knownCircuits.get(key) ?? [];
-    // Should we modify the lower layer to send a circuit identifier, instead?
-    if (
-      circuit.length === data.length &&
-      circuit.every((fp, index) => fp === data[index].fingerprint)
-    ) {
+    let current = this.#knownCircuits.get(key);
+    if (lazy.ObjectUtils.deepEqual(current, circuits)) {
       return;
     }
-
-    const provider = await lazy.TorProviderBuilder.build();
-    data = await Promise.all(
-      circuit.map(fingerprint => provider.getNodeInfo(fingerprint))
-    );
-    logger.debug(`Updating circuit ${id}`, data);
-    this.#knownCircuits.set(id, data);
+    logger.info(`Updating circuits for ${key}`, circuits);
+    this.#knownCircuits.set(key, circuits);
     // We know that something changed, but we cannot know if anyone is
     // interested in this change. So, we have to notify all the possible
     // consumers of the data in any case.
