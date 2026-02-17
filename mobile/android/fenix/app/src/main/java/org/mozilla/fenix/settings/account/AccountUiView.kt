@@ -103,7 +103,7 @@ class AccountUiView(
      * Returns generic avatar for accounts.
      */
     private fun genericAvatar(context: Context) =
-        AppCompatResources.getDrawable(context, crashR.drawable.mozac_lib_crash_notification)
+        AppCompatResources.getDrawable(context, iconsR.drawable.mozac_ic_avatar_circle_24)
 
     /**
      * Gets a rounded drawable from a URL if possible, else null.
