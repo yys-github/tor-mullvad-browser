@@ -1,0 +1,5 @@
+[package]
+name = "tor_provider"
+description = "Firefox-indepentent tor integration."
+version = "0.1.0"
+edition = "2021"
