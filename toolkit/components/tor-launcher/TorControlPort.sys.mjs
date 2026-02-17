@@ -1159,10 +1159,7 @@ export class TorController {
           data.groups.data
         );
         if (maybeCircuit) {
-          this.#eventHandler.onCircuitBuilt(
-            maybeCircuit.id,
-            maybeCircuit.nodes
-          );
+          this.#eventHandler.onCircuitBuilt(maybeCircuit);
         } else if (closedEvent) {
           this.#eventHandler.onCircuitClosed(closedEvent.groups.ID);
         }
@@ -1354,8 +1351,7 @@ export class TorController {
 /**
  * @callback OnCircuitBuilt
  *
- * @param {CircuitID} id The id of the circuit that has been built
- * @param {NodeFingerprint[]} nodes The onion routers composing the circuit
+ * @param {CircuitInfo} circuit The information about the circuit
  */
 /**
  * @callback OnCircuitClosed
