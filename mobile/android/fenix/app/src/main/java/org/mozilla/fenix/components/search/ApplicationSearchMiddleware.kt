@@ -40,12 +40,12 @@ class ApplicationSearchMiddleware(
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO),
 ) : Middleware<BrowserState, BrowserAction> {
     override fun invoke(
-        middlewareContext.store: Store<BrowserState, BrowserAction>,
+        store: Store<BrowserState, BrowserAction>,
         next: (BrowserAction) -> Unit,
         action: BrowserAction,
     ) {
         if (action is InitAction) {
-            loadSearchEngines(middlewareContext.store)
+            loadSearchEngines(store)
         }
 
         next(action)
