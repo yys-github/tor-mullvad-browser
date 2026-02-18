@@ -6,7 +6,7 @@
 use bytes::{BufMut, Bytes, BytesMut};
 use std::{cell::Cell, rc::Rc};
 
-use super::{control_socket::*, error::ControlPortError};
+use super::{command_writer::CommandWriter, control_socket::*, error::ControlPortError};
 use crate::ctor::reply_parser::{Reply, ReplyDispatcher, ReplyError};
 
 /// The lower-level part of the control port implementation.
@@ -15,17 +15,31 @@ use crate::ctor::reply_parser::{Reply, ReplyDispatcher, ReplyError};
 struct ControlPortInner {
     reply_dispatcher: ReplyDispatcher,
     socket: Rc<dyn ControlSocket>,
+    writer: Rc<CommandWriter>,
     closed: Cell<bool>,
 }
 
 impl ControlPortInner {
     fn new(socket: Rc<dyn ControlSocket>) -> Result<Rc<Self>, ControlSocketError> {
-        Ok(Rc::new(Self {
+        // We need to make sure the callbacks do not create cyclic references,
+        // so use new_cyclic rather than new.
+        let cp = Rc::new_cyclic(|weak_self| Self {
             reply_dispatcher: ReplyDispatcher::new(),
-            socket,
+            socket: socket.clone(),
+            writer: CommandWriter::new(socket.clone()),
             closed: Cell::new(false),
-        }))
+        });
+
         // TODO: Start the message pump.
+
+        Ok(cp)
+    }
+
+    fn async_failure(&self) {
+        self.writer.clear_queue();
+        if let Err(e) = self.close() {
+            log::error!("Failed to close the control port: {}.", e.to_string());
+        }
     }
 
     fn close(&self) -> Result<(), ControlSocketError> {
@@ -36,8 +50,12 @@ impl ControlPortInner {
         self.socket.close()
     }
 
+    fn set_async_handler(&self, cb: Box<dyn Fn(Reply)>) {
+        self.reply_dispatcher.set_async_handler(cb);
+    }
+
     fn send_command(
-        &self,
+        self: &Rc<Self>,
         mut command: Bytes,
         handler: Box<dyn FnOnce(Result<Reply, ControlPortError>)>,
     ) {
@@ -54,7 +72,32 @@ impl ControlPortInner {
             command = buf.freeze();
         }
 
-        // TODO: Implement.
+        // The callback is going to be called before other commands are sent,
+        // therefore it is safe to queue the callback at this point, as next
+        // command are still in the writer's queue.
+        let weak_self = Rc::downgrade(self);
+        self.writer.write(
+            command,
+            Box::new(move |res| {
+                let this = match weak_self.upgrade() {
+                    Some(t) => t,
+                    None => {
+                        return;
+                    }
+                };
+                match res {
+                    Ok(()) => {
+                        this.reply_dispatcher.push_callback(Box::new(move |r| {
+                            handler(r.map_err(|e| ControlPortError::ProtocolError(e)));
+                        }));
+                    }
+                    Err(e) => {
+                        handler(Err(ControlPortError::from(e)));
+                        this.async_failure();
+                    }
+                }
+            }),
+        );
     }
 }
 
@@ -91,5 +134,10 @@ impl ControlPort {
         handler: Box<dyn FnOnce(Result<Reply, ControlPortError>)>,
     ) {
         self.0.send_command(command, handler);
+    }
+
+    #[inline]
+    pub fn set_async_handler(&self, cb: Box<dyn Fn(Reply)>) {
+        self.0.set_async_handler(cb);
     }
 }
