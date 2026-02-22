@@ -536,7 +536,6 @@
     <!-- Tab Manager-->
     <string name="pref_key_tab_manager_opening_animation" translatable="false">pref_key_tab_manager_opening_animation</string>
 
-
     <!-- Tab Search -->
     <string name="pref_key_tab_search" translatable="false">pref_key_tab_search_feature</string>
 
