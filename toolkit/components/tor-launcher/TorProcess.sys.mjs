@@ -200,7 +200,7 @@ export class TorProcess {
 
       lazy.TorLauncherUtil.log(
         exitCode !== 0 ? "PARENT-WARN" : "PARENT-INFO",
-        `The tor process with pid ${this.#subprocess.pid} exited with code ${exitCode}.`
+        `The tor process with pid ${watched.pid} exited with code ${exitCode}.`
       );
 
       if (watched !== this.#subprocess) {
