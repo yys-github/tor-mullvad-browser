@@ -15,6 +15,37 @@ appmenu-open-tor-manual =
 # Here "Tor" refers to the Tor network.
 tor-connect-page-title = Connect to Tor
 
+# Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network".
+tor-connect-tor-not-working-heading = The Tor process has stopped working
+# Here "process" is a noun, referring to the execution of a computer program.
+tor-connect-tor-not-working-intro = The underlying process that controls your connection to the Tor network has stopped working.
+tor-connect-tor-not-working-cause-intro = What could be causing this?
+# "-brand-short-name" will be substituted with the localized name for "Tor Browser".
+tor-connect-tor-not-working-cause-applications = Another application that uses the Tor network is conflicting with { -brand-short-name }.
+# Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network".
+tor-connect-tor-not-working-cause-files = The files used by the Tor process have been modified or removed.
+# Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network".
+tor-connect-tor-not-working-cause-other = The Tor process has stopped working due to a different technical issue.
+# Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network".
+tor-connect-tor-not-working-cause-generic = The Tor process has stopped working due to a technical issue.
+tor-connect-tor-not-working-resolve-intro = What can you do about it?
+tor-connect-tor-not-working-resolve-applications = Quit any other applications that use the Tor network, or reconfigure them.
+# Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network".
+tor-connect-tor-not-working-resolve-files = If you have modified the files used by the Tor process, undo these changes.
+# Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network".
+tor-connect-tor-not-working-resolve-restart-long = Once you have followed these steps, or made any other change, try restarting the Tor process (this won’t close your browser tabs).
+# Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network".
+tor-connect-tor-not-working-resolve-restart-short = Try restarting the Tor process (this won’t close your browser tabs).
+# The translation of "support channels" should also be wrapped in '<a data-l10n-name="support-link">' and '</a>', which will link to the corresponding support page.
+tor-connect-tor-not-working-support = If the problem remains, get in contact with us through one of our <a data-l10n-name="support-link">support channels</a>.
+# Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network".
+tor-connect-tor-not-working-restart-button =
+    .label = Restart Tor process
+# Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network".
+tor-connect-tor-not-working-restarting-button =
+    .label = Restarting Tor process…
+tor-connect-tor-not-working-restarting-failed = Restarting failed
+
 ## Tor Browser home page.
 
 tor-browser-home-heading-stable = Explore. Privately.
