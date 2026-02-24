@@ -2480,6 +2480,13 @@ class Update {
       this.elevationFailure = false;
     }
 
+    if (this.unsupported && update.hasAttribute("unsupportedURL")) {
+      // Override the detailsURL with the dedicated link for the EOL.
+      // Otherwise it will point to the release blog post for the wrong version.
+      // See tor-browser#44668.
+      this.detailsURL = update.getAttribute("unsupportedURL");
+    }
+
     if (!this.detailsURL) {
       try {
         // Try using a default details URL supplied by the distribution
