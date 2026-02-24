@@ -189,16 +189,8 @@ security-level-restart-prompt-button-ignore = Ignore
 ## Notification for dropped operating system support.
 
 # "{ -brand-short-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
-# "14.0" refers to the browser versions number: Tor Browser 14.0.
-# "macOS" is a brand name, and 10.15 is the macOS version number.
-dropped-support-notification-macos-version-less-than-10-15 = The next major version of { -brand-short-name } (14.0) will no longer support this version of macOS. Please upgrade to macOS 10.15 or later by October 1st 2024 to continue receiving important security updates.
-# "{ -brand-short-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
 # "macOS" is a brand name, and 10.15 is the macOS version number.
 dropped-support-notification-macos-version-less-than-10-15-expired = { -brand-short-name } no longer supports this version of macOS. Please upgrade to macOS 10.15 or later to continue receiving important security updates.
-# "{ -brand-short-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
-# "14.0" refers to the browser versions number: Tor Browser 14.0.
-# "Windows" is a brand name, and "Windows 10" is the version.
-dropped-support-notification-win-os-version-less-than-10 = The next major version of { -brand-short-name } (14.0) will no longer support this version of Windows. Please upgrade to Windows 10 or later by October 1st 2024 to continue receiving important security updates.
 # "{ -brand-short-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
 # "Windows" is a brand name, and "Windows 10" is the version.
 dropped-support-notification-win-os-version-less-than-10-expired = { -brand-short-name } no longer supports this version of Windows. Please upgrade to Windows 10 or later to continue receiving important security updates.
