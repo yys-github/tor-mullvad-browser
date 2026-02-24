@@ -185,9 +185,12 @@ class BrowserBranch:
                     # plain fetches.
                     fetch_args = ("--depth=1", "--filter=blob:none")
                 git_run(["fetch", *fetch_args, "origin", self.name])
-            self._file_paths = git_lines(
-                ["ls-tree", "-r", "--format=%(path)", self._ref]
-            )
+            self._file_paths = git_lines([
+                "ls-tree",
+                "-r",
+                "--format=%(path)",
+                self._ref,
+            ])
 
         matching = [
             path
@@ -333,7 +336,7 @@ for file_dict in json.loads(args.files):
                 name,
                 content,
                 branding_file.content,
-                f'{version_dict["name"]} Release.',
+                f"{version_dict['name']} Release.",
                 include_ids,
                 version_dict["suffix"],
             )
@@ -371,16 +374,14 @@ for file_dict in json.loads(args.files):
     elif legacy_branch:
         logger.info(f"Excluding legacy branch for {name}")
 
-    files_list.append(
-        {
-            "name": name,
-            # If "directory" is unspecified, we place the file directly beneath
-            # en-US/ in the translation repository. i.e. "".
-            "directory": file_dict.get("directory", ""),
-            "branch": file_dict["branch"],
-            "content": content,
-        }
-    )
+    files_list.append({
+        "name": name,
+        # If "directory" is unspecified, we place the file directly beneath
+        # en-US/ in the translation repository. i.e. "".
+        "directory": file_dict.get("directory", ""),
+        "branch": file_dict["branch"],
+        "content": content,
+    })
 
 
 ci_commit = os.environ.get("CI_COMMIT_SHA", "")
