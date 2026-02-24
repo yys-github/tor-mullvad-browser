@@ -23,12 +23,6 @@ import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
-import java.io.File
-import java.nio.file.Files
-import java.nio.file.Path
-import java.nio.file.Paths
-import java.nio.file.StandardCopyOption
-
 import javax.inject.Inject
 import java.security.MessageDigest
 
@@ -154,17 +148,6 @@ abstract class NimbusAssembleToolsTask extends DefaultTask {
 
     @TaskAction
     void assembleTools() {
-        String nimbusFml = System.getenv("NIMBUS_FML")
-        if (nimbusFml == null || "".equals(nimbusFml)) {
-            nimbusFml = System.getProperty("nimbusFml")
-        }
-        if (nimbusFml != null && !"".equals(nimbusFml)) {
-            Path source = (new File(nimbusFml)).toPath()
-            Path dest = fmlBinary.get().asFile.toPath()
-            Files.copy(source, dest, StandardCopyOption.REPLACE_EXISTING)
-            return
-        }
-
         def binaryFile = fmlBinary.get().asFile
         def archiveFileObj = archiveFile.get().asFile
         def hashFileObj = hashFile.get().asFile
