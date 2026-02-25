@@ -2760,8 +2760,8 @@ public class GeckoSession {
    * @return The circuit information as a {@link GeckoResult} object.
    */
   @AnyThread
-  public @NonNull GeckoResult<GeckoBundle> getTorCircuit() {
-    return mEventDispatcher.queryBundle("GeckoView:GetTorCircuit");
+  public @NonNull GeckoResult<GeckoBundle> getTorCircuits() {
+    return mEventDispatcher.queryBundle("GeckoView:GetTorCircuits");
   }
 
   /**

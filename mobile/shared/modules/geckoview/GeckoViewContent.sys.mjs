@@ -297,8 +297,8 @@ export class GeckoViewContent extends GeckoViewModule {
       case "GeckoView:HasCookieBannerRuleForBrowsingContextTree":
         this._hasCookieBannerRuleForBrowsingContextTree(aCallback);
         break;
-      case "GeckoView:GetTorCircuit":
-        this._getTorCircuit(aCallback);
+      case "GeckoView:GetTorCircuits":
+        this._getTorCircuits(aCallback);
         break;
       case "GeckoView:NewTorCircuit":
         this._newTorCircuit(aCallback);
@@ -472,15 +472,15 @@ export class GeckoViewContent extends GeckoViewModule {
     }
   }
 
-  _getTorCircuit(aCallback) {
+  _getTorCircuits(aCallback) {
     if (this.browser && aCallback) {
       const domain = lazy.TorDomainIsolator.getDomainForBrowser(this.browser);
-      const nodes = lazy.TorDomainIsolator.getCircuit(
+      const circuits = lazy.TorDomainIsolator.getCircuits(
         this.browser,
         domain,
         this.browser.contentPrincipal.originAttributes.userContextId
       );
-      aCallback?.onSuccess({ domain, nodes });
+      aCallback?.onSuccess({ domain, circuits });
     } else {
       aCallback?.onSuccess(null);
     }
