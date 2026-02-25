@@ -352,7 +352,7 @@ nsresult nsAppFileLocationProvider::GetProductDirectory(nsIFile** aLocalFile,
 #endif
 
 #if !defined(TOR_BROWSER)
-#if defined(MOZ_WIDGET_GTK)
+#  if defined(MOZ_WIDGET_GTK)
   bool legacyExists = nsXREDirProvider::LegacyHomeExists(nullptr);
   if (legacyExists || nsXREDirProvider::IsForceLegacyHome()) {
     nsAutoCString productDir;
@@ -367,9 +367,9 @@ nsresult nsAppFileLocationProvider::GetProductDirectory(nsIFile** aLocalFile,
   } else {
     rv = localDir->AppendNative(DEFAULT_PRODUCT_DIR);
   }
-#else
+#  else
   rv = localDir->AppendNative(DEFAULT_PRODUCT_DIR);
-#endif
+#  endif
 
   if (NS_FAILED(rv)) {
     return rv;
