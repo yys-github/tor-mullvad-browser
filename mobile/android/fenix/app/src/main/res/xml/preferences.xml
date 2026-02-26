@@ -204,6 +204,11 @@
         android:key="@string/pref_key_advanced"
         android:layout="@layout/preference_category_no_icon_style">
 
+        <SwitchPreference
+            android:key="@string/pref_key_allow_screenshots_in_private_mode"
+            app:iconSpaceReserved="false"
+            android:title="@string/preferences_allow_screenshots" />
+
         <androidx.preference.Preference
             android:key="@string/pref_key_addons"
             app:iconSpaceReserved="false"
