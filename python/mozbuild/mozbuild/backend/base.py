@@ -305,9 +305,9 @@ class BuildBackend(LoggingMixin):
                     "docs": tbdir / "TorBrowser/Docs",
                     "exts": tbdir / "distribution/extensions",
                     "tor_bin": tbdir / "TorBrowser/Tor",
-                    "tor_config": tbdir / "TorBrowser/Data/Tor",
                     "fonts": tbdir / "fonts",
                 }
+                paths["tor_config"] = paths["tor_bin"]
 
             fonts_location = config.substs.get("TOR_BROWSER_FONTS")
             if fonts_location:
