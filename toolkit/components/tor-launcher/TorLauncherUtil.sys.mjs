@@ -62,10 +62,12 @@ class TorFile {
     const prefName = `extensions.torlauncher.${this.fileType}_path`;
     const path = Services.prefs.getCharPref(prefName, "");
     if (path) {
-      const isUserData =
-        this.fileType !== "tor" &&
-        this.fileType !== "pt-startup-dir" &&
-        this.fileType !== "torrc-defaults";
+      const isUserData = ![
+        "tor",
+        "pt-startup-dir",
+        "torrc-defaults",
+        "torappdatadir",
+      ].includes(this.fileType);
       // always try to use path if provided in pref
       this.checkIPCPathLen = false;
       this.setFileFromPath(path, isUserData);
@@ -143,17 +145,8 @@ class TorFile {
         this.file.append(TorLauncherUtil.isWindows ? "tor.exe" : "tor");
         break;
       case "torrc-defaults":
-        if (TorLauncherUtil.isMac) {
-          this.file = TorFile.appDir;
-          this.file.appendRelativePath(
-            "Contents/Resources/TorBrowser/Tor/torrc-defaults"
-          );
-        } else {
-          // FIXME: Should we move this file to the tor directory, in the other
-          // platforms, since it is not user data?
-          this.file = TorFile.torDataDir;
-          this.file.append("torrc-defaults");
-        }
+        this.file = TorFile.torAppDataDir;
+        this.file.append("torrc-defaults");
         break;
       case "torrc":
         this.file = TorFile.torDataDir;
@@ -161,6 +154,9 @@ class TorFile {
         break;
       case "tordatadir":
         this.file = TorFile.torDataDir;
+        break;
+      case "torappdatadir":
+        this.file = TorFile.torAppDataDir;
         break;
       case "toronionauthdir":
         this.file = TorFile.torDataDir;
@@ -291,6 +287,16 @@ class TorFile {
       }
     }
     return this._appDir.clone();
+  }
+
+  static get torAppDataDir() {
+    // No need to call clone on these objects, as they are already clones.
+    if (TorLauncherUtil.isMac) {
+      const dir = this.appDir;
+      dir.appendRelativePath("Contents/Resources/TorBrowser/Tor");
+      return dir;
+    }
+    return this.torDir;
   }
 
   // Returns an nsIFile that points to the data directory. This is usually

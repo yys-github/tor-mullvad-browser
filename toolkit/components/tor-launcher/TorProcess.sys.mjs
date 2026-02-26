@@ -264,18 +264,38 @@ export class TorProcess {
     );
     if (torrcDefaultsFile) {
       this.#args.push("--defaults-torrc", torrcDefaultsFile.path);
-      // The geoip and geoip6 files are in the same directory as torrc-defaults.
-      // TODO: Change TorFile to return the generic path to these files to make
-      // them independent from the torrc-defaults.
-      const geoipFile = torrcDefaultsFile.clone();
-      geoipFile.leafName = "geoip";
-      this.#args.push("GeoIPFile", geoipFile.path);
-      const geoip6File = torrcDefaultsFile.clone();
-      geoip6File.leafName = "geoip6";
-      this.#args.push("GeoIPv6File", geoip6File.path);
     } else {
       logger.warn(
         "torrc-defaults was not found, some functionalities will be disabled."
+      );
+    }
+
+    const torAppDataDir = lazy.TorLauncherUtil.getTorFile(
+      "torappdatadir",
+      false
+    );
+    if (torAppDataDir) {
+      const geoipFile = torAppDataDir.clone();
+      geoipFile.append("geoip");
+      if (geoipFile.exists()) {
+        this.#args.push("GeoIPFile", geoipFile.path);
+      } else {
+        logger.warn(
+          "GeoIP file not found, the circuit display will not show locations."
+        );
+      }
+      const geoip6File = torAppDataDir.clone();
+      geoip6File.append("geoip6");
+      if (geoip6File.exists()) {
+        this.#args.push("GeoIPv6File", geoip6File.path);
+      } else {
+        logger.warn(
+          "GeoIP6 file not found, the circuit display will not show locations for IPv6-only relays."
+        );
+      }
+    } else {
+      logger.warn(
+        "App data directory not found, the circuit display will not show locations."
       );
     }
   }
