@@ -13,7 +13,7 @@ The step-by-step rebase process is detailed on the [Rebase Process](https://gitl
 - Rebase application-services
   - uniffi-rs
     - Prepare the rebase
-      - [ ] Verify if application-services has updated it's uniffi-rs version
+      - [ ] Verify if application-services has updated it's uniffi-rs version else skip this step
       - [ ] Get the [upstream](https://github.com/mozilla/uniffi-rs) tag
       - [ ] Freeze the current default branch
       - [ ] Create the target branch (`X.XX.X`)
@@ -45,10 +45,11 @@ The step-by-step rebase process is detailed on the [Rebase Process](https://gitl
   - Prepare the rebase
     - [ ] Get the [Firefox](https://github.com/mozilla-firefox/firefox) tag
   - Do the rebase [Part 1]
-    - [ ] Create the target branch (`tor-browser-...-1`)
-    - [ ] Cherry-pick commits until `tor-browser-...-build1`
+    - [ ] Create the target branch (`tor-browser-XXX.0a1-YY.0-1`)
+    - [ ] Cherry-pick commits until `tor-browser-(XXX - 1).0a1-YY.0-2-build1`
+    - Optional: If your first rebase, complex, or difficult, can do an MR here for feedback.
     - [ ] Freeze the current default branch
-    - [ ] Cherry-pick remaining commits
+    - [ ] Cherry-pick remaining commits (rest of tor-browser-(XXX - 1)a1-YY.Y-2)
     - Merge
       - [ ] Perform a self-review (`git range-diff`)
       - [ ] Run linters
@@ -62,10 +63,14 @@ The step-by-step rebase process is detailed on the [Rebase Process](https://gitl
       - [ ] Make `tor-browser-...-1` the default branch and freeze it
   - Do the rebase [Part 2]
     - [ ] Create the target branch (`tor-browser-...-2`)
-    - [ ] Cherry-pick commits until `tor-browser-...-1-build1`
+    - [ ] Cherry-pick commits until `tor-browser-XXX...-1-build1`
     - [ ] Squash (`git rebase --autosquash FIREFOX_...`)
     - [ ] Cherry-pick the remaining commits
     - [ ] Reorder commits
+      - [ ] Move Mozilla "Bug ZZZZZZZZ" issues to the very start
+      - [ ] Move any Base Browser "BB TTTTT" issues into the BB range
+      - [ ] Move `--fixups` next to their parent (`git rebase -i --autosquash FIREFOX_...` then change all the `fixup` to `pick`)
+        - Note: also `drop` any commits marked `!dropme`
     - Merge
       - [ ] Perform a self-review (`git range-diff` + diff of diffs)
       - [ ] Run linters
