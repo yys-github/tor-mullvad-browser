@@ -3,4 +3,5 @@
 // <http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-pub mod ctor;
+mod reply_parser;
+pub use reply_parser::{ReplyDispatcher, ReplyError};
