@@ -69,6 +69,8 @@ impl<CP: ControlPortInterface> TorController<CP> {
         );
     }
 
+    // Setup
+
     /// Authenticate to the tor daemon.
     /// Notice that a failure in the authentication makes the connection close.
     pub fn authenticate(
@@ -77,6 +79,41 @@ impl<CP: ControlPortInterface> TorController<CP> {
         handler: Box<dyn FnOnce(Result<u16, ControllerError>)>,
     ) {
         self.send_command(commands::authenticate(password), handler);
+    }
+
+    pub fn take_ownership(&self, handler: Box<dyn FnOnce(Result<u16, ControllerError>)>) {
+        self.send_command(commands::take_ownership(), handler);
+    }
+
+    pub fn reset_owning_controller_process(
+        &self,
+        handler: Box<dyn FnOnce(Result<u16, ControllerError>)>,
+    ) {
+        self.send_command(commands::reset_owning_controller_process(), handler);
+    }
+
+    pub fn set_events(
+        &self,
+        events: &[&str],
+        handler: Box<dyn FnOnce(Result<u16, ControllerError>)>,
+    ) {
+        self.send_command(commands::set_events(events), handler);
+    }
+
+    // Connection management
+
+    pub fn save_conf(&self, handler: Box<dyn FnOnce(Result<u16, ControllerError>)>) {
+        self.send_command(commands::save_conf(), handler);
+    }
+
+    // Circuit display
+
+    // Onion authentication
+
+    // Miscellaneous
+
+    pub fn signal_newnym(&self, handler: Box<dyn FnOnce(Result<u16, ControllerError>)>) {
+        self.send_command(commands::signal_newnym(), handler);
     }
 }
 
