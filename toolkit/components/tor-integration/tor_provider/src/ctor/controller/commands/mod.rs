@@ -5,6 +5,16 @@
 
 mod authenticate;
 mod command;
+mod reset_conf;
+mod save_conf;
+mod set_events;
+mod signal;
+mod take_ownership;
 
 pub use authenticate::authenticate;
 pub use command::Command;
+pub use reset_conf::reset_owning_controller_process;
+pub use save_conf::save_conf;
+pub use set_events::set_events;
+pub use signal::signal_newnym;
+pub use take_ownership::take_ownership;
