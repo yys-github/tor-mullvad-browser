@@ -5,6 +5,7 @@
 
 mod authenticate;
 mod command;
+pub mod get_conf;
 mod reset_conf;
 mod save_conf;
 mod set_events;
