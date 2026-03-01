@@ -8,6 +8,7 @@ use bytes::Bytes;
 use super::{
     commands::{self, Command},
     error::ControllerError,
+    types::*,
 };
 use crate::ctor::{
     control_port::{ControlPortInterface, ControlSocketError},
@@ -106,11 +107,22 @@ impl<CP: ControlPortInterface> TorController<CP> {
         self.send_command(commands::save_conf(), handler);
     }
 
+    pub fn get_bridges(&self, handler: Box<dyn FnOnce(Result<Vec<Bridge>, ControllerError>)>) {
+        self.send_command(commands::get_conf::bridges(), handler);
+    }
+
     // Circuit display
 
     // Onion authentication
 
     // Miscellaneous
+
+    pub fn get_pluggable_transports(
+        &self,
+        handler: Box<dyn FnOnce(Result<Vec<PluggableTransport>, ControllerError>)>,
+    ) {
+        self.send_command(commands::get_conf::client_transport_plugins(), handler);
+    }
 
     pub fn signal_newnym(&self, handler: Box<dyn FnOnce(Result<u16, ControllerError>)>) {
         self.send_command(commands::signal_newnym(), handler);
