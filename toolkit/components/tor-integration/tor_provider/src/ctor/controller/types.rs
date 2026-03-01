@@ -13,3 +13,19 @@ pub struct Bridge {
     pub fingerprint: Option<[u8; 20]>,
     pub args: Option<Vec<u8>>,
 }
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum ClientTransportPlugin {
+    Executable {
+        path: Vec<u8>,
+        options: Option<Vec<u8>>,
+    },
+    Socks4(SocketAddr),
+    Socks5(SocketAddr),
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct PluggableTransport {
+    pub transports: Vec<String>,
+    pub plugin: ClientTransportPlugin,
+}
