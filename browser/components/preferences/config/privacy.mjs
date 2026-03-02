@@ -3228,6 +3228,8 @@ Preferences.addSetting({
 
 Preferences.addSetting({
   id: "dohBox",
+  // Hide DNS over HTTPS. tor-browser#41906.
+  visible: () => false,
 });
 
 Preferences.addSetting({
