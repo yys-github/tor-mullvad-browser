@@ -564,7 +564,14 @@
 
 #include ../onionservices/content/authPreferences.inc.xhtml
 
+<!-- groupid="payments" and groupid="addresses" are configured by
+   - FormAutofillPreferences.sys.mjs via FormAutofillStatus. But since the
+   - "autofill" extension is excluded from the build, FormAutofillStatus is
+   - never initialised. So we add the would-be data-hidden-* attributes
+   - explicitly here instead. See tor-browser#44460. -->
 <groupbox id="paymentsGroupBox"
+          data-hidden-from-search="true"
+          data-hidden-by-setting-group=""
           data-category="panePrivacy"
           data-subcategory="payment-methods-autofill" hidden="true">
   <label><html:h2 data-l10n-id="autofill-payment-methods-title" class="subsection-heading"/></label>
@@ -572,6 +579,8 @@
 </groupbox>
 
 <groupbox id="addressesGroupBox"
+          data-hidden-from-search="true"
+          data-hidden-by-setting-group=""
           data-category="panePrivacy"
           data-subcategory="addresses-autofill" hidden="true">
   <label><html:h2 data-l10n-id="autofill-addresses-title" class="subsection-heading"/></label>
