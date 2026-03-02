@@ -306,7 +306,6 @@ Preferences.addAll([
   { id: "privacy.fingerprintingProtection.pbmode", type: "bool" },
 
   // Resist Fingerprinting
-  { id: "privacy.resistFingerprinting", type: "bool" },
   { id: "privacy.resistFingerprinting.pbmode", type: "bool" },
 
   // Social tracking
@@ -1962,6 +1961,8 @@ if (SECURITY_PRIVACY_STATUS_CARD_ENABLED) {
       "etpCustomEnabled",
       ...SECURITY_WARNINGS.map(warning => warning.id),
     ],
+    // Hide the privacy card. tor-browser#44829.
+    visible: () => false,
   });
 
   Preferences.addSetting({
@@ -1969,6 +1970,10 @@ if (SECURITY_PRIVACY_STATUS_CARD_ENABLED) {
     deps: SECURITY_WARNINGS.map(warning => warning.id),
     _telemetrySent: false,
     visible(deps) {
+      // Hide the privacy card's warnings. tor-browser#44829.
+      if (lazy.AppConstants.BASE_BROWSER_VERSION) {
+        return false;
+      }
       const count = Object.values(deps).filter(
         depSetting => depSetting.visible
       ).length;
@@ -2244,6 +2249,10 @@ Preferences.addSetting({
   pref: "privacy.globalprivacycontrol.enabled",
   deps: ["gpcFunctionalityEnabled"],
   visible: ({ gpcFunctionalityEnabled }) => {
+    // Hide GPC. tor-browser#42777.
+    if (lazy.AppConstants.BASE_BROWSER_VERSION) {
+      return false;
+    }
     return gpcFunctionalityEnabled.value;
   },
 });
@@ -3086,7 +3095,8 @@ Preferences.addSetting({
       (lazy.AppConstants.platform == "win" ||
         lazy.AppConstants.platform == "macosx") &&
       typeof Services.policies.getActivePolicies()?.Certificates
-        ?.ImportEnterpriseRoots == "undefined"
+        ?.ImportEnterpriseRoots == "undefined" &&
+      !lazy.AppConstants.BASE_BROWSER_VERSION
     );
   },
 });
