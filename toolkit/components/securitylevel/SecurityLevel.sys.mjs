@@ -259,7 +259,9 @@ const kSecuritySettings = {
   "gfx.font_rendering.graphite.enabled":     [,  false, false, false, true ],
   "gfx.font_rendering.opentype_svg.enabled": [,  false, false, false, true ],
   "svg.disabled":                            [,  true,  false, false, false],
-  "javascript.options.asmjs":                [,  false, false, false, true ],
+  // Expect asmjs to be switched off for all levels. See tor-browser#44687.
+  // TODO: Stop tracking this preference entirely. See tor-browser#44712.
+  "javascript.options.asmjs":                [,  false, false, false, false],
   // tor-browser#44234, tor-browser#44242: this interferes with the correct
   // functioning of the browser. So, WASM is also handled by NoScript now.
   "javascript.options.wasm":                 [,  true,  true,  true,  true ],
