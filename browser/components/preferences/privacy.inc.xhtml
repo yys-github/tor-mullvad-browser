@@ -537,8 +537,13 @@
 
 <html:setting-group groupid="passwords" hidden="true" data-category="panePrivacy"  data-srd-migrated=""/>
 
-<html:setting-group data-category="panePrivacy" data-subcategory="payment-methods-autofill credit-card-autofill" groupid="payments" data-group="formAutofill" hidden="true"  data-srd-migrated="" />
-<html:setting-group data-category="panePrivacy" data-subcategory="addresses-autofill address-autofill" groupid="addresses" data-group="formAutofill" hidden="true"  data-srd-migrated="" />
+<!-- groupid="payments" and groupid="addresses" are configured by
+   - FormAutofillPreferences.sys.mjs via FormAutofillStatus. But since the
+   - "autofill" extension is excluded from the build, FormAutofillStatus is
+   - never initialised. So we add the would-be data-hidden-* attributes
+   - explicitly here instead. See tor-browser#44460. -->
+<html:setting-group data-category="panePrivacy" data-subcategory="payment-methods-autofill credit-card-autofill" groupid="payments" data-group="formAutofill" hidden="true" data-hidden-from-search="true" data-hidden-by-setting-group=""  data-srd-migrated="" />
+<html:setting-group data-category="panePrivacy" data-subcategory="addresses-autofill address-autofill" groupid="addresses" data-group="formAutofill" hidden="true" data-hidden-from-search="true" data-hidden-by-setting-group=""  data-srd-migrated="" />
 
 <!-- History -->
 <html:setting-group groupid="history" data-category="panePrivacy" hidden="true" data-srd-groupid="history2"/>
