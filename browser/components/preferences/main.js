@@ -369,6 +369,9 @@ Preferences.addSetting({
 
 Preferences.addSetting({
   id: "connectionSettings",
+  // Hide the connection settings for Tor Browser since these would interfere
+  // with the settings in the "connection" pane. tor-browser#31286.
+  visible: () => false,
   onUserClick: () => gMainPane.showConnections(),
   controllingExtensionInfo: {
     storeId: PROXY_KEY,
@@ -508,6 +511,10 @@ const DefaultBrowserHelper = {
    * @type {boolean}
    */
   get canCheck() {
+    if (AppConstants.BASE_BROWSER_VERSION) {
+      // Disabled for Tor Browser. tor-browser#44343 and tor-browser#41822.
+      return false;
+    }
     return (
       this.shellSvc &&
       /**
