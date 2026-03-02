@@ -39,6 +39,16 @@ ChromeUtils.defineESModuleGetters(this, {
     "resource://autofill/FormAutofillPreferences.sys.mjs",
 });
 
+// Rather than add "privacy.resistFingerprinting" preference and the
+// "resistFingerprinting" Setting in privacy.mjs, we add them early *prior* to
+// importing any config/ modules which require it.
+// See tor-browser#44630 and tor-browser#45018.
+Preferences.add({ id: "privacy.resistFingerprinting", type: "bool" });
+Preferences.addSetting({
+  id: "resistFingerprinting",
+  pref: "privacy.resistFingerprinting",
+});
+
 ChromeUtils.importESModule(
   "chrome://browser/content/preferences/config/accessibility.mjs",
   { global: "current" }
