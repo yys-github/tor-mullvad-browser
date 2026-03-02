@@ -335,7 +335,6 @@ Preferences.addAll([
   { id: "privacy.fingerprintingProtection.pbmode", type: "bool" },
 
   // Resist Fingerprinting
-  { id: "privacy.resistFingerprinting", type: "bool" },
   { id: "privacy.resistFingerprinting.pbmode", type: "bool" },
 
   // Social tracking
@@ -1993,6 +1992,8 @@ if (SECURITY_PRIVACY_STATUS_CARD_ENABLED) {
       "etpCustomEnabled",
       ...SECURITY_WARNINGS.map(warning => warning.id),
     ],
+    // Hide the privacy card. tor-browser#44829.
+    visible: () => false,
   });
 
   Preferences.addSetting({
@@ -2000,6 +2001,10 @@ if (SECURITY_PRIVACY_STATUS_CARD_ENABLED) {
     deps: SECURITY_WARNINGS.map(warning => warning.id),
     _telemetrySent: false,
     visible(deps) {
+      // Hide the privacy card's warnings. tor-browser#44829.
+      if (lazy.AppConstants.BASE_BROWSER_VERSION) {
+        return false;
+      }
       const count = Object.values(deps).filter(
         depSetting => depSetting.visible
       ).length;
@@ -2275,6 +2280,10 @@ Preferences.addSetting({
   pref: "privacy.globalprivacycontrol.enabled",
   deps: ["gpcFunctionalityEnabled"],
   visible: ({ gpcFunctionalityEnabled }) => {
+    // Hide GPC. tor-browser#42777.
+    if (lazy.AppConstants.BASE_BROWSER_VERSION) {
+      return false;
+    }
     return gpcFunctionalityEnabled.value;
   },
 });
@@ -2286,6 +2295,13 @@ Preferences.addSetting({
   id: "relayIntegration",
   deps: ["savePasswords", "relayFeature"],
   visible: () => {
+    // Hide Firefox Relay. tor-browser#43109 and tor-browser#42814.
+    // NOTE: Whilst `FirefoxRelay.isDisabled` is `true` due to preferences we
+    // set for Base Browser, `FirefoxRelay.isAvailable` is also `true` in this
+    // case, hence why we still need to hide this unconditionally.
+    if (lazy.AppConstants.BASE_BROWSER_VERSION) {
+      return false;
+    }
     return lazy.FirefoxRelay.isAvailable;
   },
   disabled: ({ savePasswords, relayFeature }) => {
@@ -3117,7 +3133,8 @@ Preferences.addSetting({
       (lazy.AppConstants.platform == "win" ||
         lazy.AppConstants.platform == "macosx") &&
       typeof Services.policies.getActivePolicies()?.Certificates
-        ?.ImportEnterpriseRoots == "undefined"
+        ?.ImportEnterpriseRoots == "undefined" &&
+      !lazy.AppConstants.BASE_BROWSER_VERSION
     );
   },
 });
@@ -3572,6 +3589,8 @@ Preferences.addSetting({
 
 Preferences.addSetting({
   id: "etpStatusBoxGroup",
+  // Hide enhanced tracking protection (ETP). tor-browser#26345.
+  visible: () => false,
 });
 
 Preferences.addSetting({
@@ -3604,6 +3623,8 @@ Preferences.addSetting({
 
 Preferences.addSetting({
   id: "protectionsDashboardLink",
+  // Hide enhanced tracking protection (ETP). tor-browser#26345.
+  visible: () => false,
 });
 
 Preferences.addSetting({
@@ -3658,11 +3679,6 @@ Preferences.addSetting({
   onUserClick() {
     PrivacySettingHelpers.reloadAllOtherTabs();
   },
-});
-
-Preferences.addSetting({
-  id: "resistFingerprinting",
-  pref: "privacy.resistFingerprinting",
 });
 
 Preferences.addSetting({
