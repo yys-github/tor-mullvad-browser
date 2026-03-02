@@ -539,10 +539,14 @@ Preferences.addSetting({
 Preferences.addSetting({
   id: "cfrRecommendations",
   pref: "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons",
+  // Hide feature recommendation (CFR). tor-browser#43118.
+  visible: () => false,
 });
 Preferences.addSetting({
   id: "cfrRecommendations-features",
   pref: "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features",
+  // Hide feature recommendation (CFR). tor-browser#43118.
+  visible: () => false,
 });
 
 // Browser layout settings
@@ -642,25 +646,6 @@ SettingGroupManager.registerGroups({
           {
             id: "showTabsInTaskbar",
             l10nId: "show-tabs-in-taskbar",
-          },
-        ],
-      },
-      {
-        id: "browserContainersbox",
-        control: "moz-fieldset",
-        l10nId: "tabs-containers-heading",
-        headingLevel: 3,
-        items: [
-          {
-            id: "browserContainersCheckbox",
-            l10nId: "browser-containers-enabled-2",
-            supportPage: "containers",
-          },
-          {
-            id: "browserContainersSettings",
-            loadPane: "containers",
-            l10nId: "browser-containers-settings-2",
-            control: "moz-box-button",
           },
         ],
       },
