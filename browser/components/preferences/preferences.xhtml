@@ -172,8 +172,12 @@
           <label class="category-name" flex="1" data-l10n-id="pane-sync-title3"></label>
         </richlistitem>
 
+        <!-- We skip registering the "ai" pane (aiFeatures.mjs), which means
+           - this richlistitem is non-functional and unmanaged. We have to
+           - manually hide it instead. See tor-browser#44709. -->
         <richlistitem id="category-ai-features"
                       class="category"
+                      hidden="true"
                       value="paneAiFeatures"
                       data-l10n-id="category-ai-features"
                       data-l10n-attrs="tooltiptext"
@@ -219,7 +223,9 @@
                       class="category hidden-category"
                       value="paneProfiles"/>
 
+        <!-- Hide the translations sub-pane. tor-browser#44710. -->
         <richlistitem
+                      hidden="true"
                       class="category hidden-category"
                       value="paneTranslations"/>
 

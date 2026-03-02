@@ -246,6 +246,7 @@ const CONFIG_PANES = Object.freeze({
     groupIds: ["dnsOverHttpsAdvanced"],
   },
   managePayments: {
+    skip: true,
     parent: "privacy",
     l10nId: "autofill-payment-methods-manage-payments-title",
     groupIds: ["managePayments"],
@@ -256,6 +257,7 @@ const CONFIG_PANES = Object.freeze({
     groupIds: ["profilePane"],
   },
   etp: {
+    skip: true, // Skip enhanced tracking protection. tor-browser#33848.
     parent: "privacy",
     l10nId: "preferences-etp-header",
     groupIds: ["etpBanner", "etpAdvanced"],
@@ -266,11 +268,13 @@ const CONFIG_PANES = Object.freeze({
     groupIds: ["etpReset", "etpCustomize"],
   },
   manageAddresses: {
+    skip: true,
     parent: "privacy",
     l10nId: "autofill-addresses-manage-addresses-title",
     groupIds: ["manageAddresses"],
   },
   translations: {
+    skip: true, // Skip translations. tor-browser#44710.
     parent: "general",
     l10nId: "settings-translations-subpage-header",
     groupIds: [
@@ -280,6 +284,7 @@ const CONFIG_PANES = Object.freeze({
     iconSrc: "chrome://browser/skin/translations.svg",
   },
   aiFeatures: {
+    skip: true, // Skip AI pane. tor-browser#44709.
     l10nId: "preferences-ai-features-header",
     groupIds: ["debugModelManagement", "aiFeatures", "aiWindowFeatures"],
     module: "chrome://browser/content/preferences/config/aiFeatures.mjs",
@@ -345,6 +350,22 @@ function init_all() {
   register_module("paneContainers", gContainersPane);
 
   for (let [id, config] of Object.entries(CONFIG_PANES)) {
+    // Skip over configs we do not want, including all its children.
+    // See tor-browser#44711.
+    let skip = false;
+    let parentConfig = config;
+    while (parentConfig) {
+      skip = parentConfig.skip;
+      if (skip) {
+        break;
+      }
+      parentConfig = parentConfig.parent
+        ? CONFIG_PANES[parentConfig.parent]
+        : undefined;
+    }
+    if (skip) {
+      continue;
+    }
     SettingPaneManager.registerPane(id, config);
   }
 
