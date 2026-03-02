@@ -242,6 +242,7 @@ const CONFIG_PANES = Object.freeze({
     groupIds: ["containers"],
   },
   dnsOverHttps: {
+    skip: true, // Skip DNS over HTTPS (DoH). tor-browser#41906.
     parent: "privacy",
     l10nId: "preferences-doh-header2",
     groupIds: ["dnsOverHttpsAdvanced"],
