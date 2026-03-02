@@ -194,6 +194,7 @@ var SettingGroupManager = ChromeUtils.importESModule(
  */
 const CONFIG_PANES = Object.freeze({
   ai: {
+    skip: true, // Skip AI pane. tor-browser#44709.
     l10nId: "preferences-ai-controls-header",
     iconSrc: "chrome://global/skin/icons/highlights.svg",
     groupIds: ["aiControlsDescription", "aiFeatures", "aiStatesDescription"],
@@ -207,6 +208,7 @@ const CONFIG_PANES = Object.freeze({
     groupIds: ["dnsOverHttpsAdvanced"],
   },
   etp: {
+    skip: true, // Skip enhanced tracking protection. tor-browser#33848.
     parent: "privacy",
     l10nId: "preferences-etp-header",
     groupIds: ["etpBanner", "etpAdvanced"],
@@ -229,6 +231,7 @@ const CONFIG_PANES = Object.freeze({
     replaces: "home",
   },
   manageAddresses: {
+    skip: true,
     parent: "privacy",
     l10nId: "autofill-addresses-manage-addresses-title",
     groupIds: ["manageAddresses"],
@@ -242,6 +245,7 @@ const CONFIG_PANES = Object.freeze({
     supportPage: "smart-window-memories",
   },
   managePayments: {
+    skip: true,
     parent: "privacy",
     l10nId: "autofill-payment-methods-manage-payments-title",
     groupIds: ["managePayments"],
@@ -261,6 +265,7 @@ const CONFIG_PANES = Object.freeze({
     module: "chrome://browser/content/preferences/config/aiFeatures.mjs",
   },
   translations: {
+    skip: true, // Skip translations. tor-browser#44710.
     parent: "general",
     l10nId: "settings-translations-subpage-header",
     groupIds: [
@@ -326,8 +331,22 @@ function init_all() {
   let redesignEnabled = Services.prefs.getBoolPref(
     "browser.settings-redesign.enabled"
   );
+
   for (let [id, config] of Object.entries(CONFIG_PANES)) {
-    if (!redesignEnabled && config.replaces) {
+    // Skip over configs we do not want, including all its children.
+    // See tor-browser#44711.
+    let skip = false;
+    let parentConfig = config;
+    while (parentConfig) {
+      skip = parentConfig.skip;
+      if (skip) {
+        break;
+      }
+      parentConfig = parentConfig.parent
+        ? CONFIG_PANES[parentConfig.parent]
+        : undefined;
+    }
+    if ((!redesignEnabled && config.replaces) || skip) {
       continue;
     }
     SettingPaneManager.registerPane(id, config);
