@@ -972,4 +972,6 @@ tasks.withType(DependencyTask).configureEach { task ->
 
     // make the dependency task depend on its cleanup task.
     task.dependsOn(tasks.named(cleanUpTaskName))
+
+    task.outputs.upToDateWhen { false }
 }
