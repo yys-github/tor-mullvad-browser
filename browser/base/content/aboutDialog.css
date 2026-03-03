@@ -192,6 +192,7 @@
 }
 
 #rightBox {
+  padding-block-start: 38px;
   background-size: auto;
   margin-inline: 30px;
 }
