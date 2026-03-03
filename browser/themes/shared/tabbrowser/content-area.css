@@ -390,16 +390,16 @@ split-view-footer {
 
 #statuspanel:is([type="letterboxingStatus"], [previoustype="letterboxingStatus"][inactive]) > #statuspanel-label {
   background-image: url("chrome://browser/skin/window.svg");
-  background-size: 1em;
+  background-size: var(--icon-size);
   background-repeat: no-repeat;
   background-position-y: center;
-  background-position-x: left 0.5em;
+  background-position-x: left var(--space-small);
 
   &:-moz-locale-dir(rtl) {
-    background-position-x: right 0.5em;
+    background-position-x: right var(--space-small);
   }
 
-  padding-inline-start: 2em;
+  padding-inline-start: calc(var(--space-small) + var(--icon-size) + var(--space-small));
   -moz-context-properties: fill;
   fill: var(--color-accent-primary);
   @media (forced-colors) {
