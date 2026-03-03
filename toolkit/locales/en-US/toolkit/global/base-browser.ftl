@@ -108,10 +108,10 @@ browser-layout-show-sidebar-desc-limited = Quickly access bookmarks and more wit
 
 ## Preferences - Contrast Control.
 
-preferences-contrast-control-fixed-color =
+preferences-contrast-control-fixed-color2 =
     .label = Fixed colors
     .accesskey = F
-preferences-contrast-control-fixed-color-description = This will be detectable by websites and will make you appear more unique to web trackers.
+    .description = This will be detectable by websites and will make you appear more unique to web trackers.
 
 ## Security level toolbar button.
 ## Uses sentence case in English (US).
