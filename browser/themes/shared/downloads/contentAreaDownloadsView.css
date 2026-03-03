@@ -26,5 +26,5 @@
 }
 
 #aboutDownloadsTorWarning {
-  margin-block-end: 8px;
+  margin-block-end: var(--space-small);
 }
