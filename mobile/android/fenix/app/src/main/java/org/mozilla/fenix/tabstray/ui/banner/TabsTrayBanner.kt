@@ -326,23 +326,6 @@ private fun TabPageBanner(
                             style = FirefoxTheme.typography.button,
                         )
                     }
-
-                    Tab(
-                        selected = selectedPage == Page.NormalTabs,
-                        onClick = { onTabPageIndicatorClicked(Page.NormalTabs) },
-                        modifier = Modifier
-                            .testTag(TabsTrayTestTag.NORMAL_TABS_PAGE_BUTTON)
-                            .semantics {
-                                contentDescription = normalTabDescription
-                            }
-                            .height(RowHeight),
-                        unselectedContentColor = inactiveColor,
-                    ) {
-                        Text(
-                            text = stringResource(R.string.tabs_header_normal_tabs_title),
-                            style = FirefoxTheme.typography.button,
-                        )
-                    }
                 }
             }
         },
