@@ -7,4 +7,5 @@ extern crate xpcom;
 
 mod control_port;
 mod control_socket;
+mod plumbing;
 mod service;
