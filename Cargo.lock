@@ -8425,10 +8425,13 @@ version = "0.1.0"
 dependencies = [
  "bytes",
  "cstr",
+ "hex",
  "log",
  "moz_task",
  "nserror",
  "nsstring",
+ "serde",
+ "serde_json",
  "thin-vec",
  "tor_provider",
  "xpcom",

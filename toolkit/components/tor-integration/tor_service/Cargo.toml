@@ -20,5 +20,8 @@ tor_provider = { path = "../tor_provider" }
 
 bytes = "1.4.0"
 cstr = "0.2"
+hex = "0.4.3"
 log = "0.4"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
 thin-vec = { version = "0.2.1", features = ["gecko-ffi"] }
