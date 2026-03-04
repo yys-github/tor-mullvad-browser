@@ -320,7 +320,7 @@ static nsIProfileLock* gProfileLock;
 MOZ_RUNINIT static RefPtr<nsRemoteService> gRemoteService;
 MOZ_RUNINIT static RefPtr<nsStartupLock> gStartupLock;
 // tor-browser#43107: Disable remoting by default.
-bool gDisableRemoting = true;
+bool gEnableRemoting = false;
 #endif
 
 int gRestartArgc;
@@ -2118,8 +2118,8 @@ nsresult ScopedXPCOMStartup::SetWindowCreator(nsINativeAppSupport* native) {
 /* static */ already_AddRefed<nsIRemoteService> GetRemoteService() {
   AssertIsOnMainThread();
 
-  if (!gRemoteService && !gDisableRemoting) {
-    gRemoteService = new nsRemoteService();
+  if (!gRemoteService) {
+    gRemoteService = new nsRemoteService(gEnableRemoting);
   }
   nsCOMPtr<nsIRemoteService> remoteService = gRemoteService.get();
   return remoteService.forget();
@@ -4496,7 +4496,7 @@ int XREMain::XRE_mainInit(bool* aExitFlag) {
   // The user can still enable remoting if they want to, by adding the
   // allow-remote parameter to the command line.
   if (CheckArg("allow-remote") == ARG_FOUND) {
-    gDisableRemoting = false;
+    gEnableRemoting = true;
   }
 #else
   // These arguments do nothing in platforms with no remoting support but we
@@ -4870,7 +4870,7 @@ int XREMain::XRE_mainStartup(bool* aExitFlag) {
 
 #ifdef MOZ_HAS_REMOTE
   if (gfxPlatform::IsHeadless()) {
-    gDisableRemoting = true;
+    gEnableRemoting = false;
   }
 #endif
 
@@ -4992,10 +4992,8 @@ int XREMain::XRE_mainStartup(bool* aExitFlag) {
   }
 #endif
 #if defined(MOZ_HAS_REMOTE)
-  if (!gDisableRemoting) {
-    // handle --remote now that xpcom is fired up
-    gRemoteService = new nsRemoteService();
-  }
+  // handle --remote now that xpcom is fired up
+  gRemoteService = new nsRemoteService(gEnableRemoting);
   if (gRemoteService) {
     gRemoteService->SetProgram(gAppData->remotingName);
     gStartupLock = gRemoteService->LockStartup();
@@ -5080,7 +5078,7 @@ int XREMain::XRE_mainStartup(bool* aExitFlag) {
     if (NS_SUCCEEDED(rv)) {
       gRemoteService->SetProfile(profilePath);
 
-      if (!gDisableRemoting) {
+      if (gEnableRemoting) {
         // Try to remote the entire command line. If this fails, start up
         // normally.
 #  ifdef MOZ_WIDGET_GTK
