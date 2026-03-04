@@ -17,11 +17,51 @@ interface torITorMessageHandler : nsISupports {
   void onError(in ACString error);
 };
 
+[scriptable, uuid(8d817c29-e35c-4a4b-ad29-fb24b83ea8cd)]
+interface torITorReplyCallback : nsISupports {
+  void onReply([optional] in ACString reply);
+  void onTorError(in unsigned short code, in ACString message);
+  void onGenericError(in ACString message);
+};
+
+[scriptable, uuid(d555064e-811c-4e6d-b2d6-3ec88ae14a69)]
+interface torITorNotificationListener : nsISupports {
+  void logMessage(in ACString severity, in ACString message);
+  void bootstrapStatus(in ACString status);
+  void circuitBuilt(in ACString circuit);
+  void circuitClosed(in ACString id);
+  void streamSentConnect(in ACString stream);
+  void connectionClosed();
+};
+
 // TODO: Remove once we have a provider.
 [scriptable, uuid(f56d710e-5650-4b8c-8d31-279f360003ee)]
 interface torITorControlPort : nsISupports {
   void start(in torITorControlPortReceiver receiver);
   void sendCommand(in ACString command, in torITorMessageHandler handler);
+
+  void authenticate(in Array<uint8_t> password,
+      in torITorReplyCallback callback);
+  void getBootstrapPhase(in torITorReplyCallback callback);
+  void getNodeAddresses(in ACString node, in torITorReplyCallback callback);
+  void getIpCountry(in ACString ip, in torITorReplyCallback callback);
+  void getSocksListeners(in torITorReplyCallback callback);
+  void getCircuits(in torITorReplyCallback callback);
+  void getBridges(in torITorReplyCallback callback);
+  void getPluggableTransports(in torITorReplyCallback callback);
+  void setConf(in ACString values, in torITorReplyCallback callback);
+  void setNetworkEnabled(in boolean enabled, in torITorReplyCallback callback);
+  void flushSettings(in torITorReplyCallback callback);
+  void onionAuthViewKeys(in torITorReplyCallback callback);
+  void onionAuthAdd(in ACString address, in ACString key, in boolean permanent,
+      in torITorReplyCallback callback);
+  void onionAuthRemove(in ACString address, in torITorReplyCallback callback);
+  void takeOwnership(in torITorReplyCallback callback);
+  void resetOwningControllerProcess(in torITorReplyCallback callback);
+  void newnym(in torITorReplyCallback callback);
+  void setEvents(in Array<ACString> events, in torITorReplyCallback callback);
+  void setNotificationListener(in torITorNotificationListener listener);
+
   void close();
 };
 
