@@ -59,8 +59,16 @@ class TorFile {
   }
 
   getFromPref() {
-    const prefName = `extensions.torlauncher.${this.fileType}_path`;
-    const path = Services.prefs.getCharPref(prefName, "");
+    const getPath = type =>
+      Services.prefs.getCharPref(`extensions.torlauncher.${type}_path`, "");
+    let path = getPath(this.fileType);
+    let takeParent = false;
+    if (!path && this.fileType === "torappdatadir") {
+      // tor-browser-build#40892: for the tor app data dir, try to use also the
+      // previous behavior (detect it from the torrc-defaults).
+      path = getPath("torrc-defaults");
+      takeParent = true;
+    }
     if (path) {
       const isUserData = ![
         "tor",
@@ -71,6 +79,9 @@ class TorFile {
       // always try to use path if provided in pref
       this.checkIPCPathLen = false;
       this.setFileFromPath(path, isUserData);
+      if (this.file && takeParent) {
+        this.file = this.file.parent;
+      }
     }
   }
 
