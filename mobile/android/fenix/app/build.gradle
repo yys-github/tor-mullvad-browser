@@ -56,17 +56,7 @@ def getBuildId() {
     return file("${gradle.mozconfig.topobjdir}/buildid.h").getText('utf-8').split()[2]
 }
 
-def obtainTestBuildType() {
-    def result = "debug";
-    if (project.hasProperty("testBuildType")) {
-        result = project.getProperties().get("testBuildType")
-    }
-    result
-}
-
 android {
-    testBuildType obtainTestBuildType()
-
     project.maybeConfigForJetpackBenchmark(it)
     if (project.hasProperty("testBuildType")) {
         // Allowing to configure the test build type via command line flag (./gradlew -PtestBuildType=beta ..)
@@ -325,10 +315,7 @@ android.applicationVariants.configureEach { variant ->
         System.setProperty("nimbusFml",  gradle.mozconfig.substs.NIMBUS_FML)
     }
 
-    def disableTor = false
-    if (project.hasProperty("disableTor")) {
-        disableTor = project.getProperty("disableTor")
-    }
+    def disableTor = providers.gradleProperty("disableTor").getOrElse(false)
 
     project.logger.debug("----------------------------------------------")
     project.logger.debug("Variant name:      " + variant.name)
@@ -336,7 +323,7 @@ android.applicationVariants.configureEach { variant ->
     project.logger.debug("Build type:        " + variant.buildType.name)
     project.logger.debug("Flavor:            " + variant.flavorName)
     project.logger.debug("Telemetry enabled: " + !isDebugOrDCD)
-    project.logger.debug("nimbusFml:         " + System.getProperty("nimbusFml"))
+    project.logger.debug("nimbusFml:         " + providers.gradleProperty("nimbusFml").getOrNull())
     project.logger.debug("Tor is disabled:   " + disableTor)
 
     buildConfigField "boolean", "DISABLE_TOR", "$disableTor"
