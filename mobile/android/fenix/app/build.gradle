@@ -46,17 +46,7 @@ ext.getAbi = { output ->
 
 def isAppBundle = gradle.startParameter.taskNames.any { it.toLowerCase().contains("bundle") }
 
-def obtainTestBuildType() {
-    def result = "debug";
-    if (project.hasProperty("testBuildType")) {
-        result = project.getProperties().get("testBuildType")
-    }
-    result
-}
-
 android {
-    testBuildType obtainTestBuildType()
-
     project.maybeConfigForJetpackBenchmark(it)
     if (project.hasProperty("testBuildType")) {
         // Allowing to configure the test build type via command line flag (./gradlew -PtestBuildType=beta ..)
@@ -322,7 +312,7 @@ android.applicationVariants.configureEach { variant ->
     project.logger.debug("Build type:        " + variant.buildType.name)
     project.logger.debug("Flavor:            " + variant.flavorName)
     project.logger.debug("Telemetry enabled: " + !isDebugOrDCD)
-    project.logger.debug("nimbusFml:         " + System.getProperty("nimbusFml"))
+    project.logger.debug("nimbusFml:         " + providers.gradleProperty("nimbusFml").getOrNull())
 
     if (useReleaseVersioning) {
         // The Google Play Store does not allow multiple APKs for the same app that all have the
