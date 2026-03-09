@@ -507,6 +507,12 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
                 logElapsedTime(logger, "Starting Relay feature integration") {
                     components.relayFeatureIntegration.start()
                 }
+
+                // If running Marionette tests a GeckoEngineSession needs to be
+                // started and that must happen on the main thread.
+                logElapsedTime(logger, "Maybe setup Marionette") {
+                    maybeSetupMarionette()
+                }
             }
         }
 
@@ -673,6 +679,13 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
         val nimbus = components.nimbus.sdk
         // … which we then can populate the feature configuration.
         FxNimbus.initialize { nimbus }
+    }
+
+    private fun maybeSetupMarionette() {
+        // If Marionette is enabled, start a GeckoEngineSession immediatelly.
+        if (System.getenv("MOZ_MARIONETTE") == "1") {
+            components.core.engine.speculativeCreateSession(components.appStore.state.mode.isPrivate)
+        }
     }
 
     /**
