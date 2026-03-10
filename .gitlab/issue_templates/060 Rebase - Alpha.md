@@ -13,7 +13,7 @@ The step-by-step rebase process is detailed on the [Rebase Process](https://gitl
 - Rebase Mullvad Browser
   - Prepare the rebase
     - [ ] Push the `base-browser-*` tag
-    - [ ] Freeze the current default branch
+    - [ ] Freeze the current default branch (if not frozen during the tor-browser rebase)
     - [ ] Create the target branch (`mullvad-browser-...-1`)
   - Do the rebase
     - [ ] Cherry-pick commits until `mullvad-browser-...-build1`
@@ -27,6 +27,7 @@ The step-by-step rebase process is detailed on the [Rebase Process](https://gitl
   - [ ] Tag and update the repository
     - [ ] Tag `mullvad-browser-...-build1`
     - [ ] Make `mullvad-browser-...-2` the default branch
+  - [ ] Send notification email to applications-team of the completed rebase and new open branch
 
 ---
 
