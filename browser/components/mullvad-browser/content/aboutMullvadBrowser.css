@@ -19,9 +19,13 @@ body {
   grid-template: "heading" auto "text" auto / auto;
   justify-items: center;
   align-content: center;
-  gap: 32px;
-  padding-block: 40px;
-  padding-inline: 16px;
+  gap: var(--space-xxlarge);
+  padding-block: var(--space-xxlarge);
+}
+
+#header,
+#footer {
+  padding-inline: var(--space-large);
 }
 
 #header p {
@@ -34,7 +38,7 @@ body {
   flex-direction: row;
   white-space: nowrap;
   align-items: center;
-  gap: 16px;
+  gap: var(--space-large);
 }
 
 #heading-logo {
@@ -68,29 +72,28 @@ body:not(.no-update) #mullvad-browser-intro {
 }
 
 #mullvad-browser-update-img {
-  height: 1em;
+  height: var(--icon-size);
   vertical-align: sub;
-  margin-inline-end: 0.3em;
+  margin-inline-end: var(--space-xsmall);
 }
 
 #footer {
-  padding-block: 40px;
-  border-block-start: 1px solid var(--in-content-box-border-color);
-  background-color: var(--in-content-box-info-background);
+  padding-block: var(--space-xxlarge);
+  border-block-start: var(--border-width) solid var(--border-color);
+  background-color: var(--background-color-box-info);
 }
 
 #footer p {
-  margin-inline: 8px;
-  margin-block: 0.5em;
+  margin-block: var(--space-small);
 }
 
 @media not ((prefers-contrast) or (forced-colors)) {
   :root {
     /* Dark background. */
     background: linear-gradient(to bottom, var(--branding-gradient-start) 0%, var(--branding-gradient-middle) 55%, var(--branding-gradient-end) 100%);
-    /* Same as --in-content-page-color when "prefers-color-scheme: dark" */
-    --in-content-page-color-dark: var(--color-gray-05);
-    color: var(--in-content-page-color-dark);
+    /* Same as --text-color when "prefers-color-scheme: dark" */
+    --text-color-dark: var(--color-gray-05);
+    color: var(--text-color-dark);
 
     --link-color: var(--branding-link-color);
     --link-color-hover: var(--branding-link-color-hover);
@@ -98,8 +101,6 @@ body:not(.no-update) #mullvad-browser-intro {
 
     --focus-outline-color: var(--branding-focus-outline-color);
     --focus-outline: var(--focus-outline-width) solid var(--focus-outline-color);
-    --in-content-focus-outline-color: var(--focus-outline-color);
-    --in-content-focus-outline: var(--focus-outline);
   }
 
   #heading-wordmark {
