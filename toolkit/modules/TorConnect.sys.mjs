@@ -35,23 +35,6 @@ const TorConnectPrefs = Object.freeze({
   quickstart: "torbrowser.settings.quickstart.enabled",
 });
 
-export const TorConnectState = Object.freeze({
-  /* Our initial state */
-  Initial: "Initial",
-  /* In-between initial boot and bootstrapping, users can change tor network settings during this state */
-  Configuring: "Configuring",
-  /* Tor is attempting to bootstrap with settings from censorship-circumvention db */
-  AutoBootstrapping: "AutoBootstrapping",
-  /* Tor is bootstrapping */
-  Bootstrapping: "Bootstrapping",
-  /* Passthrough state back to Configuring */
-  Error: "Error",
-  /* Final state, after successful bootstrap */
-  Bootstrapped: "Bootstrapped",
-  /* If we are using System tor or the legacy Tor-Launcher */
-  Disabled: "Disabled",
-});
-
 /**
  * A class for exceptions thrown during the bootstrap process.
  */
@@ -92,15 +75,11 @@ ChromeUtils.defineLazyGetter(lazy, "logger", () =>
 /* Topics Notified by the TorConnect module */
 export const TorConnectTopics = Object.freeze({
   StageChange: "torconnect:stage-change",
-  // TODO: Remove torconnect:state-change when pages have switched to stage.
-  StateChange: "torconnect:state-change",
   QuickstartChange: "torconnect:quickstart-change",
   InternetStatusChange: "torconnect:internet-status-change",
   RegionNamesChange: "torconnect:region-names-change",
   BootstrapProgress: "torconnect:bootstrap-progress",
   BootstrapComplete: "torconnect:bootstrap-complete",
-  // TODO: Remove torconnect:error when pages have switched to stage.
-  Error: "torconnect:error",
 });
 
 /**
@@ -1025,22 +1004,12 @@ export const TorConnect = {
     }
 
     lazy.logger.info(`Entering stage ${name}`);
-    const prevState = this.state;
     this._stageName = name;
     this._bootstrappingStatus.hasWarning = false;
     this._bootstrappingStatus.progress =
       name === TorConnectStage.Bootstrapped ? 100 : 0;
 
     Services.obs.notifyObservers(this.stage, TorConnectTopics.StageChange);
-
-    // TODO: Remove when all pages have switched to stage.
-    const newState = this.state;
-    if (prevState !== newState) {
-      Services.obs.notifyObservers(
-        { state: newState },
-        TorConnectTopics.StateChange
-      );
-    }
 
     // Update the progress after the stage has changed.
     this._notifyBootstrapProgress();
@@ -1117,41 +1086,6 @@ export const TorConnect = {
     );
   },
 
-  // TODO: Remove when all pages have switched to "stage".
-  get state() {
-    // There is no "Error" stage, but about:torconnect relies on receiving the
-    // Error state to update its display. So we temporarily set the stage for a
-    // StateChange signal.
-    if (this._isErrorState) {
-      return TorConnectState.Error;
-    }
-    switch (this._stageName) {
-      case TorConnectStage.Disabled:
-        return TorConnectState.Disabled;
-      case TorConnectStage.Loading:
-        return TorConnectState.Initial;
-      case TorConnectStage.Start:
-      case TorConnectStage.Offline:
-      case TorConnectStage.ChooseRegion:
-      case TorConnectStage.RegionNotFound:
-      case TorConnectStage.ConfirmRegion:
-      case TorConnectStage.FinalError:
-        return TorConnectState.Configuring;
-      case TorConnectStage.Bootstrapping:
-        if (
-          this._bootstrapTrigger === TorConnectStage.Start ||
-          this._bootstrapTrigger === TorConnectStage.Offline
-        ) {
-          return TorConnectState.Bootstrapping;
-        }
-        return TorConnectState.AutoBootstrapping;
-      case TorConnectStage.Bootstrapped:
-        return TorConnectState.Bootstrapped;
-    }
-    lazy.logger.error(`Unknown state at stage ${this._stageName}`);
-    return null;
-  },
-
   /**
    * Get a map of all region codes and their localized names.
    *
@@ -1189,38 +1123,6 @@ export const TorConnect = {
     if (!this.enabled || this._stageName === TorConnectStage.Disabled) {
       throw new Error("Unexpected Disabled stage for user method");
     }
-  },
-
-  /**
-   * Signal an error to listeners.
-   *
-   * @param {Error} error - The error.
-   */
-  _signalError(error) {
-    // TODO: Replace this method with _setError without any signalling when
-    // pages have switched to stage.
-    // Currently it simulates the old behaviour for about:torconnect.
-    lazy.logger.debug("Signalling error", error);
-
-    if (error instanceof lazy.TorBootstrapError) {
-      error = new TorConnectError(TorConnectError.BootstrapError, error);
-    } else if (!(error instanceof TorConnectError)) {
-      error = new TorConnectError(TorConnectError.ExternalError, error);
-    }
-    this._errorDetails = error;
-
-    // Temporarily set an error state for listeners.
-    // We send the Error signal before the "StateChange" signal.
-    // Expected on android `onBootstrapError` to set lastKnownError.
-    // Expected in about:torconnect to set the error codes and internet status
-    // *before* the StateChange signal.
-    this._isErrorState = true;
-    Services.obs.notifyObservers(error, TorConnectTopics.Error);
-    Services.obs.notifyObservers(
-      { state: this.state },
-      TorConnectTopics.StateChange
-    );
-    this._isErrorState = false;
   },
 
   /**
@@ -1463,7 +1365,7 @@ export const TorConnect = {
         // bootstrap being thrown, but we do not want to cancel a bootstrap
         // attempt prematurely in case the offline state is intermittent or
         // incorrect.
-        this._signalError(new TorConnectError(TorConnectError.Offline));
+        this._errorDetails = new TorConnectError(TorConnectError.Offline);
         this._setStage(TorConnectStage.Offline);
         return;
       }
@@ -1472,7 +1374,19 @@ export const TorConnect = {
       // Disable quickstart until we have a successful bootstrap.
       Services.prefs.setBoolPref(TorConnectPrefs.prompt_at_startup, true);
 
-      this._signalError(error);
+      let connectError = error;
+      if (error instanceof lazy.TorBootstrapError) {
+        connectError = new TorConnectError(
+          TorConnectError.BootstrapError,
+          error
+        );
+      } else if (!(error instanceof TorConnectError)) {
+        connectError = new TorConnectError(
+          TorConnectError.ExternalError,
+          error
+        );
+      }
+      this._errorDetails = connectError;
 
       let errorStage = TorConnectStage.FinalError;
 
@@ -1516,12 +1430,6 @@ export const TorConnect = {
     // Bootstrap was cancelled.
     if (result !== "cancelled") {
       lazy.logger.error(`Unexpected bootstrap result`, result);
-    }
-
-    // TODO: Remove this Offline hack when pages use "stage".
-    if (beginStage === TorConnectStage.Offline) {
-      // Re-send the "Offline" error to push the pages back to "Offline".
-      this._signalError(new TorConnectError(TorConnectError.Offline));
     }
 
     // Return to the previous stage.
