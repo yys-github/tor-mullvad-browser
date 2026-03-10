@@ -25,8 +25,7 @@ const logger = console.createInstance({
 const EmittedEvents = Object.freeze({
   settingsReady: "GeckoView:Tor:SettingsReady",
   settingsChanged: "GeckoView:Tor:SettingsChanged",
-  connectStateChanged: "GeckoView:Tor:ConnectStateChanged", // deprecation path
-  connectStageChanged: "GeckoView:Tor:ConnectStageChanged", // new replacement path
+  connectStageChanged: "GeckoView:Tor:ConnectStageChanged",
   bootstrapProgress: "GeckoView:Tor:BootstrapProgress",
   bootstrapComplete: "GeckoView:Tor:BootstrapComplete",
   torLogs: "GeckoView:Tor:Logs",
@@ -40,7 +39,6 @@ const ListenedEvents = Object.freeze({
   // Optionally takes a countryCode, as data.countryCode.
   bootstrapBeginAuto: "GeckoView:Tor:BootstrapBeginAuto",
   bootstrapCancel: "GeckoView:Tor:BootstrapCancel",
-  bootstrapGetState: "GeckoView:Tor:BootstrapGetState",
   startAgain: "GeckoView:Tor:StartAgain",
   quickstartGet: "GeckoView:Tor:QuickstartGet",
   quickstartSet: "GeckoView:Tor:QuickstartSet",
@@ -105,13 +103,6 @@ class TorAndroidIntegrationImpl {
 
   observe(subj, topic) {
     switch (topic) {
-      // TODO: Replace with StageChange.
-      case lazy.TorConnectTopics.StateChange:
-        lazy.EventDispatcher.instance.sendRequest({
-          type: EmittedEvents.connectStateChanged,
-          state: subj.wrappedJSObject.state ?? "",
-        });
-        break;
       case lazy.TorConnectTopics.StageChange:
         lazy.EventDispatcher.instance.sendRequest({
           type: EmittedEvents.connectStageChanged,
@@ -185,10 +176,6 @@ class TorAndroidIntegrationImpl {
         case ListenedEvents.bootstrapCancel:
           lazy.TorConnect.cancelBootstrapping();
           break;
-        // TODO: Replace with TorConnect.stage.
-        case ListenedEvents.bootstrapGetState:
-          callback?.onSuccess(lazy.TorConnect.state);
-          return;
         case ListenedEvents.startAgain:
           lazy.TorConnect.startAgain();
           break;
