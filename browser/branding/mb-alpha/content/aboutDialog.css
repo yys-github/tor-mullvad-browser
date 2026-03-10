@@ -12,5 +12,5 @@
 
 #rightBox {
   /* Increase the default width to fit the about-wordmark.svg width. */
-  width: 559px;
+  max-width: 559px;
 }
