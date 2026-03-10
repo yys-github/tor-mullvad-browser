@@ -15,7 +15,7 @@ The step-by-step rebase process is detailed on the [Rebase Process](https://gitl
     - Prepare the rebase
       - [ ] Verify if application-services has updated it's uniffi-rs version else skip this step
       - [ ] Get the [upstream](https://github.com/mozilla/uniffi-rs) tag
-      - [ ] Freeze the current default branch
+      - [ ] Freeze the current default branch (on both tor-browser and mullvad-browser)
       - [ ] Create the target branch (`X.XX.X`)
     - [ ] Rebase
     - Merge
@@ -82,7 +82,7 @@ The step-by-step rebase process is detailed on the [Rebase Process](https://gitl
       - [ ] `tor-browser-...-2-build1`
       - [ ] `base-browser-...-2-build1`
       - [ ] Make `tor-browser-...-2` the default branch
-
+    - [ ] Send notification email to application-team about the rebase completion and new open branch
 ---
 
 /label ~"Apps::Product::TorBrowser"
