@@ -375,7 +375,6 @@ var CustomizableUIInternal = {
       // from, or rearrange this list, then bump the kVersionBaseBrowser and
       // update existing saved states in _updateForBaseBrowser.
       "security-level-button",
-      "new-identity-button",
       "downloads-button",
       AppConstants.MOZ_DEV_EDITION ? "developer-button" : null,
       lazy.ippEnabled ? "ipprotection-button" : null,
@@ -1017,8 +1016,8 @@ var CustomizableUIInternal = {
           navbarPlacements.splice(before, 1);
         }
 
-        // Make sure the security-level-button and new-identity-button appears
-        // in the toolbar.
+        // Make sure security-level-button and new-identity-button appear in the
+        // toolbar.
         for (const id of ["new-identity-button", "security-level-button"]) {
           let alreadyAdded = false;
           for (const placements of Object.values(gSavedState.placements)) {
