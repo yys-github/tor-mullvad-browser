@@ -237,12 +237,7 @@ class FenixSearchMiddleware(
 
         store.dispatch(SearchSuggestionsVisibilityUpdated(shouldShowSuggestions))
 
-        val showPrivatePrompt = with(store.state) {
-            !settings.showSearchSuggestionsInPrivateOnboardingFinished &&
-                    appStore.state.mode.isPrivate &&
-                    !isSearchSuggestionsFeatureEnabled() && !showSearchShortcuts &&
-                    query.isNotBlank() && url != query
-        }
+        val showPrivatePrompt = false
 
         store.dispatch(
             SearchFragmentAction.AllowSearchSuggestionsInPrivateModePrompt(
