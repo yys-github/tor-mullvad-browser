@@ -787,8 +787,6 @@ pref("privacy.globalprivacycontrol.pbmode.enabled", true);
 // Disable platform text recognition functionality (tor-browser#42057)
 pref("dom.text-recognition.enabled", false);
 
-pref("browser.new_identity.log_level", "Info");
-
 #ifdef XP_WIN
 pref("browser.taskbar.lists.enabled", false);
 pref("browser.taskbar.lists.frequent.enabled", false);
