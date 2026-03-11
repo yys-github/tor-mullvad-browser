@@ -2130,11 +2130,7 @@ class Settings(
     var shouldShowSearchOptimizationFlightCard = false
     var shouldShowSearchOptimizationSportCard = false
 
-    var isTabStripEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_tab_strip_show),
-        default = FxNimbus.features.tabStrip.value().enabled &&
-                (isTabStripEligible(appContext) || FxNimbus.features.tabStrip.value().allowOnAllDevices),
-    )
+    val isTabStripEnabled = false
 
     var isDynamicToolbarEnabled = false
 
