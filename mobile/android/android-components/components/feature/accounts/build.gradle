@@ -13,7 +13,7 @@ apply plugin: 'kotlin-android'
 
 android {
     androidResources {
-        ignoreAssetsPattern '!<dir>extensions'
+        ignoreAssetsPattern = '!<dir>extensions'
     }
 
     namespace = 'mozilla.components.feature.accounts'
