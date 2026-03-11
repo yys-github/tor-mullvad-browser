@@ -1722,10 +1722,7 @@ class Settings(
         default = false,
     )
 
-    var showSearchSuggestionsInPrivateOnboardingFinished by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_show_search_suggestions_in_private_onboarding),
-        default = false,
-    )
+    var showSearchSuggestionsInPrivateOnboardingFinished = false
 
     fun incrementVisitedInstallableCount() = pwaInstallableVisitCount.increment()
 

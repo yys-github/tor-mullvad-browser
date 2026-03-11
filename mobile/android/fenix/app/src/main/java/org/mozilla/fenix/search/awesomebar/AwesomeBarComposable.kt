@@ -158,7 +158,7 @@ class AwesomeBarComposable(
         }
 
         if (isSearchActive) {
-            if (state.showSearchSuggestionsHint) {
+            if (false) {
                 PrivateSuggestionsCard(
                     onSearchSuggestionsInPrivateModeAllowed = {
                        components.settings.shouldShowSearchSuggestionsInPrivate = true
