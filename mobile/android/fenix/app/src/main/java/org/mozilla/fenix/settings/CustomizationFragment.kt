@@ -101,7 +101,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         setupRadioGroups()
         val tabletAndTabStripEnabled = Settings(requireContext()).isTabStripEnabled
         updateToolbarCategoryBasedOnTabStrip(tabletAndTabStripEnabled)
-        setupTabStripCategory()
         updateToolbarShortcut()
 
         // if tab strip is enabled, swipe toolbar to switch tabs should not be enabled so the
@@ -271,20 +270,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         bottomPreference.setCheckedWithoutClickListener(toolbarPosition == ToolbarPosition.BOTTOM)
 
         addToRadioGroup(topPreference, bottomPreference)
-    }
-
-    private fun setupTabStripCategory() {
-        val tabStripSwitch = requirePreference<SwitchPreferenceCompat>(R.string.pref_key_tab_strip_show)
-        val context = requireContext()
-
-        tabStripSwitch.isChecked = Settings(requireContext()).isTabStripEnabled
-
-        tabStripSwitch.setOnPreferenceChangeListener { _, newValue ->
-            val enabled = newValue as Boolean
-            context.settings().isTabStripEnabled = enabled
-            updateToolbarCategoryBasedOnTabStrip(enabled)
-            true
-        }
     }
 
     private fun setupGesturesCategory(
