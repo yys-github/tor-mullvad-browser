@@ -383,6 +383,7 @@ var CustomizableUIInternal = {
       // Or if the change is only meant for tor-browser, bump kVersionTorBrowser
       // instead and update the existing saved states in _updateForTorBrowser.
       "security-level-button",
+      "new-identity-button",
       "downloads-button",
       AppConstants.MOZ_DEV_EDITION ? "developer-button" : null,
       lazy.ippEnabled ? "ipprotection-button" : null,
