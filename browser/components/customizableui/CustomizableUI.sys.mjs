@@ -361,7 +361,6 @@ var CustomizableUIInternal = {
       // Or if the change is only meant for tor-browser, bump kVersionTorBrowser
       // instead and update the existing saved states in _updateForTorBrowser.
       "security-level-button",
-      "new-identity-button",
       "downloads-button",
       AppConstants.MOZ_DEV_EDITION ? "developer-button" : null,
       "fxa-toolbar-menu-button",
@@ -1002,8 +1001,8 @@ var CustomizableUIInternal = {
           navbarPlacements.splice(before, 1);
         }
 
-        // Make sure the security-level-button and new-identity-button appears
-        // in the toolbar.
+        // Make sure security-level-button and new-identity-button appear in the
+        // toolbar.
         for (const id of ["new-identity-button", "security-level-button"]) {
           let alreadyAdded = false;
           for (const placements of Object.values(gSavedState.placements)) {
