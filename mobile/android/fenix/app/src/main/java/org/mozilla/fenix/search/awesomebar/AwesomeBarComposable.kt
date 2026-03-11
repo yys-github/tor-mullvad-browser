@@ -192,7 +192,7 @@ class AwesomeBarComposable(
         }
 
         if (isSearchActive) {
-            if (state.showSearchSuggestionsHint) {
+            if (false) {
                 PrivateSuggestionsCard(
                     modifier = Modifier.awesomeBarContentWidth(showCurrentTabData),
                     onSearchSuggestionsInPrivateModeAllowed = {
