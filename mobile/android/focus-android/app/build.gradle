@@ -284,7 +284,6 @@ dependencies {
     implementation project(':components:feature-webcompat-reporter')
     implementation project(':components:lib-auth')
     implementation project(':components:lib-crash')
-    implementation project(':components:lib-crash-sentry')
     implementation project(':components:lib-publicsuffixlist')
     implementation project(':components:lib-state')
     implementation project(":components:service-glean")
@@ -335,7 +334,6 @@ dependencies {
     implementation libs.mozilla.glean
     implementation libs.play.review
     implementation libs.play.review.ktx
-    implementation libs.sentry
 
     debugImplementation libs.leakcanary
 
