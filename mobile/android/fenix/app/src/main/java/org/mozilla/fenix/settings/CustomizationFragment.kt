@@ -118,7 +118,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         setupToolbarCategory()
         setupTabStripDisplayCategory()
         setupTabStripLocationCategory()
-        setupToolbarLayout()
         updateToolbarShortcut()
 
         // if tab strip is enabled, swipe toolbar to switch tabs should not be enabled so the
@@ -282,15 +281,11 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         val topPreference = requirePreference<RadioButtonPreference>(R.string.pref_key_toolbar_top)
         topPreference.onClickListener {
             ToolbarSettings.changedPosition.record(ToolbarSettings.ChangedPositionExtra(Position.TOP.name))
-
-            updateToolbarLayoutIcons()
         }
 
         val bottomPreference = requirePreference<RadioButtonPreference>(R.string.pref_key_toolbar_bottom)
         bottomPreference.onClickListener {
             ToolbarSettings.changedPosition.record(ToolbarSettings.ChangedPositionExtra(Position.BOTTOM.name))
-
-            updateToolbarLayoutIcons()
         }
 
         val toolbarPosition = requireComponents.settings.toolbarPosition
@@ -309,7 +304,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         tabStripSwitch.setOnPreferenceChangeListener { _, newValue ->
             val enabled = newValue as Boolean
             context.components.settings.isTabStripEnabled = enabled
-            setupToolbarLayout()
             setupTabStripLocationCategory()
             updateToolbarShortcut()
             true
@@ -337,28 +331,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         bottomPreference.setCheckedWithoutClickListener(tabStripPosition == ToolbarPosition.BOTTOM)
 
         addToRadioGroup(topPreference, bottomPreference)
-    }
-
-    private fun setupToolbarLayout() {
-        (requirePreference(R.string.pref_key_customization_category_toolbar_layout) as PreferenceCategory).apply {
-            isVisible = isTallWindow() && !isWideWindow()
-        }
-
-        val layoutToggle = requirePreference<ToggleRadioButtonPreference>(R.string.pref_key_toolbar_expanded)
-        layoutToggle.setOnToggleChanged {
-            updateToolbarShortcut()
-        }
-        updateToolbarLayoutIcons()
-    }
-
-    private fun updateToolbarLayoutIcons() {
-        (requirePreference(R.string.pref_key_toolbar_expanded) as ToggleRadioButtonPreference).apply {
-            if (requireComponents.settings.shouldUseBottomToolbar) {
-                updateIcon(R.drawable.ic_toolbar_bottom_expanded, R.drawable.ic_toolbar_bottom_simple)
-            } else {
-                updateIcon(R.drawable.ic_toolbar_top_expanded, R.drawable.ic_toolbar_top_simple)
-            }
-        }
     }
 
     private fun setupGesturesCategory(
@@ -404,7 +376,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        setupToolbarLayout()
         updateToolbarShortcut()
     }
 
