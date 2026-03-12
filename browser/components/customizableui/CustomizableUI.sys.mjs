@@ -79,7 +79,7 @@ const NoScriptId = "_73a6fe31-595d-460b-a920-fcc0f8843232_-browser-action";
 /**
  * The current version for mullvad browser.
  */
-var kVersionMullvadBrowser = 1;
+var kVersionMullvadBrowser = 2;
 
 /**
  * Buttons removed from built-ins by version they were removed. kVersion must be
@@ -1123,6 +1123,17 @@ var CustomizableUIInternal = {
           if (!SecurityLevelPrefs.securityCustom) {
             navbarPlacements.splice(buttonIndex, 1);
           }
+        }
+      }
+    }
+
+    if (currentVersion < 2) {
+      // mullvad-browser#514: Clean up the new-identity-button placement, which
+      // no longer exists.
+      for (const placements of Object.values(gSavedState.placements)) {
+        const buttonIndex = placements.indexOf("new-identity-button");
+        if (buttonIndex !== -1) {
+          placements.splice(buttonIndex, 1);
         }
       }
     }
