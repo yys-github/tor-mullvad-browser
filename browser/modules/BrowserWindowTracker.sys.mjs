@@ -345,10 +345,7 @@ export const BrowserWindowTracker = {
     let loadURIString;
     if (isPrivate && lazy.PrivateBrowsingUtils.enabled) {
       windowFeatures += ",private";
-      if (
-        (!args && !lazy.PrivateBrowsingUtils.permanentPrivateBrowsing) ||
-        args?.private === "no-home"
-      ) {
+      if (!args && !lazy.PrivateBrowsingUtils.permanentPrivateBrowsing) {
         // Force the new window to load about:privatebrowsing instead of the
         // default home page.
         loadURIString = "about:privatebrowsing";

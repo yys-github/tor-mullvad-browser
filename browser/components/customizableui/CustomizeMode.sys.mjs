@@ -252,7 +252,6 @@ export class CustomizeMode {
     "Browser:NewUserContextTab",
     "Tools:PrivateBrowsing",
     "zoomWindow",
-    "cmd_newIdentity",
   ]);
 
   /**

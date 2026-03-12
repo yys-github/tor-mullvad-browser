@@ -273,11 +273,6 @@ XPCOMUtils.defineLazyScriptGetter(
 );
 XPCOMUtils.defineLazyScriptGetter(
   this,
-  ["NewIdentityButton"],
-  "chrome://browser/content/newidentity.js"
-);
-XPCOMUtils.defineLazyScriptGetter(
-  this,
   "gEditItemOverlay",
   "chrome://browser/content/places/editBookmark.js"
 );
