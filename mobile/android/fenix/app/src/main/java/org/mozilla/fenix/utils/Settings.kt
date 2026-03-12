@@ -1587,11 +1587,7 @@ class Settings(
         persistDefaultIfNotExists = true,
     )
 
-    var shouldUseExpandedToolbar by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_toolbar_expanded),
-        default = false,
-        persistDefaultIfNotExists = true,
-    )
+    var shouldUseExpandedToolbar = false
 
     val toolbarPosition: ToolbarPosition
         get() = if (isTabStripEnabled) {
