@@ -20,7 +20,9 @@ ChromeUtils.defineESModuleGetters(lazy, {
   AddonManager: "resource://gre/modules/AddonManager.sys.mjs",
   AsyncShutdown: "resource://gre/modules/AsyncShutdown.sys.mjs",
   DeferredTask: "resource://gre/modules/DeferredTask.sys.mjs",
-  TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
+  TorConnect: "resource://gre/modules/TorConnect.sys.mjs",
+  TorConnectStage: "resource://gre/modules/TorConnect.sys.mjs",
+  TorConnectTopics: "resource://gre/modules/TorConnect.sys.mjs",
   UpdateLog: "resource://gre/modules/UpdateLog.sys.mjs",
   UpdateUtils: "resource://gre/modules/UpdateUtils.sys.mjs",
   WindowsRegistry: "resource://gre/modules/WindowsRegistry.sys.mjs",
@@ -368,15 +370,6 @@ resetIsBackgroundTaskMode();
 // Exported for testing only.
 export function testResetIsBackgroundTaskMode() {
   resetIsBackgroundTaskMode();
-}
-
-async function _shouldRegisterBootstrapObserver() {
-  try {
-    const provider = await lazy.TorProviderBuilder.build();
-    return !provider.isBootstrapDone && provider.ownsTorDaemon;
-  } catch {
-    return false;
-  }
 }
 
 /**
@@ -2829,7 +2822,7 @@ export class UpdateService {
       case "network:offline-status-changed":
         await this._offlineStatusChanged(data);
         break;
-      case "torconnect:bootstrap-complete":
+      case lazy.TorConnectTopics.BootstrapComplete:
         this._bootstrapComplete();
         break;
       case "quit-application":
@@ -3445,7 +3438,36 @@ export class UpdateService {
     await this._attemptResume();
   }
 
+  /**
+   * Whether we should wait for the Tor bootstrap event to try again because we
+   * are not yet bootstrapped.
+   *
+   * If the browser does not monitor the Tor connection state, this will return
+   * `false` since the event will never fire.
+   *
+   * @returns {boolean} - Whether we should wait for the bootstrap event.
+   */
+  _shouldRegisterBootstrapObserver() {
+    return (
+      lazy.TorConnect.enabled &&
+      lazy.TorConnect.stageName !== lazy.TorConnectStage.Bootstrapped
+    );
+  }
+
+  /**
+   * Wait for the Tor connection to be bootstrapped before trying again.
+   */
   _registerBootstrapObserver() {
+    // Double check that we haven't since become bootstrapped between the call
+    // to _shouldRegisterBootstrapObserver and _registerBootstrapObserver, which
+    // may be delayed. If so, we do not wait for the BootstrapComplete signal
+    // since it has already fired.
+    if (lazy.TorConnect.stageName === lazy.TorConnectStage.Bootstrapped) {
+      LOG("UpdateService:_registerBootstrapObserver - already bootstrapped");
+      this._bootstrapComplete();
+      return;
+    }
+
     if (this._registeredBootstrapObserver) {
       LOG(
         "UpdateService:_registerBootstrapObserver - observer already registered"
@@ -3458,13 +3480,22 @@ export class UpdateService {
         "to be complete, then forcing another check"
     );
 
-    Services.obs.addObserver(this, "torconnect:bootstrap-complete");
+    Services.obs.addObserver(this, lazy.TorConnectTopics.BootstrapComplete);
     this._registeredBootstrapObserver = true;
   }
 
+  /**
+   * Called when the Tor connection becomes bootstrapped. This will trigger a
+   * retry.
+   */
   _bootstrapComplete() {
-    Services.obs.removeObserver(this, "torconnect:bootstrap-complete");
-    this._registeredBootstrapObserver = false;
+    if (this._registeredBootstrapObserver) {
+      Services.obs.removeObserver(
+        this,
+        lazy.TorConnectTopics.BootstrapComplete
+      );
+      this._registeredBootstrapObserver = false;
+    }
 
     LOG(
       "UpdateService:_bootstrapComplete - bootstrapping complete, forcing " +
@@ -3509,7 +3540,7 @@ export class UpdateService {
       return;
     } else if (
       update.errorCode === PROXY_SERVER_CONNECTION_REFUSED &&
-      (await _shouldRegisterBootstrapObserver())
+      this._shouldRegisterBootstrapObserver()
     ) {
       // Register boostrap observer to try again, but only when we own the
       // tor process.
@@ -7103,7 +7134,7 @@ class Downloader {
       deleteActiveUpdate = false;
     } else if (
       status === PROXY_SERVER_CONNECTION_REFUSED &&
-      (await _shouldRegisterBootstrapObserver())
+      this.updateService._shouldRegisterBootstrapObserver()
     ) {
       // Register a bootstrap observer to try again.
       // The bootstrap observer will continue the incremental download by
