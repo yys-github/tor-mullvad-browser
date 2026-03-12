@@ -102,7 +102,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
         val tabletAndTabStripEnabled = Settings(requireContext()).isTabStripEnabled
         updateToolbarCategoryBasedOnTabStrip(tabletAndTabStripEnabled)
         setupTabStripCategory()
-        setupToolbarLayout()
         updateToolbarShortcut()
 
         // if tab strip is enabled, swipe toolbar to switch tabs should not be enabled so the
@@ -231,8 +230,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
                     Position.TOP.name,
                 ),
             )
-
-            updateToolbarLayoutIcons()
         }
 
         val bottomPreference = requirePreference<RadioButtonPreference>(R.string.pref_key_toolbar_bottom)
@@ -242,8 +239,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
                     Position.BOTTOM.name,
                 ),
             )
-
-            updateToolbarLayoutIcons()
         }
 
         val toolbarPosition = requireContext().settings().toolbarPosition
@@ -263,32 +258,7 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
             val enabled = newValue as Boolean
             context.settings().isTabStripEnabled = enabled
             updateToolbarCategoryBasedOnTabStrip(enabled)
-            setupToolbarLayout()
             true
-        }
-    }
-
-    private fun setupToolbarLayout() {
-        val settings = requireContext().settings()
-        (requirePreference(R.string.pref_key_customization_category_toolbar_layout) as PreferenceCategory).apply {
-            isVisible = settings.shouldUseComposableToolbar &&
-                    settings.toolbarRedesignEnabled && isTallWindow() && !isWideWindow()
-        }
-
-        val layoutToggle = requirePreference<ToggleRadioButtonPreference>(R.string.pref_key_toolbar_expanded)
-        layoutToggle.setOnToggleChanged {
-            updateToolbarShortcut()
-        }
-        updateToolbarLayoutIcons()
-    }
-
-    private fun updateToolbarLayoutIcons() {
-        (requirePreference(R.string.pref_key_toolbar_expanded) as ToggleRadioButtonPreference).apply {
-            if (requireContext().settings().shouldUseBottomToolbar) {
-                updateIcon(R.drawable.ic_toolbar_bottom_expanded, R.drawable.ic_toolbar_bottom_simple)
-            } else {
-                updateIcon(R.drawable.ic_toolbar_top_expanded, R.drawable.ic_toolbar_top_simple)
-            }
         }
     }
 
@@ -338,7 +308,6 @@ class CustomizationFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFrag
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        setupToolbarLayout()
         updateToolbarShortcut()
     }
 
