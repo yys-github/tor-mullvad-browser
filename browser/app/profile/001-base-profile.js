@@ -510,7 +510,13 @@ pref("dom.webmidi.enabled", false); // Bug 41398: Disable Web MIDI API
 // Defense-in-depth (already the default value) from Firefox 119 or 120.
 pref("media.devices.enumerate.legacy.enabled", false);
 #ifndef ANDROID
-// Bug 42138: Disable touch-based overscroll UX
+// tor-browser#43769,42010,42138: Disable overscroll UX.
+// Firefox has an overscroll effect that appears only when using a touch screen
+// or a touchpad. So, theoretically it is a behavior difference also for desktop
+// users.
+// However, we could not find a way to actually measure this effect.
+// Still, the UX impact on disabling this animation is minimal, therefore we do
+// it just in case there is an actual way to measure it.
 pref("apz.overscroll.enabled", false);
 #endif
 pref("dom.vr.enabled", false); // Bug 21607: Disable WebVR for now
