@@ -1463,11 +1463,7 @@ class Settings(
         persistDefaultIfNotExists = true,
     )
 
-    var shouldUseExpandedToolbar by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_toolbar_expanded),
-        default = false,
-        persistDefaultIfNotExists = true,
-    )
+    var shouldUseExpandedToolbar = false
 
     var shouldShowToolbarCustomization by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_toolbar_customization),
@@ -2238,10 +2234,7 @@ class Settings(
     /**
      * Indicates if the user has access to the toolbar redesign option in settings.
      */
-    var toolbarRedesignEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_enable_toolbar_redesign),
-        default = { FxNimbus.features.toolbarRedesignOption.value().showOptions },
-    )
+    var toolbarRedesignEnabled = false
 
     /**
      * Indicates if the search bar CFR should be displayed to the user.
