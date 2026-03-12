@@ -137,7 +137,6 @@ export class TorProvider {
    */
   #socksSettings = null;
 
-  #isBootstrapDone = false;
   /**
    * Keep the last warning to avoid broadcasting an async warning if it is the
    * same one as the last broadcast.
@@ -510,10 +509,6 @@ export class TorProvider {
     return TorLauncherUtil.shouldStartAndOwnTor;
   }
 
-  get isBootstrapDone() {
-    return this.#isBootstrapDone;
-  }
-
   /**
    * TODO: Rename to isReady once we remove finish the migration.
    *
@@ -883,7 +878,6 @@ export class TorProvider {
         "Requested to close an already closed control port connection"
       );
     }
-    this.#isBootstrapDone = false;
     this.#lastWarning = {};
   }
 
@@ -1005,11 +999,8 @@ export class TorProvider {
     Services.obs.notifyObservers(statusObj, TorProviderTopics.BootstrapStatus);
 
     if (statusObj.PROGRESS === 100) {
-      this.#isBootstrapDone = true;
       return;
     }
-
-    this.#isBootstrapDone = false;
 
     // Can TYPE ever be ERR for STATUS_CLIENT?
     if (
