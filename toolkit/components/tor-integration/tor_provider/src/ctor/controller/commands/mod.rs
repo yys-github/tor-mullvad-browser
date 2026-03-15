@@ -6,6 +6,7 @@
 mod authenticate;
 mod command;
 pub mod get_conf;
+pub mod get_info;
 mod reset_conf;
 mod save_conf;
 mod set_conf;
