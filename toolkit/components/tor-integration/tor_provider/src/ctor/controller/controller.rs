@@ -4,6 +4,8 @@
 // copied, modified, or distributed except according to those terms.
 
 use bytes::Bytes;
+use std::net::IpAddr;
+use tinystr::TinyAsciiStr;
 
 use super::{
     commands::{self, Command},
@@ -115,11 +117,45 @@ impl<CP: ControlPortInterface> TorController<CP> {
         self.send_command(commands::save_conf(), handler);
     }
 
-    pub fn get_bridges(&self, handler: Box<dyn FnOnce(Result<Vec<Bridge>, ControllerError>)>) {
-        self.send_command(commands::get_conf::bridges(), handler);
+    pub fn get_bootstrap_phase(
+        &self,
+        handler: Box<dyn FnOnce(Result<BootstrapStatus, ControllerError>)>,
+    ) {
+        self.send_command(commands::get_info::bootstrap_phase(), handler);
+    }
+
+    pub fn get_socks_listeners(
+        &self,
+        handler: Box<dyn FnOnce(Result<Vec<SocksListener>, ControllerError>)>,
+    ) {
+        self.send_command(commands::get_info::net_listeners_socks(), handler);
     }
 
     // Circuit display
+
+    pub fn get_circuits(&self, handler: Box<dyn FnOnce(Result<Vec<Circuit>, ControllerError>)>) {
+        self.send_command(commands::get_info::circuits(), handler);
+    }
+
+    pub fn get_node_addresses(
+        &self,
+        node: NodeFingerprint,
+        handler: Box<dyn FnOnce(Result<NodeAddresses, ControllerError>)>,
+    ) {
+        self.send_command(commands::get_info::node_addresses(node), handler);
+    }
+
+    pub fn get_ip_country(
+        &self,
+        ip: IpAddr,
+        handler: Box<dyn FnOnce(Result<TinyAsciiStr<2>, ControllerError>)>,
+    ) {
+        self.send_command(commands::get_info::ip_to_country(ip), handler);
+    }
+
+    pub fn get_bridges(&self, handler: Box<dyn FnOnce(Result<Vec<Bridge>, ControllerError>)>) {
+        self.send_command(commands::get_conf::bridges(), handler);
+    }
 
     // Onion authentication
 
