@@ -99,7 +99,7 @@ export class TorProcessAndroid {
       type: TorOutgoingEvents.stop,
       handle: this.#processHandle,
     });
-    logger.debug("Sent the start event.");
+    logger.debug("Sent the stop event.");
     this.#processHandle = null;
     lazy.EventDispatcher.instance.unregisterListener(
       this,
