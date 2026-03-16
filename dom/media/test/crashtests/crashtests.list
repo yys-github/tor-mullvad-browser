@@ -189,3 +189,6 @@ load 1917627.mp4
 skip-if(Android) load audioworkletprocessor-recursion.html
 load 2014824.html
 load 2014865.html
+skip-if(!winWidget) pref(media.hevc.enabled,true) load 1859400.html
+load 1603271.html
+load 1536243.html
