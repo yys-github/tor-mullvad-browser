@@ -45,7 +45,7 @@ body:not(.loaded) {
 
 .breadcrumb-separator {
   width: var(--icon-size);
-  list-style-image: url("chrome://global/content/torconnect/arrow-right.svg");
+  list-style-image: url("chrome://browser/content/torconnect/arrow-right.svg");
 }
 
 .breadcrumb-separator:dir(rtl) {
@@ -88,15 +88,15 @@ body:not(.loaded) {
 }
 
 #connect-to-tor-icon {
-  list-style-image: url("chrome://global/content/torconnect/tor-connect.svg");
+  list-style-image: url("chrome://browser/content/torconnect/tor-connect.svg");
 }
 
 #connection-assist-icon {
-  list-style-image: url("chrome://global/content/torconnect/tor-connect-broken.svg");
+  list-style-image: url("chrome://browser/content/torconnect/tor-connect-broken.svg");
 }
 
 #location-settings-icon {
-  list-style-image: url("chrome://global/content/torconnect/globe.svg");
+  list-style-image: url("chrome://browser/content/torconnect/globe.svg");
 }
 
 #try-bridge {
@@ -104,7 +104,7 @@ body:not(.loaded) {
 }
 
 #try-bridge-icon {
-  list-style-image: url("chrome://global/content/torconnect/bridge.svg");
+  list-style-image: url("chrome://browser/content/torconnect/bridge.svg");
 }
 
 #locationDropdownLabel {
@@ -245,7 +245,7 @@ body.aboutTorConnect {
 }
 
 body.aboutTorConnect .title {
-  background-image: url("chrome://global/content/torconnect/tor-connect.svg");
+  background-image: url("chrome://browser/content/torconnect/tor-connect.svg");
   -moz-context-properties: stroke, fill, fill-opacity;
   fill-opacity: 1;
   fill: var(--icon-color);
@@ -255,14 +255,14 @@ body.aboutTorConnect .title {
 }
 
 body.aboutTorConnect .title.offline {
-  background-image: url("chrome://global/content/torconnect/connection-failure.svg");
+  background-image: url("chrome://browser/content/torconnect/connection-failure.svg");
 }
 
 body.aboutTorConnect .title:is(.assist, .final) {
-  background-image: url("chrome://global/content/torconnect/tor-connect-broken.svg");
+  background-image: url("chrome://browser/content/torconnect/tor-connect-broken.svg");
 }
 
 body.aboutTorConnect .title.location {
-  background-image: url("chrome://global/content/torconnect/connection-location.svg");
+  background-image: url("chrome://browser/content/torconnect/connection-location.svg");
   stroke: var(--icon-color-warning);
 }
