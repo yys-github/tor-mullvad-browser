@@ -1,7 +1,7 @@
 @import url("chrome://global/skin/tor-common.css");
 
 #category-connection > .category-icon {
-  list-style-image: url("chrome://global/content/torconnect/tor-connect.svg");
+  list-style-image: url("chrome://browser/content/torconnect/tor-connect.svg");
 }
 
 /* Make a button appear disabled, whilst still allowing it to keep keyboard
@@ -72,11 +72,11 @@ button.spoof-button-disabled {
 }
 
 #network-status-tor-area .network-status-icon {
-  content: url("chrome://global/content/torconnect/tor-connect.svg");
+  content: url("chrome://browser/content/torconnect/tor-connect.svg");
 }
 
 #network-status-tor-area:not(.status-connected) .network-status-icon {
-  content: url("chrome://global/content/torconnect/tor-connect-broken.svg");
+  content: url("chrome://browser/content/torconnect/tor-connect-broken.svg");
 }
 
 #network-status-tor-area.status-blocked .network-status-icon {
