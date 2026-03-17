@@ -110,12 +110,12 @@ export class TorConnectParent extends JSWindowActorParent {
         TorConnect.quickstart = message.data;
         break;
       case "torconnect:open-tor-preferences":
-        this.browsingContext.top.embedderElement.ownerGlobal.openPreferences(
+        this.browsingContext.top.embedderElement.documentGlobal.openPreferences(
           "connection"
         );
         break;
       case "torconnect:view-tor-logs":
-        this.browsingContext.top.embedderElement.ownerGlobal.openPreferences(
+        this.browsingContext.top.embedderElement.documentGlobal.openPreferences(
           "connection-viewlogs"
         );
         break;

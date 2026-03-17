@@ -108,7 +108,7 @@ ChromeUtils.defineESModuleGetters(this, {
   TorConnect: "resource://gre/modules/TorConnect.sys.mjs",
   TorConnectStage: "resource://gre/modules/TorConnect.sys.mjs",
   TorConnectTopics: "resource://gre/modules/TorConnect.sys.mjs",
-  TorConnectParent: "resource://gre/actors/TorConnectParent.sys.mjs",
+  TorConnectParent: "resource:///actors/TorConnectParent.sys.mjs",
   TorDomainIsolator: "resource://gre/modules/TorDomainIsolator.sys.mjs",
   TorUIUtils: "resource:///modules/TorUIUtils.sys.mjs",
   TranslationsParent: "resource://gre/actors/TranslationsParent.sys.mjs",
@@ -322,12 +322,12 @@ XPCOMUtils.defineLazyScriptGetter(
 XPCOMUtils.defineLazyScriptGetter(
   this,
   ["gTorConnectUrlbarButton"],
-  "chrome://global/content/torconnect/torConnectUrlbarButton.js"
+  "chrome://browser/content/torconnect/torConnectUrlbarButton.js"
 );
 XPCOMUtils.defineLazyScriptGetter(
   this,
   ["gTorConnectTitlebarStatus"],
-  "chrome://global/content/torconnect/torConnectTitlebarStatus.js"
+  "chrome://browser/content/torconnect/torConnectTitlebarStatus.js"
 );
 XPCOMUtils.defineLazyScriptGetter(
   this,
