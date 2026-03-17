@@ -1,0 +1,26 @@
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '43 21 * * 5'
+jobs:
+  update-yys-github-tor-mullvad-browser:
+    runs-on: ubuntu-latest
+    permissions:
+      # permission settings for fallback GITHUB_TOKEN
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          # 2026-03-16 23:11:35 ref: https://github.com/stefanzweifel/git-auto-commit-action?tab=readme-ov-file#git-auto-commit-fails-to-push-commit-that-creates-or-udpates-files-in-githubworkflows
+          #   We pass the "PAT" secret to the checkout action; if no PAT secret is available to the workflow runner (eg. Dependabot) we fall back to the default "GITHUB_TOKEN".
+          # how to use secrets.PAT:
+          #   1. create a fine-grained token at https://github.com/settings/personal-access-tokens
+          #     select no expiration
+          #     select only tor-mullvad-browser repo
+          #     add permissions: content read and write, workflows read and write
+          #   2. add repo secret at https://github.com/yys-github/tor-mullvad-browser/settings/secrets/actions
+          #     paste fine-graned token here, name as PAT
+          #   3. now actions will automatically use secrets.PAT, which has workflows permission.
+          token: ${{ secrets.PAT || secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+      - run: sh .github/workflows/update-yys-github-tor-mullvad-browser.sh
