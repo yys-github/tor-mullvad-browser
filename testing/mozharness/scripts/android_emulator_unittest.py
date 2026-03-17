@@ -7,8 +7,11 @@ import copy
 import datetime
 import json
 import os
+import socket
 import subprocess
 import sys
+import tempfile
+import time
 
 # load modules from parent dir
 here = os.path.abspath(os.path.dirname(__file__))
@@ -16,7 +19,7 @@ sys.path.insert(1, os.path.dirname(here))
 
 from mozfile import load_source
 from mozharness.base.log import WARNING
-from mozharness.base.script import BaseScript, PreScriptAction
+from mozharness.base.script import BaseScript, PostScriptAction, PreScriptAction
 from mozharness.mozilla.automation import TBPL_RETRY
 from mozharness.mozilla.mozbase import MozbaseMixin
 from mozharness.mozilla.testing.android import AndroidMixin
@@ -27,7 +30,7 @@ from mozharness.mozilla.testing.codecoverage import (
 from mozharness.mozilla.testing.testbase import TestingMixin, testing_config_options
 
 SUITE_DEFAULT_E10S = ["geckoview-junit", "mochitest", "reftest"]
-SUITE_NO_E10S = ["cppunittest", "gtest", "jittest", "xpcshell"]
+SUITE_NO_E10S = ["cppunittest", "gtest", "jittest", "xpcshell", "marionette"]
 SUITE_REPEATABLE = ["mochitest", "reftest", "xpcshell"]
 
 
@@ -179,6 +182,15 @@ class AndroidEmulatorTest(
                     "times in which case the test must contain at least one of the given tags.",
                 },
             ],
+            [
+                ["--package-name"],
+                {
+                    "action": "store",
+                    "default": None,
+                    "dest": "package_name",
+                    "help": "The Android package name for the app being installed.",
+                },
+            ],
         ]
         + copy.deepcopy(testing_config_options)
         + copy.deepcopy(code_coverage_config_options)
@@ -229,6 +241,7 @@ class AndroidEmulatorTest(
         self.enable_isolated_zygote_process = c.get("enable_isolated_zygote_process")
         self.extra_prefs = c.get("extra_prefs")
         self.test_tags = c.get("test_tags")
+        self.package_name = c.get("package_name") or self.query_package_name()
 
     def query_abs_dirs(self):
         if self.abs_dirs:
@@ -330,6 +343,16 @@ class AndroidEmulatorTest(
             "error_summary_file": error_summary_file,
             "xpcshell_extra": c.get("xpcshell_extra", ""),
             "gtest_dir": os.path.join(dirs["abs_test_install_dir"], "gtest"),
+            "abs_marionette_manifest_dir": os.path.join(
+                dirs["abs_test_install_dir"],
+                "marionette",
+                "tests",
+                "testing",
+                "marionette",
+                "harness",
+                "marionette_harness",
+                "tests",
+            ),
         }
 
         user_paths = self._get_mozharness_test_paths(self.test_suite)
@@ -346,7 +369,7 @@ class AndroidEmulatorTest(
 
             if "%(app)" in option:
                 # only query package name if requested
-                cmd.extend([option % {"app": self.query_package_name()}])
+                cmd.extend([option % {"app": self.package_name}])
             else:
                 option = option % str_format_values
                 if option:
@@ -410,6 +433,7 @@ class AndroidEmulatorTest(
                     self.config["suite_definitions"][self.test_suite].get("tests"),
                     None,
                     try_tests,
+                    str_format_values=str_format_values,
                 )
             )
 
@@ -450,6 +474,7 @@ class AndroidEmulatorTest(
                 },
             ),
             ("xpcshell", {"xpcshell": "xpcshell"}),
+            ("marionette", {"marionette": "marionette"}),
         ]
         suites = []
         for category, all_suites in all:
@@ -474,6 +499,61 @@ class AndroidEmulatorTest(
         # in the base class, this checks for mozinstall, but we don't use it
         pass
 
+    def _configure_marionette_virtualenv(self, action):
+        dirs = self.query_abs_dirs()
+        requirements = os.path.join(
+            dirs["abs_test_install_dir"], "config", "marionette_requirements.txt"
+        )
+        if not os.path.isfile(requirements):
+            self.fatal(f"Could not find marionette requirements file: {requirements}")
+
+        self.register_virtualenv_module(requirements=[requirements])
+
+    def _marionette_setup(self):
+        adb = self.query_exe("adb")
+
+        self.run_command([adb, "forward", "tcp:2828", "tcp:2828"])
+
+        with tempfile.NamedTemporaryFile(suffix=".yaml") as tmp_file:
+            tmp_file.write(
+                b"""args:
+- --marionette
+- --remote-allow-system-access
+"""
+            )
+            tmp_file.flush()
+
+            remote_path = f"/data/local/tmp/{self.package_name}-geckoview-config.yaml"
+            self.run_command([adb, "push", tmp_file.name, remote_path])
+
+        self.run_command([
+            adb,
+            "shell",
+            "am",
+            "start",
+            "-S",
+            "-W",
+            "-n",
+            f"{self.package_name}/org.mozilla.gecko.BrowserApp",
+        ])
+
+        # Wait for Marionette to be ready
+        for attempt in range(5):
+            try:
+                self.info(
+                    f"Checking Marionette on 127.0.0.1:2828 (attempt {attempt + 1}/5)"
+                )
+                socket.create_connection(("127.0.0.1", 2828), 10).close()
+                self.info("Marionette is reachable")
+                break
+            except OSError:
+                if attempt == 4:
+                    self.fatal(
+                        "Timed out waiting for 127.0.0.1:2828 to become reachable"
+                    )
+                self.info("Marionette not reachable yet, retrying in 10s")
+                time.sleep(10)
+
     @PreScriptAction("create-virtualenv")
     def pre_create_virtualenv(self, action):
         dirs = self.query_abs_dirs()
@@ -488,6 +568,9 @@ class AndroidEmulatorTest(
             )
         if requirements:
             self.register_virtualenv_module(requirements=[requirements])
+
+        if ("marionette", "marionette") in suites:
+            self._configure_marionette_virtualenv(action)
 
     def download_and_extract(self):
         """
@@ -525,6 +608,9 @@ class AndroidEmulatorTest(
         minidump = self.query_minidump_stackwalk()
         for per_test_suite, suite in suites:
             self.test_suite = suite
+
+            if self.test_suite == "marionette":
+                self._marionette_setup()
 
             try:
                 cwd = self._query_tests_dir(self.test_suite)
@@ -604,6 +690,19 @@ class AndroidEmulatorTest(
                         "The %s suite: %s ran with return status: %s"
                         % (suite_category, suite, tbpl_status),
                     )
+
+    @PostScriptAction("run-tests")
+    def marionette_teardown(self, *args, **kwargs):
+        if ("marionette", "marionette") in self._query_suites():
+            adb = self.query_exe("adb")
+            self.run_command([adb, "shell", "am", "force-stop", self.package_name])
+            self.run_command([adb, "uninstall", self.package_name])
+            self.run_command([
+                adb,
+                "shell",
+                "rm",
+                f"/data/local/tmp/{self.package_name}-geckoview-config.yaml",
+            ])
 
 
 if __name__ == "__main__":
