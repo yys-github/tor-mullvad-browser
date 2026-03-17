@@ -185,6 +185,11 @@ static const RedirEntry kRedirMap[] = {
          nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS},
     {"tor", "chrome://browser/content/abouttor/aboutTor.html",
      BASE_BROWSER_HOME_PAGE_FLAGS},
+    {"torconnect", "chrome://browser/content/torconnect/aboutTorConnect.html",
+     nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
+         nsIAboutModule::URI_CAN_LOAD_IN_CHILD | nsIAboutModule::ALLOW_SCRIPT |
+         nsIAboutModule::HIDE_FROM_ABOUTABOUT |
+         nsIAboutModule::IS_SECURE_CHROME_UI},
     // The correct URI must be obtained by GetManualChromeURI
     {"manual", "about:blank",
      nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
