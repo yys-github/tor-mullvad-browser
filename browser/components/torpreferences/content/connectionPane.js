@@ -26,7 +26,7 @@ const { InternetStatus, TorConnect, TorConnectTopics, TorConnectStage } =
   ChromeUtils.importESModule("resource://gre/modules/TorConnect.sys.mjs");
 
 const { TorConnectParent } = ChromeUtils.importESModule(
-  "resource://gre/actors/TorConnectParent.sys.mjs"
+  "resource:///actors/TorConnectParent.sys.mjs"
 );
 
 const { QRCode } = ChromeUtils.importESModule(
