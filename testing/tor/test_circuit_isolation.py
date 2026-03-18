@@ -2,46 +2,12 @@ from ipaddress import ip_address
 
 from marionette_driver import By
 from marionette_driver.errors import NoSuchElementException
-from marionette_harness import MarionetteTestCase
-
-TOR_BOOTSTRAP_TIMEOUT = 30000  # 30s
+from marionette_harness import MarionetteTestCase, TorBrowserMixin
 
 
-class TestCircuitIsolation(MarionetteTestCase):
+class TestCircuitIsolation(MarionetteTestCase, TorBrowserMixin):
     def tearDown(self):
-        self.marionette.restart(in_app=False, clean=True)
         super().tearDown()
-
-    def bootstrap(self):
-        with self.marionette.using_context("chrome"):
-            self.marionette.execute_async_script(
-                """
-                const { TorConnect, TorConnectTopics } = ChromeUtils.importESModule(
-                    "resource://gre/modules/TorConnect.sys.mjs"
-                );
-                const [resolve] = arguments;
-
-                function waitForBootstrap() {
-                    const topic = TorConnectTopics.BootstrapComplete;
-                    Services.obs.addObserver(function observer() {
-                        Services.obs.removeObserver(observer, topic);
-                        resolve();
-                    }, topic);
-                    TorConnect.beginBootstrapping();
-                }
-
-                const stageTopic = TorConnectTopics.StageChange;
-                function stageObserver() {
-                    if (TorConnect.canBeginNormalBootstrap) {
-                        Services.obs.removeObserver(stageObserver, stageTopic);
-                        waitForBootstrap();
-                    }
-                }
-                Services.obs.addObserver(stageObserver, stageTopic);
-                stageObserver();
-                """,
-                script_timeout=TOR_BOOTSTRAP_TIMEOUT,
-            )
 
     def extract_from_check_tpo(self):
         # Fetch the IP from check.torproject.org.
