@@ -49,7 +49,7 @@ class TestCircuitIsolation(MarionetteTestCase, TorBrowserMixin):
         ips = [
             self.extract_from_check_tpo(),
             self.extract_generic("https://am.i.mullvad.net/ip"),
-            self.extract_generic("https://test1.ifconfig.me/ip"),
+            self.extract_generic("https://v4.ident.me"),
         ]
         self.logger.info(f"Found the following IP addresses: {ips}")
         unique_ips = set(ips)
@@ -59,9 +59,12 @@ class TestCircuitIsolation(MarionetteTestCase, TorBrowserMixin):
             len(unique_ips),
             "Some of the IP addresses we got are not unique.",
         )
-        duplicate = self.extract_generic("https://test2.ifconfig.me/ip")
-        self.assertEqual(
-            ips[-1],
-            duplicate,
-            "Two IPs that were expected to be equal are different, we might be over isolating!",
-        )
+
+        # TODO: Renable the duplicate check once
+        # https://gitlab.torproject.org/tpo/tpa/team/-/issues/42547 is resolved.
+        # duplicate = self.extract_generic("https://test2.ifconfig.me/ip")
+        # self.assertEqual(
+        #     ips[-1],
+        #     duplicate,
+        #     "Two IPs that were expected to be equal are different, we might be over isolating!",
+        # )
