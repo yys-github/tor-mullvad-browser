@@ -31,8 +31,11 @@ class TestCircuitIsolation(MarionetteTestCase, TorBrowserMixin):
             By.CLASS_NAME,
             "off",
         )
-        ip = self.marionette.find_element(By.TAG_NAME, "strong")
-        return ip_address(ip.text.strip())
+        ip = self.marionette.execute_script(
+            "return document.querySelector('strong').textContent"
+        ).strip()
+
+        return ip_address(ip)
 
     def extract_generic(self, url):
         # Fetch the IP address from any generic page that only contains
