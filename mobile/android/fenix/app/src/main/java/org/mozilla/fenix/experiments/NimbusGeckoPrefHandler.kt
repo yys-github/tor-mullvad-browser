@@ -37,6 +37,7 @@ fun PrefBranch.toGeckoBranch(): Int {
     return when (this) {
         PrefBranch.DEFAULT -> GeckoPreferenceController.PREF_BRANCH_DEFAULT
         PrefBranch.USER -> GeckoPreferenceController.PREF_BRANCH_USER
+        PrefBranch.__NOOP -> GeckoPreferenceController.PREF_BRANCH_DEFAULT
     }
 }
 
