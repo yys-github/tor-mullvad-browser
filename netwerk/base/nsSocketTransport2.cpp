@@ -1503,16 +1503,13 @@ nsresult nsSocketTransport::InitiateSocket() {
   //
   PRNetAddr prAddr;
   memset(&prAddr, 0, sizeof(prAddr));
-  {
-    if (mBindAddr) {
-      MutexAutoLock lock(mLock);
-      NetAddrToPRNetAddr(mBindAddr.get(), &prAddr);
-      status = PR_Bind(fd, &prAddr);
-      if (status != PR_SUCCESS) {
-        return NS_ERROR_FAILURE;
-      }
-      mBindAddr = nullptr;
+  if (mBindAddr) {
+    NetAddrToPRNetAddr(mBindAddr.get(), &prAddr);
+    status = PR_Bind(fd, &prAddr);
+    if (status != PR_SUCCESS) {
+      return NS_ERROR_FAILURE;
     }
+    mBindAddr = nullptr;
   }
 
   NetAddrToPRNetAddr(&mNetAddr, &prAddr);
@@ -1532,10 +1529,15 @@ nsresult nsSocketTransport::InitiateSocket() {
 #endif
 
   if (mTLSSocketControl) {
-    if (!mEchConfig.IsEmpty() &&
+    nsCString echConfig;
+    {
+      MutexAutoLock lock(mLock);
+      echConfig = mEchConfig;
+    }
+    if (!echConfig.IsEmpty() &&
         !(mConnectionFlags & (DONT_TRY_ECH | BE_CONSERVATIVE))) {
       SOCKET_LOG(("nsSocketTransport::InitiateSocket set echconfig."));
-      rv = mTLSSocketControl->SetEchConfig(mEchConfig);
+      rv = mTLSSocketControl->SetEchConfig(echConfig);
       if (NS_FAILED(rv)) {
         return rv;
       }
@@ -2653,7 +2655,6 @@ NS_IMETHODIMP
 nsSocketTransport::Bind(NetAddr* aLocalAddr) {
   NS_ENSURE_ARG(aLocalAddr);
 
-  MutexAutoLock lock(mLock);
   MOZ_ASSERT(OnSocketThread(), "not on socket thread");
   if (mAttached) {
     return NS_ERROR_FAILURE;
@@ -2745,7 +2746,7 @@ nsSocketTransport::SetQoSBits(uint8_t aQoSBits) {
 
 NS_IMETHODIMP
 nsSocketTransport::GetQoSBits(uint8_t* aQoSBits) {
-  *aQoSBits = mQoSBits;
+  *aQoSBits = static_cast<uint8_t>(mQoSBits);
   return NS_OK;
 }
 
@@ -3415,6 +3416,7 @@ nsSocketTransport::GetEchConfigUsed(bool* aEchConfigUsed) {
 
 NS_IMETHODIMP
 nsSocketTransport::SetEchConfig(const nsACString& aEchConfig) {
+  MutexAutoLock lock(mLock);
   mEchConfig = aEchConfig;
   return NS_OK;
 }
