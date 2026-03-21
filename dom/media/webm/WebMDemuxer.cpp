@@ -789,7 +789,7 @@ nsresult WebMDemuxer::GetNextPacket(TrackInfo::TrackType aType,
                " length: %zu kf: %d",
                tstamp, next_tstamp, length, isKeyframe);
     RefPtr<MediaRawData> sample;
-    if (mInfo.mVideo.HasAlpha() && alphaLength != 0) {
+    if (mInfo.mVideo.HasAlpha() && alphaData) {
       sample = new MediaRawData(data, length, alphaData, alphaLength);
       if ((length && !sample->Data()) ||
           (alphaLength && !sample->AlphaData())) {
