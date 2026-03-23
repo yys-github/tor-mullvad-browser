@@ -1,4 +1,6 @@
 [DEFAULT]
 head = "head.js"
 
+["test_adapters.js"]
+
 ["test_control_port.js"]
