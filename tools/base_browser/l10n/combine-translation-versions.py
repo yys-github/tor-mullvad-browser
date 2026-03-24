@@ -194,14 +194,11 @@ class BrowserBranch:
         )
 
 
-def get_stable_branch(
-    compare_version: BrowserBranch,
-) -> tuple[BrowserBranch, BrowserBranch | None]:
+def get_stable_branch(compare_version: BrowserBranch) -> BrowserBranch:
     """Find the most recent stable branch in the origin repository.
 
     :param compare_version: The development branch to compare against.
-    :returns: The stable and legacy branches. If no legacy branch is found,
-      `None` will be returned instead.
+    :returns: The stable branch.
     """
     # We search for build1 tags. These are added *after* the rebase of browser
     # commits, so the corresponding branch should contain our strings.
@@ -218,9 +215,7 @@ def get_stable_branch(
         fetch_args = ("--depth=1", "--filter=object:type=tag")
     git_run(["fetch", *fetch_args, "origin", "tag", tag_glob])
     stable_branches = []
-    legacy_branches = []
     stable_annotation_regex = re.compile(r"\bstable\b")
-    legacy_annotation_regex = re.compile(r"\blegacy\b")
     tag_pattern = re.compile(
         rf"^{re.escape(compare_version.prefix)}-[^-]+-[^-]+-[^-]+-build1$"
     )
@@ -230,9 +225,7 @@ def get_stable_branch(
     ):
         if not tag_pattern.match(build_tag):
             continue
-        is_stable = bool(stable_annotation_regex.search(annotation))
-        is_legacy = bool(legacy_annotation_regex.search(annotation))
-        if not is_stable and not is_legacy:
+        if not stable_annotation_regex.search(annotation):
             continue
         try:
             # Branch name is the same as the tag, minus "-build1".
@@ -242,40 +235,30 @@ def get_stable_branch(
             continue
         if branch.prefix != compare_version.prefix:
             continue
-        if is_stable:
-            # Stable can be one release version behind.
-            # NOTE: In principle, when switching between versions there may be a
-            # window of time where the development branch has not yet progressed
-            # to the next ".0" release, so has the same browser version as the
-            # stable branch. So we also allow for matching browser versions.
-            # NOTE:
-            # 1. The "Will be unused in" message will not make sense, but we do
-            #    not expect string differences in this scenario.
-            # 2. We do not expect this scenario to last for long.
-            release_diff = compare_version.browser_version - branch.browser_version
-            if release_diff < 0.0 or release_diff > 1.0:
-                continue
-            stable_branches.append(branch)
-        elif is_legacy:
-            # Legacy can be arbitrary release versions behind.
-            legacy_branches.append(branch)
+        # Stable can be one release version behind.
+        # NOTE: In principle, when switching between versions there may be a
+        # window of time where the development branch has not yet progressed
+        # to the next ".0" release, so has the same browser version as the
+        # stable branch. So we also allow for matching browser versions.
+        # NOTE:
+        # 1. The "Will be unused in" message will not make sense, but we do
+        #    not expect string differences in this scenario.
+        # 2. We do not expect this scenario to last for long.
+        release_diff = compare_version.browser_version - branch.browser_version
+        if release_diff < 0.0 or release_diff > 1.0:
+            continue
+        stable_branches.append(branch)
 
     if not stable_branches:
         raise Exception("No stable build1 branch found")
 
-    return (
-        # Return the stable branch with the highest version.
-        max(stable_branches),
-        max(legacy_branches) if legacy_branches else None,
-    )
+    # Return the stable branch with the highest version.
+    return max(stable_branches)
 
 
 current_branch = BrowserBranch(args.current_branch, is_head=True)
 
-stable_branch, legacy_branch = get_stable_branch(current_branch)
-
-if os.environ.get("TRANSLATION_INCLUDE_LEGACY", "") != "true":
-    legacy_branch = None
+stable_branch = get_stable_branch(current_branch)
 
 files_list = []
 
@@ -330,32 +313,6 @@ for file_dict in json.loads(args.files):
         f"Will be unused in {current_branch.browser_version_name}!",
     )
 
-    if legacy_branch and not file_dict.get("exclude-legacy", False):
-        legacy_file = legacy_branch.get_file(name, where_dirs)
-        if legacy_file is not None and current_file is None and stable_file is None:
-            logger.warning(f"{name} still exists in the legacy branch")
-        elif legacy_file is None:
-            logger.warning(f"{name} does not exist in the legacy branch")
-        elif stable_file is not None and legacy_file.path != stable_file.path:
-            logger.warning(
-                f"{name} has different paths in the stable and legacy branch. "
-                f"{stable_file.path} : {legacy_file.path}"
-            )
-        elif current_file is not None and legacy_file.path != current_file.path:
-            logger.warning(
-                f"{name} has different paths in the current and legacy branch. "
-                f"{current_file.path} : {legacy_file.path}"
-            )
-
-        content = combine_files(
-            name,
-            content,
-            legacy_file.content,
-            f"Unused in {stable_branch.browser_version_name}!",
-        )
-    elif legacy_branch:
-        logger.info(f"Excluding legacy branch for {name}")
-
     files_list.append({
         "name": name,
         # If "directory" is unspecified, we place the file directly beneath
@@ -379,9 +336,6 @@ json_data = {
     "stable-branch": stable_branch.name,
     "files": files_list,
 }
-
-if legacy_branch:
-    json_data["legacy-branch"] = legacy_branch.name
 
 with open(args.outname, "w") as file:
     json.dump(json_data, file)
