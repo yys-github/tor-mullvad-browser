@@ -89,6 +89,7 @@
 #include "mozilla/TelemetryIPC.h"
 #include "mozilla/ThreadSafety.h"
 #include "mozilla/Unused.h"
+#include "mozilla/UniquePtrExtensions.h"
 #include "mozilla/WebBrowserPersistDocumentParent.h"
 #include "mozilla/devtools/HeapSnapshotTempFileHelperParent.h"
 #include "mozilla/dom/BlobURLProtocolHandler.h"
@@ -3914,18 +3915,19 @@ ContentParent::Observe(nsISupports* aSubject, const char* aTopic,
       return NS_OK;
     }
 
-    nsID* operationID = nullptr;
-    rv = notification->GetOperationID(&operationID);
+    UniqueFreePtr<nsID> operationID;
+    rv = notification->GetOperationID(TempPtrToSetter(&operationID));
     if (NS_WARN_IF(NS_FAILED(rv))) {
       return NS_OK;
     }
 
     if (action == nsICookieNotification::COOKIE_DELETED) {
-      cs->RemoveCookie(cookie, operationID);
+      cs->RemoveCookie(cookie, operationID.get());
     } else if (action == nsICookieNotification::COOKIE_ADDED ||
                action == nsICookieNotification::COOKIE_CHANGED) {
-      cs->AddCookie(cookie, operationID);
+      cs->AddCookie(cookie, operationID.get());
     }
+
   } else if (!strcmp(aTopic, NS_NETWORK_LINK_TYPE_TOPIC)) {
     UpdateNetworkLinkType();
   } else if (!strcmp(aTopic, "network:socket-process-crashed")) {
