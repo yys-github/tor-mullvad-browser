@@ -39,24 +39,23 @@ class TorConnectionAssistViewModel(
 
     private fun loadAndUnloadDummyPage() {
         viewModelScope.launch(Dispatchers.IO) {
-            // Load local url (it just needs to begin with "about:" to get past filter) to initialize the browser,
-            // Domain fronting needs Services.io.getProtocolHandler("http")... to actually work, and it
-            // does not till the browser/engine is initialized, and this is so far the easiest way to do that.
-            // Load early here so that it is ready when needed if we get to the step where DF is invoked
-            // Then later remove it so it doesn't show for the user
-            components.useCases.tabsUseCases.addTab.invoke("about:")
+            // Load made up local url to initialize the browser.
+            // Domain fronting needs Services.io.getProtocolHandler("http")... to actually work
+            // It does not work until the browser/engine is initialized and we found this is so far
+            // the easiest way to do that.
+            // Load early here so that it is ready when needed if we get to the step where domain
+            // fronting is invoked. Remove after it so it doesn't show for the user
+            components.useCases.tabsUseCases.addTab.invoke("about:dummyPage")
             // removeTabs doesn't work without a delay.
             Thread.sleep(500)
             // Remove loaded URL so it is never visible to the user
             components.useCases.tabsUseCases.removeTabs.invoke(
                 components.core.store.state.tabs.filter {
-                    it.getUrl() == "about:" || it.getUrl() == "about:blank"
+                    it.getUrl() == "about:dummyPage"
                 }.map { it.id },
             )
-            // recentlyClosedTabsStorage.value.removeAllTabs() doesn't seem to work,
-            // so instead we collect and iteratively remove all tabs from recent history.
-            // Nothing should ever show up in history so we remove everything,
-            // including old "about:" tabs that may have stacked up.
+            // Collect and iteratively remove all tabs from recent history.
+            // Nothing should ever show up in history so it is safe to just remove everything,
             components.core.recentlyClosedTabsStorage.value.getTabs()
                 .collect { tabs: List<TabState> ->
                     for (tab in tabs) {
