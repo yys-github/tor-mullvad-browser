@@ -8,14 +8,18 @@
 
 "use strict";
 
+const { SearchService } = ChromeUtils.importESModule(
+  "moz-src:///toolkit/components/search/SearchService.sys.mjs"
+);
+
 const expectedURLs = {
   ddg: "https://html.duckduckgo.com/html?q=test",
 };
 
 add_task(async function test_securityLevel() {
-  await Services.search.init();
+  await SearchService.init();
   for (const [id, url] of Object.entries(expectedURLs)) {
-    const engine = Services.search.getEngineById(id);
+    const engine = SearchService.getEngineById(id);
     const foundUrl = engine.getSubmission("test").uri.spec;
     Assert.equal(foundUrl, url, `${engine.name} is in HTML mode.`);
   }
