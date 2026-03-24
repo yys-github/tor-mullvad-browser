@@ -62,11 +62,8 @@
         "branch": "tor-browser"
       },
       { "name": "tor-browser.ftl", "branch": "tor-browser" },
-      { "name": "aboutTBUpdate.dtd", "branch": "tor-browser" },
-      { "name": "torbutton.dtd", "branch": "tor-browser" },
       { "name": "onionLocation.properties", "branch": "tor-browser" },
       { "name": "settings.properties", "branch": "tor-browser" },
-      { "name": "torbutton.properties", "branch": "tor-browser" },
       { "name": "torConnect.properties", "branch": "tor-browser" },
       { "name": "torlauncher.properties", "branch": "tor-browser" },
       { "name": "base-browser.ftl", "branch": "base-browser" },
