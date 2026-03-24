@@ -10,6 +10,10 @@
 
 "use strict";
 
+const { SearchService } = ChromeUtils.importESModule(
+  "moz-src:///toolkit/components/search/SearchService.sys.mjs"
+);
+
 const expectedURLs = {
   ddg: "https://duckduckgo.com/?q=test",
   "ddg-noai": "https://noai.duckduckgo.com/?q=test",
@@ -18,24 +22,23 @@ const expectedURLs = {
 const defaultEngine = "ddg";
 
 add_setup(async function setup() {
-  await Services.search.init();
+  await SearchService.init();
 });
 
 add_task(async function test_listEngines() {
-  const { engines } =
-    await Services.search.wrappedJSObject._fetchEngineSelectorEngines();
+  const { engines } = await SearchService._fetchEngineSelectorEngines();
   const foundIdentifiers = engines.map(e => e.identifier);
   Assert.deepEqual(foundIdentifiers, Object.keys(expectedURLs));
 });
 
 add_task(async function test_default() {
   Assert.equal(
-    (await Services.search.getDefault()).id,
+    (await SearchService.getDefault()).id,
     defaultEngine,
     `${defaultEngine} is our default search engine in normal mode.`
   );
   Assert.equal(
-    (await Services.search.getDefaultPrivate()).id,
+    (await SearchService.getDefaultPrivate()).id,
     defaultEngine,
     `${defaultEngine} is our default search engine in PBM.`
   );
@@ -43,7 +46,7 @@ add_task(async function test_default() {
 
 add_task(function test_checkSearchURLs() {
   for (const [id, url] of Object.entries(expectedURLs)) {
-    const engine = Services.search.getEngineById(id);
+    const engine = SearchService.getEngineById(id);
     const foundUrl = engine.getSubmission("test").uri.spec;
     Assert.equal(foundUrl, url, `The URL of ${engine.name} is not altered.`);
   }
@@ -51,7 +54,7 @@ add_task(function test_checkSearchURLs() {
 
 add_task(async function test_iconsDoesNotFail() {
   for (const id of Object.keys(expectedURLs)) {
-    const engine = Services.search.getEngineById(id);
+    const engine = SearchService.getEngineById(id);
     // No need to assert anything, as in case of error this method should throw.
     await engine.getIconURL();
   }
