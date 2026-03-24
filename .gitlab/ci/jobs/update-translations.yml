@@ -16,7 +16,7 @@
     TRANSLATION_FILES: '[
       {
         "name": "brand.ftl",
-        "where": ["browser/branding/tb-release", "toolkit/torbutton"],
+        "where": ["browser/branding/tb-release"],
         "branding": {
           "versions": [
             {
@@ -40,7 +40,7 @@
       },
       {
         "name": "brand.properties",
-        "where": ["browser/branding/tb-release", "toolkit/torbutton"],
+        "where": ["browser/branding/tb-release"],
         "branding": {
           "versions": [
             {
@@ -72,11 +72,9 @@
       { "name": "base-browser.ftl", "branch": "base-browser" },
       {
         "name": "torbrowser_strings.xml",
-        "branch": "fenix-torbrowserstringsxml",
-        "exclude-legacy": true
+        "branch": "fenix-torbrowserstringsxml"
       }
     ]'
-    TRANSLATION_INCLUDE_LEGACY: "true"
 
 
 combine-en-US-translations:
