@@ -790,8 +790,21 @@ Preferences.addSetting({
 });
 
 Preferences.addSetting({
+  id: "websiteSpoofEnglish",
+  pref: "privacy.spoof_english",
+  get: val => {
+    return val == 2;
+  },
+  set: val => {
+    return val ? 2 : 1;
+  },
+});
+
+Preferences.addSetting({
   id: "websiteLanguageWrapper",
   deps: ["acceptLanguages"],
+  // Hide website language settings. tor-browser#41930.
+  visible: () => false,
   onUserReorder(event, deps) {
     const { draggedIndex, targetIndex } = event.detail;
 
@@ -3233,6 +3246,14 @@ SettingGroupManager.registerGroups({
       },
     ],
   },
+  websiteSpoofEnglish: {
+    items: [
+      {
+        id: "websiteSpoofEnglish",
+        l10nId: "languages-customize-spoof-english",
+      },
+    ],
+  },
   applications: {
     id: "applicationsGroup",
     l10nId: "applications-setting",
@@ -5429,6 +5450,7 @@ var gMainPane = {
     initSettingGroup("drm");
     initSettingGroup("contrast");
     initSettingGroup("websiteLanguage");
+    initSettingGroup("websiteSpoofEnglish");
     initSettingGroup("browsing");
     initSettingGroup("zoom");
     initSettingGroup("fonts");
@@ -5470,22 +5492,6 @@ var gMainPane = {
     }
 
     // setEventListener("chooseLanguage", "command", gMainPane.showLanguages);
-    {
-      const spoofEnglish = document.getElementById("spoofEnglish");
-      const kPrefSpoofEnglish = "privacy.spoof_english";
-      const preference = Preferences.add({
-        id: kPrefSpoofEnglish,
-        type: "int",
-      });
-      const spoofEnglishChanged = () => {
-        spoofEnglish.checked = preference.value == 2;
-      };
-      spoofEnglishChanged();
-      preference.on("change", spoofEnglishChanged);
-      setEventListener("spoofEnglish", "command", () => {
-        preference.value = spoofEnglish.checked ? 2 : 1;
-      });
-    }
     // TODO (Bug 1817084) Remove this code when we disable the extension
     setEventListener(
       "fxtranslateButton",
