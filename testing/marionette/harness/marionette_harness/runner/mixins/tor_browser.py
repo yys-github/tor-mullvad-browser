@@ -1,3 +1,4 @@
+from marionette_driver import Wait
 from marionette_driver.errors import ScriptTimeoutException
 
 DEFAULT_BOOTSTRAP_TIMEOUT_MS = 60 * 1000
@@ -20,7 +21,7 @@ class TorBrowserMixin:
         while attempt < max_retries:
             try:
                 with self.marionette.using_context("chrome"):
-                    self.marionette.execute_async_script(
+                    did_bootstrap = self.marionette.execute_async_script(
                         """
                         const { TorConnect, TorConnectStage, TorConnectTopics } = ChromeUtils.importESModule(
                             "resource://gre/modules/TorConnect.sys.mjs"
@@ -29,7 +30,7 @@ class TorBrowserMixin:
 
                         // Only the first test of a suite will need to bootstrap.
                         if (TorConnect.stage.name === TorConnectStage.Bootstrapped) {
-                            resolve();
+                            resolve(false);
                             return;
                         }
 
@@ -37,7 +38,7 @@ class TorBrowserMixin:
                             const topic = TorConnectTopics.BootstrapComplete;
                             Services.obs.addObserver(function observer() {
                                 Services.obs.removeObserver(observer, topic);
-                                resolve();
+                                resolve(true);
                             }, topic);
                             TorConnect.beginBootstrapping();
                         }
@@ -53,6 +54,23 @@ class TorBrowserMixin:
                         stageObserver();
                         """,
                         script_timeout=DEFAULT_BOOTSTRAP_TIMEOUT_MS,
+                    )
+
+                # The above script waits for bootstrap to be complete,
+                # but doesn't wait for the redirection to about:blank that
+                # happens after bootstrap to be complete.
+                #
+                # We need to wait for this navigation to complete,
+                # otherwise subsequent calls to navigate may race with it.
+                #
+                # Android doesn't do any redirection, the tor connect UI in
+                # there is native and the initial state of the browser
+                # doesn't even have an open tab to check against.
+                # So we skip this check for that platform.
+                if did_bootstrap and self.marionette.session_capabilities.get("browserName") != "fennec":
+                    Wait(self.marionette).until(
+                        lambda mn: mn.get_url() == "about:blank",
+                        message="Still not in about:blank",
                     )
 
                 return
