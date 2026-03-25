@@ -784,6 +784,7 @@ var gMainPane = {
     initSettingGroup("fonts");
     initSettingGroup("browserLanguage");
     initSettingGroup("websiteLanguage");
+    initSettingGroup("websiteSpoofEnglish");
     initSettingGroup("browsing");
     initSettingGroup("keyboardAndScrolling");
     initSettingGroup("motionAndLink");
@@ -803,22 +804,6 @@ var gMainPane = {
     });
 
     // setEventListener("chooseLanguage", "command", gMainPane.showLanguages);
-    {
-      const spoofEnglish = document.getElementById("spoofEnglish");
-      const kPrefSpoofEnglish = "privacy.spoof_english";
-      const preference = Preferences.add({
-        id: kPrefSpoofEnglish,
-        type: "int",
-      });
-      const spoofEnglishChanged = () => {
-        spoofEnglish.checked = preference.value == 2;
-      };
-      spoofEnglishChanged();
-      preference.on("change", spoofEnglishChanged);
-      setEventListener("spoofEnglish", "command", () => {
-        preference.value = spoofEnglish.checked ? 2 : 1;
-      });
-    }
 
     // Initilize Application section.
 
