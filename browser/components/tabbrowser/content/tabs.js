@@ -134,7 +134,16 @@
       this._hiddenSoundPlayingTabs = new Set();
       this.previewPanel = null;
 
-      this.allTabs[0].label = this.emptyTabTitle;
+      // When a new application window is spawned, this will set the initial
+      // tab's displayed title. If `shouldShowTorConnect` is true, we expect
+      // this first page to be `about:torconnect`, so we show the corresponding
+      // title that will be used once the page is shown. See tor-browser#44781.
+      this.allTabs[0].label = TorConnect.shouldShowTorConnect
+        ? this.torconnectTitle
+        : this.emptyTabTitle;
+      // Mark this as the first tab that is still loading. This can be cleared
+      // once we have a definite title or URI.
+      this.allTabs[0]._isFirstTabLoading = true;
 
       // Hide the secondary text for locales where it is unsupported due to size constraints.
       const language = Services.locale.appLocaleAsBCP47;
@@ -825,6 +834,18 @@
           ? "tabbrowser-empty-private-tab-title"
           : "tabbrowser-empty-tab-title";
       return gBrowser.tabLocalization.formatValueSync(l10nId);
+    }
+
+    /**
+     * The about:torconnect page <title>, to be fetched when about:torconnect
+     * has not yet been loaded.
+     *
+     * @type {string}
+     */
+    get torconnectTitle() {
+      return gBrowser.torconnectLocalization.formatValueSync(
+        "tor-connect-page-title"
+      );
     }
 
     get tabbox() {
