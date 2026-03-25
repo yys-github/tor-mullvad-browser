@@ -264,6 +264,22 @@ fun MainMenu(
             }
         }
 
+        if (accessPoint == MenuAccessPoint.Home) {
+            MenuGroup {
+                ExtensionsMenuItem(
+                    inCustomTab = false,
+                    isPrivate = isPrivate,
+                    isExtensionsProcessDisabled = isExtensionsProcessDisabled,
+                    isExtensionsExpanded = isExtensionsExpanded,
+                    isAllWebExtensionsDisabled = isAllWebExtensionsDisabled,
+                    webExtensionMenuCount = webExtensionMenuCount,
+                    extensionsMenuItemDescription = extensionsMenuItemDescription,
+                    onExtensionsMenuClick = onExtensionsMenuClick,
+                    extensionSubmenu = extensionSubmenu,
+                )
+            }
+        }
+
         if (accessPoint == MenuAccessPoint.Browser) {
             ToolsAndActionsMenuGroup(
                 isBookmarked = isBookmarked,
@@ -406,6 +422,18 @@ private fun ToolsAndActionsMenuGroup(
                 state = menuItemState,
             )
         }
+
+        ExtensionsMenuItem(
+            inCustomTab = false,
+            isPrivate = isPrivate,
+            isExtensionsProcessDisabled = isExtensionsProcessDisabled,
+            isExtensionsExpanded = isExtensionsExpanded,
+            isAllWebExtensionsDisabled = isAllWebExtensionsDisabled,
+            webExtensionMenuCount = webExtensionMenuCount,
+            extensionsMenuItemDescription = extensionsMenuItemDescription,
+            onExtensionsMenuClick = onExtensionsMenuClick,
+            extensionSubmenu = extensionSubmenu,
+        )
 
         if (!moreMenuExpanded) {
             MoreMenuButtonGroup(
