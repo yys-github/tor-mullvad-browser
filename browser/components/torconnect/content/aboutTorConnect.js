@@ -229,7 +229,6 @@ class AboutTorConnect {
     if (className) {
       this.elements.title.classList.add(className);
     }
-    document.title = title;
   }
 
   setLongText(...args) {
