@@ -9,6 +9,12 @@ appmenu-open-tor-manual =
     .label = Tor Browser manual
     .accesskey = m
 
+## Tor connect page.
+
+# The tab name for the page.
+# Here "Tor" refers to the Tor network.
+tor-connect-page-title = Connect to Tor
+
 ## Tor Browser home page.
 
 tor-browser-home-heading-stable = Explore. Privately.
