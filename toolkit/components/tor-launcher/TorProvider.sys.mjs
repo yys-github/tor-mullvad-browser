@@ -6,6 +6,7 @@ import { clearTimeout, setTimeout } from "resource://gre/modules/Timer.sys.mjs";
 
 import { TorLauncherUtil } from "resource://gre/modules/TorLauncherUtil.sys.mjs";
 import { TorParsers } from "resource://gre/modules/TorParsers.sys.mjs";
+import { TorProviderBase } from "resource://gre/modules/TorProviderBase.sys.mjs";
 import {
   TorBootstrapError,
   TorProviderTopics,
@@ -88,7 +89,7 @@ const TorConfigKeys = Object.freeze({
  * It can start a new tor instance, or connect to an existing one.
  * In the former case, it also takes its ownership by default.
  */
-export class TorProvider {
+export class TorProvider extends TorProviderBase {
   /**
    * The control port settings.
    *
@@ -184,7 +185,7 @@ export class TorProvider {
    * Starts a new tor process and connect to its control port, or connect to the
    * control port of an existing tor daemon.
    */
-  async init() {
+  async _initInternal() {
     logger.debug("Initializing the Tor provider.");
 
     // These settings might be customized in the following steps.
@@ -259,7 +260,7 @@ export class TorProvider {
    * control connection is closed. Therefore, as a matter of facts, calling this
    * function also makes the child Tor instance stop.
    */
-  uninit() {
+  async _uninitInternal() {
     logger.debug("Uninitializing the Tor provider.");
 
     if (this.#torProcess) {
@@ -740,6 +741,11 @@ export class TorProvider {
       };
       tryConnect();
     });
+    // The previous TorControlPort instances may have failed, in which case we
+    // want to ignore their events (such as `onClose`). This instance has just
+    // succeeded and will be owned by this TorProvider instance, therefore we
+    // want to start listening to its events now.
+    this.#controlConnection.setEventHandler(this);
 
     // The following code will never throw, but we still want to wait for it
     // before marking the provider as initialized.
@@ -751,7 +757,6 @@ export class TorProvider {
       this.#torProcess.onExit = exitCode => {
         logger.info(`The tor process exited with code ${exitCode}`);
         this.#closeConnection("The tor process exited suddenly");
-        Services.obs.notifyObservers(null, TorProviderTopics.ProcessExited);
       };
       if (!TorLauncherUtil.shouldOnlyConfigureTor) {
         await this.#takeOwnership();
@@ -823,14 +828,12 @@ export class TorProvider {
     let controlPort;
     if (this.#controlPortSettings.ipcFile) {
       controlPort = lazy.TorController.fromIpcFile(
-        this.#controlPortSettings.ipcFile,
-        this
+        this.#controlPortSettings.ipcFile
       );
     } else {
       controlPort = lazy.TorController.fromSocketAddress(
         this.#controlPortSettings.host,
-        this.#controlPortSettings.port,
-        this
+        this.#controlPortSettings.port
       );
     }
     try {
@@ -864,21 +867,27 @@ export class TorProvider {
    * attempt)
    */
   #closeConnection(reason) {
-    this.#cancelConnection(reason);
-    if (this.#controlConnection) {
-      logger.info("Closing the control connection", reason);
-      try {
-        this.#controlConnection.close();
-      } catch (e) {
-        logger.error("Failed to close the control port connection", e);
+    try {
+      this.#cancelConnection(reason);
+      if (this.#controlConnection) {
+        logger.info("Closing the control connection", reason);
+        try {
+          this.#controlConnection.close();
+        } catch (e) {
+          logger.error("Failed to close the control port connection", e);
+        }
+        this.#controlConnection = null;
+      } else {
+        logger.trace(
+          "Requested to close an already closed control port connection"
+        );
       }
-      this.#controlConnection = null;
-    } else {
-      logger.trace(
-        "Requested to close an already closed control port connection"
-      );
+    } finally {
+      this.#lastWarning = {};
+      // #controlConnection.close() may already trigger onClosed, but we
+      // call it once more for error cases as well.
+      this._stoppedInternal();
     }
-    this.#lastWarning = {};
   }
 
   // Authentication
@@ -974,6 +983,13 @@ export class TorProvider {
   }
 
   // Notification handlers
+
+  /**
+   * Notification that the control port has closed.
+   */
+  onClosed() {
+    this._stoppedInternal();
+  }
 
   /**
    * Receive and process a notification with the bootstrap status.
