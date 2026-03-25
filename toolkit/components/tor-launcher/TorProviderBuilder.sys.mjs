@@ -8,14 +8,31 @@ ChromeUtils.defineESModuleGetters(lazy, {
   TorProvider: "resource://gre/modules/TorProvider.sys.mjs",
 });
 
+ChromeUtils.defineLazyGetter(lazy, "logger", () => {
+  return console.createInstance({
+    // Share preference with TorProvider.
+    maxLogLevelPref: "browser.tor_provider.log_level",
+    prefix: "TorProviderBuilder",
+  });
+});
+
 export const TorProviderTopics = Object.freeze({
-  ProcessExited: "TorProcessExited",
+  ProviderStateChanged: "TorProviderStateChanged",
   BootstrapStatus: "TorBootstrapStatus",
   BootstrapError: "TorBootstrapError",
   TorLog: "TorLog",
   HasWarnOrErr: "TorLogHasWarnOrErr",
   BridgeChanged: "TorBridgeChanged",
   CircuitCredentialsMatched: "TorCircuitCredentialsMatched",
+});
+
+/**
+ * The tracked state a provider might be in.
+ */
+export const TorProviderState = Object.freeze({
+  Starting: "Starting",
+  Running: "Running",
+  Stopped: "Stopped",
 });
 
 /**
@@ -66,20 +83,52 @@ export const TorProviders = Object.freeze({
  */
 
 /**
+ * @typedef {object} TorProviderData
+ *
+ * The data associated with a tor provider.
+ *
+ * @property {TorProviderBase} provider - The provider instance.
+ * @property {Promise<undefined>} initPromise - A promise that fulfils after the
+ *   previous provider is cleaned up and the new provider's initialization
+ *   completes or throws an error.
+ */
+
+/**
  * The factory to get a Tor provider.
  * Currently we support only TorProvider, i.e., the one that interacts with
  * C-tor through the control port protocol.
  */
 export class TorProviderBuilder {
   /**
-   * A promise with the instance of the provider that we are using.
+   * Data about the current provider instance.
    *
-   * @type {Promise<TorProvider>?}
+   * @type {?TorProviderData}
    */
-  static #provider = null;
+  static #providerData = null;
 
   /**
-   * A record of the log messages from all TorProvider instances.
+   * Whether the `uninit` method has been called.
+   *
+   * @type {boolean}
+   */
+  static #uninitialized = false;
+
+  /**
+   * Check that we are active before a public call.
+   *
+   * @throws {Error} Throws if we are not active.
+   */
+  static #checkActive() {
+    if (this.#uninitialized) {
+      throw new Error("TorProviderBuilder has already been uninitialized.");
+    }
+    if (!this.#providerData) {
+      throw new Error("TorProviderBuilder has not been initialized.");
+    }
+  }
+
+  /**
+   * A record of the log messages from all provider instances.
    *
    * @type {LogEntry[]}
    */
@@ -155,7 +204,7 @@ export class TorProviderBuilder {
         // asynchronous, we do not expect the caller to await it. The reason is
         // that any call to build() will wait the initialization anyway (and
         // re-throw any initialization error).
-        this.#initTorProvider();
+        this.#replaceProvider();
         break;
       case TorProviders.none:
         lazy.TorLauncherUtil.setProxyConfiguration(
@@ -169,11 +218,9 @@ export class TorProviderBuilder {
   }
 
   /**
-   * Replace #provider with a new instance.
-   *
-   * @returns {Promise<TorProvider>} The new instance.
+   * Replace the provider with a new instance.
    */
-  static #initTorProvider() {
+  static #replaceProvider() {
     if (!this.#exitObserver) {
       this.#exitObserver = this.#torExited.bind(this);
       Services.obs.addObserver(
@@ -182,52 +229,124 @@ export class TorProviderBuilder {
       );
     }
 
-    // NOTE: We need to ensure that the #provider is set as soon
+    // NOTE: We need to ensure that the #providerData is set as soon as
     // TorProviderBuilder.init is called.
     // I.e. it should be safe to call
     //   TorProviderBuilder.init();
     //   TorProviderBuilder.build();
     // without any await.
     //
-    // Therefore, we await the oldProvider within the Promise rather than make
-    // #initTorProvider async.
-    //
     // In particular, this is needed by TorConnect when the user has selected
     // quickstart, in which case `TorConnect.init` will immediately request the
     // provider. See tor-browser#41921.
-    this.#provider = this.#replaceTorProvider(this.#provider);
-    return this.#provider;
+    if (this.#providerData) {
+      lazy.logger.info(
+        `Replacing the provider with a "${this.providerType}" provider.`
+      );
+    } else {
+      lazy.logger.info(`Creating the initial "${this.providerType}" provider.`);
+    }
+
+    // NOTE: It should be safe to create another provider instance whilst the
+    // existing one is still active. However, we will wait until the other is
+    // uninitialized before we initialize the new one.
+    const provider = new lazy.TorProvider(() => {
+      this.#notifyStateChanged(provider);
+    });
+    const prevProviderData = this.#providerData;
+    // NOTE: We want `#providerData` to be set prior to our call to
+    // `provider.init`, so we create the `initPromise` prior to setting it.
+    const { promise: initPromise, resolve, reject } = Promise.withResolvers();
+    this.#providerData = { provider, initPromise };
+    // Let observers know we are restarting the provider.
+    this.#notifyStateChanged(provider);
+
+    // Run the rest of the init in an async operation that will cause
+    // `initPromise` to settle.
+    // NOTE: `#cleanupProviderData` should not throw, unlike `provider.init()`,
+    // which may throw.
+    // NOTE: We wait for `#cleanupProviderData` to complete before calling
+    // `provider.init()` in case the implementation relies on this.
+    this.#cleanupProviderData(prevProviderData).finally(() => {
+      provider.init().then(resolve, reject);
+    });
   }
 
   /**
-   * Replace a TorProvider instance. Resolves once the TorProvider is
-   * initialised.
+   * Notify any listeners that the state of the current provider has changed.
    *
-   * @param {Promise<TorProvider>?} oldProvider - The previous's provider's
-   *   promise, if any.
-   * @returns {TorProvider} The new TorProvider instance.
+   * @param {TorProviderBase} provider - The provider who's state has changed.
    */
-  static async #replaceTorProvider(oldProvider) {
-    try {
-      // Uninitialise the old TorProvider, if there is any.
-      (await oldProvider)?.uninit();
-    } catch {}
-    const provider = new lazy.TorProvider();
-    try {
-      await provider.init();
-    } catch (error) {
-      // Wrap in an error type for callers to know whether the error comes from
-      // initialisation or something else.
-      throw new TorProviderInitError(error);
+  static #notifyStateChanged(provider) {
+    if (this.#uninitialized) {
+      // Do not signal the final state changes when we uninitialize.
+      return;
     }
-    return provider;
+    if (provider !== this.#providerData.provider) {
+      // Delayed call from an old provider. Ignore.
+      return;
+    }
+
+    Services.obs.notifyObservers(
+      null,
+      TorProviderTopics.ProviderStateChanged,
+      provider.state
+    );
+  }
+
+  /**
+   * Check the given provider's state.
+   *
+   * If the provider is no longer the current one, it is considered to be
+   * "Stopped".
+   *
+   * If it is still the current provider, the state will be updated and
+   * returned.
+   *
+   * @param {TorProviderBase} provider - The provider to check.
+   * @returns {string} - The `TorProviderState` state for the provider.
+   */
+  static #checkProviderState(provider) {
+    if (this.#providerData?.provider !== provider) {
+      // Replaced.
+      lazy.logger.debug("The checked provider has been replaced.");
+      return TorProviderState.Stopped;
+    }
+    return this.#providerData.provider.state;
+  }
+
+  /**
+   * Cleanup the given provider data.
+   *
+   * @param {?TorProviderData} providerData - The data to clean up.
+   */
+  static async #cleanupProviderData(providerData) {
+    if (!providerData) {
+      return;
+    }
+    try {
+      await providerData.initPromise;
+    } catch {}
+
+    // Call `uninit` to clean up, even if `init` threw.
+    // Should be safe to call more than once (via `uninit`).
+    try {
+      await providerData.provider.uninit();
+    } catch (error) {
+      lazy.logger.error("Error in uninitializing provider", error);
+    }
   }
 
   static uninit() {
-    this.#provider?.then(provider => {
-      provider.uninit();
-      this.#provider = null;
-    });
+    this.#uninitialized = true;
+
+    // NOTE: `uninit` should not be followed by any further calls to public
+    // methods. So we can clear the `#providerData` without keeping it for any
+    // future provider instances to wait on.
+    const providerData = this.#providerData;
+    this.#providerData = null;
+    this.#cleanupProviderData(providerData);
+
     if (this.#exitObserver) {
       Services.obs.removeObserver(
         this.#exitObserver,
@@ -239,23 +358,35 @@ export class TorProviderBuilder {
   }
 
   /**
-   * Build a provider.
-   * This method will wait for the system to be initialized, and allows you to
-   * catch also any initialization errors.
+   * Request the current instance of the Tor provider.
+   *
+   * This method will wait for the system to be initialized before returning the
+   * provider.
+   *
+   * This will throw any initialization errors of the provider, if it had any.
+   * This will also throw if the provider is no longer active.
    *
    * @returns {TorProvider} A TorProvider instance
    */
   static async build() {
-    if (!this.#provider && this.providerType === TorProviders.none) {
+    this.#checkActive();
+    if (!this.#providerData && this.providerType === TorProviders.none) {
       throw new Error(
         "Tor Browser has been configured to use only the proxy functionalities."
       );
-    } else if (!this.#provider) {
-      throw new Error(
-        "The provider has not been initialized or already uninitialized."
+    }
+
+    const { provider, initPromise } = this.#providerData;
+    // initPromise may throw.
+    await initPromise;
+    if (this.#checkProviderState(provider) !== TorProviderState.Running) {
+      lazy.logger.warn("Request was made for a provider that has stopped.");
+      // TODO: Wait for the new instance instead?
+      throw new TorProviderInitError(
+        new Error("Provider is no longer active.")
       );
     }
-    return this.#provider;
+    return provider;
   }
 
   /**
