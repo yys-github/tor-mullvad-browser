@@ -118,7 +118,7 @@ SettingGroupManager.registerGroups({
             value: "top",
             l10nId: "letterboxing-alignment-top-option",
             controlAttrs: {
-              class: "appearance-chooser-item letterboxing-chooser-item",
+              class: "setting-chooser-item letterboxing-chooser-item",
               imagesrc:
                 "chrome://browser/content/preferences/letterboxing-top.svg",
             },
@@ -127,7 +127,7 @@ SettingGroupManager.registerGroups({
             value: "middle",
             l10nId: "letterboxing-alignment-middle-option",
             controlAttrs: {
-              class: "appearance-chooser-item letterboxing-chooser-item",
+              class: "setting-chooser-item letterboxing-chooser-item",
               imagesrc:
                 "chrome://browser/content/preferences/letterboxing-middle.svg",
             },
