@@ -213,6 +213,11 @@
           true
         );
       });
+      // Add a synchronous localisation to get the about:torconnect title.
+      // See tor-browser#44781.
+      ChromeUtils.defineLazyGetter(this, "torconnectLocalization", () => {
+        return new Localization(["toolkit/global/tor-browser.ftl"], true);
+      });
       XPCOMUtils.defineLazyPreferenceGetter(
         this,
         "_shouldExposeContentTitle",
@@ -2283,6 +2288,39 @@
     _setTabLabel(aTab, aLabel, { beforeTabOpen, isContentTitle, isURL } = {}) {
       if (!aLabel || (isURL && /^about:reader\?url=/.test(aLabel))) {
         return false;
+      }
+
+      // We want to set the title for an about:torconnect tab prior to the page
+      // being loaded. In particular, we need to wait for:
+      //
+      // 1. The first `<browser>` element to switch `currentURI` from
+      //    `about:blank` to `about:torconnect`.
+      // 2. The page's `<title>` to be set, which is delayed by the page load
+      //    and the async FluentDOM.
+      //
+      // This avoids flashes of "New Tab" and the URL appearing in the tab
+      // label. See tor-browser#44781.
+      if (aTab._isFirstTabLoading) {
+        if (!isURL && !isContentTitle) {
+          // Wait until we have a proper title or URL.
+          // NOTES:
+          // 1. This is only expected for the first call to `onLocationChange`
+          //    for the very first tab opened in a new window. In this scenario,
+          //    we expect the page's `currentURI` to be `about:blank` (and not
+          //    the actual `chrome:` path to `blanktab.html`). We use the
+          //    `_isFirstTabLoading` condition as an extra protection.
+          // 2. We have already set the title for this tab in
+          //    `MozTabbrowserTabs.init`, depending on whether we expect this to
+          //    turn into `about:torconnect` or a "New Tab" (`about:tor` or
+          //    `blanktab.html`). So we don't need to make any changes here.
+          return false;
+        }
+        delete aTab._isFirstTabLoading;
+      }
+      if (isURL && aLabel.startsWith("about:torconnect")) {
+        aLabel = this.tabContainer.torconnectTitle;
+        isContentTitle = true;
+        isURL = false;
       }
 
       // If it's a long data: URI that uses base64 encoding, truncate to a
