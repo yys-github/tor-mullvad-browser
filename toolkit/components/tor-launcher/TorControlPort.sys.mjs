@@ -384,21 +384,19 @@ export class TorController {
   /**
    * The event handler.
    *
-   * @type {TorEventHandler}
+   * @type {?TorEventHandler}
    */
-  #eventHandler;
+  #eventHandler = null;
 
   /**
    * Connect to a control port over a Unix socket.
    * Not available on Windows.
    *
    * @param {nsIFile} ipcFile The path to the Unix socket to connect to
-   * @param {TorEventHandler} eventHandler The event handler to use for
-   * asynchronous notifications
    * @returns {TorController}
    */
-  static fromIpcFile(ipcFile, eventHandler) {
-    return new TorController(AsyncSocket.fromIpcFile(ipcFile), eventHandler);
+  static fromIpcFile(ipcFile) {
+    return new TorController(AsyncSocket.fromIpcFile(ipcFile));
   }
 
   /**
@@ -406,15 +404,10 @@ export class TorController {
    *
    * @param {string} host The hostname to connect to
    * @param {number} port The port to connect the to
-   * @param {TorEventHandler} eventHandler The event handler to use for
-   * asynchronous notifications
    * @returns {TorController}
    */
-  static fromSocketAddress(host, port, eventHandler) {
-    return new TorController(
-      AsyncSocket.fromSocketAddress(host, port),
-      eventHandler
-    );
+  static fromSocketAddress(host, port) {
+    return new TorController(AsyncSocket.fromSocketAddress(host, port));
   }
 
   /**
@@ -425,13 +418,20 @@ export class TorController {
    *
    * @private
    * @param {AsyncSocket} socket The socket to use
-   * @param {TorEventHandler} eventHandler The event handler to use for
-   * asynchronous notifications
    */
-  constructor(socket, eventHandler) {
+  constructor(socket) {
     this.#socket = socket;
-    this.#eventHandler = eventHandler;
     this.#startMessagePump();
+  }
+
+  /**
+   * Set an event handler for this instance.
+   *
+   * @param {TorEventHandler} eventHandler The event handler to use for
+   *   asynchronous notifications
+   */
+  setEventHandler(eventHandler) {
+    this.#eventHandler = eventHandler;
   }
 
   // Socket and communication handling
@@ -649,6 +649,7 @@ export class TorController {
       this.#socket?.close();
     } finally {
       this.#socket = null;
+      this.#eventHandler?.onClosed();
     }
   }
 
@@ -1324,6 +1325,7 @@ export class TorController {
  * The controller owner can implement this methods to receive asynchronous
  * notifications from the controller.
  *
+ * @property {OnClosed} onClosed Called when the socket is closed.
  * @property {OnBootstrapStatus} onBootstrapStatus Called when a bootstrap
  * status is received (i.e., a STATUS_CLIENT event with a BOOTSTRAP action)
  * @property {OnLogMessage} onLogMessage Called when a log message is received
@@ -1335,6 +1337,9 @@ export class TorController {
  * @property {OnStreamSentConnect} onStreamSentConnect Called when a stream sent
  * a connect cell along a circuit (i.e., a STREAM event with a SENTCONNECT
  * status)
+ */
+/**
+ * @callback OnClosed
  */
 /**
  * @callback OnBootstrapStatus
