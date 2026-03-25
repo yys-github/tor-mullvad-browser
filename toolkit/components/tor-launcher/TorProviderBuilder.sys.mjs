@@ -223,11 +223,13 @@ export class TorProviderBuilder {
     // I.e. it should be safe to call
     //   TorProviderBuilder.init();
     //   TorProviderBuilder.build();
+    //   TorProviderBuilder.settledState();
+    //   // etc
     // without any await.
     //
-    // In particular, this is needed by TorConnect when the user has selected
-    // quickstart, in which case `TorConnect.init` will immediately request the
-    // provider. See tor-browser#41921.
+    // In particular, this is needed by `TorConnect.init`, which will call
+    // `settledState`. It will also call `build` immediately if quickstart is
+    // set. See tor-browser#41921.
     if (this.#providerData) {
       lazy.logger.info(
         `Replacing the provider with a "${this.providerType}" provider.`
@@ -388,6 +390,32 @@ export class TorProviderBuilder {
       );
     }
     return provider;
+  }
+
+  /**
+   * Get the state of the current provider instance. Waits until the provider
+   * has finished initialisation first.
+   *
+   * If the provider has been replaced, the Stopped state will be returned.
+   *
+   * @returns {string} - The `TorProviderState` state for the provider that
+   *   existed when this method was called.
+   */
+  static async settledState() {
+    this.#checkActive();
+    const { provider, initPromise } = this.#providerData;
+    try {
+      await initPromise;
+    } catch {}
+    return this.#checkProviderState(provider);
+  }
+
+  /**
+   * Replace the current provider instance with a new provider.
+   */
+  static replace() {
+    this.#checkActive();
+    this.#replaceProvider();
   }
 
   /**
