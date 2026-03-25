@@ -298,7 +298,7 @@ body:not(.show-survey) #survey {
   }
 
   #search-form.onionized-search #onionize-toggle {
-    color: var(--link-color);
+    color: var(--text-color-tor-light);
   }
 
   #survey {
