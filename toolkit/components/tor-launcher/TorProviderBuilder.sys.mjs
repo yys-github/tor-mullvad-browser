@@ -54,8 +54,8 @@ export class TorBootstrapError extends Error {
 }
 
 export const TorProviders = Object.freeze({
-  none: 0,
-  tor: 1,
+  none: "none",
+  tor: "tor",
 });
 
 /**
@@ -320,7 +320,7 @@ export class TorProviderBuilder {
    * Otherwise, if it is not valid, the C tor implementation is chosen as the
    * default one.
    *
-   * @returns {number} An entry from TorProviders
+   * @returns {string} An entry from TorProviders
    */
   static get providerType() {
     // TODO: Add a preference to permanently save this without and avoid always
