@@ -9,6 +9,7 @@ const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
   MoatRPC: "resource://gre/modules/Moat.sys.mjs",
   TorBootstrapRequest: "resource://gre/modules/TorBootstrapRequest.sys.mjs",
+  TorProviderState: "resource://gre/modules/TorProviderBuilder.sys.mjs",
   TorProviderTopics: "resource://gre/modules/TorProviderBuilder.sys.mjs",
   TorBootstrapError: "resource://gre/modules/TorProviderBuilder.sys.mjs",
   TorProviderInitError: "resource://gre/modules/TorProviderBuilder.sys.mjs",
@@ -913,7 +914,7 @@ export const TorConnect = {
     };
 
     // register the Tor topics we always care about
-    observeTopic(lazy.TorProviderTopics.ProcessExited);
+    observeTopic(lazy.TorProviderTopics.ProviderStateChanged);
     observeTopic(lazy.TorProviderTopics.HasWarnOrErr);
     observeTopic(lazy.TorSettingsTopics.SettingsChanged);
     observeTopic(NETWORK_LINK_TOPIC);
@@ -933,7 +934,7 @@ export const TorConnect = {
     }
   },
 
-  async observe(subject, topic) {
+  async observe(subject, topic, data) {
     lazy.logger.debug(`Observed ${topic}`);
 
     switch (topic) {
@@ -947,7 +948,10 @@ export const TorConnect = {
           this._notifyBootstrapProgress();
         }
         break;
-      case lazy.TorProviderTopics.ProcessExited:
+      case lazy.TorProviderTopics.ProviderStateChanged:
+        if (data !== lazy.TorProviderState.Stopped) {
+          break;
+        }
         lazy.logger.info("Starting again since the tor process exited");
         // Treat a failure as a possibly broken configuration.
         // So, prevent quickstart at the next start.
@@ -1341,7 +1345,7 @@ export const TorConnect = {
       this._tryAgain = true;
 
       if (error instanceof lazy.TorProviderInitError) {
-        // Treat like TorProviderTopics.ProcessExited. We expect a user
+        // Treat like TorProviderTopics.ProviderStateChanged. We expect a user
         // notification when this happens.
         // Treat a failure as a possibly broken configuration.
         // So, prevent quickstart at the next start.
