@@ -28,7 +28,7 @@ const BreadcrumbStatus = Object.freeze({
 class AboutTorConnect {
   selectors = Object.freeze({
     textContainer: {
-      title: "div.title",
+      icon: "#tor-connect-icon",
       longContentText: "#connectLongContentText",
     },
     progress: {
@@ -72,7 +72,7 @@ class AboutTorConnect {
   });
 
   elements = Object.freeze({
-    title: document.querySelector(this.selectors.textContainer.title),
+    icon: document.querySelector(this.selectors.textContainer.icon),
     heading: document.getElementById("tor-connect-heading"),
     longContentText: document.querySelector(
       this.selectors.textContainer.longContentText
@@ -225,9 +225,9 @@ class AboutTorConnect {
 
   setTitle(title, className) {
     this.elements.heading.textContent = title;
-    this.elements.title.className = "title";
+    this.elements.icon.className = "torconnect-icon";
     if (className) {
-      this.elements.title.classList.add(className);
+      this.elements.icon.classList.add(className);
     }
   }
 
@@ -348,10 +348,22 @@ class AboutTorConnect {
     // selectRegionOption.
     this.selectedRegion = stage.defaultRegion;
 
+    let prevPageEl = document.querySelector(
+      ".torconnect-stage-content.show-stage"
+    );
+    let pageEl = document.getElementById("connectPageContainer");
+    for (const maybePageEl of document.querySelectorAll(
+      ".torconnect-stage-content"
+    )) {
+      if (maybePageEl.dataset.stageName === stage.name) {
+        pageEl = maybePageEl;
+        break;
+      }
+    }
     // By default we want to reset the focus to the top of the page when
     // changing the displayed page since we want a user to read the new page
     // before activating a control.
-    let moveFocus = this.elements.heading;
+    let moveFocus = pageEl.querySelector(".torconnect-heading");
 
     if (stage.name === "Bootstrapping") {
       this.preBootstrappingStage = prevStage;
@@ -461,6 +473,8 @@ class AboutTorConnect {
       this.hide(this.elements.viewLogButton);
     }
 
+    prevPageEl?.classList.remove("show-stage");
+    pageEl.classList.add("show-stage");
     document.body.classList.toggle("loaded", isLoaded);
     moveFocus.focus();
   }
@@ -557,7 +571,7 @@ class AboutTorConnect {
   }
 
   showOffline() {
-    this.setTitle(TorStrings.torConnect.noInternet, "offline");
+    this.setTitle(TorStrings.torConnect.noInternet, "offline-icon");
     this.setLongText(TorStrings.torConnect.noInternetDescription);
     this.elements.progressDescription.textContent =
       TorStrings.torConnect.offline;
@@ -573,7 +587,7 @@ class AboutTorConnect {
   }
 
   showChooseRegion(error) {
-    this.setTitle(TorStrings.torConnect.couldNotConnect, "assist");
+    this.setTitle(TorStrings.torConnect.couldNotConnect, "assist-icon");
     this.showConfigureConnectionLink(TorStrings.torConnect.assistDescription);
     this.elements.progressDescription.textContent =
       this.getMaybeLocalizedError(error);
@@ -586,7 +600,7 @@ class AboutTorConnect {
   }
 
   showRegionNotFound() {
-    this.setTitle(TorStrings.torConnect.errorLocation, "location");
+    this.setTitle(TorStrings.torConnect.errorLocation, "location-icon");
     this.showConfigureConnectionLink(
       TorStrings.torConnect.errorLocationDescription
     );
@@ -601,7 +615,7 @@ class AboutTorConnect {
   }
 
   showConfirmRegion(error) {
-    this.setTitle(TorStrings.torConnect.isLocationCorrect, "location");
+    this.setTitle(TorStrings.torConnect.isLocationCorrect, "location-icon");
     this.showConfigureConnectionLink(
       TorStrings.torConnect.isLocationCorrectDescription
     );
@@ -616,7 +630,7 @@ class AboutTorConnect {
   }
 
   showFinalError(error) {
-    this.setTitle(TorStrings.torConnect.finalError, "final");
+    this.setTitle(TorStrings.torConnect.finalError, "assist-icon");
     this.setLongText(TorStrings.torConnect.finalErrorDescription);
     this.elements.progressDescription.textContent =
       this.getMaybeLocalizedError(error);

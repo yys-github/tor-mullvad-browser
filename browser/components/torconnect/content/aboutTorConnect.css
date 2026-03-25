@@ -1,6 +1,5 @@
 /* Copyright (c) 2021, The Tor Project, Inc. */
 
-@import url("chrome://global/skin/error-pages.css");
 @import url("chrome://global/skin/onion-pattern.css");
 
 body:not(.loaded) {
@@ -8,7 +7,23 @@ body:not(.loaded) {
   display: none;
 }
 
+body {
+  margin: 0;
+  min-height: 100vh;
+  --progress-shadow-height: 66px;
+  display: grid;
+  grid-template:
+    "progress progress progress progress progress" minmax(calc(var(--progress-shadow-height) + var(--space-large)), 10vh)
+    ". . breadcrumbs . ." auto
+    ". icon heading . ." auto
+    ". icon text-container . ." auto
+    ". . controls-container . ." auto
+    ". . . . ." minmax(var(--onion-pattern-height), 1fr)
+    / var(--space-large) minmax(max-content, 1fr) minmax(350px, 700px) 1fr var(--space-large);
+}
+
 #breadcrumbs {
+  grid-area: breadcrumbs;
   display: flex;
   align-items: center;
   margin: 0 0 var(--space-xlarge) 0;
@@ -78,11 +93,6 @@ body:not(.loaded) {
   display: none;
 }
 
-#tor-connect-heading {
-  /* Do not show the focus outline. */
-  outline: none;
-}
-
 #connect-to-tor {
   margin-inline-start: 0;
 }
@@ -95,10 +105,6 @@ body:not(.loaded) {
   list-style-image: url("chrome://browser/content/torconnect/tor-connect-broken.svg");
 }
 
-#location-settings-icon {
-  list-style-image: url("chrome://browser/content/torconnect/globe.svg");
-}
-
 #try-bridge {
   cursor: default;
 }
@@ -107,29 +113,8 @@ body:not(.loaded) {
   list-style-image: url("chrome://browser/content/torconnect/bridge.svg");
 }
 
-#locationDropdownLabel {
-  margin-block: auto;
-  margin-inline: var(--space-xsmall);
-}
-
 #locationDropdownLabel.error {
   color: var(--text-color-error);
-}
-
-/* this follows similar css in error-pages.css for buttons */
-@media only screen and (min-width: 480px) {
-  form#locationDropdown {
-    margin-inline: var(--space-xsmall);
-    /* subtracting out the margin is needeed because by
-       default forms have different margins than buttons */
-    max-width: calc(100% - 2 * var(--space-xsmall));
-  }
-}
-
-@media only screen and (max-width: 480px) {
-  #tryAgainButton {
-    margin-top: var(--space-xsmall);
-  }
 }
 
 form#locationDropdown {
@@ -137,8 +122,8 @@ form#locationDropdown {
 }
 
 form#locationDropdown select {
-  max-width: 100%;
-  margin-inline: 0;
+  width: 100%;
+  margin: 0;
   font-weight: var(--font-weight-bold);
 }
 
@@ -154,9 +139,7 @@ form#locationDropdown select {
 }
 
 #progressBar:not([hidden]) {
-  position: fixed;
-  inset-block-start: 0;
-  inset-inline: 0;
+  grid-area: progress;
   display: grid;
   --progress-percent: 0%;
   --progress-animation: progressAnimation 5s ease infinite;
@@ -176,7 +159,7 @@ form#locationDropdown select {
 #progressBackground {
   z-index: 1;
   width: var(--progress-percent);
-  height: 66px;
+  height: var(--progress-shadow-height);
   margin-block-start: -26px;
   background-image: linear-gradient(var(--progressbar-shadow-start), var(--background-color-canvas) 100%), var(--progressbar-gradient);
   animation: var(--progress-animation);
@@ -223,46 +206,94 @@ form#locationDropdown select {
   }
 }
 
-#connectPageContainer {
-  margin-top: 10vh;
-  width: 100%;
-  max-width: 45em;
-}
-
 #quickstartToggle {
   width: max-content;
 }
 
-/* mirrors p element spacing */
 #viewLogButton {
-  margin: var(--space-large) 0;
+  margin-inline: 0;
+  margin-block-start: var(--space-large);
 }
 
-body.aboutTorConnect {
-  justify-content: space-between;
-  /* Always reserve 150px for the background, plus padding with content. */
-  padding-block-end: calc(var(--onion-pattern-height) + var(--space-large));
+.torconnect-stage-content:not(.show-stage) {
+  display: none;
 }
 
-body.aboutTorConnect .title {
-  background-image: url("chrome://browser/content/torconnect/tor-connect.svg");
+.torconnect-stage-content {
+  display: contents;
+}
+
+.torconnect-icon {
+  grid-area: icon;
+  justify-self: end;
+  width: 52px;
+  height: 52px;
+  margin-inline-end: var(--space-xlarge);
+  content: url("chrome://browser/content/torconnect/tor-connect.svg");
   -moz-context-properties: stroke, fill, fill-opacity;
   fill-opacity: 1;
   fill: var(--icon-color);
   stroke: var(--icon-color);
-  /* Make sure there is no padding between the title and #breadcrumbs. */
-  padding-block-start: 0;
+  /* Make non-interactive (non-draggable). */
+  pointer-events: none;
 }
 
-body.aboutTorConnect .title.offline {
-  background-image: url("chrome://browser/content/torconnect/connection-failure.svg");
+.torconnect-icon.offline-icon {
+  content: url("chrome://browser/content/torconnect/connection-failure.svg");
 }
 
-body.aboutTorConnect .title:is(.assist, .final) {
-  background-image: url("chrome://browser/content/torconnect/tor-connect-broken.svg");
+.torconnect-icon.assist-icon {
+  content: url("chrome://browser/content/torconnect/tor-connect-broken.svg");
 }
 
-body.aboutTorConnect .title.location {
-  background-image: url("chrome://browser/content/torconnect/connection-location.svg");
+.torconnect-icon.location-icon {
+  content: url("chrome://browser/content/torconnect/connection-location.svg");
   stroke: var(--icon-color-warning);
+}
+
+.torconnect-heading {
+  grid-area: heading;
+  /* Do not show the focus outline. */
+  outline: none;
+  font-size: var(--font-size-xxxlarge);
+  margin: 0;
+  margin-block-end: var(--space-xxlarge);
+}
+
+.torconnect-text-container {
+  grid-area: text-container;
+}
+
+.torconnect-text-container p {
+  margin: 0;
+}
+
+.torconnect-text-container > *:not(:last-child) {
+  margin-block-end: var(--space-large);
+}
+
+.torconnect-controls-container {
+  grid-area: controls-container;
+  margin-block: var(--space-xlarge) var(--space-large);
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: end;
+  align-items: center;
+  /* Gap between children and rows. */
+  gap: var(--space-small) var(--space-small);
+}
+
+.torconnect-controls-container > * {
+  flex: 0 0 max-content;
+  margin: 0;
+}
+
+/* Temporary hacks for the connectPageContainer. */
+#connectPageContainer .torconnect-text-container > *:last-child {
+  margin-block-end: var(--space-large);
+}
+
+#connectPageContainer .torconnect-controls-container {
+  margin-block-start: calc(var(--space-xlarge) - var(--space-large));
 }
