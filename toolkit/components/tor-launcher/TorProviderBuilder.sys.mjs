@@ -6,6 +6,7 @@ const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
   TorLauncherUtil: "resource://gre/modules/TorLauncherUtil.sys.mjs",
   TorProvider: "resource://gre/modules/TorProvider.sys.mjs",
+  TorProviderNone: "resource://gre/modules/TorProviderNone.sys.mjs",
 });
 
 ChromeUtils.defineLazyGetter(lazy, "logger", () => {
@@ -198,23 +199,11 @@ export class TorProviderBuilder {
     };
     Services.obs.addObserver(this.#logObserver, TorProviderTopics.TorLog);
 
-    switch (this.providerType) {
-      case TorProviders.tor:
-        // Even though initialization of the initial TorProvider is
-        // asynchronous, we do not expect the caller to await it. The reason is
-        // that any call to build() will wait the initialization anyway (and
-        // re-throw any initialization error).
-        this.#replaceProvider();
-        break;
-      case TorProviders.none:
-        lazy.TorLauncherUtil.setProxyConfiguration(
-          lazy.TorLauncherUtil.getPreferredSocksConfiguration()
-        );
-        break;
-      default:
-        console.error(`Unknown tor provider ${this.providerType}.`);
-        break;
-    }
+    // Even though initialization of the initial provider is asynchronous, we do
+    // not expect the caller to await it. The reason is that any call to build()
+    // will wait the initialization anyway (and re-throw any initialization
+    // error).
+    this.#replaceProvider();
   }
 
   /**
@@ -247,10 +236,22 @@ export class TorProviderBuilder {
       lazy.logger.info(`Creating the initial "${this.providerType}" provider.`);
     }
 
+    let providerClass;
+    switch (this.providerType) {
+      case TorProviders.tor:
+        providerClass = lazy.TorProvider;
+        break;
+      case TorProviders.none:
+        providerClass = lazy.TorProviderNone;
+        break;
+      default:
+        lazy.logger.error(`Unknown tor provider ${this.providerType}.`);
+        break;
+    }
     // NOTE: It should be safe to create another provider instance whilst the
     // existing one is still active. However, we will wait until the other is
     // uninitialized before we initialize the new one.
-    const provider = new lazy.TorProvider(() => {
+    const provider = new providerClass(() => {
       this.#notifyStateChanged(provider);
     });
     const prevProviderData = this.#providerData;
@@ -370,7 +371,7 @@ export class TorProviderBuilder {
    */
   static async build() {
     this.#checkActive();
-    if (!this.#providerData && this.providerType === TorProviders.none) {
+    if (this.#providerData.provider instanceof lazy.TorProviderNone) {
       throw new Error(
         "Tor Browser has been configured to use only the proxy functionalities."
       );
