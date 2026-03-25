@@ -171,22 +171,6 @@ export class TorProviderBuilder {
   }
 
   /**
-   * The observer that checks when the tor process exits, and reinitializes the
-   * provider.
-   *
-   * @type {Function}
-   */
-  static #exitObserver = null;
-
-  /**
-   * Tell whether the browser UI is ready.
-   * We ignore any errors until it is because we cannot show them.
-   *
-   * @type {boolean}
-   */
-  static #uiReady = false;
-
-  /**
    * Initialize the provider of choice.
    */
   static init() {
@@ -210,14 +194,6 @@ export class TorProviderBuilder {
    * Replace the provider with a new instance.
    */
   static #replaceProvider() {
-    if (!this.#exitObserver) {
-      this.#exitObserver = this.#torExited.bind(this);
-      Services.obs.addObserver(
-        this.#exitObserver,
-        TorProviderTopics.ProcessExited
-      );
-    }
-
     // NOTE: We need to ensure that the #providerData is set as soon as
     // TorProviderBuilder.init is called.
     // I.e. it should be safe to call
@@ -295,6 +271,8 @@ export class TorProviderBuilder {
       TorProviderTopics.ProviderStateChanged,
       provider.state
     );
+
+    this.#promptProviderState(false);
   }
 
   /**
@@ -350,13 +328,6 @@ export class TorProviderBuilder {
     this.#providerData = null;
     this.#cleanupProviderData(providerData);
 
-    if (this.#exitObserver) {
-      Services.obs.removeObserver(
-        this.#exitObserver,
-        TorProviderTopics.ProcessExited
-      );
-      this.#exitObserver = null;
-    }
     Services.obs.removeObserver(this.#logObserver, TorProviderTopics.TorLog);
   }
 
@@ -418,6 +389,8 @@ export class TorProviderBuilder {
     this.#replaceProvider();
   }
 
+  // TODO: Remove firstWindowLoaded, #uiReady, #prompting, #promptProviderState
+  // and use TorConnect instead. tor-browser#43570.
   /**
    * Check if the provider has been succesfully initialized when the first
    * browser window is shown.
@@ -426,50 +399,72 @@ export class TorProviderBuilder {
    * but we should modify TorConnect and about:torconnect to handle this case
    * there with a better UX.
    */
-  static async firstWindowLoaded() {
-    // FIXME: Just integrate this with the about:torconnect or about:tor UI.
-    if (
-      !lazy.TorLauncherUtil.shouldStartAndOwnTor ||
-      this.providerType !== TorProviders.tor
-    ) {
-      // If we are not managing the Tor daemon we cannot restart it, so just
-      // early return.
-      return;
-    }
-    let running = false;
-    try {
-      const provider = await this.#provider;
-      // The initialization might have succeeded, but so far we have ignored any
-      // error notification. So, check that the process has not exited after the
-      // provider has been initialized successfully, but the UI was not ready
-      // yet.
-      running = provider.isRunning;
-    } catch {
-      // Not even initialized, running is already false.
-    }
-    while (!running && lazy.TorLauncherUtil.showRestartPrompt(true)) {
-      try {
-        await this.#initTorProvider();
-        running = true;
-      } catch {}
-    }
-    // The user might have canceled the restart, but at this point the UI is
-    // ready in any case.
-    this.#uiReady = true;
+  static firstWindowLoaded() {
+    this.#promptProviderState(true);
   }
 
-  static async #torExited() {
+  /**
+   * Tell whether the browser UI is ready.
+   * We ignore any errors until it is because we cannot show them.
+   *
+   * @type {boolean}
+   */
+  static #uiReady = false;
+
+  /**
+   * Whether we are prompting the user for a restart of the provider.
+   *
+   * @type {boolean}
+   */
+  static #prompting = false;
+
+  /**
+   * Prompt the user to restart the provider, if this is necessary.
+   *
+   * @param {boolean} uiReady - Whether this is being called for the first time
+   *   when the UI is ready.
+   */
+  static async #promptProviderState(uiReady) {
+    if (uiReady) {
+      this.#uiReady = true;
+    }
+    if (this.#providerData.provider.state === TorProviderState.Running) {
+      // Nothing to wait for.
+      return;
+    }
     if (!this.#uiReady) {
-      console.warn(
-        `Seen ${TorProviderTopics.ProcessExited}, but not doing anything because the UI is not ready yet.`
+      lazy.logger.warn(
+        "Seen exit, but not doing anything because the UI is not ready yet."
       );
       return;
     }
-    while (lazy.TorLauncherUtil.showRestartPrompt(false)) {
-      try {
-        await this.#initTorProvider();
-        break;
-      } catch {}
+    if (this.#prompting) {
+      // Already prompting, so don't duplicate.
+      return;
+    }
+
+    this.#prompting = true;
+    let waitForInit = uiReady;
+    let retry = true;
+    try {
+      while (retry) {
+        if (waitForInit) {
+          try {
+            await this.#providerData.initPromise;
+          } catch {}
+        }
+        if (
+          this.#providerData.provider.state === TorProviderState.Stopped &&
+          lazy.TorLauncherUtil.showRestartPrompt(uiReady)
+        ) {
+          waitForInit = true;
+          this.replace();
+        } else {
+          retry = false;
+        }
+      }
+    } finally {
+      this.#prompting = false;
     }
   }
 
