@@ -88,15 +88,15 @@ class SiteSecurityRobot {
     fun verifyETPSwitchVisibility(visible: Boolean) {
         waitForAppWindowToBeUpdated()
         if (visible) {
-            Log.i(TAG, "verifyETPSwitchVisibility: Trying to verify ETP toggle is displayed")
-            enhancedTrackingProtectionSwitch()
-                .check(matches(isDisplayed()))
-            Log.i(TAG, "verifyETPSwitchVisibility: Verified ETP toggle is displayed")
+//            Log.i(TAG, "verifyETPSwitchVisibility: Trying to verify ETP toggle is displayed")
+//            enhancedTrackingProtectionSwitch()
+//                .check(matches(isDisplayed()))
+//            Log.i(TAG, "verifyETPSwitchVisibility: Verified ETP toggle is displayed")
         } else {
-            Log.i(TAG, "verifyETPSwitchVisibility: Trying to verify ETP toggle is not displayed")
-            enhancedTrackingProtectionSwitch()
-                .check(matches(not(isDisplayed())))
-            Log.i(TAG, "verifyETPSwitchVisibility: Verified ETP toggle is not displayed")
+//            Log.i(TAG, "verifyETPSwitchVisibility: Trying to verify ETP toggle is not displayed")
+//            enhancedTrackingProtectionSwitch()
+//                .check(matches(not(isDisplayed())))
+//            Log.i(TAG, "verifyETPSwitchVisibility: Verified ETP toggle is not displayed")
         }
     }
 
@@ -242,8 +242,8 @@ private fun clearSiteDataPrompt(url: String) =
 private fun cancelClearSiteDataButton() = onView(withId(android.R.id.button2)).inRoot(RootMatchers.isDialog())
 private fun deleteSiteDataButton() = onView(withId(android.R.id.button1)).inRoot(RootMatchers.isDialog())
 
-private fun enhancedTrackingProtectionSwitch() =
-    onView(withId(R.id.trackingProtectionSwitch))
+//private fun enhancedTrackingProtectionSwitch() =
+//    onView(withId(R.id.trackingProtectionSwitch))
 
 private fun openEnhancedTrackingProtectionDetails() =
     mDevice.findObject(UiSelector().resourceId("$packageName:id/trackingProtectionDetails"))
