@@ -43,6 +43,7 @@
 #include "mozilla/StaticPrefs_browser.h"
 #include "mozilla/StaticPrefs_docshell.h"
 #include "mozilla/StaticPrefs_fission.h"
+#include "mozilla/StaticPrefs_network.h"
 #include "mozilla/StaticPrefs_security.h"
 #include "mozilla/glean/DomMetrics.h"
 #include "nsILayoutHistoryState.h"
@@ -3804,6 +3805,10 @@ void CanonicalBrowsingContext::CreateRedactedAncestorOriginsList(
   // 11. Let masked be false.
   bool masked = false;
 
+  // Tor-specific, not in spec:
+  // we want to redact cross-origin onions if hideOnionSource is true.
+  bool redactOnions = StaticPrefs::network_http_referer_hideOnionSource();
+
   if (referrerPolicy == ReferrerPolicy::No_referrer) {
     // 12. If referrerPolicy is "no-referrer", then set masked to true.
     masked = true;
@@ -3813,6 +3818,12 @@ void CanonicalBrowsingContext::CreateRedactedAncestorOriginsList(
     // 13. Otherwise, if referrerPolicy is "same-origin" and parentDoc's
     // origin is not same origin with innerDoc's origin, then set masked to
     // true.
+    masked = true;
+  } else if (redactOnions && ancestorWGP->DocumentPricipal()->GetIsOnion() &&
+             !ancestorWGP->DocumentPrincipal()->Equals(
+             aThisDocumentPrincipal)) {
+    // Tor-specific, not in spec:
+    // mask parent origin if it's an onion it's different than this document's.
     masked = true;
   }
 
@@ -3830,6 +3841,13 @@ void CanonicalBrowsingContext::CreateRedactedAncestorOriginsList(
 
   // 16. For each ancestorOrigin of ancestorOrigins:
   for (const auto& ancestorOrigin : parentAncestorOriginsList) {
+    // Tor-specific, not in spec:
+    // Redact any ancestor onion origin different than this document's origin.
+    if (redactOnions && ancestorOrigin && ancestorOrigin->GetIsOnion() &&
+      !ancestorOrigin->Equals(aThisDocumentPrincipal)) {
+      ancestorPrincipals.AppendElement(nullptr);
+      continue;
+    }
     // 16.1 if masked is true
     if (masked && ancestorOrigin &&
         ancestorOrigin->Equals(ancestorWGP->DocumentPrincipal())) {
