@@ -347,6 +347,13 @@ pref("browser.search.serpEventTelemetryCategorization.enabled", false);
 // lock the preference because the engine is excluded and the
 // "translations-models" RemoteSettings needed for the engine is empty.
 pref("browser.translations.enable", false, locked);
+// Hide some AI settings outside the "ai" setting pane. See tor-browser#44764.
+// NOTE: This preference tracks whether the *user* opted out of all AI features
+// in about:preferences. By itself, it does not provide global blocking of the
+// AI features, which are often controlled by separate preferences below.
+// However, some parts of the UI will react to this preference. See
+// tor-browser#44541.
+pref("browser.ai.control.default", "blocked", locked);
 // Disables many (but not all) ML engines. Note, this does not have overall
 // control over exposure to ML features. tor-browser#44045.
 pref("browser.ml.enable", false, locked);
