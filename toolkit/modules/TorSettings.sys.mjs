@@ -537,13 +537,6 @@ class TorSettingsImpl {
       const req = await fetch("chrome://global/content/pt_config.json");
       const config = await req.json();
       lazy.logger.debug("Loaded pt_config.json", config);
-      if ("meek-azure" in config.bridges) {
-        // Convert the meek-azure name to meek. tor-browser#44068.
-        // NOTE: no need to convert recommendedDefault since it is not meek.
-        lazy.logger.debug("Converting pt_config type from meek-azure to meek");
-        config.bridges.meek = config.bridges["meek-azure"];
-        delete config.bridges["meek-azure"];
-      }
       this.#recommendedPT = config.recommendedDefault;
       this.#builtinBridges = config.bridges;
       for (const type in this.#builtinBridges) {
