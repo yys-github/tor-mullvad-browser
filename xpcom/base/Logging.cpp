@@ -600,7 +600,7 @@ class LogModuleManager {
     charsWritten = size;
 
     // We may have maxed out, allocate a buffer and re-format
-    if (charsWritten > kBuffSize) {
+    if (charsWritten >= kBuffSize) {
       allocatedBuff = MakeUnique<char[]>(charsWritten + 1);  // + final \0
       auto [out, size] =
           fmt::vformat_to_n(allocatedBuff.get(), charsWritten, aFmt, aArgs);
