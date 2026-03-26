@@ -49,6 +49,11 @@
     <string name="tor_security_level_safest">Safest</string>
     <string name="tor_security_level_safest_current_level">Safest (current level)</string>
     <string name="tor_security_level_safest_description">Only allow website features required for static sites and basic services. These changes affect images, media, and scripts.</string>
+    <string name="tor_security_level_custom">Custom</string>
+    <string name="tor_security_level_custom_current_level">Custom (current level)</string>
+    <string name="tor_security_level_custom_description">Your custom browser preferences have resulted in unusual security settings. For security and privacy reasons, we recommend you change them to one of the default security levels.</string>
+    <string name="tor_open_security_settings">Open security settings</string>
+
     <string name="tor_security_level_save_and_restart_tor_browser">Save and restart</string>
     <string name="tor_security_level_restarting">Restarting</string>
 
