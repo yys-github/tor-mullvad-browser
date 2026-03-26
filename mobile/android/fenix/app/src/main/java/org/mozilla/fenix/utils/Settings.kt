@@ -3019,10 +3019,7 @@ class Settings(
     /**
      * Indicates whether or not to show the entry point for the DNS over HTTPS settings
      */
-    val showDohEntryPoint by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_doh_settings_enabled),
-        default = { FxNimbus.features.doh.value().showUi },
-    )
+    val showDohEntryPoint = false
 
     /**
      * Stores the current DoH mode as an integer preference.
@@ -3031,28 +3028,19 @@ class Settings(
      * - 3: Maximum protection
      * - 5: DoH is disabled
      */
-    private var trrMode by intPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_doh_settings_mode),
-        default = DOH_SETTINGS_DEFAULT,
-    )
+    private var trrMode = DOH_SETTINGS_OFF
 
     /**
      * Stores the URI of the custom DoH provider selected by the user.
      * Defaults to an empty string if no provider is set.
      */
-    var dohProviderUrl by stringPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_doh_provider_uri),
-        default = "",
-    )
+    var dohProviderUrl = ""
 
     /**
      * Stores the URI of the default DoH provider.
      * Bug 1946867 - Currently "hardcoded" to "https://mozilla.cloudflare-dns.com/dns-query"
      */
-    val dohDefaultProviderUrl by stringPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_doh_default_provider_uri),
-        default = CLOUDFLARE_URI,
-    )
+    val dohDefaultProviderUrl = ""
 
     /**
      * Stores a set of domains that are excluded from using DNS over HTTPS.
