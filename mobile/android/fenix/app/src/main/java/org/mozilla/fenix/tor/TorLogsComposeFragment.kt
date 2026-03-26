@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -53,6 +54,7 @@ class TorLogsComposeFragment : Fragment() {
                 Scaffold(
                     floatingActionButton = { CopyLogsButton() },
                     content = { TorLogs(paddingValues = it) },
+                    contentWindowInsets = WindowInsets(left = 0, top = 0, right = 0, bottom = 0),
                 )
             }
         }
