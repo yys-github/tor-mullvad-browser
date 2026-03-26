@@ -104,7 +104,11 @@ letterboxing-enable-button =
 
 ## Preferences - Sidebar.
 
-browser-layout-show-sidebar-desc-limited = Quickly access bookmarks and more without leaving your main view.
+# Here "sidebar" is a term inherited from Firefox. It refers to the panel that is either side of the main browser window, containing the bookmarks and vertical tabs, if they are enabled.
+# In general, "Show sidebar" should use the same translation as Firefox translators have chosen for the string "browser-layout-show-sidebar2". See Firefox's translation on Pontoon, using the "LOCALES" tab: https://pontoon.mozilla.org/ar/firefox/browser/browser/preferences/preferences.ftl/?string=328898 . Or use the translation for "sidebar": https://pontoon.mozilla.org/af/terminology/common/?string=212298 .
+browser-layout-show-sidebar-limited =
+    .label = Show sidebar
+    .description = Quickly access bookmarks and more without leaving your main view.
 
 ## Preferences - Contrast Control.
 
