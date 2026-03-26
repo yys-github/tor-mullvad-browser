@@ -3426,21 +3426,21 @@ SettingGroupManager.registerGroups({
       //   supportPage: "extensionrecommendations",
       //   subcategory: "cfrfeatures",
       // },
-      // {
-      //   id: "linkPreviewEnabled",
-      //   l10nId: "link-preview-settings-enable",
-      //   subcategory: "link-preview",
-      //   items: [
-      //     {
-      //       id: "linkPreviewKeyPoints",
-      //       l10nId: "link-preview-settings-key-points",
-      //     },
-      //     {
-      //       id: "linkPreviewLongPress",
-      //       l10nId: "link-preview-settings-long-press",
-      //     },
-      //   ],
-      // },
+      {
+        id: "linkPreviewEnabled",
+        l10nId: "link-preview-settings-enable",
+        subcategory: "link-preview",
+        items: [
+          {
+            id: "linkPreviewKeyPoints",
+            l10nId: "link-preview-settings-key-points",
+          },
+          {
+            id: "linkPreviewLongPress",
+            l10nId: "link-preview-settings-long-press",
+          },
+        ],
+      },
     ],
   },
   httpsOnly: {
