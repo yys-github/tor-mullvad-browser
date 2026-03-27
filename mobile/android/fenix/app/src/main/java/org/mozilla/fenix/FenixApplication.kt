@@ -38,7 +38,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mozilla.appservices.autofill.AutofillApiException
 import mozilla.components.ExperimentalAndroidComponentsApi
-import mozilla.components.browser.engine.gecko.GeckoEngine
 import mozilla.components.browser.state.action.SearchAction.SearchConfigurationAvailabilityChanged
 import mozilla.components.browser.state.action.SystemAction
 import mozilla.components.browser.state.selector.selectedTab
@@ -870,20 +869,6 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
                     components.useCases.tabsUseCases.selectTab(sessionId)
                 },
                 onExtensionsLoaded = { extensions ->
-
-                    // temp fix for tb#44591 "fails to initialize WebExtensions"
-                    // disable and enable each extension to properly initialize them
-                    extensions.forEach { extension ->
-                        if (extension.isEnabled()) {
-                          (components.core.engine as GeckoEngine).disableWebExtension(
-                              extension,
-                              onSuccess = {
-                                  (components.core.engine as GeckoEngine).enableWebExtension(extension)
-                              },
-                          )
-                        }
-                    }
-
                     // Delay until bootstrap is finished so that it will actually update tor-browser#44303
                     components.torController.registerRunOnceBootstrapped(object : RunOnceBootstrapped {
                         override fun onBootstrapped() {
