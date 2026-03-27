@@ -39,7 +39,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mozilla.appservices.autofill.AutofillApiException
 import mozilla.components.ExperimentalAndroidComponentsApi
-import mozilla.components.browser.engine.gecko.GeckoEngine
 import mozilla.components.browser.state.action.SearchAction.SearchConfigurationAvailabilityChanged
 import mozilla.components.browser.state.action.SystemAction
 import mozilla.components.browser.state.selector.selectedTab
@@ -894,26 +893,12 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
                     components.useCases.tabsUseCases.selectTab(sessionId)
                 },
                 onExtensionsLoaded = { extensions ->
-
                     // enable noscript if it is disabled
                     extensions.find { extension : WebExtension ->
                         extension.id == NOSCRIPT_ID
                     }?.let { noScript ->
                         if (!noScript.isEnabled()) {
                             components.core.engine.enableWebExtension(noScript)
-                        }
-                    }
-
-                    // temp fix for tb#44591 "fails to initialize WebExtensions"
-                    // disable and enable each extension to properly initialize them
-                    extensions.forEach { extension ->
-                        if (extension.isEnabled()) {
-                          (components.core.engine as GeckoEngine).disableWebExtension(
-                              extension,
-                              onSuccess = {
-                                  (components.core.engine as GeckoEngine).enableWebExtension(extension)
-                              },
-                          )
                         }
                     }
 
