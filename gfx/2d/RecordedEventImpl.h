@@ -2199,6 +2199,7 @@ RecordedDrawTargetCreation::RecordedDrawTargetCreation(S& aStream)
       gfxWarning()
           << "RecordedDrawTargetCreation had to reset mHasExistingData";
       mHasExistingData = false;
+      aStream.SetIsBad();
       return;
     }
 
