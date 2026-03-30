@@ -273,6 +273,11 @@ void SpeechSynthesis::ForceEnd() {
   }
 }
 
+void SpeechSynthesis::DisconnectFromOwner() {
+  Cancel();
+  DOMEventTargetHelper::DisconnectFromOwner();
+}
+
 NS_IMETHODIMP
 SpeechSynthesis::Observe(nsISupports* aSubject, const char* aTopic,
                          const char16_t* aData) {
