@@ -9,6 +9,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   Lox: "resource://gre/modules/Lox.sys.mjs",
   LoxTopics: "resource://gre/modules/Lox.sys.mjs",
   TorParsers: "resource://gre/modules/TorParsers.sys.mjs",
+  TorProviderState: "resource://gre/modules/TorProviderBuilder.sys.mjs",
 });
 
 ChromeUtils.defineLazyGetter(lazy, "logger", () => {
@@ -940,7 +941,10 @@ class TorSettingsImpl {
 
       // Test whether the provider is no longer running or has been replaced.
       const providerRunning = () => {
-        return providerRef === this.#providerRef && provider.isRunning;
+        return (
+          providerRef === this.#providerRef &&
+          provider.state !== lazy.TorProviderState.Stopped
+        );
       };
 
       lazy.logger.debug("Passing on settings to the provider", apply, details);
