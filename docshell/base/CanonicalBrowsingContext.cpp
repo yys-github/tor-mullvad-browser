@@ -3819,9 +3819,9 @@ void CanonicalBrowsingContext::CreateRedactedAncestorOriginsList(
     // origin is not same origin with innerDoc's origin, then set masked to
     // true.
     masked = true;
-  } else if (redactOnions && ancestorWGP->DocumentPricipal()->GetIsOnion() &&
+  } else if (redactOnions && ancestorWGP->DocumentPrincipal()->GetIsOnion() &&
              !ancestorWGP->DocumentPrincipal()->Equals(
-             aThisDocumentPrincipal)) {
+                 aThisDocumentPrincipal)) {
     // Tor-specific, not in spec:
     // mask parent origin if it's an onion it's different than this document's.
     masked = true;
@@ -3844,7 +3844,7 @@ void CanonicalBrowsingContext::CreateRedactedAncestorOriginsList(
     // Tor-specific, not in spec:
     // Redact any ancestor onion origin different than this document's origin.
     if (redactOnions && ancestorOrigin && ancestorOrigin->GetIsOnion() &&
-      !ancestorOrigin->Equals(aThisDocumentPrincipal)) {
+        !ancestorOrigin->Equals(aThisDocumentPrincipal)) {
       ancestorPrincipals.AppendElement(nullptr);
       continue;
     }
