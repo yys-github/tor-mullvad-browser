@@ -511,17 +511,6 @@ export class TorProvider extends TorProviderBase {
   }
 
   /**
-   * TODO: Rename to isReady once we remove finish the migration.
-   *
-   * @returns {boolean} true if we currently have a connection to the control
-   * port. We take for granted that if we have one, we authenticated to it, and
-   * so we have already verified we can send and receive data.
-   */
-  get isRunning() {
-    return this.#controlConnection?.isOpen ?? false;
-  }
-
-  /**
    * Return the data about the current bridge, if any, or null.
    * We can detect bridge only when the configured bridge lines include the
    * fingerprints.
