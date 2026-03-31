@@ -292,6 +292,8 @@ pref("privacy.trackingprotection.annotate_channels", false);
 pref("privacy.trackingprotection.cryptomining.enabled", false);
 pref("privacy.trackingprotection.fingerprinting.enabled", false);
 pref("privacy.trackingprotection.socialtracking.enabled", false);
+// Hide the Unified Trust Panel until we have new designs. tor-browser#44814.
+pref("browser.urlbar.trustPanel.featureGate", false);
 // tor-browser#43986: Explicitly disable bounce tracking protection
 pref("privacy.bounceTrackingProtection.mode", 0);
 pref("privacy.socialtracking.block_cookies.enabled", false);
