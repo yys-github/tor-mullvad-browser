@@ -434,7 +434,7 @@ let config = [
     ignores: ["toolkit/**/test/**", "toolkit/**/tests/**"],
     plugins: { mozilla },
     rules: {
-      "mozilla/no-browser-refs-in-toolkit": "warn",
+      "mozilla/no-browser-refs-in-toolkit": "error",
     },
   },
   {
