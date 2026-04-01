@@ -47,12 +47,30 @@ class TestCircuitIsolation(MarionetteTestCase, TorBrowserMixin):
             ).strip()
         )
 
+    def extract_from_header(self, url):
+        # Navigate to the page to bypass CORS.
+        self.marionette.navigate(url)
+        # The IP checker service provided by TPA, return the caller IP address
+        # on the head of the response, inside the `X-Your-IP-Address` header.
+        return ip_address(
+            self.marionette.execute_async_script(
+                """
+                const [url, resolve] = arguments;
+
+                fetch(url).then(response =>
+                    resolve(response.headers.get("X-Your-IP-Address"))
+                );
+                """,
+                script_args=[url],
+            )
+        )
+
     def test_circuit_isolation(self):
         self.bootstrap()
         ips = [
             self.extract_from_check_tpo(),
             self.extract_generic("https://am.i.mullvad.net/ip"),
-            self.extract_generic("https://v4.ident.me"),
+            self.extract_from_header("https://test.torproject.org"),
         ]
         self.logger.info(f"Found the following IP addresses: {ips}")
         unique_ips = set(ips)
@@ -63,11 +81,16 @@ class TestCircuitIsolation(MarionetteTestCase, TorBrowserMixin):
             "Some of the IP addresses we got are not unique.",
         )
 
-        # TODO: Renable the duplicate check once
-        # https://gitlab.torproject.org/tpo/tpa/team/-/issues/42547 is resolved.
-        # duplicate = self.extract_generic("https://test2.ifconfig.me/ip")
-        # self.assertEqual(
-        #     ips[-1],
-        #     duplicate,
-        #     "Two IPs that were expected to be equal are different, we might be over isolating!",
-        # )
+        duplicates = set(
+            self.extract_from_header("https://test-01.torproject.org"),
+            self.extract_from_header("https://test-02.torproject.org"),
+            self.extract_from_header("https://test.torproject.org"),
+        )
+        self.logger.info(
+            f"Found the following IP addresses, when checking for duplicates: {duplicates}"
+        )
+        self.assertEqual(
+            len(duplicates),
+            1,
+            "IPs that were expected to be equal are different, we might be over isolating!",
+        )
