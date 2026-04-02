@@ -25,7 +25,8 @@ const lazy = XPCOMUtils.declareLazy({
     "moz-src:///toolkit/components/search/PolicySearchEngine.sys.mjs",
   Region: "resource://gre/modules/Region.sys.mjs",
   RemoteSettings: "resource://services-settings/remote-settings.sys.mjs",
-  SecurityLevelPrefs: "resource://gre/modules/SecurityLevel.sys.mjs",
+  SecurityLevelPrefs:
+    "moz-src:///toolkit/components/securitylevel/SecurityLevel.sys.mjs",
   SearchEngine: "moz-src:///toolkit/components/search/SearchEngine.sys.mjs",
   SearchEngineInstallError:
     "moz-src:///toolkit/components/search/SearchUtils.sys.mjs",

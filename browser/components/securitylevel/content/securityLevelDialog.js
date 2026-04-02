@@ -1,10 +1,10 @@
 "use strict";
 
 const { SecurityLevelPrefs } = ChromeUtils.importESModule(
-  "resource://gre/modules/SecurityLevel.sys.mjs"
+  "moz-src:///toolkit/components/securitylevel/SecurityLevel.sys.mjs"
 );
 const { SecurityLevelUIUtils } = ChromeUtils.importESModule(
-  "resource:///modules/SecurityLevelUIUtils.sys.mjs"
+  "moz-src:///browser/components/securitylevel/SecurityLevelUIUtils.sys.mjs"
 );
 
 const gSecurityLevelDialog = {
