@@ -634,7 +634,7 @@ SettingGroupManager.registerGroups({
     l10nId: "motion-and-link-group",
     headingLevel: 2,
     items: [
-      // { id: "alwaysUnderlineLinks", l10nId: "browsing-always-underline-links" },
+      { id: "alwaysUnderlineLinks", l10nId: "browsing-always-underline-links" },
       {
         id: "useSmoothScrolling",
         l10nId: "browsing-use-smooth-scrolling",
