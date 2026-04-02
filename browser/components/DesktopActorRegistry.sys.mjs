@@ -728,10 +728,10 @@ let JSWINDOWACTORS = {
 
   Rulesets: {
     parent: {
-      esModuleURI: "resource:///modules/RulesetsParent.sys.mjs",
+      esModuleURI: "moz-src:///browser/components/rulesets/RulesetsParent.sys.mjs",
     },
     child: {
-      esModuleURI: "resource:///modules/RulesetsChild.sys.mjs",
+      esModuleURI: "moz-src:///browser/components/rulesets/RulesetsChild.sys.mjs",
       events: {
         DOMWindowCreated: {},
       },
