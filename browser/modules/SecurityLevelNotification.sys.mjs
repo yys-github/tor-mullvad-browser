@@ -2,7 +2,8 @@ const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
   BrowserWindowTracker: "resource:///modules/BrowserWindowTracker.sys.mjs",
-  SecurityLevelPrefs: "resource://gre/modules/SecurityLevel.sys.mjs",
+  SecurityLevelPrefs:
+    "moz-src:///toolkit/components/securitylevel/SecurityLevel.sys.mjs",
 });
 
 ChromeUtils.defineLazyGetter(lazy, "NotificationStrings", function () {
