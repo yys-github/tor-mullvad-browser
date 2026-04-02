@@ -1,6 +1,6 @@
 JAR_MANIFESTS += ["jar.mn"]
 
-EXTRA_JS_MODULES += [
+MOZ_SRC_FILES += [
     "OnionLocationChild.sys.mjs",
     "OnionLocationParent.sys.mjs",
 ]

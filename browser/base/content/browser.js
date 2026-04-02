@@ -53,7 +53,8 @@ ChromeUtils.defineESModuleGetters(this, {
   NewTabUtils: "resource://gre/modules/NewTabUtils.sys.mjs",
   NimbusFeatures: "resource://nimbus/ExperimentAPI.sys.mjs",
   nsContextMenu: "chrome://browser/content/nsContextMenu.sys.mjs",
-  OnionLocationParent: "resource:///modules/OnionLocationParent.sys.mjs",
+  OnionLocationParent:
+    "moz-src:///browser/components/onionservices/OnionLocationParent.sys.mjs",
   OpenSearchManager:
     "moz-src:///browser/components/search/OpenSearchManager.sys.mjs",
   PageActions: "resource:///modules/PageActions.sys.mjs",
