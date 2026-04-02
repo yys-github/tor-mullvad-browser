@@ -1,7 +1,7 @@
 "use strict";
 
 const { TorSettings, TorProxyType } = ChromeUtils.importESModule(
-  "resource://gre/modules/TorSettings.sys.mjs"
+  "moz-src:///toolkit/modules/TorSettings.sys.mjs"
 );
 
 const gConnectionSettingsDialog = {
