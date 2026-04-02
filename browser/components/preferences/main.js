@@ -76,6 +76,10 @@ function canShowAiFeature(featureSetting, defaultSetting) {
 }
 
 Preferences.addAll([
+  // Rather than add "privacy.resistFingerprinting" in privacy.js, we add it
+  // early so we can define the "resistFingerprinting" `Setting` in this file.
+  // See below. See tor-browser#44630.
+  { id: "privacy.resistFingerprinting", type: "bool" },
   // Startup
   { id: "browser.startup.page", type: "int" },
   { id: "browser.startup.windowsLaunchOnLogin.enabled", type: "bool" },
@@ -270,6 +274,18 @@ if (AppConstants.MOZ_UPDATER) {
     Preferences.addAll([{ id: "app.update.suppressPrompts", type: "bool" }]);
   }
 }
+
+// Rather than add "resistFingerprinting" in privacy.js, we add it to the
+// settings early so we can have it be part of the setting config's `deps` field
+// early. See tor-browser#44630.
+// In particular, `Setting.deps` is lazy set. For many settings, this will only
+// be set *after* all settings have been added. However, for settings with a
+// `setup` field, the `deps` value will be set during construction, so we need
+// the corresponding dependency available prior to construction.
+Preferences.addSetting({
+  id: "resistFingerprinting",
+  pref: "privacy.resistFingerprinting",
+});
 
 Preferences.addSetting({
   id: "privateBrowsingAutoStart",
@@ -480,6 +496,12 @@ Preferences.addSetting({
 Preferences.addSetting({
   id: "useSmoothScrolling",
   pref: "general.smoothScroll",
+  deps: ["resistFingerprinting"],
+  visible: ({ resistFingerprinting }) => {
+    // Hide "smooth scrolling" when using resist fingerprinting (RFP) because
+    // the preference should be ignored. tor-browser#42070.
+    return !resistFingerprinting.value;
+  },
 });
 
 Preferences.addSetting({
@@ -558,6 +580,11 @@ Preferences.addSetting({
 Preferences.addSetting({
   id: "alwaysUnderlineLinks",
   pref: "layout.css.always_underline_links",
+  // Hide "always underline links" because it can be used for fingerprinting. At
+  // the time of implementation, this is the case with or without RFP, so we
+  // hide this unconditionally.
+  // tor-browser#43117.
+  visible: () => false,
 });
 Preferences.addSetting({
   id: "searchStartTyping",
@@ -616,10 +643,14 @@ Preferences.addSetting({
 Preferences.addSetting({
   id: "cfrRecommendations",
   pref: "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons",
+  // Hide feature recommendation (CFR). tor-browser#43118.
+  visible: () => false,
 });
 Preferences.addSetting({
   id: "cfrRecommendations-features",
   pref: "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features",
+  // Hide feature recommendation (CFR). tor-browser#43118.
+  visible: () => false,
 });
 
 Preferences.addSetting({
@@ -685,11 +716,17 @@ Preferences.addSetting({
 });
 Preferences.addSetting({
   id: "web-appearance-override-warning",
+  deps: ["resistFingerprinting"],
   setup: emitChange => {
     FORCED_COLORS_QUERY.addEventListener("change", emitChange);
     return () => FORCED_COLORS_QUERY.removeEventListener("change", emitChange);
   },
-  visible: () => {
+  visible: ({ resistFingerprinting }) => {
+    // Hide web appearance settings when using resist fingerprinting (RFP).
+    // tor-browser#41739.
+    if (resistFingerprinting.value) {
+      return false;
+    }
     return FORCED_COLORS_QUERY.matches;
   },
 });
@@ -699,6 +736,12 @@ Preferences.addSetting(
     id: "web-appearance-chooser",
     themeNames: ["dark", "light", "auto"],
     pref: "layout.css.prefers-color-scheme.content-override",
+    deps: ["resistFingerprinting"],
+    visible: ({ resistFingerprinting }) => {
+      // Hide web appearance settings when using resist fingerprinting (RFP).
+      // tor-browser#41739.
+      return !resistFingerprinting.value;
+    },
     setup(emitChange) {
       Services.obs.addObserver(emitChange, "look-and-feel-changed");
       return () =>
@@ -731,6 +774,12 @@ Preferences.addSetting(
 
 Preferences.addSetting({
   id: "web-appearance-manage-themes-link",
+  deps: ["resistFingerprinting"],
+  visible: ({ resistFingerprinting }) => {
+    // Hide web appearance settings when using resist fingerprinting (RFP).
+    // tor-browser#41739.
+    return !resistFingerprinting.value;
+  },
   onUserClick: e => {
     e.preventDefault();
     // @ts-ignore topChromeWindow global
