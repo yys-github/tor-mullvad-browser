@@ -20,6 +20,12 @@ XPCOMUtils.defineLazyPreferenceGetter(
   true // Defaults to true.
 );
 
+/**
+ * Child part of the crypto safety actor.
+ *
+ * It just signals the parent whenever the user copies some text in a non-secure
+ * HTTP page.
+ */
 export class CryptoSafetyChild extends JSWindowActorChild {
   handleEvent(event) {
     if (

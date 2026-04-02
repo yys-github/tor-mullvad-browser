@@ -151,7 +151,6 @@ EXTRA_JS_MODULES += [
     "AppMenuNotifications.sys.mjs",
     "AppServicesTracing.sys.mjs",
     "AsyncPrefs.sys.mjs",
-    "Bech32Decode.sys.mjs",
     "BinarySearch.sys.mjs",
     "BridgeDB.sys.mjs",
     "BrowserTelemetryUtils.sys.mjs",

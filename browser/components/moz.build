@@ -36,6 +36,7 @@ DIRS += [
     "contentanalysis",
     "contentsharing",
     "contextualidentity",
+    "cryptosafety",
     "customizableui",
     "customkeys",
     "downloads",
