@@ -1,10 +1,10 @@
 // Copyright (c) 2021, The Tor Project, Inc.
 
-import { TorStrings } from "resource://gre/modules/TorStrings.sys.mjs";
+import { TorStrings } from "moz-src:///toolkit/modules/TorStrings.sys.mjs";
 import {
   TorConnect,
   TorConnectTopics,
-} from "resource://gre/modules/TorConnect.sys.mjs";
+} from "moz-src:///toolkit/modules/TorConnect.sys.mjs";
 
 const lazy = {};
 

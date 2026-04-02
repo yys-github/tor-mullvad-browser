@@ -105,10 +105,11 @@ ChromeUtils.defineESModuleGetters(this, {
   ToolbarDropHandler:
     "moz-src:///browser/components/customizableui/ToolbarDropHandler.sys.mjs",
   ToolbarIconColor: "moz-src:///browser/themes/ToolbarIconColor.sys.mjs",
-  TorConnect: "resource://gre/modules/TorConnect.sys.mjs",
-  TorConnectStage: "resource://gre/modules/TorConnect.sys.mjs",
-  TorConnectTopics: "resource://gre/modules/TorConnect.sys.mjs",
-  TorConnectParent: "resource:///actors/TorConnectParent.sys.mjs",
+  TorConnect: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  TorConnectStage: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  TorConnectTopics: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  TorConnectParent:
+    "moz-src:///browser/components/torconnect/TorConnectParent.sys.mjs",
   TorDomainIsolator:
     "moz-src:///toolkit/components/tor-launcher/TorDomainIsolator.sys.mjs",
   TorUIUtils: "moz-src:///browser/modules/TorUIUtils.sys.mjs",

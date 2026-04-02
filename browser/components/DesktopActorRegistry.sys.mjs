@@ -787,10 +787,12 @@ let JSWINDOWACTORS = {
 
   TorConnect: {
     parent: {
-      esModuleURI: "resource:///actors/TorConnectParent.sys.mjs",
+      esModuleURI:
+        "moz-src:///browser/components/torconnect/TorConnectParent.sys.mjs",
     },
     child: {
-      esModuleURI: "resource:///actors/TorConnectChild.sys.mjs",
+      esModuleURI:
+        "moz-src:///browser/components/torconnect/TorConnectChild.sys.mjs",
       events: {
         DOMWindowCreated: {},
       },
