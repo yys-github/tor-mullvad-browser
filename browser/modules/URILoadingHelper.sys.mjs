@@ -11,8 +11,9 @@ const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
   AboutNewTab: "resource:///modules/AboutNewTab.sys.mjs",
   BrowserWindowTracker: "resource:///modules/BrowserWindowTracker.sys.mjs",
-  TorConnect: "resource://gre/modules/TorConnect.sys.mjs",
-  TorConnectParent: "resource:///actors/TorConnectParent.sys.mjs",
+  TorConnect: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  TorConnectParent:
+    "moz-src:///browser/components/torconnect/TorConnectParent.sys.mjs",
 });
 
 ChromeUtils.defineLazyGetter(lazy, "ReferrerInfo", () =>
