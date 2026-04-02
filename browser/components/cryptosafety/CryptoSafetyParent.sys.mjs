@@ -10,8 +10,10 @@ import { XPCOMUtils } from "resource://gre/modules/XPCOMUtils.sys.mjs";
 const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
-  TorDomainIsolator: "resource://gre/modules/TorDomainIsolator.sys.mjs",
-  Bech32Decode: "resource://gre/modules/Bech32Decode.sys.mjs",
+  TorDomainIsolator:
+    "moz-src:///toolkit/components/tor-launcher/TorDomainIsolator.sys.mjs",
+  Bech32Decode:
+    "moz-src:///browser/components/cryptosafety/Bech32Decode.sys.mjs",
 });
 
 ChromeUtils.defineLazyGetter(lazy, "CryptoStrings", function () {
@@ -62,6 +64,10 @@ function looksLikeCryptoAddress(s) {
   return false;
 }
 
+/**
+ * This actor analyzes the copied text, and warns the user whenever that text
+ * contains a string that resembles a crypto currency address.
+ */
 export class CryptoSafetyParent extends JSWindowActorParent {
   async receiveMessage(aMessage) {
     if (
