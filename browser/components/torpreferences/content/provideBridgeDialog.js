@@ -1,17 +1,17 @@
 "use strict";
 
 const { TorSettings, TorBridgeSource, validateBridgeLines } =
-  ChromeUtils.importESModule("resource://gre/modules/TorSettings.sys.mjs");
+  ChromeUtils.importESModule("moz-src:///toolkit/modules/TorSettings.sys.mjs");
 
 const { TorConnect, TorConnectStage, TorConnectTopics } =
-  ChromeUtils.importESModule("resource://gre/modules/TorConnect.sys.mjs");
+  ChromeUtils.importESModule("moz-src:///toolkit/modules/TorConnect.sys.mjs");
 
 const { TorParsers } = ChromeUtils.importESModule(
-  "resource://gre/modules/TorParsers.sys.mjs"
+  "moz-src:///toolkit/components/tor-launcher/TorParsers.sys.mjs"
 );
 
 const { Lox, LoxError } = ChromeUtils.importESModule(
-  "resource://gre/modules/Lox.sys.mjs"
+  "moz-src:///toolkit/components/lox/Lox.sys.mjs"
 );
 
 /*

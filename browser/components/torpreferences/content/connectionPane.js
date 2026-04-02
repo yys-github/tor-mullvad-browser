@@ -13,32 +13,32 @@ const { setTimeout, clearTimeout } = ChromeUtils.importESModule(
 );
 
 const { TorSettings, TorSettingsTopics, TorBridgeSource } =
-  ChromeUtils.importESModule("resource://gre/modules/TorSettings.sys.mjs");
+  ChromeUtils.importESModule("moz-src:///toolkit/modules/TorSettings.sys.mjs");
 
 const { TorParsers } = ChromeUtils.importESModule(
-  "resource://gre/modules/TorParsers.sys.mjs"
+  "moz-src:///toolkit/components/tor-launcher/TorParsers.sys.mjs"
 );
 const { TorProviderBuilder, TorProviderTopics } = ChromeUtils.importESModule(
-  "resource://gre/modules/TorProviderBuilder.sys.mjs"
+  "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs"
 );
 
 const { InternetStatus, TorConnect, TorConnectTopics, TorConnectStage } =
-  ChromeUtils.importESModule("resource://gre/modules/TorConnect.sys.mjs");
+  ChromeUtils.importESModule("moz-src:///toolkit/modules/TorConnect.sys.mjs");
 
 const { TorConnectParent } = ChromeUtils.importESModule(
-  "resource:///actors/TorConnectParent.sys.mjs"
+  "moz-src:///browser/components/torconnect/TorConnectParent.sys.mjs"
 );
 
 const { QRCode } = ChromeUtils.importESModule(
-  "resource://gre/modules/QRCode.sys.mjs"
+  "moz-src:///toolkit/modules/QRCode.sys.mjs"
 );
 
 const { TorStrings } = ChromeUtils.importESModule(
-  "resource://gre/modules/TorStrings.sys.mjs"
+  "moz-src:///toolkit/modules/TorStrings.sys.mjs"
 );
 
 const { Lox, LoxTopics } = ChromeUtils.importESModule(
-  "resource://gre/modules/Lox.sys.mjs"
+  "moz-src:///toolkit/components/lox/Lox.sys.mjs"
 );
 
 const log = console.createInstance({
