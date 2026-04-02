@@ -13,7 +13,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
   TorProviderTopics:
     "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
   TorSettings: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
-  SecurityLevelPrefs: "resources://gre/modules/SecurityLevel.sys.mjs",
+  SecurityLevelPrefs:
+    "moz-src:///toolkit/components/securitylevel/SecurityLevel.sys.mjs",
 });
 
 const Prefs = Object.freeze({
