@@ -1,10 +1,10 @@
 "use strict";
 
 const { TorSettings, TorSettingsTopics, TorBridgeSource } =
-  ChromeUtils.importESModule("resource://gre/modules/TorSettings.sys.mjs");
+  ChromeUtils.importESModule("moz-src:///toolkit/modules/TorSettings.sys.mjs");
 
 const { Lox, LoxError, LoxTopics } = ChromeUtils.importESModule(
-  "resource://gre/modules/Lox.sys.mjs"
+  "moz-src:///toolkit/components/lox/Lox.sys.mjs"
 );
 
 /**

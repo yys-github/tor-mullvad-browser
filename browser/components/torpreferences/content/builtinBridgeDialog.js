@@ -1,11 +1,11 @@
 "use strict";
 
 const { TorSettings, TorBridgeSource } = ChromeUtils.importESModule(
-  "resource://gre/modules/TorSettings.sys.mjs"
+  "moz-src:///toolkit/modules/TorSettings.sys.mjs"
 );
 
 const { TorConnect, TorConnectStage, TorConnectTopics } =
-  ChromeUtils.importESModule("resource://gre/modules/TorConnect.sys.mjs");
+  ChromeUtils.importESModule("moz-src:///toolkit/modules/TorConnect.sys.mjs");
 
 const gBuiltinBridgeDialog = {
   init() {
