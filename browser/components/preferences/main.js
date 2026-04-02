@@ -2984,10 +2984,10 @@ SettingGroupManager.registerGroups({
         id: "useAutoScroll",
         l10nId: "browsing-use-autoscroll",
       },
-      // {
-      //   id: "useSmoothScrolling",
-      //   l10nId: "browsing-use-smooth-scrolling",
-      // },
+      {
+        id: "useSmoothScrolling",
+        l10nId: "browsing-use-smooth-scrolling",
+      },
       {
         id: "useOverlayScrollbars",
         l10nId: "browsing-gtk-use-non-overlay-scrollbars",
