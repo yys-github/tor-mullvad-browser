@@ -3,8 +3,9 @@ import { AppConstants } from "resource://gre/modules/AppConstants.sys.mjs";
 const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
-  AboutTorMessage: "resource:///modules/AboutTorMessage.sys.mjs",
-  TorConnect: "resource://gre/modules/TorConnect.sys.mjs",
+  AboutTorMessage:
+    "moz-src:///browser/components/abouttor/AboutTorMessage.sys.mjs",
+  TorConnect: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
 });
 
 const initializedActors = new Set();

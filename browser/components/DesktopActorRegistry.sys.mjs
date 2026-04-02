@@ -206,10 +206,12 @@ let JSWINDOWACTORS = {
 
   AboutTor: {
     parent: {
-      esModuleURI: "resource:///actors/AboutTorParent.sys.mjs",
+      esModuleURI:
+        "moz-src:///browser/components/abouttor/AboutTorParent.sys.mjs",
     },
     child: {
-      esModuleURI: "resource:///actors/AboutTorChild.sys.mjs",
+      esModuleURI:
+        "moz-src:///browser/components/abouttor/AboutTorChild.sys.mjs",
 
       events: {
         DOMContentLoaded: {},

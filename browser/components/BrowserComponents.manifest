@@ -21,7 +21,7 @@ category browser-before-ui-startup resource:///modules/BuiltInThemes.sys.mjs Bui
 category browser-before-ui-startup resource://normandy/Normandy.sys.mjs Normandy.init
 #endif
 category browser-before-ui-startup moz-src:///browser/components/privatebrowsing/ResetPBMPanel.sys.mjs ResetPBMPanel.init
-category browser-before-ui-startup resource:///modules/HomepageOverride.sys.mjs HomepageOverride.check
+category browser-before-ui-startup moz-src:///browser/components/abouttor/HomepageOverride.sys.mjs HomepageOverride.check
 # newtab component is disabled. tor-browser#43886
 category browser-before-ui-startup resource:///modules/AccountsGlue.sys.mjs AccountsGlue.init
 category browser-before-ui-startup moz-src:///browser/modules/ObserverForwarder.sys.mjs ObserverForwarder.init
