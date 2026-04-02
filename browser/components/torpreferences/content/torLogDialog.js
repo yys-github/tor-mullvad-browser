@@ -5,7 +5,7 @@ const { setTimeout, clearTimeout } = ChromeUtils.importESModule(
 );
 
 const { TorProviderBuilder, TorProviderTopics } = ChromeUtils.importESModule(
-  "resource://gre/modules/TorProviderBuilder.sys.mjs"
+  "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs"
 );
 
 const gTorLogDialog = {

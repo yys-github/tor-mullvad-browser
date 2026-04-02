@@ -1,7 +1,7 @@
 "use strict";
 
 const { QRCode } = ChromeUtils.importESModule(
-  "resource://gre/modules/QRCode.sys.mjs"
+  "moz-src:///toolkit/modules/QRCode.sys.mjs"
 );
 
 window.addEventListener(

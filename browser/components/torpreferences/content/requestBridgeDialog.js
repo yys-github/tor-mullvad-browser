@@ -1,11 +1,11 @@
 "use strict";
 
 const { BridgeDB } = ChromeUtils.importESModule(
-  "resource://gre/modules/BridgeDB.sys.mjs"
+  "moz-src:///toolkit/modules/BridgeDB.sys.mjs"
 );
 
 const { TorConnect, TorConnectStage, TorConnectTopics } =
-  ChromeUtils.importESModule("resource://gre/modules/TorConnect.sys.mjs");
+  ChromeUtils.importESModule("moz-src:///toolkit/modules/TorConnect.sys.mjs");
 
 const log = console.createInstance({
   maxLogLevel: "Warn",
