@@ -4,6 +4,9 @@
 # It is only intended to be used when doing incremental macOS builds
 # during development.
 
+# Disable LTO for dev builds, even though other optimizations are enabled.
+ac_add_options --disable-lto
+
 export MOZILLA_OFFICIAL=
 
 ac_add_options --disable-strip
