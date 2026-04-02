@@ -330,6 +330,7 @@ export const BrowserWindowTracker = {
       args = null,
       remote = undefined,
       fission = undefined,
+      skipCustomHome = false,
     } = options;
 
     args = lazy.AIWindow.handleAIWindowOptions(options);
@@ -346,7 +347,7 @@ export const BrowserWindowTracker = {
       windowFeatures += ",private";
       if (
         (!args && !lazy.PrivateBrowsingUtils.permanentPrivateBrowsing) ||
-        args?.private === "no-home"
+        skipCustomHome
       ) {
         // Force the new window to load about:privatebrowsing instead of the
         // default home page.

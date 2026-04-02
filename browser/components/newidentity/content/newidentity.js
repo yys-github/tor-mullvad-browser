@@ -402,7 +402,8 @@ ChromeUtils.defineLazyGetter(this, "NewIdentityButton", () => {
         const isCustomHome =
           Services.prefs.getIntPref("browser.startup.page") === 1;
         const win = OpenBrowserWindow({
-          private: isCustomHome && isTrustedHome ? "private" : "no-home",
+          private: true,
+          skipCustomHome: !(isCustomHome && isTrustedHome),
         });
         // This mechanism to know when the new window is ready is used by
         // OpenBrowserWindow itself (see its definition in browser.js).
@@ -435,7 +436,7 @@ ChromeUtils.defineLazyGetter(this, "NewIdentityButton", () => {
               }
               const callback = () => {
                 Services.prefs.setStringPref(trustedHomePref, homeURL);
-                win.BrowserHome();
+                win.BrowserCommands.home();
               };
               const notificationBox = win.gBrowser.getNotificationBox();
               notificationBox.appendNotification(
