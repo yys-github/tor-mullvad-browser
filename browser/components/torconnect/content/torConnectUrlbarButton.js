@@ -43,7 +43,7 @@ var gTorConnectUrlbarButton = {
     this._isActive = true;
 
     const { TorStrings } = ChromeUtils.importESModule(
-      "resource://gre/modules/TorStrings.sys.mjs"
+      "moz-src:///toolkit/modules/TorStrings.sys.mjs"
     );
 
     document.getElementById("tor-connect-urlbar-button-label").value =

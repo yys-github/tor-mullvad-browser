@@ -4,7 +4,7 @@
 
 import { EscapablePageParent } from "resource://gre/actors/NetErrorParent.sys.mjs";
 
-import { TorConnect } from "resource://gre/modules/TorConnect.sys.mjs";
+import { TorConnect } from "moz-src:///toolkit/modules/TorConnect.sys.mjs";
 
 export class AboutHttpsOnlyErrorParent extends EscapablePageParent {
   get browser() {
