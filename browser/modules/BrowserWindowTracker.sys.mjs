@@ -296,6 +296,7 @@ export const BrowserWindowTracker = {
     args = null,
     remote = undefined,
     fission = undefined,
+    skipCustomHome = false,
   } = {}) {
     let windowFeatures = "chrome,dialog=no,all";
     if (features) {
@@ -306,7 +307,7 @@ export const BrowserWindowTracker = {
       windowFeatures += ",private";
       if (
         (!args && !lazy.PrivateBrowsingUtils.permanentPrivateBrowsing) ||
-        args?.private === "no-home"
+        skipCustomHome
       ) {
         // Force the new window to load about:privatebrowsing instead of the
         // default home page.
