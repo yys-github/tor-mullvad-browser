@@ -3,8 +3,10 @@
 /* global AppConstants, Services, openPreferences, XPCOMUtils, gSubDialog */
 
 ChromeUtils.defineESModuleGetters(this, {
-  SecurityLevelPrefs: "resource://gre/modules/SecurityLevel.sys.mjs",
-  SecurityLevelUIUtils: "resource:///modules/SecurityLevelUIUtils.sys.mjs",
+  SecurityLevelPrefs:
+    "moz-src:///toolkit/components/securitylevel/SecurityLevel.sys.mjs",
+  SecurityLevelUIUtils:
+    "moz-src:///browser/components/securitylevel/SecurityLevelUIUtils.sys.mjs",
 });
 
 /*
