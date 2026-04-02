@@ -7,15 +7,21 @@ import { setTimeout, clearTimeout } from "resource://gre/modules/Timer.sys.mjs";
 const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
-  MoatRPC: "resource://gre/modules/Moat.sys.mjs",
-  TorBootstrapRequest: "resource://gre/modules/TorBootstrapRequest.sys.mjs",
-  TorProviderState: "resource://gre/modules/TorProviderBuilder.sys.mjs",
-  TorProviderTopics: "resource://gre/modules/TorProviderBuilder.sys.mjs",
-  TorBootstrapError: "resource://gre/modules/TorProviderBuilder.sys.mjs",
-  TorProviderInitError: "resource://gre/modules/TorProviderBuilder.sys.mjs",
-  TorLauncherUtil: "resource://gre/modules/TorLauncherUtil.sys.mjs",
-  TorSettings: "resource://gre/modules/TorSettings.sys.mjs",
-  TorSettingsTopics: "resource://gre/modules/TorSettings.sys.mjs",
+  MoatRPC: "moz-src:///toolkit/modules/Moat.sys.mjs",
+  TorBootstrapRequest:
+    "moz-src:///toolkit/components/tor-launcher/TorBootstrapRequest.sys.mjs",
+  TorProviderState:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
+  TorProviderTopics:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
+  TorBootstrapError:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
+  TorProviderInitError:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
+  TorLauncherUtil:
+    "moz-src:///toolkit/components/tor-launcher/TorLauncherUtil.sys.mjs",
+  TorSettings: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
+  TorSettingsTopics: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
 });
 
 ChromeUtils.defineLazyGetter(lazy, "NetworkLinkService", () => {
