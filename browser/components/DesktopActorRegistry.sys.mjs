@@ -822,6 +822,20 @@ let JSWINDOWACTORS = {
     messageManagerGroups: ["browsers"],
   },
 
+  TorConnect: {
+    parent: {
+      esModuleURI: "resource:///actors/TorConnectParent.sys.mjs",
+    },
+    child: {
+      esModuleURI: "resource:///actors/TorConnectChild.sys.mjs",
+      events: {
+        DOMWindowCreated: {},
+      },
+    },
+
+    matches: ["about:torconnect", "about:torconnect?*"],
+  },
+
   UITour: {
     parent: {
       esModuleURI: "moz-src:///browser/components/uitour/UITourParent.sys.mjs",
