@@ -152,7 +152,6 @@ EXTRA_JS_MODULES += [
     "AppServicesTracing.sys.mjs",
     "AsyncPrefs.sys.mjs",
     "BinarySearch.sys.mjs",
-    "BridgeDB.sys.mjs",
     "BrowserTelemetryUtils.sys.mjs",
     "BrowserUtils.sys.mjs",
     "CanonicalJSON.sys.mjs",
@@ -162,7 +161,6 @@ EXTRA_JS_MODULES += [
     "ContentDOMReference.sys.mjs",
     "CreditCard.sys.mjs",
     "DeferredTask.sys.mjs",
-    "DomainFrontedRequests.sys.mjs",
     "E10SUtils.sys.mjs",
     "EventEmitter.sys.mjs",
     "FileUtils.sys.mjs",
@@ -188,7 +186,6 @@ EXTRA_JS_MODULES += [
     "LayoutUtils.sys.mjs",
     "Log.sys.mjs",
     "LogManager.sys.mjs",
-    "Moat.sys.mjs",
     "NewTabUtils.sys.mjs",
     "NLP.sys.mjs",
     "ObjectUtils.sys.mjs",
@@ -211,8 +208,6 @@ EXTRA_JS_MODULES += [
     "Sqlite.sys.mjs",
     "SubDialog.sys.mjs",
     "Timer.sys.mjs",
-    "TorConnect.sys.mjs",
-    "TorSettings.sys.mjs",
     "Troubleshoot.sys.mjs",
     "UpdateUtils.sys.mjs",
     "UrlUtils.sys.mjs",
@@ -220,10 +215,15 @@ EXTRA_JS_MODULES += [
 ]
 
 MOZ_SRC_FILES += [
+    "BridgeDB.sys.mjs",
     "ColorPickerPanel.sys.mjs",
     "DateTimePickerPanel.sys.mjs",
+    "DomainFrontedRequests.sys.mjs",
     "FaviconUtils.sys.mjs",
     "InputPickerPanelCommon.sys.mjs",
+    "Moat.sys.mjs",
+    "TorConnect.sys.mjs",
+    "TorSettings.sys.mjs",
     "TorStrings.sys.mjs",
 ]
 
