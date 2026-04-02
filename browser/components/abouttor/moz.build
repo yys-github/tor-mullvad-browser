@@ -1,11 +1,8 @@
 JAR_MANIFESTS += ["jar.mn"]
 
-EXTRA_JS_MODULES += [
-    "AboutTorMessage.sys.mjs",
-    "HomepageOverride.sys.mjs",
-]
-
-FINAL_TARGET_FILES.actors += [
+MOZ_SRC_FILES += [
     "AboutTorChild.sys.mjs",
+    "AboutTorMessage.sys.mjs",
     "AboutTorParent.sys.mjs",
+    "HomepageOverride.sys.mjs",
 ]
