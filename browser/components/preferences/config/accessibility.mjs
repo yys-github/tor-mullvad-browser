@@ -635,10 +635,10 @@ SettingGroupManager.registerGroups({
     headingLevel: 2,
     items: [
       // { id: "alwaysUnderlineLinks", l10nId: "browsing-always-underline-links" },
-      // {
-      //   id: "useSmoothScrolling",
-      //   l10nId: "browsing-use-smooth-scrolling",
-      // },
+      {
+        id: "useSmoothScrolling",
+        l10nId: "browsing-use-smooth-scrolling",
+      },
     ],
   },
 });
