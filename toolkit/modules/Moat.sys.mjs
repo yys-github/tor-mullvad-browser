@@ -11,10 +11,10 @@ const log = console.createInstance({
 
 ChromeUtils.defineESModuleGetters(lazy, {
   DomainFrontRequestBuilder:
-    "resource://gre/modules/DomainFrontedRequests.sys.mjs",
+    "moz-src:///toolkit/modules/DomainFrontedRequests.sys.mjs",
   DomainFrontRequestCancelledError:
-    "resource://gre/modules/DomainFrontedRequests.sys.mjs",
-  TorBridgeSource: "resource://gre/modules/TorSettings.sys.mjs",
+    "moz-src:///toolkit/modules/DomainFrontedRequests.sys.mjs",
+  TorBridgeSource: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
 });
 
 const TorLauncherPrefs = Object.freeze({

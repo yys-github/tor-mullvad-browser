@@ -5,7 +5,7 @@
 const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
-  MoatRPC: "resource://gre/modules/Moat.sys.mjs",
+  MoatRPC: "moz-src:///toolkit/modules/Moat.sys.mjs",
 });
 
 export var BridgeDB = {
