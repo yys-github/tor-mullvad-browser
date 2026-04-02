@@ -20,7 +20,7 @@ var gTorConnectTitlebarStatus = {
    */
   init() {
     const { TorStrings } = ChromeUtils.importESModule(
-      "resource://gre/modules/TorStrings.sys.mjs"
+      "moz-src:///toolkit/modules/TorStrings.sys.mjs"
     );
 
     this._strings = TorStrings.torConnect;
