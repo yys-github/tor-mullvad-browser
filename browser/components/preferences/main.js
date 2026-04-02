@@ -3004,10 +3004,10 @@ SettingGroupManager.registerGroups({
         id: "useFullKeyboardNavigation",
         l10nId: "browsing-use-full-keyboard-navigation",
       },
-      // {
-      //   id: "alwaysUnderlineLinks",
-      //   l10nId: "browsing-always-underline-links",
-      // },
+      {
+        id: "alwaysUnderlineLinks",
+        l10nId: "browsing-always-underline-links",
+      },
       {
         id: "searchStartTyping",
         l10nId: "browsing-search-on-start-typing",
