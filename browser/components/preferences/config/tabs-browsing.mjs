@@ -541,10 +541,14 @@ Preferences.addSetting({
 Preferences.addSetting({
   id: "cfrRecommendations",
   pref: "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.addons",
+  // Hide feature recommendation (CFR). tor-browser#43118.
+  visible: () => false,
 });
 Preferences.addSetting({
   id: "cfrRecommendations-features",
   pref: "browser.newtabpage.activity-stream.asrouter.userprefs.cfr.features",
+  // Hide feature recommendation (CFR). tor-browser#43118.
+  visible: () => false,
 });
 
 SettingGroupManager.registerGroups({

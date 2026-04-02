@@ -34,11 +34,17 @@ Preferences.addSetting({
 
 Preferences.addSetting({
   id: "web-appearance-override-warning",
+  deps: ["resistFingerprinting"],
   setup: emitChange => {
     FORCED_COLORS_QUERY.addEventListener("change", emitChange);
     return () => FORCED_COLORS_QUERY.removeEventListener("change", emitChange);
   },
-  visible: () => {
+  visible: ({ resistFingerprinting }) => {
+    // Hide web appearance settings when using resist fingerprinting (RFP).
+    // tor-browser#41739.
+    if (resistFingerprinting.value) {
+      return false;
+    }
     return FORCED_COLORS_QUERY.matches;
   },
 });
@@ -48,6 +54,12 @@ Preferences.addSetting(
     id: "web-appearance-chooser",
     themeNames: ["dark", "light", "auto"],
     pref: "layout.css.prefers-color-scheme.content-override",
+    deps: ["resistFingerprinting"],
+    visible: ({ resistFingerprinting }) => {
+      // Hide web appearance settings when using resist fingerprinting (RFP).
+      // tor-browser#41739.
+      return !resistFingerprinting.value;
+    },
     setup(emitChange) {
       Services.obs.addObserver(emitChange, "look-and-feel-changed");
       return () =>
