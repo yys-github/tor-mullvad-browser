@@ -37,6 +37,7 @@ DIRS += [
     "backup",
     "contentanalysis",
     "contextualidentity",
+    "cryptosafety",
     "customizableui",
     "customkeys",
     "downloads",
