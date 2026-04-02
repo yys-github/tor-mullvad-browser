@@ -1,6 +1,6 @@
 // Copyright (c) 2020, The Tor Project, Inc.
 
-import { TorStrings } from "resource://gre/modules/TorStrings.sys.mjs";
+import { TorStrings } from "moz-src:///toolkit/modules/TorStrings.sys.mjs";
 
 // Prefs
 
