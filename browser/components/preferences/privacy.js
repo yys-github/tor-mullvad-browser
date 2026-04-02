@@ -623,6 +623,12 @@ var gPrivacyPane = {
     initSettingGroup("cookiesAndSiteData2");
     initSettingGroup("certificates");
     initSettingGroup("ipprotection");
+    // NOTE: "managePayments" and "manageAddresses" are usually initialised by
+    // FormAutofillPreferences.sys.mjs via FormAutofillStatus. But this never
+    // runs because the "autofill" extension is excluded from the build. So we
+    // initialise them ourselves with an empty config. See tor-browser#44630.
+    initSettingGroup("managePayments");
+    initSettingGroup("manageAddresses");
     initSettingGroup("history");
     initSettingGroup("history2");
     initSettingGroup("permissions");
