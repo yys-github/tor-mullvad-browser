@@ -24,7 +24,7 @@ import org.mozilla.fenix.tor.RunOnceBootstrapped
 
 object TorBrowserFeatures {
     private val logger = Logger("torbrowser-features")
-    private const val NOSCRIPT_ID = "{73a6fe31-595d-460b-a920-fcc0f8843232}"
+    const val NOSCRIPT_ID = "{73a6fe31-595d-460b-a920-fcc0f8843232}"
 
     private fun installNoScript(
         context: Context,
