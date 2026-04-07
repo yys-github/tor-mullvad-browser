@@ -16,7 +16,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
   PdfJs: "resource://pdf.js/PdfJs.sys.mjs",
   GeckoViewPreferences: "resource://gre/modules/GeckoViewPreferences.sys.mjs",
   RFPHelper: "resource://gre/modules/RFPHelper.sys.mjs",
-  TorDomainIsolator: "resource://gre/modules/TorDomainIsolator.sys.mjs",
+  TorDomainIsolator:
+    "moz-src:///toolkit/components/tor-launcher/TorDomainIsolator.sys.mjs",
 });
 
 const { debug, warn } = GeckoViewUtils.initLogging("Startup");
