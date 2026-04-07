@@ -5,12 +5,14 @@
 const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
   EventDispatcher: "resource://gre/modules/Messaging.sys.mjs",
-  TorConnect: "resource://gre/modules/TorConnect.sys.mjs",
-  TorConnectTopics: "resource://gre/modules/TorConnect.sys.mjs",
-  TorSettingsTopics: "resource://gre/modules/TorSettings.sys.mjs",
-  TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
-  TorProviderTopics: "resource://gre/modules/TorProviderBuilder.sys.mjs",
-  TorSettings: "resource://gre/modules/TorSettings.sys.mjs",
+  TorConnect: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  TorConnectTopics: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  TorSettingsTopics: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
+  TorProviderBuilder:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
+  TorProviderTopics:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
+  TorSettings: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
   SecurityLevelPrefs:
     "moz-src:///toolkit/components/securitylevel/SecurityLevel.sys.mjs",
 });

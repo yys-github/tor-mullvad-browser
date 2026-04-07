@@ -6,7 +6,8 @@ import { GeckoViewModule } from "resource://gre/modules/GeckoViewModule.sys.mjs"
 
 const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
-  TorDomainIsolator: "resource://gre/modules/TorDomainIsolator.sys.mjs",
+  TorDomainIsolator:
+    "moz-src:///toolkit/components/tor-launcher/TorDomainIsolator.sys.mjs",
 });
 
 export class GeckoViewContent extends GeckoViewModule {
