@@ -1,7 +1,7 @@
 import {
   TorProviderState,
   TorProviderInitError,
-} from "resource://gre/modules/TorProviderBuilder.sys.mjs";
+} from "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs";
 
 /**
  * @callback StateChangedCallback

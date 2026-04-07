@@ -11,7 +11,8 @@ const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
   FileUtils: "resource://gre/modules/FileUtils.sys.mjs",
-  TorProviderTopics: "resource://gre/modules/TorProviderBuilder.sys.mjs",
+  TorProviderTopics:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
 });
 
 const kPropBundleURI = "chrome://torbutton/locale/torlauncher.properties";

@@ -4,9 +4,11 @@
 
 const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
-  TorLauncherUtil: "resource://gre/modules/TorLauncherUtil.sys.mjs",
-  TorProvider: "resource://gre/modules/TorProvider.sys.mjs",
-  TorProviderNone: "resource://gre/modules/TorProviderNone.sys.mjs",
+  TorLauncherUtil:
+    "moz-src:///toolkit/components/tor-launcher/TorLauncherUtil.sys.mjs",
+  TorProvider: "moz-src:///toolkit/components/tor-launcher/TorProvider.sys.mjs",
+  TorProviderNone:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderNone.sys.mjs",
 });
 
 ChromeUtils.defineLazyGetter(lazy, "logger", () => {

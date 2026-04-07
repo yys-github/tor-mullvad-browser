@@ -5,8 +5,10 @@ const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
   TorConnect: "resource://gre/modules/TorConnect.sys.mjs",
   TorDomainIsolator: "resource://gre/modules/TorDomainIsolator.sys.mjs",
-  TorLauncherUtil: "resource://gre/modules/TorLauncherUtil.sys.mjs",
-  TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
+  TorLauncherUtil:
+    "moz-src:///toolkit/components/tor-launcher/TorLauncherUtil.sys.mjs",
+  TorProviderBuilder:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
   TorSettings: "resource://gre/modules/TorSettings.sys.mjs",
 });
 

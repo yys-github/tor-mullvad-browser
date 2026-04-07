@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { TorParsers } from "resource://gre/modules/TorParsers.sys.mjs";
+import { TorParsers } from "moz-src:///toolkit/components/tor-launcher/TorParsers.sys.mjs";
 
 const logger = console.createInstance({
   maxLogLevelPref: "browser.tor_provider.cp_log_level",
