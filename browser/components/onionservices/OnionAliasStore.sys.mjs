@@ -8,8 +8,8 @@ const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
   JSONFile: "resource://gre/modules/JSONFile.sys.mjs",
-  TorConnect: "resource://gre/modules/TorConnect.sys.mjs",
-  TorConnectTopics: "resource://gre/modules/TorConnect.sys.mjs",
+  TorConnect: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  TorConnectTopics: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
   TorRequestWatch:
     "moz-src:///browser/components/onionservices/TorRequestWatch.sys.mjs",
 });
