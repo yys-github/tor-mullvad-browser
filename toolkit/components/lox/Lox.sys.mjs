@@ -16,16 +16,16 @@ ChromeUtils.defineLazyGetter(lazy, "logger", () => {
 
 ChromeUtils.defineESModuleGetters(lazy, {
   DomainFrontRequestBuilder:
-    "resource://gre/modules/DomainFrontedRequests.sys.mjs",
+    "moz-src:///toolkit/modules/DomainFrontedRequests.sys.mjs",
   DomainFrontRequestNetworkError:
-    "resource://gre/modules/DomainFrontedRequests.sys.mjs",
+    "moz-src:///toolkit/modules/DomainFrontedRequests.sys.mjs",
   DomainFrontRequestResponseError:
-    "resource://gre/modules/DomainFrontedRequests.sys.mjs",
-  TorConnect: "resource://gre/modules/TorConnect.sys.mjs",
-  TorConnectStage: "resource://gre/modules/TorConnect.sys.mjs",
-  TorSettings: "resource://gre/modules/TorSettings.sys.mjs",
-  TorSettingsTopics: "resource://gre/modules/TorSettings.sys.mjs",
-  TorBridgeSource: "resource://gre/modules/TorSettings.sys.mjs",
+    "moz-src:///toolkit/modules/DomainFrontedRequests.sys.mjs",
+  TorConnect: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  TorConnectStage: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  TorSettings: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
+  TorSettingsTopics: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
+  TorBridgeSource: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
 });
 
 // XPCOMUtils.defineLazyModuleGetters(lazy, {
