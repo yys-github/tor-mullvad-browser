@@ -18,7 +18,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
   RFPHelper: "resource://gre/modules/RFPHelper.sys.mjs",
   TorAndroidIntegration:
     "moz-src:///toolkit/modules/TorAndroidIntegration.sys.mjs",
-  TorDomainIsolator: "resource://gre/modules/TorDomainIsolator.sys.mjs",
+  TorDomainIsolator:
+    "moz-src:///toolkit/components/tor-launcher/TorDomainIsolator.sys.mjs",
 });
 
 const { debug, warn } = GeckoViewUtils.initLogging("Startup");
