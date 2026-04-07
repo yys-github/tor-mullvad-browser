@@ -1,4 +1,8 @@
 EXTRA_JS_MODULES += [
+    "TorDomainIsolator.sys.mjs",
+]
+
+MOZ_SRC_FILES += [
     "TorBootstrapRequest.sys.mjs",
     "TorControlPort.sys.mjs",
     "TorLauncherUtil.sys.mjs",

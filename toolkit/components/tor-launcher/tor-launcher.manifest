@@ -1,2 +1,2 @@
 category profile-after-change TorStartupService @torproject.org/tor-startup-service;1
-category browser-first-window-ready resource://gre/modules/TorProviderBuilder.sys.mjs TorProviderBuilder.firstWindowLoaded
+category browser-first-window-ready moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs TorProviderBuilder.firstWindowLoaded

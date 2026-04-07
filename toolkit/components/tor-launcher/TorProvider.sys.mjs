@@ -4,22 +4,24 @@
 
 import { clearTimeout, setTimeout } from "resource://gre/modules/Timer.sys.mjs";
 
-import { TorLauncherUtil } from "resource://gre/modules/TorLauncherUtil.sys.mjs";
-import { TorParsers } from "resource://gre/modules/TorParsers.sys.mjs";
-import { TorProviderBase } from "resource://gre/modules/TorProviderBase.sys.mjs";
+import { TorLauncherUtil } from "moz-src:///toolkit/components/tor-launcher/TorLauncherUtil.sys.mjs";
+import { TorParsers } from "moz-src:///toolkit/components/tor-launcher/TorParsers.sys.mjs";
+import { TorProviderBase } from "moz-src:///toolkit/components/tor-launcher/TorProviderBase.sys.mjs";
 import {
   TorBootstrapError,
   TorProviderTopics,
-} from "resource://gre/modules/TorProviderBuilder.sys.mjs";
+} from "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs";
 
 const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
   FileUtils: "resource://gre/modules/FileUtils.sys.mjs",
-  TorController: "resource://gre/modules/TorControlPort.sys.mjs",
-  TorProcess: "resource://gre/modules/TorProcess.sys.mjs",
-  TorProcessAndroid: "resource://gre/modules/TorProcessAndroid.sys.mjs",
-  TorProxyType: "resource://gre/modules/TorSettings.sys.mjs",
-  TorSettings: "resource://gre/modules/TorSettings.sys.mjs",
+  TorController:
+    "moz-src:///toolkit/components/tor-launcher/TorControlPort.sys.mjs",
+  TorProcess: "moz-src:///toolkit/components/tor-launcher/TorProcess.sys.mjs",
+  TorProcessAndroid:
+    "moz-src:///toolkit/components/tor-launcher/TorProcessAndroid.sys.mjs",
+  TorProxyType: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
+  TorSettings: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
 });
 
 const logger = console.createInstance({
