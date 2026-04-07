@@ -3,8 +3,10 @@ const lazy = {};
 // We will use the modules only when the profile is loaded, so prefer lazy
 // loading
 ChromeUtils.defineESModuleGetters(lazy, {
-  TorLauncherUtil: "resource://gre/modules/TorLauncherUtil.sys.mjs",
-  TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
+  TorLauncherUtil:
+    "moz-src:///toolkit/components/tor-launcher/TorLauncherUtil.sys.mjs",
+  TorProviderBuilder:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
 });
 
 /* Browser observer topis */

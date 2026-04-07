@@ -1,4 +1,4 @@
-import { TorProviderBase } from "resource://gre/modules/TorProviderBase.sys.mjs";
+import { TorProviderBase } from "moz-src:///toolkit/components/tor-launcher/TorProviderBase.sys.mjs";
 
 const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
