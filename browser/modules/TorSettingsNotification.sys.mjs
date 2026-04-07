@@ -2,8 +2,8 @@ const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
   BrowserWindowTracker: "resource:///modules/BrowserWindowTracker.sys.mjs",
-  TorSettings: "resource://gre/modules/TorSettings.sys.mjs",
-  TorSettingsTopics: "resource://gre/modules/TorSettings.sys.mjs",
+  TorSettings: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
+  TorSettingsTopics: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
 });
 
 ChromeUtils.defineLazyGetter(lazy, "NotificationStrings", function () {
