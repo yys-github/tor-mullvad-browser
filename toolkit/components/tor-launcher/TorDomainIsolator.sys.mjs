@@ -13,8 +13,10 @@ const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
   ObjectUtils: "resource://gre/modules/ObjectUtils.sys.mjs",
-  TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
-  TorProviderTopics: "resource://gre/modules/TorProviderBuilder.sys.mjs",
+  TorProviderBuilder:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
+  TorProviderTopics:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
 });
 
 XPCOMUtils.defineLazyServiceGetters(lazy, {
