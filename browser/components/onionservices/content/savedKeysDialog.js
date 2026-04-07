@@ -3,7 +3,8 @@
 "use strict";
 
 ChromeUtils.defineESModuleGetters(this, {
-  TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
+  TorProviderBuilder:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
 });
 
 var gOnionServicesSavedKeysDialog = {
