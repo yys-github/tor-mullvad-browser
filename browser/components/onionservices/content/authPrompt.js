@@ -330,7 +330,8 @@ var OnionAuthPrompt = {
     });
 
     ChromeUtils.defineESModuleGetters(this._lazy, {
-      TorProviderBuilder: "resource://gre/modules/TorProviderBuilder.sys.mjs",
+      TorProviderBuilder:
+        "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
       CommonUtils: "resource://services-common/utils.sys.mjs",
     });
     // Allow synchornous access to the localized strings. Used only for the
