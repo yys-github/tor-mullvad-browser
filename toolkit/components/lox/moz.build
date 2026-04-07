@@ -1,7 +1,10 @@
 EXTRA_JS_MODULES += [
-    "Lox.sys.mjs",
     # Let's keep the old jsm format until wasm-bindgen is updated
     "lox_wasm.jsm",
+]
+
+MOZ_SRC_FILES += [
+    "Lox.sys.mjs",
 ]
 
 JAR_MANIFESTS += ["jar.mn"]
