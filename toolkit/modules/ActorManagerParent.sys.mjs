@@ -332,11 +332,11 @@ let JSWINDOWACTORS = {
 
   FilesFilter: {
     parent: {
-      esModuleURI: "resource://gre/actors/FilesFilterParent.sys.mjs",
+      esModuleURI: "moz-src:///toolkit/actors/FilesFilterParent.sys.mjs",
     },
 
     child: {
-      esModuleURI: "resource://gre/actors/FilesFilterChild.sys.mjs",
+      esModuleURI: "moz-src:///toolkit/actors/FilesFilterChild.sys.mjs",
       events: {
         drop: {},
         paste: { capture: true },
