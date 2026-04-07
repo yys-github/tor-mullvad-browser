@@ -321,8 +321,10 @@ class TorDomainIsolatorImpl {
     }
     try {
       const channel = aChannel.QueryInterface(Ci.nsIChannel);
-      let firstPartyDomain = channel.loadInfo.originAttributes.firstPartyDomain;
-      const userContextId = channel.loadInfo.originAttributes.userContextId;
+      let firstPartyDomain =
+        channel.loadInfo.originAttributes?.firstPartyDomain;
+      const userContextId =
+        channel.loadInfo.originAttributes?.userContextId ?? 0;
       const scheme = channel.loadInfo.loadingPrincipal?.URI?.scheme;
       const filePath = channel.loadInfo.loadingPrincipal?.URI?.filePath;
       if (
@@ -375,7 +377,7 @@ class TorDomainIsolatorImpl {
       );
     } catch (e) {
       logger.error("Error while setting a new proxy", e);
-      return null;
+      return aProxy;
     }
   }
 
