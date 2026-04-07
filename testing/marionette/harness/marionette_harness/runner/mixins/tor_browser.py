@@ -24,7 +24,7 @@ class TorBrowserMixin:
                     did_bootstrap = self.marionette.execute_async_script(
                         """
                         const { TorConnect, TorConnectStage, TorConnectTopics } = ChromeUtils.importESModule(
-                            "resource://gre/modules/TorConnect.sys.mjs"
+                            "moz-src:///toolkit/modules/TorConnect.sys.mjs"
                         );
                         const [resolve] = arguments;
 
@@ -80,7 +80,7 @@ class TorBrowserMixin:
                     self.marionette.execute_script(
                         """
                         const { TorConnect } = ChromeUtils.importESModule(
-                            "resource://gre/modules/TorConnect.sys.mjs"
+                            "moz-src:///toolkit/modules/TorConnect.sys.mjs"
                         );
 
                         TorConnect._makeStageRequest(TorConnectStage.Start, true);
