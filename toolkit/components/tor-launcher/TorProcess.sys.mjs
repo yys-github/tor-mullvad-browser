@@ -8,8 +8,9 @@ import { Subprocess } from "resource://gre/modules/Subprocess.sys.mjs";
 const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
-  TorLauncherUtil: "resource://gre/modules/TorLauncherUtil.sys.mjs",
-  TorParsers: "resource://gre/modules/TorParsers.sys.mjs",
+  TorLauncherUtil:
+    "moz-src:///toolkit/components/tor-launcher/TorLauncherUtil.sys.mjs",
+  TorParsers: "moz-src:///toolkit/components/tor-launcher/TorParsers.sys.mjs",
 });
 
 const TorProcessStatus = Object.freeze({
