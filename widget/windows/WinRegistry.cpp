@@ -314,8 +314,7 @@ bool KeyWatcher::Register() {
 
 KeyWatcher::~KeyWatcher() {
   if (mWaitObject) {
-    UnregisterWait(mWaitObject);
-    CloseHandle(mWaitObject);
+    UnregisterWaitEx(mWaitObject, INVALID_HANDLE_VALUE);
   }
   if (mEvent) {
     CloseHandle(mEvent);
