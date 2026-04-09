@@ -754,8 +754,6 @@ nsDisplayListBuilder::nsDisplayListBuilder(nsIFrame* aReferenceFrame,
 }
 
 void nsDisplayListBuilder::BeginFrame() {
-  nsCSSRendering::BeginFrameTreesLocked();
-
   mIsPaintingToWindow = false;
   mUseHighQualityScaling = false;
   mIgnoreSuppression = false;
@@ -771,7 +769,6 @@ void nsDisplayListBuilder::EndFrame() {
   mActiveScrolledRoots.Clear();
   FreeClipChains();
   FreeTemporaryItems();
-  nsCSSRendering::EndFrameTreesLocked();
 }
 
 void nsDisplayListBuilder::MarkFrameForDisplay(nsIFrame* aFrame,
@@ -1042,6 +1039,8 @@ void nsDisplayListBuilder::IncrementPresShellPaintCount(PresShell* aPresShell) {
 
 void nsDisplayListBuilder::EnterPresShell(const nsIFrame* aReferenceFrame,
                                           bool aPointerEventsNoneDoc) {
+  nsCSSRendering::PresShellChanged();
+
   PresShellState* state = mPresShellStates.AppendElement();
   state->mPresShell = aReferenceFrame->PresShell();
   state->mFirstFrameMarkedForDisplay = mFramesMarkedForDisplay.Length();
@@ -1200,6 +1199,7 @@ void nsDisplayListBuilder::LeavePresShell(const nsIFrame* aReferenceFrame,
       CurrentPresShellState()->mPresShell == aReferenceFrame->PresShell(),
       "Presshell mismatch");
 
+  nsCSSRendering::PresShellChanged();
   if (mIsPaintingToWindow && aPaintedContents) {
     nsPresContext* pc = aReferenceFrame->PresContext();
     if (!pc->HadNonBlankPaint()) {
