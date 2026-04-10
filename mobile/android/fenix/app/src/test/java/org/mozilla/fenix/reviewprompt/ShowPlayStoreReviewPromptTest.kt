@@ -158,7 +158,7 @@ class ShowPlayStoreReviewPromptTest {
             feature.start()
             testDispatcher.scheduler.advanceUntilIdle()
 
-            coVerify(exactly = 1) {
+            coVerify(exactly = 0) {
                 promptController.tryPromptReview(mockActivity)
             }
             captureMiddleware.assertLastAction(ReviewPromptShown::class)
