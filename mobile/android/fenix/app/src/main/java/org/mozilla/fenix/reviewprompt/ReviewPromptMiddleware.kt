@@ -105,23 +105,7 @@ class ReviewPromptMiddleware(
             return
         }
 
-        val shouldShowPrompt: Boolean = createJexlHelper().use { jexlHelper ->
-            // Keep the legacy criteria around, but use the nimbus data and jexl to trigger.
-            // Leaving the original if-else logic and early return for readability.
-            if (!shouldUseNewTriggerCriteria()) {
-                val legacyCriteriaSatisfied = buildTriggerLegacyCriteria(jexlHelper).all { it }
-                return@use legacyCriteriaSatisfied
-            }
-
-            // Otherwise, we use the new criteria.
-            val allMainCriteriaSatisfied = buildTriggerMainCriteria(jexlHelper).all { it }
-            if (!allMainCriteriaSatisfied) {
-                return@use false
-            }
-
-            val atLeastOneOfSubCriteriaSatisfied = buildTriggerSubCriteria(jexlHelper).any { it }
-            return@use atLeastOneOfSubCriteriaSatisfied
-        }
+        val shouldShowPrompt: Boolean = false
 
         if (shouldShowPrompt) {
             if (shouldShowCustomPrompt()) {
