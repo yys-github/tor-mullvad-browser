@@ -43,46 +43,8 @@ class PlayStoreReviewPromptController(
         onNotDisplayed: () -> Unit = {},
         onError: () -> Unit = {},
     ) {
-        logger.info("tryPromptReview in progress...")
-        val reviewInfoTask = withContext(Dispatchers.IO) { manager.requestReviewFlow() }
-
-        reviewInfoTask.addOnCompleteListener(activity) { task ->
-            val result = if (task.isSuccessful) {
-                logger.info("Review flow launched.")
-                // Launch the in-app flow.
-                manager.launchReviewFlow(activity, task.result)
-
-                ReviewPromptAttemptResult.from(task.result.toString())
-            } else {
-                Error
-            }
-
-            when (result) {
-                NotDisplayed -> {
-                    logger.warn("In-app review flow reported as not displayed, even though there was no error.")
-
-                    onNotDisplayed()
-                }
-
-                Error -> {
-                    val reviewErrorCode =
-                        (task.exception as? ReviewException)?.errorCode ?: ERROR_CODE_UNEXPECTED
-                    logger.warn("Failed to launch in-app review flow due to: $reviewErrorCode.")
-
-                    onError()
-                }
-
-                Displayed, Unknown -> {}
-            }
-
-            recordReviewPromptEvent(
-                promptAttemptResult = result,
-                numberOfAppLaunches = numberOfAppLaunches(),
-                now = Date(),
-            )
-        }
-
-        logger.info("tryPromptReview completed.")
+        logger.info("tryPromptReview has been successfully noop'ed.")
+        return
     }
 
     /**
@@ -92,22 +54,8 @@ class PlayStoreReviewPromptController(
         activity: Activity,
         openInNewTab: (url: String) -> Unit,
     ) {
-        logger.info("tryLaunchPlayStoreReview in progress...")
-
-        try {
-            logger.info("Navigating to Play store listing.")
-            activity.startActivity(
-                Intent(Intent.ACTION_VIEW, SupportUtils.RATE_APP_URL.toUri()),
-            )
-        } catch (e: ActivityNotFoundException) {
-            // Device without the play store installed.
-            // Opening the play store website.
-            openInNewTab(SupportUtils.FENIX_PLAY_STORE_URL)
-
-            logger.warn("Failed to launch play store review flow due to: $e.")
-        }
-
-        logger.info("tryLaunchPlayStoreReview completed.")
+        logger.info("tryLaunchPlayStoreReview has been successfully noop'ed.")
+        return
     }
 
     companion object {

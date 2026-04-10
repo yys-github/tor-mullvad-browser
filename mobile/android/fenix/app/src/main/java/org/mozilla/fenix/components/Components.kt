@@ -99,6 +99,12 @@ import org.mozilla.fenix.utils.isLargeScreenSize
 import org.mozilla.fenix.wifi.WifiConnectionMonitor
 import java.util.concurrent.TimeUnit
 
+import android.app.Activity
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
+import com.google.android.play.core.review.ReviewInfo
+import com.google.android.play.core.review.ReviewManager
+
 private const val AMO_COLLECTION_MAX_CACHE_AGE = 2 * 24 * 60L // Two days in minutes
 
 /**
@@ -260,7 +266,7 @@ class Components(private val context: Context) {
 
     val playStoreReviewPromptController by lazyMonitored {
         PlayStoreReviewPromptController(
-            manager = ReviewManagerFactory.create(context),
+            manager = NoopReviewManager(context),
             numberOfAppLaunches = { settings.numberOfAppLaunches },
         )
     }
@@ -462,6 +468,19 @@ class Components(private val context: Context) {
     val clientUUID by lazyMonitored { ClientUUID.build(context) }
 
     val torController by lazyMonitored { TorControllerGV(context) }
+}
+
+class NoopReviewManager(val value: Context) : ReviewManager {
+    override fun launchReviewFlow(
+        p0: Activity,
+        p1: ReviewInfo
+    ): Task<Void?> {
+        return Tasks.forResult(null)
+    }
+
+    override fun requestReviewFlow(): Task<ReviewInfo?> {
+        return Tasks.forResult(null)
+    }
 }
 
 /**
