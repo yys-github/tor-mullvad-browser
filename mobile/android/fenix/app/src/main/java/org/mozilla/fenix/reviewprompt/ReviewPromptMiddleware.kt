@@ -95,15 +95,7 @@ class ReviewPromptMiddleware(
             return
         }
 
-        val shouldShowPrompt: Boolean = createJexlHelper().use { jexlHelper ->
-            val allMainCriteriaSatisfied = buildTriggerMainCriteria(jexlHelper).all { it }
-            if (!allMainCriteriaSatisfied) {
-                return@use false
-            }
-
-            val atLeastOneOfSubCriteriaSatisfied = buildTriggerSubCriteria(jexlHelper).any { it }
-            return@use atLeastOneOfSubCriteriaSatisfied
-        }
+        val shouldShowPrompt: Boolean = false
 
         if (shouldShowPrompt) {
             if (shouldShowCustomPrompt()) {
