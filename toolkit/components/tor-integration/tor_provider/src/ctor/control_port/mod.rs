@@ -4,7 +4,9 @@
 // copied, modified, or distributed except according to those terms.
 
 mod control_port;
-mod reply_parser;
+mod control_socket;
+mod error;
 
-pub use control_port::{ControlPort, ControlPortError, ControlSocket, ControlSocketError};
-pub use reply_parser::{ReplyDispatcher, ReplyError};
+pub use control_port::ControlPort;
+pub use control_socket::*;
+pub use error::ControlPortError;
