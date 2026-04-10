@@ -213,8 +213,7 @@
         app:popUpToInclusive="true"
         app:destination="@+id/unlockPrivateTabsFragment"/>
     <action
-        android:id="@+id/action_global_customReviewPromptDialogFragment"
-        app:destination="@id/customReviewPromptDialogFragment" />
+        android:id="@+id/action_global_customReviewPromptDialogFragment" />
     <action
         android:id="@+id/action_global_to_installedAddonDetailsFragment"
         app:destination="@id/installedAddonDetailsFragment" />

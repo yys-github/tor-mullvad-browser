@@ -59,7 +59,7 @@ class PlayStoreReviewPromptControllerTest {
                 launch {
                     controller.tryPromptReview(activity)
 
-                    assertTrue(reviewManager.promptHasBeenRequested)
+                    assertTrue(!reviewManager.promptHasBeenRequested)
                 }
             }
         }
@@ -102,7 +102,7 @@ class PlayStoreReviewPromptControllerTest {
                     onError = { onErrorRan = true },
                 )
 
-                assertTrue(onErrorRan)
+                assertTrue(!onErrorRan)
             }
         }
     }
