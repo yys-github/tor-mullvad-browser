@@ -21,11 +21,6 @@ import org.mozilla.fenix.reviewprompt.ReviewPromptState.NotEligible
  */
 internal object ReviewPromptReducer {
     fun reduce(state: AppState, action: ReviewPromptAction): AppState {
-        return when (action) {
-            ShowPlayStorePrompt -> state.copy(reviewPrompt = Eligible(Type.PlayStore))
-            ShowCustomReviewPrompt -> state.copy(reviewPrompt = Eligible(Type.Custom))
-            DoNotShowReviewPrompt, ReviewPromptShown -> state.copy(reviewPrompt = NotEligible)
-            CheckIfEligibleForReviewPrompt -> state
-        }
+        return state.copy(reviewPrompt = NotEligible)
     }
 }
