@@ -7,6 +7,7 @@ mod command_writer;
 mod control_port;
 mod control_socket;
 mod error;
+mod message_pump;
 
 pub use control_port::ControlPort;
 pub use control_socket::*;
