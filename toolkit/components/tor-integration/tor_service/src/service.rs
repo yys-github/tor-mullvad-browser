@@ -3,7 +3,11 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 use nserror::{nsresult, NS_ERROR_NULL_POINTER, NS_OK};
-use xpcom::{interfaces::ITorService, RefPtr};
+use nsstring::nsACString;
+use xpcom::interfaces::{nsIFile, ITorControlPort, ITorService};
+use xpcom::RefPtr;
+
+use super::control_port::ControlPortXpcom;
 
 #[xpcom(implement(ITorService), atomic)]
 struct TorService {}
@@ -11,6 +15,35 @@ struct TorService {}
 impl TorService {
     fn new() -> RefPtr<TorService> {
         TorService::allocate(InitTorService {})
+    }
+
+    xpcom_method!(create_control_port => CreateControlPort(host: *const nsACString, port: i32, out: *mut *const ITorControlPort));
+    fn create_control_port(
+        &self,
+        host: &nsACString,
+        port: i32,
+        out: *mut *const ITorControlPort,
+    ) -> Result<(), nsresult> {
+        if out.is_null() {
+            return Err(NS_ERROR_NULL_POINTER);
+        }
+        let cp = RefPtr::new(ControlPortXpcom::new_tcp(host, port)?.coerce::<ITorControlPort>());
+        cp.forget(unsafe { &mut *out });
+        Ok(())
+    }
+
+    xpcom_method!(create_control_port_ipc => CreateControlPortIPC(socket: *const nsIFile, out: *mut *const ITorControlPort));
+    fn create_control_port_ipc(
+        &self,
+        socket: &nsIFile,
+        out: *mut *const ITorControlPort,
+    ) -> Result<(), nsresult> {
+        if out.is_null() {
+            return Err(NS_ERROR_NULL_POINTER);
+        }
+        let cp = RefPtr::new(ControlPortXpcom::new_ipc(socket)?.coerce::<ITorControlPort>());
+        cp.forget(unsafe { &mut *out });
+        Ok(())
     }
 }
 

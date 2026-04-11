@@ -5,5 +5,6 @@
 #[macro_use]
 extern crate xpcom;
 
+mod control_port;
 mod control_socket;
 mod service;
