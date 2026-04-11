@@ -8132,8 +8132,12 @@ dependencies = [
 name = "tor_service"
 version = "0.1.0"
 dependencies = [
+ "bytes",
+ "cstr",
+ "log",
  "nserror",
  "nsstring",
+ "thin-vec",
  "tor_provider",
  "xpcom",
 ]
