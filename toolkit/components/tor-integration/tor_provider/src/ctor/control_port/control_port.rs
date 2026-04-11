@@ -4,9 +4,17 @@
 // copied, modified, or distributed except according to those terms.
 
 use bytes::{BufMut, Bytes, BytesMut};
-use std::{cell::Cell, rc::Rc};
+use std::{
+    cell::Cell,
+    rc::{Rc, Weak},
+};
 
-use super::{command_writer::CommandWriter, control_socket::*, error::ControlPortError};
+use super::{
+    command_writer::CommandWriter,
+    control_socket::*,
+    error::ControlPortError,
+    message_pump::{MessagePump, ReadAction},
+};
 use crate::ctor::reply_parser::{Reply, ReplyDispatcher, ReplyError};
 
 /// The lower-level part of the control port implementation.
@@ -16,6 +24,7 @@ struct ControlPortInner {
     reply_dispatcher: ReplyDispatcher,
     socket: Rc<dyn ControlSocket>,
     writer: Rc<CommandWriter>,
+    message_pump: Rc<MessagePump>,
     closed: Cell<bool>,
 }
 
@@ -27,12 +36,40 @@ impl ControlPortInner {
             reply_dispatcher: ReplyDispatcher::new(),
             socket: socket.clone(),
             writer: CommandWriter::new(socket.clone()),
+            message_pump: MessagePump::new(
+                socket.clone(),
+                Self::make_data_cb(weak_self.clone()),
+                Self::make_async_failure_cb(weak_self.clone()),
+            ),
             closed: Cell::new(false),
         });
-
-        // TODO: Start the message pump.
-
+        cp.message_pump.start().inspect_err(|_| {
+            let _ = cp.close();
+        })?;
         Ok(cp)
+    }
+
+    fn make_data_cb(weak_self: Weak<Self>) -> Box<dyn Fn(Bytes) -> ReadAction> {
+        Box::new(move |data| {
+            let Some(cp) = weak_self.upgrade() else {
+                return ReadAction::Stop;
+            };
+            if cp.reply_dispatcher.feed(&data).is_err() {
+                // This will call fail_all again on the dispactcher,
+                // but it is not a problem.
+                cp.async_failure();
+                return ReadAction::Stop;
+            }
+            ReadAction::Continue
+        })
+    }
+
+    fn make_async_failure_cb(weak_self: Weak<Self>) -> Box<dyn Fn()> {
+        Box::new(move || {
+            if let Some(cp) = weak_self.upgrade() {
+                cp.async_failure();
+            }
+        })
     }
 
     fn async_failure(&self) {
