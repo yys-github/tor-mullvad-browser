@@ -159,6 +159,9 @@ if CONFIG["MOZ_UNIFFI_FIXTURES"]:
 
 # Exclude aboutinference (about:inference). tor-browser#44045.
 
+if CONFIG["TOR_RUST_INTEGRATION"]:
+    DIRS += ["tor-integration"]
+
 UNIFIED_SOURCES += [
     "/toolkit/components/antitracking/ContentBlockingAllowList.cpp",
 ]
