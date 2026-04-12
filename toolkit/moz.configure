@@ -4649,3 +4649,14 @@ def libmegazord_artifacts(value):
 
 
 set_config("MOZ_LIBMEGAZORD_ARTIFACTS", libmegazord_artifacts)
+
+
+# Rust tor integration
+# ==============================================================
+option(
+    "--disable-tor-rust-integration",
+    help="Disable the Rust integration with tor",
+)
+
+set_config("TOR_RUST_INTEGRATION", True, when="--enable-tor-rust-integration")
+set_define("TOR_RUST_INTEGRATION", True, when="--enable-tor-rust-integration")

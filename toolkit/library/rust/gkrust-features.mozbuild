@@ -92,6 +92,9 @@ if CONFIG["MOZ_BUILD_APP"] == "browser" and CONFIG["OS_ARCH"] == "WINNT":
 if CONFIG["MOZ_BACKGROUNDTASKS"] and CONFIG["OS_ARCH"] == "WINNT":
     gkrust_features += ["backgroundtaskregistrar"]
 
+if CONFIG["TOR_RUST_INTEGRATION"]:
+    gkrust_features += ["tor_integration"]
+
 if CONFIG["ENABLE_TESTS"]:
     gkrust_features += ["enable_tests"]
 
