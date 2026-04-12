@@ -1,0 +1,24 @@
+# This package contains the tor service for Firefox.
+#
+# Because of a technical limitation, we cannot run Rust tests when linking to
+# xpcom. So, features should be implemented in the tor_provider crate, and be
+# tested there. This crate should be used only for the integration with XPCOM.
+
+[package]
+name = "tor_service"
+description = "Tor service for Firefox. It depends on some Firefox-specific crates."
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+moz_task = { path = "../../../../xpcom/rust/moz_task" }
+nserror = { path = "../../../../xpcom/rust/nserror" }
+nsstring = { path = "../../../../xpcom/rust/nsstring" }
+xpcom = { path = "../../../../xpcom/rust/xpcom" }
+
+tor_provider = { path = "../tor_provider" }
+
+bytes = "1.4.0"
+cstr = "0.2"
+log = "0.4"
+thin-vec = { version = "0.2.1", features = ["gecko-ffi"] }
