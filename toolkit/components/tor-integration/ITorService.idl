@@ -1,0 +1,32 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#include "nsISupports.idl"
+#include "nsIFile.idl"
+
+[scriptable, uuid(4b250614-968a-412f-9191-9ffd9d4bd001)]
+interface ITorControlPortReceiver : nsISupports {
+  void onAsyncMessage(in ACString message);
+};
+
+[scriptable, uuid(1389d157-4695-43a2-a7d8-538aaa350766)]
+interface ITorMessageHandler : nsISupports {
+  void onMessage(in ACString message);
+  void onError(in ACString error);
+};
+
+// TODO: Remove once we have a provider.
+[scriptable, uuid(f56d710e-5650-4b8c-8d31-279f360003ee)]
+interface ITorControlPort : nsISupports {
+  void start(in ITorControlPortReceiver receiver);
+  void sendCommand(in ACString command, in ITorMessageHandler handler);
+  void close();
+};
+
+[scriptable, uuid(2537313c-e120-408c-a2f6-86e6e1bdf899)]
+interface ITorService : nsISupports {
+  // For development purposes...
+  ITorControlPort createControlPort(in ACString host, in long port);
+  ITorControlPort createControlPortIPC(in nsIFile socket);
+};
