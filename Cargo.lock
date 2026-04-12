@@ -2982,6 +2982,8 @@ dependencies = [
  "ssl_tokens_cache",
  "static_prefs",
  "storage",
+ "tor_provider",
+ "tor_service",
  "trust-anchors",
  "unic-langid",
  "unic-langid-ffi",
@@ -8115,6 +8117,31 @@ name = "topological-sort"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "aa7c7f42dea4b1b99439786f5633aeb9c14c1b53f75e282803c2ec2ad545873c"
+
+[[package]]
+name = "tor_provider"
+version = "0.1.0"
+dependencies = [
+ "bytes",
+ "log",
+ "memchr",
+ "thiserror 2.0.12",
+]
+
+[[package]]
+name = "tor_service"
+version = "0.1.0"
+dependencies = [
+ "bytes",
+ "cstr",
+ "log",
+ "moz_task",
+ "nserror",
+ "nsstring",
+ "thin-vec",
+ "tor_provider",
+ "xpcom",
+]
 
 [[package]]
 name = "tower-service"
