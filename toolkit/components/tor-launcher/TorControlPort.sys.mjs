@@ -396,6 +396,15 @@ export class TorController {
    * @returns {TorController}
    */
   static fromIpcFile(ipcFile) {
+    // Notice: this preference is temporary, only for testing!
+    // Do not rely on it to exist forever.
+    if (
+      Services.tor &&
+      Services.prefs.getBoolPref("browser.tor_provider.oxidize", false)
+    ) {
+      return new TorController(Services.tor.createControlPortIPC(ipcFile));
+    }
+
     return new TorController(AsyncSocket.fromIpcFile(ipcFile));
   }
 
@@ -407,6 +416,15 @@ export class TorController {
    * @returns {TorController}
    */
   static fromSocketAddress(host, port) {
+    // Notice: this preference is temporary, only for testing!
+    // Do not rely on it to exist forever.
+    if (
+      Services.tor &&
+      Services.prefs.getBoolPref("browser.tor_provider.oxidize", false)
+    ) {
+      return new TorController(Services.tor.createControlPort(host, port));
+    }
+
     return new TorController(AsyncSocket.fromSocketAddress(host, port));
   }
 
@@ -540,6 +558,18 @@ export class TorController {
    * closed).
    */
   async #startMessagePump() {
+    // Rust control port
+    if (this.#socket.start) {
+      const self = this;
+      const receiver = {
+        onAsyncMessage(message) {
+          self.#handleNotification(message);
+        },
+      };
+      this.#socket.start(receiver);
+      return;
+    }
+
     try {
       // This while is inside the try block because it is very likely that it
       // will be broken by a NS_BASE_STREAM_CLOSED exception, rather than by its
@@ -596,6 +626,21 @@ export class TorController {
   async #sendCommand(commandString) {
     if (!this.#socket) {
       throw new Error("ControlSocket not open");
+    }
+
+    // Rust control port
+    if (this.#socket.sendCommand) {
+      const { promise, resolve, reject } = Promise.withResolvers();
+      const handler = {
+        onMessage(message) {
+          resolve(message);
+        },
+        onError(error) {
+          reject(new Error(error));
+        },
+      };
+      this.#socket.sendCommand(commandString, handler);
+      return promise;
     }
 
     // this promise is resolved either in #handleCommandReply, or in
