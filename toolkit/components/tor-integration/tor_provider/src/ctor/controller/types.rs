@@ -1,0 +1,40 @@
+// Licensed under the Apache License, Version 2.0,
+// <http://apache.org/licenses/LICENSE-2.0> or the MIT license
+// <http://opensource.org/licenses/MIT>, at your option. This file may not be
+// copied, modified, or distributed except according to those terms.
+
+use serde::Serialize;
+use std::net::SocketAddr;
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct Bridge {
+    pub transport: Option<String>,
+    pub address: SocketAddr,
+    pub fingerprint: Option<[u8; 20]>,
+    pub args: Option<Vec<u8>>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub enum ClientTransportPlugin {
+    Executable {
+        path: Vec<u8>,
+        options: Option<Vec<u8>>,
+    },
+    Socks4(SocketAddr),
+    Socks5(SocketAddr),
+}
+
+#[derive(Debug, Clone)]
+pub enum ConfValue<'a> {
+    Bool(bool),
+    Int(i32),
+    String(&'a str),
+    Array(Vec<&'a str>),
+    Null,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct PluggableTransport {
+    pub transports: Vec<String>,
+    pub plugin: ClientTransportPlugin,
+}
