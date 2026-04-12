@@ -163,6 +163,11 @@ extern crate libz_rs_sys;
 
 extern crate gecko_trace;
 
+#[cfg(feature = "tor_integration")]
+extern crate tor_provider;
+#[cfg(feature = "tor_integration")]
+extern crate tor_service;
+
 extern crate log;
 use log::info;
 
