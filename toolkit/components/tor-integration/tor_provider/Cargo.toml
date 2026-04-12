@@ -1,0 +1,11 @@
+[package]
+name = "tor_provider"
+description = "Firefox-indepentent tor integration."
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+bytes = "1.4.0"
+log = "0.4"
+memchr = "2.7.4"
+thiserror = "2"

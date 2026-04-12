@@ -1,0 +1,208 @@
+// Licensed under the Apache License, Version 2.0,
+// <http://apache.org/licenses/LICENSE-2.0> or the MIT license
+// <http://opensource.org/licenses/MIT>, at your option. This file may not be
+// copied, modified, or distributed except according to those terms.
+
+use bytes::Bytes;
+use std::{
+    cell::{Cell, RefCell},
+    rc::{Rc, Weak},
+};
+
+use super::{
+    command_writer::CommandWriter,
+    control_socket::*,
+    error::ControlPortError,
+    message_pump::{MessagePump, ReadAction},
+};
+use crate::ctor::reply_parser::{Reply, ReplyDispatcher, ReplyError};
+
+/// The lower-level part of the control port implementation.
+/// It contains the logic for actually sending the command, and it hides its
+/// reference-counted nature from actual consumers.
+struct ControlPortInner {
+    reply_dispatcher: ReplyDispatcher,
+    socket: Rc<dyn ControlSocket>,
+    writer: Rc<CommandWriter>,
+    message_pump: Rc<MessagePump>,
+    close_handler: RefCell<Option<Box<dyn FnOnce()>>>,
+    closed: Cell<bool>,
+}
+
+impl ControlPortInner {
+    fn new(socket: Rc<dyn ControlSocket>) -> Result<Rc<Self>, ControlSocketError> {
+        // We need to make sure the callbacks do not create cyclic references,
+        // so use new_cyclic rather than new.
+        let cp = Rc::new_cyclic(|weak_self| Self {
+            reply_dispatcher: ReplyDispatcher::new(),
+            socket: socket.clone(),
+            writer: CommandWriter::new(socket.clone()),
+            message_pump: MessagePump::new(
+                socket.clone(),
+                Self::make_data_cb(weak_self.clone()),
+                Self::make_async_failure_cb(weak_self.clone()),
+            ),
+            close_handler: RefCell::new(None),
+            closed: Cell::new(false),
+        });
+        cp.message_pump.start().inspect_err(|_| {
+            let _ = cp.close();
+        })?;
+        Ok(cp)
+    }
+
+    fn make_data_cb(weak_self: Weak<Self>) -> Box<dyn Fn(Bytes) -> ReadAction> {
+        Box::new(move |data| {
+            let Some(cp) = weak_self.upgrade() else {
+                return ReadAction::Stop;
+            };
+            if cp.reply_dispatcher.feed(&data).is_err() {
+                // This will call fail_all again on the dispactcher,
+                // but it is not a problem.
+                cp.async_failure();
+                return ReadAction::Stop;
+            }
+            ReadAction::Continue
+        })
+    }
+
+    fn make_async_failure_cb(weak_self: Weak<Self>) -> Box<dyn Fn()> {
+        Box::new(move || {
+            if let Some(cp) = weak_self.upgrade() {
+                cp.async_failure();
+            }
+        })
+    }
+
+    fn async_failure(&self) {
+        self.writer.clear_queue();
+        if let Err(e) = self.close() {
+            log::error!("Failed to close the control port: {}.", e.to_string());
+        }
+    }
+
+    fn send_command(
+        self: &Rc<Self>,
+        command: Bytes,
+        handler: Box<dyn FnOnce(Result<Reply, ControlPortError>)>,
+    ) {
+        if self.closed.get() {
+            handler(Err(ControlPortError::ProtocolError(
+                ReplyError::ConnectionClosed,
+            )));
+            return;
+        }
+
+        debug_assert!(
+            command.ends_with(b"\r\n"),
+            "Commands are expected to end with CRLF."
+        );
+
+        // The callback is going to be called before other commands are sent,
+        // therefore it is safe to queue the callback at this point, as next
+        // command are still in the writer's queue.
+        let weak_self = Rc::downgrade(self);
+        self.writer.write(
+            command,
+            Box::new(move |res| {
+                let this = match weak_self.upgrade() {
+                    Some(t) => t,
+                    None => {
+                        return;
+                    }
+                };
+                match res {
+                    Ok(()) => {
+                        this.reply_dispatcher.push_callback(Box::new(move |r| {
+                            handler(r.map_err(|e| ControlPortError::ProtocolError(e)));
+                        }));
+                    }
+                    Err(ControlSocketError::ConnectionClosed) => {
+                        handler(Err(ControlPortError::ProtocolError(
+                            ReplyError::ConnectionClosed,
+                        )));
+                        this.async_failure();
+                    }
+                    Err(ControlSocketError::ImplementationError(rv)) => {
+                        handler(Err(ControlPortError::ConnectionError(rv)));
+                        this.async_failure();
+                    }
+                }
+            }),
+        );
+    }
+
+    fn set_async_handler(&self, cb: Option<Box<dyn Fn(Reply)>>) {
+        self.reply_dispatcher.set_async_handler(cb);
+    }
+
+    fn close(&self) -> Result<(), ControlSocketError> {
+        if self.closed.replace(true) {
+            return Ok(());
+        }
+        self.reply_dispatcher.fail_all(ReplyError::ConnectionClosed);
+        self.reply_dispatcher.set_async_handler(None);
+        let res = self.socket.close();
+        let handler = self.close_handler.borrow_mut().take();
+        if let Some(h) = handler {
+            h();
+        }
+        res
+    }
+
+    fn set_close_handler(&self, cb: Box<dyn FnOnce()>) {
+        if self.closed.get() {
+            // This should never happen in reality, but let's just call the
+            // callback if it does to make sure the callback is always called.
+            cb();
+            return;
+        }
+        *self.close_handler.borrow_mut() = Some(cb);
+    }
+}
+
+impl Drop for ControlPortInner {
+    fn drop(&mut self) {
+        if let Err(e) = self.close() {
+            log::error!(
+                "Failed to close the control socket from drop: {}",
+                e.to_string()
+            );
+        }
+    }
+}
+
+pub struct ControlPort(Rc<ControlPortInner>);
+
+impl ControlPort {
+    #[inline]
+    pub fn new(socket: Box<dyn ControlSocket>) -> Result<Self, ControlSocketError> {
+        Ok(Self(ControlPortInner::new(Rc::from(socket))?))
+    }
+
+    // TODO: Keep only the methods speicifc to commands and remove this one
+    // (tor-browser#44930).
+    #[inline]
+    pub fn send_command(
+        &self,
+        command: Bytes,
+        handler: Box<dyn FnOnce(Result<Reply, ControlPortError>)>,
+    ) {
+        self.0.send_command(command, handler);
+    }
+
+    #[inline]
+    pub fn set_async_handler(&self, cb: Option<Box<dyn Fn(Reply)>>) {
+        self.0.set_async_handler(cb);
+    }
+
+    #[inline]
+    pub fn close(&self) -> Result<(), ControlSocketError> {
+        self.0.close()
+    }
+
+    #[inline]
+    pub fn set_close_handler(&self, cb: Box<dyn FnOnce()>) {
+        self.0.set_close_handler(cb);
+    }
+}
