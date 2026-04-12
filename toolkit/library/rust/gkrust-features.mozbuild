@@ -86,6 +86,9 @@ if CONFIG["MOZ_JXL"]:
 if CONFIG["MOZ_BUILD_APP"] == "browser" and CONFIG["OS_ARCH"] == "WINNT":
     gkrust_features += ["shell_windows"]
 
+if CONFIG["TOR_RUST_INTEGRATION"]:
+    gkrust_features += ["tor_integration"]
+
 if CONFIG["ENABLE_TESTS"]:
     gkrust_features += ["enable_tests"]
 
