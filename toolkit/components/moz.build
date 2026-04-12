@@ -167,6 +167,9 @@ if CONFIG["MOZ_UNIFFI_FIXTURES"]:
 if CONFIG["OS_ARCH"] == "WINNT":
     DIRS += ["push"]
 
+if CONFIG["TOR_RUST_INTEGRATION"]:
+    DIRS += ["tor-integration"]
+
 UNIFIED_SOURCES += [
     "/toolkit/components/antitracking/ContentBlockingAllowList.cpp",
 ]
