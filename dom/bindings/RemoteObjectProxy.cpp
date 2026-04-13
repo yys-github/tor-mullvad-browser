@@ -156,6 +156,7 @@ void RemoteObjectProxyBase::GetOrCreateProxyObject(
     MOZ_RELEASE_ASSERT(!aTransplantTo, "GOCPO failed at NewProxyObject");
     return;
   }
+  aNewObjectCreated = true;
 
   bool success;
   if (!JS_SetImmutablePrototype(aCx, obj, &success)) {
@@ -164,8 +165,6 @@ void RemoteObjectProxyBase::GetOrCreateProxyObject(
     return;
   }
   MOZ_ASSERT(success);
-
-  aNewObjectCreated = true;
 
   // If we're transplanting onto an object, we want to make sure that it does
   // not have the same class as aClasp to ensure that the release assert earlier
