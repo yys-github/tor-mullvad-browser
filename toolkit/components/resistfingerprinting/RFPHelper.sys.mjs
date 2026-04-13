@@ -20,8 +20,6 @@ const kPrefLetterboxingVcenter =
 const kTopicDOMWindowOpened = "domwindowopened";
 const kTopicDOMWindowClosed = "domwindowclosed";
 
-const kTopicFullscreenNavToolbox = "fullscreen-nav-toolbox";
-
 const kPrefVerticalTabs = "sidebar.verticalTabs";
 
 const lazy = {};
@@ -66,7 +64,6 @@ class _RFPHelper {
     Services.prefs.addObserver(kPrefLetterboxing, this);
     Services.prefs.addObserver(kPrefLetterboxingVcenter, this);
     Services.prefs.addObserver(kPrefVerticalTabs, this);
-    Services.obs.addObserver(this, kTopicFullscreenNavToolbox);
 
     XPCOMUtils.defineLazyPreferenceGetter(
       this,
@@ -102,7 +99,6 @@ class _RFPHelper {
     Services.prefs.removeObserver(kPrefLetterboxingVcenter, this);
     Services.prefs.removeObserver(kPrefLetterboxing, this);
     Services.prefs.removeObserver(kPrefVerticalTabs, this);
-    Services.obs.removeObserver(this, kTopicFullscreenNavToolbox);
     // Remove the RFP observers, swallowing exceptions if they weren't present
     this._removeLanguagePrefObservers();
   }
@@ -123,15 +119,6 @@ class _RFPHelper {
         break;
       case kTopicDOMWindowClosed:
         this._handleDOMWindowClosed(subject);
-        break;
-      case kTopicFullscreenNavToolbox:
-        // The `subject` is the gNavToolbox.
-        // Record whether the toobox has been hidden when the browser (not
-        // content) is in fullscreen.
-        subject.ownerGlobal.gBrowser.tabbox.classList.toggle(
-          "letterboxing-nav-toolbox-hidden",
-          data === "hidden"
-        );
         break;
       default:
         break;
@@ -598,14 +585,6 @@ class _RFPHelper {
         gapVertical >= this._letterboxingBorderRadius ||
           gapHorizontal >= this._letterboxingBorderRadius
       );
-      // When the Letterboxing area is top-aligned, only show the sidebar corner
-      // if there is enough horizontal space.
-      // The factor of 4 is from the horizontal centre-alignment and wanting
-      // enough space for twice the corner radius.
-      browserParent.classList.toggle(
-        "letterboxing-show-sidebar-corner",
-        gapHorizontal >= 4 * this._letterboxingBorderRadius
-      );
     }
 
     // If the size of the content is already quantized, we do nothing.
@@ -638,10 +617,7 @@ class _RFPHelper {
 
   _resetContentSize(aBrowser) {
     aBrowser.parentElement.classList.add("exclude-letterboxing");
-    aBrowser.parentElement.classList.remove(
-      "letterboxing-show-outline",
-      "letterboxing-show-sidebar-corner"
-    );
+    aBrowser.parentElement.classList.remove("letterboxing-show-outline");
   }
 
   _updateSizeForTabsInWindow(aWindow) {
