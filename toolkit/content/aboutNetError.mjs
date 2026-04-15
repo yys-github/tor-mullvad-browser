@@ -294,7 +294,7 @@ function setResponseStatus(shortDesc) {
 }
 
 // Returns pageTitleId, bodyTitle, bodyTitleId, and longDesc as an object
-async function initTitleAndBodyIds(baseURL, isTRROnlyFailure) {
+function initTitleAndBodyIds(baseURL, isTRROnlyFailure) {
   let bodyTitle = document.querySelector(".title-text");
   let longDesc = document.getElementById("errorLongDesc");
   const tryAgain = document.getElementById("netErrorButtonContainer");
@@ -390,22 +390,12 @@ async function initTitleAndBodyIds(baseURL, isTRROnlyFailure) {
       learnMore.hidden = false;
       document.body.className = "certerror";
       break;
-
-    case "proxyConnectFailure":
-      if (await RPMSendQuery("ShouldShowTorConnect")) {
-        // pass orginal destination as redirect param
-        const encodedRedirect = encodeURIComponent(document.location.href);
-        document.location.replace(
-          `about:torconnect?redirect=${encodedRedirect}`
-        );
-      }
-      break;
   }
 
   return { pageTitleId, bodyTitle, bodyTitleId, longDesc };
 }
 
-async function initPage() {
+function initPage() {
   // We show an offline support page in case of a system-wide error,
   // when a user cannot connect to the internet and access the SUMO website.
   // For example, clock error, which causes certerrors across the web or
@@ -487,8 +477,10 @@ async function initPage() {
   tryAgain.hidden = false;
   const learnMoreLink = document.getElementById("learnMoreLink");
   learnMoreLink.setAttribute("href", baseURL + "connection-not-secure");
-  let { pageTitleId, bodyTitle, bodyTitleId, longDesc } =
-    await initTitleAndBodyIds(baseURL, isTRROnlyFailure);
+  let { pageTitleId, bodyTitle, bodyTitleId, longDesc } = initTitleAndBodyIds(
+    baseURL,
+    isTRROnlyFailure
+  );
 
   // We can handle the offline page separately.
   if (gNoConnectivity) {
@@ -1301,6 +1293,24 @@ async function ensureCertErrorCode() {
   while (!errorCode && i < 3) {
     i++;
     errorCode = await retryCertErrorCode();
+  }
+
+  if (!errorCode) {
+    errorCode = gErrorCode;
+  }
+  if (errorCode === "proxyConnectFailure") {
+    let inIframe;
+    try {
+      inIframe = window.self !== window.top;
+    } catch {
+      // Assume a frame if access to top is blocked.
+      inIframe = true;
+    }
+    if (!inIframe && (await RPMSendQuery("ShouldShowTorConnect"))) {
+      // pass orginal destination as redirect param
+      const encodedRedirect = encodeURIComponent(document.location.href);
+      document.location.replace(`about:torconnect?redirect=${encodedRedirect}`);
+    }
   }
 }
 
