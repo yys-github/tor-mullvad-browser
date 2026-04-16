@@ -932,7 +932,6 @@ var gIdentityHandler = {
           uriIsOnionHost ? "onionMixedDisplayContent" : "mixedDisplayContent"
         );
       } else {
-        // TODO: ignore weak https cipher for onionsites?
         this._identityBox.classList.add("weakCipher");
       }
     } else if (this._isCertErrorPage) {
