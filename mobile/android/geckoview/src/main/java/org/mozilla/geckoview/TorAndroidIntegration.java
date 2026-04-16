@@ -145,7 +145,14 @@ public class TorAndroidIntegration implements BundleEventListener {
     } else if (EVENT_SETTINGS_CHANGED.equals(event)) {
       GeckoBundle newSettings = message.getBundle("settings");
       if (newSettings != null) {
-        // TODO: Should we notify listeners?
+        // NOTE: We assume that we do not need to notify any consumer with the
+        // new state because we expect the relevant consumers to read the latest
+        // state regularly (e.g. each time the settings screen is opened), and
+        // we only expect one active consumer at any given moment (only one
+        // setting screen is shown) which means that the single consumer can
+        // reflect any *expected* individual changes in the UI prior to this
+        // confirmation signal, and there are no other consumers that need to be
+        // synchronised with this change. See tor-browser#42384.
         mSettings = new TorSettings(newSettings);
       } else {
         Log.w(TAG, "Ignoring a settings changed event that did not have the new settings.");
@@ -342,7 +349,7 @@ public class TorAndroidIntegration implements BundleEventListener {
         data.putInt("status", 0xdeadbeef);
       }
       // FIXME: We usually don't reach this when the application is killed!
-      // So, we don't do our cleanup.
+      // So, we don't do our cleanup. Investigation in tor-browser#44861.
       Log.i(TAG, "Tor process " + mHandle + " has exited.");
       EventDispatcher.getInstance().dispatch(EVENT_TOR_EXITED, data);
     }
