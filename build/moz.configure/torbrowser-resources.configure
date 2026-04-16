@@ -24,7 +24,6 @@ option(
 def tor_expert_bundle(value, mozbuild_state_path, _bootstrapped):
     if value:
         path = Path(value[0])
-        # TODO: Do a more thorough check on the directory.
         if path.is_dir():
             return value[0]
         else:
