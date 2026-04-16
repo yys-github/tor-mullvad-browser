@@ -16,6 +16,7 @@ static const char* kBaseFonts[] = {
     "MS Gothic",
     "MS PGothic",
     "MV Boli",
+    "Segoe MDL2 Assets",
     "Segoe UI",
     "SimSun",
     "Sylfaen",
