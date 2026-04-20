@@ -8404,6 +8404,7 @@ name = "tor_provider"
 version = "0.1.0"
 dependencies = [
  "bytes",
+ "hex",
  "log",
  "memchr",
  "thiserror 2.0.12",

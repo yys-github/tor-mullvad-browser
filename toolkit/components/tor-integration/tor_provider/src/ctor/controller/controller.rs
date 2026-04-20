@@ -5,7 +5,10 @@
 
 use bytes::Bytes;
 
-use super::error::ControllerError;
+use super::{
+    commands::{self, Command},
+    error::ControllerError,
+};
 use crate::ctor::{
     control_port::{ControlPortInterface, ControlSocketError},
     reply_parser::Reply,
@@ -38,6 +41,42 @@ impl<CP: ControlPortInterface> TorController<CP> {
                 Err(ControllerError::ConnectionError(rv))
             }
         }
+    }
+
+    fn send_command<T>(
+        &self,
+        command: Result<Command<T>, ControllerError>,
+        handler: Box<dyn FnOnce(Result<T, ControllerError>)>,
+    ) where
+        T: 'static,
+    {
+        let Command {
+            command,
+            handler: command_handler,
+        } = match command {
+            Ok(c) => c,
+            Err(e) => {
+                handler(Err(e));
+                return;
+            }
+        };
+        self.0.send_command(
+            command.into(),
+            Box::new(move |r| match r {
+                Ok(reply) => handler(command_handler(reply)),
+                Err(e) => handler(Err(e.into())),
+            }),
+        );
+    }
+
+    /// Authenticate to the tor daemon.
+    /// Notice that a failure in the authentication makes the connection close.
+    pub fn authenticate(
+        &self,
+        password: &[u8],
+        handler: Box<dyn FnOnce(Result<u16, ControllerError>)>,
+    ) {
+        self.send_command(commands::authenticate(password), handler);
     }
 }
 
