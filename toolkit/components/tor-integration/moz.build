@@ -9,3 +9,5 @@ XPCOM_MANIFESTS += [
 ]
 
 EXPORTS.torproject += ["TorService.h"]
+
+XPCSHELL_TESTS_MANIFESTS += ["test/xpcshell/xpcshell.toml"]
