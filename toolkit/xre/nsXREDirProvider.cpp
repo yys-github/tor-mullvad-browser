@@ -1397,9 +1397,9 @@ nsresult nsXREDirProvider::GetSystemExtensionsDirectory(nsIFile** aFile) {
 
 nsresult nsXREDirProvider::GetUserDataDirectory(nsIFile** aFile, bool aLocal) {
   nsCOMPtr<nsIFile> localDir;
-  nsCOMPtr<nsIFile> customDir = mozilla::GetFileFromEnv("MOZ_APP_DATA");
+  nsCOMPtr<nsIFile> customDir = mozilla::GetFileFromEnv("BB_APP_DATA");
   nsCOMPtr<nsIFile> customLocalDir =
-      mozilla::GetFileFromEnv("MOZ_LOCAL_APP_DATA");
+      mozilla::GetFileFromEnv("BB_LOCAL_APP_DATA");
 
   if (aLocal && gDataDirProfileLocal) {
     return gDataDirProfileLocal->Clone(aFile);
