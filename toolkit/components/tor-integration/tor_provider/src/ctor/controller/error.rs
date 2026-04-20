@@ -5,7 +5,10 @@
 
 use thiserror::Error;
 
-use crate::ctor::{control_port::ControlPortError, reply_parser::ReplyError};
+use crate::ctor::{
+    control_port::ControlPortError,
+    reply_parser::{Reply, ReplyError},
+};
 
 #[derive(Error, Debug, Clone, PartialEq, Eq)]
 pub enum ControllerError {
@@ -29,6 +32,19 @@ pub enum ControllerError {
     KeyNotFound(String),
     #[error("malformed reply: {0}")]
     MalformedReply(String),
+}
+
+impl ControllerError {
+    pub(super) fn from_reply(reply: &Reply) -> Option<Self> {
+        if reply.end_line().is_error() {
+            Some(Self::TorError {
+                code: reply.end_line().code,
+                message: String::from_utf8_lossy(&reply.end_line().line).into_owned(),
+            })
+        } else {
+            None
+        }
+    }
 }
 
 impl From<ControlPortError> for ControllerError {
