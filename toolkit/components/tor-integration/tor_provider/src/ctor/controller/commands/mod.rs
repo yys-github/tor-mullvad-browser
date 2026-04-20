@@ -3,10 +3,8 @@
 // <http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-mod commands;
-mod controller;
-mod error;
-mod parsers;
+mod authenticate;
+mod command;
 
-pub use controller::*;
-pub use error::*;
+pub use authenticate::authenticate;
+pub use command::Command;

@@ -3,10 +3,9 @@
 // <http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-mod commands;
-mod controller;
-mod error;
-mod parsers;
+use crate::ctor::{controller::ControllerError, reply_parser::Reply};
 
-pub use controller::*;
-pub use error::*;
+pub struct Command<T> {
+    pub command: String,
+    pub handler: Box<dyn Fn(Reply) -> Result<T, ControllerError>>,
+}

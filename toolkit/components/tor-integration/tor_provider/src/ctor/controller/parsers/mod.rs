@@ -3,10 +3,13 @@
 // <http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-mod commands;
-mod controller;
-mod error;
-mod parsers;
+mod ack;
+mod escape;
+mod unescape;
 
-pub use controller::*;
-pub use error::*;
+#[cfg(test)]
+mod tests;
+
+pub use ack::parse_ack;
+pub use escape::tor_escape_into;
+pub use unescape::tor_unescape;

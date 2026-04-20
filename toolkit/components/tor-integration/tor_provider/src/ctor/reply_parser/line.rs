@@ -9,6 +9,7 @@ use std::{
     ops::Deref,
 };
 
+pub const ERROR_START: u16 = 400;
 pub const ASYNC_START: u16 = 600;
 
 /// An enum to represent MidReplyLine and DataReplyLine form the control port
@@ -110,6 +111,11 @@ pub struct EndReplyLine {
 }
 
 impl EndReplyLine {
+    /// Tells whether the line is an error.
+    pub fn is_error(&self) -> bool {
+        self.code >= ERROR_START && self.code < ASYNC_START
+    }
+
     /// Tells whether the line is part of an async reply.
     pub fn is_async(&self) -> bool {
         self.code >= ASYNC_START
@@ -146,28 +152,105 @@ mod tests {
     }
 
     #[test]
-    fn is_async() {
+    fn check_type() {
         {
             let r = EndReplyLine {
                 code: 250,
                 line: Bytes::from_static(b"OK"),
             };
+            assert!(!r.is_error());
             assert!(!r.is_async());
+        }
+        {
+            let r = EndReplyLine {
+                code: 399,
+                line: Bytes::from_static(b"Success"),
+            };
+            assert!(!r.is_error());
+            assert!(!r.is_async());
+        }
+        {
+            let r = EndReplyLine {
+                code: 400,
+                line: Bytes::from_static(b"Temporary error"),
+            };
+            assert!(r.is_error());
+            assert!(!r.is_async());
+        }
+        {
+            let r = EndReplyLine {
+                code: 500,
+                line: Bytes::from_static(b"Permanent error"),
+            };
+            assert!(r.is_error());
+            assert!(!r.is_async());
+        }
+        {
+            let r = EndReplyLine {
+                code: 599,
+                line: Bytes::from_static(b"Yet another error"),
+            };
+            assert!(r.is_error());
+            assert!(!r.is_async());
+        }
+        {
+            let r = EndReplyLine {
+                code: 600,
+                line: Bytes::from_static(b"Notification"),
+            };
+            assert!(!r.is_error());
+            assert!(r.is_async());
         }
         {
             let r = EndReplyLine {
                 code: 650,
                 line: Bytes::from_static(b"CIRC BUILT"),
             };
+            assert!(!r.is_error());
             assert!(r.is_async());
         }
 
         {
             let r = DetailReplyLine::MidReplyLine {
                 code: 250,
-                line: Bytes::from_static(b"key=value"),
+                line: Bytes::from_static(b"OK"),
             };
             assert!(!r.is_async());
+        }
+        {
+            let r = DetailReplyLine::MidReplyLine {
+                code: 399,
+                line: Bytes::from_static(b"Success"),
+            };
+            assert!(!r.is_async());
+        }
+        {
+            let r = DetailReplyLine::MidReplyLine {
+                code: 400,
+                line: Bytes::from_static(b"Temporary error"),
+            };
+            assert!(!r.is_async());
+        }
+        {
+            let r = DetailReplyLine::MidReplyLine {
+                code: 500,
+                line: Bytes::from_static(b"Permanent error"),
+            };
+            assert!(!r.is_async());
+        }
+        {
+            let r = DetailReplyLine::MidReplyLine {
+                code: 599,
+                line: Bytes::from_static(b"Yet another error"),
+            };
+            assert!(!r.is_async());
+        }
+        {
+            let r = DetailReplyLine::MidReplyLine {
+                code: 600,
+                line: Bytes::from_static(b"Notification"),
+            };
+            assert!(r.is_async());
         }
         {
             let r = DetailReplyLine::MidReplyLine {
