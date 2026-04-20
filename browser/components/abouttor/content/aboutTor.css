@@ -350,12 +350,11 @@ body.show-yec h1 {
     "yec-matching yec-image" auto
     "yec-donate yec-image" min-content
     / 1fr min-content;
-  --yec-image-background: #1f0333;
-  /* Remove 1px from padding for border. */
-  padding-block: 55px 55px;
-  padding-inline: 47px 47px;
+  --yec-image-background: #3a1653;
+  padding-block: 56px 56px;
+  padding-inline: 48px 48px;
   box-sizing: border-box;
-  max-width: 850px;
+  max-width: 840px;
   margin-block-end: 40px;
   /* Position for the close button. */
   position: relative;
@@ -389,8 +388,8 @@ body.show-yec h1 {
 #yec-heading {
   grid-area: yec-heading;
   margin-block: 0 16px;
-  font-size: 64px;
-  font-weight: 400;
+  font-size: var(--font-size-xxlarge);
+  font-weight: 600;
 }
 
 #yec-body {
@@ -398,13 +397,13 @@ body.show-yec h1 {
   margin-block: 0 12px;
 }
 
-#yec-body-highlight {
-  font-weight: 600;
-}
-
 #yec-matching {
   grid-area: yec-matching;
-  margin-block: 0 32px;
+  margin-block: 0 24px;
+}
+
+#yec-banner b {
+  font-weight: 600;
 }
 
 #yec-donate-link {
@@ -481,7 +480,7 @@ body.show-yec h1 {
   }
 
   #yec-heading {
-    font-size: 3.5rem;
+    font-size: var(--font-size-xlarge);
   }
 
   #yec-matching {
@@ -502,18 +501,14 @@ body.show-yec h1 {
 
 @media not ((prefers-contrast) or (forced-colors)) {
   #yec-banner {
-    border-color: transparent;
+    border-color: #523168;
     background-color: var(--yec-image-background);
     --yec-text: #ffffff;
-    --yec-button-background: #b6e368;
-    --yec-button-background-hover: #d2f2a1;
-    --yec-button-background-active: #ecfcd8;
-    --yec-button-text: #15141A;
+    --yec-button-background: var(--tor-button-background-color-light);
+    --yec-button-background-hover: var(--tor-button-background-color-hover-light);
+    --yec-button-background-active: var(--tor-button-background-color-active-light);
+    --yec-button-text: var(--tor-button-text-color-light);
     color: var(--yec-text);
-  }
-
-  #yec-body-highlight {
-    color: var(--yec-button-background);
   }
 
   #yec-donate-link {
