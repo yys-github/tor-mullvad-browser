@@ -13,20 +13,6 @@ CC="clang"
 CXX="clang++"
 ac_add_options --enable-linker=lld
 
-if test -n "$ANDROID_HOME"; then
-    ac_add_options --with-android-sdk=$ANDROID_HOME
-fi
-
-if test -n "$ANDROID_NDK_HOME"; then
-  ac_add_options --with-android-ndk=$ANDROID_NDK_HOME
-fi
-
-if test -n "$GRADLE_HOME"; then
-    ac_add_options --with-gradle=$GRADLE_HOME/bin/gradle
-fi
-# Otherwise (as per /mobile/android/gradle.config) a version will be downloaded by the gradle wrapper when needed
-# so don't use this override, and let it do it's thing
-
 ac_add_options --enable-strip
 ac_add_options --enable-install-strip
 ac_add_options --disable-tests
