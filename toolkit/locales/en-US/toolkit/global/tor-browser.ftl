@@ -728,6 +728,19 @@ onion-site-saved-keys-dialog-remove-all-button = Remove all
 onion-site-saved-keys-dialog-fetch-keys-error-message = Unable to retrieve keys from Tor
 onion-site-saved-keys-dialog-remove-keys-error-message = Unable to remove key
 
+## Notification for dropped support for 32-bit Linux.
+
+# Shown before support has ended.
+# "{ -brand-product-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
+# "16.0" refers to the browser versions number: Tor Browser 16.0.
+# "32-bit" and "64-bit" refer to CPU types: en.wikipedia.org/wiki/32-bit_computing .
+dropped-support-notification-linux-32-bit = The next major version of { -brand-product-name } (16.0) will no longer support 32-bit Linux. Please install { -brand-product-name } on a 64-bit Linux operating system to continue receiving important security updates.
+# Shown after support has ended.
+# "{ -brand-product-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
+# "32-bit" and "64-bit" refer to CPU types: en.wikipedia.org/wiki/32-bit_computing .
+dropped-support-notification-linux-32-bit-expired = { -brand-product-name } no longer supports 32-bit Linux. Please install { -brand-product-name } on a 64-bit Linux operating system to continue receiving important security updates.
+dropped-support-notification-dismiss-button = Got it
+
 ## Year end campaign.
 
 yec-donate-button = Donate now
