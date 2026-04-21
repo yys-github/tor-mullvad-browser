@@ -431,14 +431,14 @@ const YecArea = {
    *
    * @type {?integer}
    */
-  _startDate: null, // No YEC is active.
+  _startDate: Date.UTC(2026, 4, 19, 15), // 19th May 2026, 15 UTC.
 
   /**
    * The epoch time to stop showing the banner, if at all.
    *
    * @type {?integer}
    */
-  _endDate: null, // No YEC is active.
+  _endDate: Date.UTC(2026, 5, 19, 0), // 19th June 2026, 0 UTC.
 
   /**
    * Whether the area has been initialised.
@@ -460,6 +460,72 @@ const YecArea = {
    * @type {boolean}
    */
   _shouldShow: false,
+
+  /**
+   * The tool number to show first, or `null` whilst unset.
+   *
+   * @type {?number}
+   */
+  _toolNum1: null,
+
+  /**
+   * The tool number to show second, or `null` whilst unset.
+   *
+   * @type {?number}
+   */
+  _toolNum2: null,
+
+  /**
+   * The name and description data for each tool.
+   *
+   * @type {object[]}
+   */
+  _toolData: [
+    {
+      name: "Onion Browser",
+      descId: "summer-2026-funding-tool-onion-browser-description",
+    },
+    {
+      name: "Quiet",
+      descId: "summer-2026-funding-tool-quiet-description",
+    },
+    {
+      name: "Ricochet Refresh",
+      descId: "summer-2026-funding-tool-ricochet-refresh-description",
+    },
+    {
+      name: "SecureDrop",
+      descId: "summer-2026-funding-tool-securedrop-description",
+    },
+    {
+      name: "OnionShare",
+      descId: "summer-2026-funding-tool-onionshare-description",
+    },
+    {
+      name: "Digital Security Helpdesk",
+      descId: "summer-2026-funding-tool-digital-security-helpdesk-description",
+    },
+    {
+      name: "Paskoocheh",
+      descId: "summer-2026-funding-tool-paskoocheh-description",
+    },
+    {
+      name: "Unredacted",
+      descId: "summer-2026-funding-tool-unredacted-description",
+    },
+    {
+      name: "Osservatorio Nessuno",
+      descId: "summer-2026-funding-tool-osservatorio-nessuno-description",
+    },
+    {
+      name: "Save",
+      descId: "summer-2026-funding-tool-save-description",
+    },
+    {
+      name: "OONI",
+      descId: "summer-2026-funding-tool-ooni-description",
+    },
+  ],
 
   /**
    * The banner element.
@@ -498,8 +564,10 @@ const YecArea = {
    * @param {boolean} dismissYEC - Whether the user has dismissed YEC.
    * @param {boolean} isStable - Whether this is a stable release.
    * @param {string} appLocale - The app locale, as BCP47.
+   * @param {number} toolNum1 - The number for the first tool to show.
+   * @param {number} toolNum2 - The number for the first tool to show.
    */
-  potentiallyShow(dismissYEC, isStable, appLocale) {
+  potentiallyShow(dismissYEC, isStable, appLocale, toolNum1, toolNum2) {
     const now = Date.now();
     this._shouldShow =
       !dismissYEC &&
@@ -508,13 +576,15 @@ const YecArea = {
       now >= this._startDate &&
       now < this._endDate;
     this._locale = appLocale;
+    this._toolNum1 = toolNum1;
+    this._toolNum2 = toolNum2;
     this._update();
   },
 
   /**
    * Update the visibility of the banner to reflect the new state.
    */
-  _update() {
+  async _update() {
     if (!this._initialized) {
       return;
     }
@@ -526,8 +596,27 @@ const YecArea = {
       return;
     }
 
+    const tool1 = this._toolData[this._toolNum1];
+    const tool2 = this._toolData[this._toolNum2];
+
+    const [tool1Desc, tool2Desc] = await document.l10n.formatValues([
+      { id: tool1.descId },
+      { id: tool2.descId },
+    ]);
+
+    document.l10n.setAttributes(
+      document.getElementById("yec-body"),
+      "summer-2026-funding-intro",
+      {
+        "tool1-name": tool1.name,
+        "tool1-description": tool1Desc,
+        "tool2-name": tool2.name,
+        "tool2-description": tool2Desc,
+      }
+    );
+
     const donateLink = document.getElementById("yec-donate-link");
-    const base = "https://www.torproject.org/donate";
+    const base = "https://internetfreedom.torproject.org";
     donateLink.href = base;
 
     document.body.classList.add("show-yec");
@@ -574,11 +663,13 @@ window.addEventListener("InitialData", event => {
     surveyDismissVersion,
     appLocale,
     dismissYEC,
+    toolNum1,
+    toolNum2,
   } = event.detail;
   SearchWidget.setOnionizeState(!!searchOnionize);
   MessageArea.setMessageData(messageData, !!isStable, !!torConnectEnabled);
   SurveyArea.potentiallyShow(surveyDismissVersion, isStable, appLocale);
-  YecArea.potentiallyShow(dismissYEC, isStable, appLocale);
+  YecArea.potentiallyShow(dismissYEC, isStable, appLocale, toolNum1, toolNum2);
 
   gInitialData = true;
   maybeComplete();
