@@ -205,7 +205,7 @@
             android:title="@string/preferences_tor_network_settings_bridge_config"
             android:summary="@string/preferences_tor_network_settings_bridge_config_description" />
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/pref_key_quick_start"
             android:title="@string/tor_connect_automatically_label"
             app:iconSpaceReserved="false" />
