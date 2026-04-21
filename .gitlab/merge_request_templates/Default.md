@@ -29,7 +29,6 @@
 
 - [ ] **Alpha**: rapid release, 16.0
 - [ ] **Stable**: esr140-15.0
-- [ ] **Legacy**: esr115-13.5
 
 ### Backporting
 
