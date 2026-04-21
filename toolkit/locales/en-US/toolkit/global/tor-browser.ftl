@@ -750,3 +750,38 @@ yec-donate-button = Donate now
 # Here "Close" is a verb, referring to closing the banner.
 yec-close-button =
     .title = Close
+
+## Summer 2026 Tor Project funding campaign.
+
+summer-2026-funding-heading = A new way to fund internet freedom
+# $tool1-name (string ) - The name of some internet freedom tool, this is not translated and will only use the Latin alphabet. This should be wrapped in '<b>' and '</b>' to make them appear bold. Similar for '$tool2-name'.
+# $tool1-description (string) - A short description for the tool, this is translated. Similar for '$tool2-description'.
+# Note, since '$tool1-description' and '$tool2-description' contain arbitrary text, you will likely need to separate them out from the rest of the text. The English text uses brackets '(' and ')' to do this.
+# Note, the curly brackets '{' and '}' are part of the Fluent syntax, but the normal brackets '(' and ')' are not.
+summer-2026-funding-intro = Did you know that internet freedom tools serve millions of people every day? This includes tools like <b>{ $tool1-name }</b> ({ $tool1-description }) and <b>{ $tool2-name }</b> ({ $tool2-description }).
+# Here "Tor" refers to The Tor Project.
+# You should wrap the call to donation in '<b>' and '</b>', which will make it stand out.
+summer-2026-funding-outro = But unprecedented funding cuts have harmed the small organizations that maintain these tools. <b>Help protect internet freedom by donating cryptocurrency</b>—all donations will be matched by friends of Tor.
+
+# A short description of "Onion Browser": onionbrowser.com .
+summer-2026-funding-tool-onion-browser-description = Tor-powered browser for iOS
+# A short description of "Quiet": tryquiet.org .
+summer-2026-funding-tool-quiet-description = private group messaging
+# A short description of "Ricochet Refresh": ricochetrefresh.net .
+summer-2026-funding-tool-ricochet-refresh-description = secure and anonymous messaging
+# A short description of "SecureDrop": securedrop.org .
+summer-2026-funding-tool-securedrop-description = anonymous whistleblowing app
+# A short description of "OnionShare": onionshare.org .
+summer-2026-funding-tool-onionshare-description = secure filesharing, hosting & chatting
+# A short description of "Digital Security Helpdesk": miaan.org/projects/miaan-digital-security-helpdesk .
+summer-2026-funding-tool-digital-security-helpdesk-description = internet freedom for Iranians
+# A short description of "Paskoocheh": paskoocheh.com .
+summer-2026-funding-tool-paskoocheh-description = countering digital authoritarianism
+# A short description of "Unredacted": unredacted.org .
+summer-2026-funding-tool-unredacted-description = keeping people connected, no matter where
+# A short description of "Osservatorio Nessuno": osservatorionessuno.org .
+summer-2026-funding-tool-osservatorio-nessuno-description = software that leaves no trace
+# A short description of "Save": open-archive.org/save .
+summer-2026-funding-tool-save-description = private archiving
+# A short description of "OONI": ooni.org .
+summer-2026-funding-tool-ooni-description = tracking censorship globally
