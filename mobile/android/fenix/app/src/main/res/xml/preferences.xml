@@ -233,7 +233,7 @@
         android:key="@string/pref_key_advanced"
         android:layout="@layout/preference_category_no_icon_style">
 
-        <SwitchPreference
+        <SwitchPreferenceCompat
             android:key="@string/pref_key_allow_screenshots_in_private_mode"
             app:iconSpaceReserved="false"
             android:title="@string/preferences_allow_screenshots" />
