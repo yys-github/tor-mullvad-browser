@@ -24,6 +24,44 @@ export class AboutTorParent extends JSWindowActorParent {
   static #dismissYEC = false;
 
   /**
+   * A shuffled array of tool numbers. `null` whilst unset.
+   *
+   * @type {?number[]}
+   */
+  static #toolNums = null;
+  /**
+   * The current index in `#toolNums`.
+   *
+   * @type {number}
+   */
+  static #toolIndex = 0;
+
+  /**
+   * Return the pair of tools numbers to show in the next about:tor window.
+   *
+   * @returns {{ toolNum1: number, toolNum2: number }} - The tool number pairs.
+   */
+  static #getToolNumPair() {
+    const numTools = 11;
+    if (!this.#toolNums) {
+      this.#toolNums = Array.from({ length: numTools }, (_, index) => index);
+      // Shuffle the array with Fisher–Yates.
+      for (let index = numTools - 1; index > 0; index--) {
+        const topBound = index + 1;
+        const exchange = Math.floor(Math.random() * topBound) % topBound;
+        const tmpNum = this.#toolNums[index];
+        this.#toolNums[index] = this.#toolNums[exchange];
+        this.#toolNums[exchange] = tmpNum;
+      }
+    }
+    const toolNum1 = this.#toolNums[this.#toolIndex % numTools];
+    const toolNum2 = this.#toolNums[(this.#toolIndex + 1) % numTools];
+    this.#toolIndex = (this.#toolIndex + 2) % numTools;
+
+    return { toolNum1, toolNum2 };
+  }
+
+  /**
    * Whether this instance has a preloaded browser.
    *
    * @type {boolean}
@@ -58,6 +96,8 @@ export class AboutTorParent extends JSWindowActorParent {
       appLocale = "ja";
     }
 
+    const { toolNum1, toolNum2 } = AboutTorParent.#getToolNumPair();
+
     return {
       torConnectEnabled: lazy.TorConnect.enabled,
       messageData: lazy.AboutTorMessage.getNext(),
@@ -69,6 +109,8 @@ export class AboutTorParent extends JSWindowActorParent {
       ),
       appLocale,
       dismissYEC: AboutTorParent.#dismissYEC,
+      toolNum1,
+      toolNum2,
     };
   }
 
