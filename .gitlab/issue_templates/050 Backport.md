@@ -24,7 +24,6 @@ please ensure the title has the following format:
 
 - [ ] Alpha
 - [ ] Stable
-- [ ] Legacy
 
 ## Notes
 
