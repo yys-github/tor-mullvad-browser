@@ -155,4 +155,36 @@
     <!-- Year End Campaign. Here "Close" is a verb, referring to closing the banner. This is used primarily for screen readers to give the small "x" button a name. -->
     <string name="close_yec_button_description">Close</string>
 
+    <!-- Summer 2026 Tor Project funding campaign. -->
+
+    <string name="summer_2026_funding_heading">A new way to fund internet freedom</string>
+    <!-- '%1$s' will be replaced with the name of some internet freedom tool, this is not translated and will only use the Latin alphabet, and will be made to appear bold. Similarly, '%3$s' will be replaced with the name of some other internet freedom tool. '%2$s' and '%4$s' will be replaced with the respective descriptions for the tools, this is translated. Note, since '%2$s' and '%4$s' will contain arbitrary text, you will likely need to separate them out from the rest of the text. The English text uses brackets '(' and ')' to do this. -->
+    <string name="summer_2026_funding_intro">Did you know that internet freedom tools serve millions of people every day? This includes tools like %1$s (%2$s) and %3$s (%4$s).</string>
+    <!-- '%s' will be replaced with summer_2026_call_to_donate and will be made bold. Here "Tor" refers to The Tor Project.  -->
+    <string name="summer_2026_funding_outro">But unprecedented funding cuts have harmed the small organizations that maintain these tools. %s—all donations will be matched by friends of Tor.</string>
+    <!-- This will replace '%s' in summer_2026_funding_outro and will be made bold -->
+    <string name="summer_2026_call_to_donate">Help protect internet freedom by donating cryptocurrency</string>
+    <!-- A short description of "Onion Browser": onionbrowser.com -->
+    <string name="summer_2026_funding_tool_onion_browser_description">Tor-powered browser for iOS</string>
+    <!-- A short description of "Quiet": tryquiet.org -->
+    <string name="summer_2026_funding_tool_quiet_description">private group messaging</string>
+    <!-- A short description of "Ricochet Refresh": ricochetrefresh.net -->
+    <string name="summer_2026_funding_tool_ricochet_refresh_description">secure and anonymous messaging</string>
+    <!-- A short description of "SecureDrop": securedrop.org -->
+    <string name="summer_2026_funding_tool_securedrop_description">anonymous whistleblowing app</string>
+    <!-- A short description of "OnionShare": onionshare.org. "&amp;" shows up as "&" and means "and" in english. -->
+    <string name="summer_2026_funding_tool_onionshare_description">secure filesharing, hosting &amp; chatting</string>
+    <!-- A short description of "Digital Security Helpdesk": miaan.org/projects/miaan-digital-security-helpdesk -->
+    <string name="summer_2026_funding_tool_digital_security_helpdesk_description">internet freedom for Iranians</string>
+    <!-- A short description of "Paskoocheh": paskoocheh.com -->
+    <string name="summer_2026_funding_tool_paskoocheh_description">countering digital authoritarianism</string>
+    <!-- A short description of "Unredacted": unredacted.org -->
+    <string name="summer_2026_funding_tool_unredacted_description">keeping people connected, no matter where</string>
+    <!-- A short description of "Osservatorio Nessuno": osservatorionessuno.org -->
+    <string name="summer_2026_funding_tool_osservatorio_nessuno_description">software that leaves no trace</string>
+    <!-- A short description of "Save": open-archive.org/save -->
+    <string name="summer_2026_funding_tool_save_description">private archiving</string>
+    <!-- A short description of "OONI": ooni.org -->
+    <string name="summer_2026_funding_tool_ooni_description">tracking censorship globally</string>
+
 </resources>
