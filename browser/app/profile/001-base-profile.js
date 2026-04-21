@@ -572,6 +572,9 @@ pref("widget.wayland.vsync.enabled", false);
 // marked with a specific rating is loaded or not.
 pref("security.restrict_to_adults.always", false);
 pref("security.restrict_to_adults.respect_platform", false);
+// tor-browser#44521: Disable Wayland fractional scaling at least until we keep
+// Xwayland as the default.
+pref("widget.wayland.fractional-scale.enabled", false);
 
 // tor-browser#41943: defense-in-depth, but do not lock anymore (enabled in Firefox 119, http://bugzil.la/1851162)
 pref("javascript.options.spectre.disable_for_isolated_content", false);
