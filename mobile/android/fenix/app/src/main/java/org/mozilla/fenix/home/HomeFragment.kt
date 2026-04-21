@@ -161,6 +161,7 @@ import org.mozilla.fenix.wallpapers.Wallpaper
 import org.mozilla.fenix.GleanMetrics.TabStrip as TabStripMetrics
 
 import org.mozilla.fenix.components.toolbar.ToolbarPosition
+import org.mozilla.fenix.tor.TorCampaignViewModel
 import org.mozilla.fenix.tor.TorHomePage
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 
@@ -179,6 +180,7 @@ class HomeFragment : Fragment(), UserInteractionHandler {
 
     private val homeViewModel: HomeScreenViewModel by activityViewModels()
     private val urlQuickLoadViewModel: UrlQuickLoadViewModel by activityViewModels()
+    private val torCampaignViewModel: TorCampaignViewModel by activityViewModels()
 
     private var _bottomToolbarContainerView: BottomToolbarContainerView? = null
     private val bottomToolbarContainerView: BottomToolbarContainerView
@@ -974,7 +976,16 @@ class HomeFragment : Fragment(), UserInteractionHandler {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
                 TorHomePage(
-                    toolBarAtTop = settings().toolbarPosition == ToolbarPosition.TOP
+                    shouldInitiallyShowPromo = torCampaignViewModel.shouldInitiallyShowPromo,
+                    toolBarAtTop = settings().toolbarPosition == ToolbarPosition.TOP,
+                    toolPair = torCampaignViewModel.getToolPair(),
+                    onClicked = {
+                        (requireActivity() as HomeActivity).openToBrowserAndLoad(
+                            searchTermOrURL = "https://internetfreedom.torproject.org",
+                            newTab = true,
+                            from = BrowserDirection.FromHome,
+                        )
+                    }
                 )
             }
         }
