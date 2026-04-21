@@ -7,7 +7,7 @@
         android:key="@string/pref_key_tor_network_settings_bridge_config_explanation"
         android:summary="@string/preferences_tor_network_settings_bridge_config_explanation"
         app:allowDividerBelow="false" />
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="@string/pref_key_tor_network_settings_bridge_config_toggle"
         android:title="@string/preferences_tor_network_settings_bridge_config_toggle"
