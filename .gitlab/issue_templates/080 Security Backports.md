@@ -20,7 +20,7 @@
 
 ## **Bookkeeping**
 
-- [ ] Link this issue to the appropriate [Release Prep](https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/issues/?sort=updated_desc&state=opened&label_name%5B%5D=Apps%3A%3AType%3A%3AReleasePreparation) issues (alpha, stable, and legacy).
+- [ ] Link this issue to the appropriate [Release Prep](https://gitlab.torproject.org/tpo/applications/tor-browser-build/-/issues/?sort=updated_desc&state=opened&label_name%5B%5D=Apps%3A%3AType%3A%3AReleasePreparation) issues (alpha and stable).
 
 ## **Security Vulnerabilities Report**: https://www.mozilla.org/en-US/security/advisories/
 
