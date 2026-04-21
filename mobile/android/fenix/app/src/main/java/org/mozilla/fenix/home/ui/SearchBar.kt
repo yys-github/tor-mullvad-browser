@@ -34,7 +34,7 @@ internal fun SearchBar(
 
 @Composable
 @PreviewLightDark
-private fun SearchBarPreview() {
+fun SearchBarPreview() {
     FirefoxTheme {
         Column(
             modifier = Modifier.background(color = FirefoxTheme.colors.layer1),
