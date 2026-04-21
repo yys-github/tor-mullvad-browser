@@ -8,7 +8,7 @@ import android.os.Bundle
 import androidx.preference.EditTextPreference
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreference
+import androidx.preference.SwitchPreferenceCompat
 import org.mozilla.fenix.Config
 import org.mozilla.fenix.R
 import org.mozilla.fenix.ext.components
@@ -50,7 +50,7 @@ class TorBridgeConfigFragment : PreferenceFragmentCompat() {
         val bridgesEnabled = requireContext().components.torController.bridgesEnabled
 
         val prefBridgeConfig =
-            requirePreference<SwitchPreference>(R.string.pref_key_tor_network_settings_bridge_config_toggle)
+            requirePreference<SwitchPreferenceCompat>(R.string.pref_key_tor_network_settings_bridge_config_toggle)
         prefBridgeConfig.apply {
             isChecked = bridgesEnabled
             setOnPreferenceChangeListener<Boolean> { preference, enabled ->
