@@ -10,6 +10,7 @@
 #include "mozilla/dom/WorkerScope.h"
 #include "nsCOMPtr.h"
 #include "nsIWorkerDebugger.h"
+#include "nsProxyRelease.h"
 
 class mozIDOMWindow;
 class nsIPrincipal;
@@ -26,9 +27,10 @@ class WorkerDebugger : public nsIWorkerDebugger {
   CheckedUnsafePtr<WorkerPrivate> mWorkerPrivate;
   bool mIsInitialized;
   nsTArray<nsCOMPtr<nsIWorkerDebuggerListener>> mListeners;
+  nsMainThreadPtrHandle<WorkerDebugger> mSelfHandle;
 
  public:
-  explicit WorkerDebugger(WorkerPrivate* aWorkerPrivate);
+  static already_AddRefed<WorkerDebugger> Create(WorkerPrivate* aWorkerPrivate);
 
   NS_DECL_ISUPPORTS
   NS_DECL_NSIWORKERDEBUGGER
@@ -43,6 +45,7 @@ class WorkerDebugger : public nsIWorkerDebugger {
                              const nsAString& aMessage);
 
  private:
+  explicit WorkerDebugger(WorkerPrivate* aWorkerPrivate);
   virtual ~WorkerDebugger();
 
   void PostMessageToDebuggerOnMainThread(const nsAString& aMessage);
