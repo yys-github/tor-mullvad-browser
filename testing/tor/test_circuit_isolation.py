@@ -81,11 +81,11 @@ class TestCircuitIsolation(MarionetteTestCase, TorBrowserMixin):
             "Some of the IP addresses we got are not unique.",
         )
 
-        duplicates = set(
+        duplicates = set([
             self.extract_from_header("https://test-01.torproject.org"),
             self.extract_from_header("https://test-02.torproject.org"),
             self.extract_from_header("https://test.torproject.org"),
-        )
+        ])
         self.logger.info(
             f"Found the following IP addresses, when checking for duplicates: {duplicates}"
         )
