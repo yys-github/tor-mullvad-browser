@@ -62,7 +62,7 @@
         android:key="@string/pref_key_pbm_lock_category_divider"
         android:layout="@xml/preference_category_divider"
         android:selectable="false" />
-    <SwitchPreference
+    <SwitchPreferenceCompat
         android:defaultValue="false"
         android:key="pref_key_private_browsing_locked_enabled" />
     <Preference
