@@ -8135,6 +8135,7 @@ dependencies = [
  "bytes",
  "cstr",
  "log",
+ "moz_task",
  "nserror",
  "nsstring",
  "thin-vec",

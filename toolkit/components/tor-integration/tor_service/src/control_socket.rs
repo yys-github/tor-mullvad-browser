@@ -5,17 +5,18 @@
 use bytes::{Bytes, BytesMut};
 use cstr::cstr;
 use log::warn;
+use moz_task::get_current_thread;
 use nserror::nsresult;
 use nserror::{
-    NS_ERROR_FAILURE, NS_ERROR_INVALID_ARG, NS_ERROR_NOT_AVAILABLE, NS_ERROR_NOT_IMPLEMENTED, NS_OK,
+    NS_ERROR_FAILURE, NS_ERROR_INVALID_ARG, NS_ERROR_NOT_AVAILABLE, NS_ERROR_UNEXPECTED, NS_OK,
 };
 use nsstring::nsACString;
-use std::{cell::Cell, ffi::c_char, ptr::null};
+use std::{cell::{Cell, RefCell}, ffi::c_char, ptr::null};
 use thin_vec::ThinVec;
 use tor_provider::ctor::{ControlSocket, ControlSocketError};
 use xpcom::interfaces::{
-    nsIAsyncInputStream, nsIAsyncOutputStream, nsIFile, nsISocketTransport,
-    nsISocketTransportService, nsITransport,
+    nsIAsyncInputStream, nsIAsyncOutputStream, nsIEventTarget, nsIFile, nsIInputStreamCallback,
+    nsIOutputStreamCallback, nsISocketTransport, nsISocketTransportService, nsITransport,
 };
 use xpcom::{get_service, getter_addrefs, RefPtr, XpCom};
 
@@ -94,8 +95,21 @@ impl ControlSocketXpcom {
 
 impl ControlSocket for ControlSocketXpcom {
     fn queue_read(&self, f: Box<dyn FnOnce()>) -> Result<(), ControlSocketError> {
-        Self::map_err(NS_ERROR_NOT_IMPLEMENTED)?;
-        Ok(())
+        let current_thread =
+            get_current_thread().map_err(|rv| ControlSocketError::ImplementationError(rv.0))?;
+        // Safety: we call an XPCOM method available to Rust.
+        // We pass a couple of parameters as raw pointers, but AsyncWait will
+        // increase reference as it needs.
+        // Finally, we pass this thread, to do everything on this thread, as the
+        // dispatcher is not thread-safe.
+        Self::map_err(unsafe {
+            self.input_stream.AsyncWait(
+                ReadCallback::new(f).coerce::<nsIInputStreamCallback>(),
+                0,
+                0,
+                &*current_thread.coerce::<nsIEventTarget>(),
+            )
+        })
     }
 
     fn available(&self) -> Result<u32, ControlSocketError> {
@@ -127,7 +141,30 @@ impl ControlSocket for ControlSocketXpcom {
         Ok(buffer.freeze())
     }
 
-    fn queue_write(&self, f: Box<dyn FnOnce(Result<(), ControlSocketError>)>, len: u32) {}
+    fn queue_write(&self, f: Box<dyn FnOnce(Result<(), ControlSocketError>)>, len: u32) {
+        let current_thread = match get_current_thread() {
+            Ok(th) => th,
+            Err(rv) => {
+                f(Err(ControlSocketError::ImplementationError(rv.0)));
+                return;
+            }
+        };
+        let callback = WriteCallback::new(f);
+        // Safety: we call an XPCOM method available to Rust.
+        // We pass a couple of parameters as raw pointers, but AsyncWait will
+        // increase reference as it needs.
+        let rv = unsafe {
+            self.output_stream.AsyncWait(
+                callback.coerce::<nsIOutputStreamCallback>(),
+                0,
+                len,
+                &*current_thread.coerce::<nsIEventTarget>(),
+            )
+        };
+        if rv.failed() {
+            let _ = callback.call(Err(ControlSocketError::ImplementationError(rv.0)));
+        }
+    }
 
     fn write(&self, buffer: &Bytes) -> Result<u32, ControlSocketError> {
         // Why would a caller try to write an empty buffer?
@@ -171,6 +208,66 @@ impl Drop for ControlSocketXpcom {
     fn drop(&mut self) {
         if let Err(e) = self.close() {
             warn!("close failed when called by drop: {}", e.to_string());
+        }
+    }
+}
+
+#[xpcom(implement(nsIInputStreamCallback), atomic)]
+struct ReadCallback {
+    // We expect the callback to be called once, but we still need to make the
+    // borrow checker happy. At the moment, we run in single-threaded, so we can
+    // use a RefCell.
+    // WriteCallback is modeled in the same way.
+    callback: RefCell<Option<Box<dyn FnOnce()>>>,
+}
+
+impl ReadCallback {
+    pub fn new(callback: Box<dyn FnOnce()>) -> RefPtr<Self> {
+        Self::allocate(InitReadCallback {
+            callback: RefCell::new(Some(callback)),
+        })
+    }
+
+    xpcom_method!(on_input_stream_ready => OnInputStreamReady(stream: *const nsIAsyncInputStream));
+    fn on_input_stream_ready(&self, _stream: &nsIAsyncInputStream) -> Result<(), nsresult> {
+        let callback = self.callback.borrow_mut().take();
+        if let Some(f) = callback {
+            // Even though we can return a nsresult, it is ignored by our caller.
+            (f)();
+        }
+        Ok(())
+    }
+}
+
+#[xpcom(implement(nsIOutputStreamCallback), atomic)]
+struct WriteCallback {
+    // Same as ReadCallback.
+    callback: RefCell<Option<Box<dyn FnOnce(Result<(), ControlSocketError>)>>>,
+}
+
+impl WriteCallback {
+    pub fn new(callback: Box<dyn FnOnce(Result<(), ControlSocketError>)>) -> RefPtr<Self> {
+        Self::allocate(InitWriteCallback {
+            callback: RefCell::new(Some(callback)),
+        })
+    }
+
+    xpcom_method!(on_output_stream_ready => OnOutputStreamReady(stream: *const nsIAsyncOutputStream));
+    fn on_output_stream_ready(&self, _stream: &nsIAsyncOutputStream) -> Result<(), nsresult> {
+        self.call(Ok(()))
+    }
+
+    pub fn call(&self, value: Result<(), ControlSocketError>) -> Result<(), nsresult> {
+        let callback = self.callback.borrow_mut().take();
+        match callback {
+            Some(f) => {
+                f(value);
+                Ok(())
+            }
+            None => {
+                debug_assert!(false, "The callback was called more than once!");
+                Err(NS_ERROR_UNEXPECTED)
+            }
         }
     }
 }
