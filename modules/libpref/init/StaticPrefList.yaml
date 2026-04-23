@@ -5848,6 +5848,11 @@
   value: false
   mirror: always
 
+- name: extensions.web_accessible_workers.deprecated_behavior
+  type: bool
+  value: false
+  mirror: always
+
 # Whether the InstallTrigger implementation should be enabled (or completely
 # hidden), separate from InstallTriggerImpl because InstallTrigger is improperly
 # used also for UA detection.
