@@ -306,10 +306,7 @@ android.applicationVariants.configureEach { variant ->
         System.setProperty("nimbusFml",  gradle.mozconfig.substs.NIMBUS_FML)
     }
 
-    def disableTor = false
-    if (project.hasProperty("disableTor")) {
-        disableTor = project.getProperty("disableTor")
-    }
+    def disableTor = providers.gradleProperty("disableTor").getOrElse(false)
 
     project.logger.debug("----------------------------------------------")
     project.logger.debug("Variant name:      " + variant.name)
