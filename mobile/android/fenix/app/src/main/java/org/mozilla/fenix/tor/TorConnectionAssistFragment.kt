@@ -34,9 +34,10 @@ import mozilla.components.ui.colors.R as colorsR
 import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.databinding.FragmentTorConnectionAssistBinding
+import org.mozilla.fenix.e2e.SystemInsetsPaddedFragment
 import org.mozilla.fenix.ext.hideToolbar
 
-class TorConnectionAssistFragment : Fragment(), UserInteractionHandler {
+class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemInsetsPaddedFragment {
 
     private val TAG = "TorConnectionAssistFrag"
     private val progressViewModel: TorBootstrapProgressViewModel by viewModels()
