@@ -40,8 +40,9 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import mozilla.components.ui.colors.PhotonColors
 import mozilla.components.ui.icons.R as iconsR
 import org.mozilla.fenix.R
+import org.mozilla.fenix.e2e.SystemInsetsPaddedFragment
 
-class TorLogsComposeFragment : Fragment() {
+class TorLogsComposeFragment : Fragment(), SystemInsetsPaddedFragment {
     private val viewModel: TorLogsViewModel by viewModels()
 
     override fun onCreateView(
