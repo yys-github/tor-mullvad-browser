@@ -1,5 +1,6 @@
 .tor-urlbar-button:not([hidden]) {
   display: flex;
+  align-self: stretch;
   align-items: center;
   gap: var(--space-small);
   border-radius: var(--urlbar-inner-border-radius);
