@@ -11,6 +11,7 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreferenceCompat
 import org.mozilla.fenix.Config
 import org.mozilla.fenix.R
+import org.mozilla.fenix.e2e.SystemInsetsPaddedFragment
 import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.settings
 import org.mozilla.fenix.ext.showToolbar
@@ -24,7 +25,7 @@ import org.mozilla.fenix.utils.view.uncheckAll
  * preference for configuring a user-provided bridge.
  */
 @Suppress("SpreadOperator")
-class TorBridgeConfigFragment : PreferenceFragmentCompat() {
+class TorBridgeConfigFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment {
     private val builtinBridgeRadioGroups = mutableListOf<GroupableRadioButton>()
     private var previousTransportConfig: TorBridgeTransportConfig? = null
 
