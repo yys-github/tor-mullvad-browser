@@ -18,6 +18,7 @@
 #include "mozilla/LoadInfo.h"
 #include "mozilla/Monitor.h"
 #include "mozilla/StaticPrefs_browser.h"
+#include "mozilla/StaticPrefs_extensions.h"
 #include "mozilla/StaticPrefs_network.h"
 #include "mozilla/StaticPrefs_privacy.h"
 #include "mozilla/StoragePrincipalHelper.h"
@@ -2216,7 +2217,22 @@ bool NS_HasBeenCrossOrigin(nsIChannel* aChannel, bool aReport) {
     res = loadingPrincipal->CheckMayLoad(uri, dataInherits);
   }
 
-  return NS_FAILED(res);
+  if (NS_FAILED(res)) {
+    return true;
+  }
+
+  if (!StaticPrefs::extensions_web_accessible_workers_deprecated_behavior() &&
+      uri->SchemeIs("moz-extension")) {
+    nsContentPolicyType internalContentType =
+        loadInfo->InternalContentPolicyType();
+
+    if (internalContentType == nsIContentPolicy::TYPE_INTERNAL_WORKER ||
+        internalContentType == nsIContentPolicy::TYPE_INTERNAL_SHARED_WORKER) {
+      return !loadingPrincipal->IsSameOrigin(uri);
+    }
+  }
+
+  return false;
 }
 
 bool NS_IsSafeMethodNav(nsIChannel* aChannel) {
