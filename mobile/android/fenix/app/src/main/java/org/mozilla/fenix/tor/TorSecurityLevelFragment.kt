@@ -19,8 +19,9 @@ import org.mozilla.fenix.R
 import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.databinding.FragmentTorSecurityLevelPreferencesBinding
 import androidx.core.content.edit
+import org.mozilla.fenix.e2e.SystemInsetsPaddedFragment
 
-class TorSecurityLevelFragment : Fragment() {
+class TorSecurityLevelFragment : Fragment(), SystemInsetsPaddedFragment {
     private var _binding: FragmentTorSecurityLevelPreferencesBinding? = null
     private val binding get() = _binding!!
 
