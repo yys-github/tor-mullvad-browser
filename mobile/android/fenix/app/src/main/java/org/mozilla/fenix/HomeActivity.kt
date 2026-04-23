@@ -493,6 +493,9 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
         )
 
         // tor-browser#43730: Do not delay splash screen
+        // Fix edgeToEdge display issue presented in 150 android rebase. Taken from deleted splash screen code
+        // https://gitlab.torproject.org/tpo/applications/tor-browser/-/work_items/44880
+        EdgeToEdgeFragmentLifecycleCallbacks.register(supportFragmentManager, window)
         // to fetch or apply Nimbus experiments.
 
         lifecycleScope.launch {
