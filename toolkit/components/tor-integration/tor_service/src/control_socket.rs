@@ -6,9 +6,11 @@ use bytes::{Bytes, BytesMut};
 use cstr::cstr;
 use log::warn;
 use nserror::nsresult;
-use nserror::{NS_ERROR_FAILURE, NS_ERROR_NOT_AVAILABLE, NS_ERROR_NOT_IMPLEMENTED, NS_OK};
+use nserror::{
+    NS_ERROR_FAILURE, NS_ERROR_INVALID_ARG, NS_ERROR_NOT_AVAILABLE, NS_ERROR_NOT_IMPLEMENTED, NS_OK,
+};
 use nsstring::nsACString;
-use std::{cell::Cell, ptr::null};
+use std::{cell::Cell, ffi::c_char, ptr::null};
 use thin_vec::ThinVec;
 use tor_provider::ctor::{ControlSocket, ControlSocketError};
 use xpcom::interfaces::{
@@ -97,20 +99,51 @@ impl ControlSocket for ControlSocketXpcom {
     }
 
     fn available(&self) -> Result<u32, ControlSocketError> {
-        Self::map_err(NS_ERROR_NOT_IMPLEMENTED)?;
-        Ok(0)
+        let mut available: u64 = 0;
+        // Safety: call to an XPCOM method exposed to Rust.
+        // Also, we pass a pointer, but it is to our stack, so it is valid.
+        Self::map_err(unsafe { self.input_stream.Available(&mut available) })?;
+        Ok(available.min(u32::MAX as u64) as u32)
     }
 
     fn read(&self, max_len: u32) -> Result<Bytes, ControlSocketError> {
-        Self::map_err(NS_ERROR_NOT_IMPLEMENTED)?;
-        Ok(Bytes::default())
+        if max_len == 0 {
+            Self::map_err(NS_ERROR_INVALID_ARG)?;
+        }
+        let mut buffer = BytesMut::with_capacity(max_len as usize);
+        let dest = buffer.as_mut_ptr() as *mut c_char;
+        let mut read = 0;
+        // Safety: we call an XPCOM method available to Rust.
+        // We pass a valid pointer, and we constructed max_read so that it does
+        // not go beyond the buffer's capacity.
+        Self::map_err(unsafe { self.input_stream.Read(dest, max_len, &mut read) })?;
+        if read > 0 {
+            let new_len = buffer.len() + read as usize;
+            debug_assert!(new_len <= buffer.capacity());
+            // Safety: we constructed our read limit to read at most a number of
+            // bytes that filled the buffer.
+            unsafe { buffer.set_len(new_len) };
+        }
+        Ok(buffer.freeze())
     }
 
     fn queue_write(&self, f: Box<dyn FnOnce(Result<(), ControlSocketError>)>, len: u32) {}
 
     fn write(&self, buffer: &Bytes) -> Result<u32, ControlSocketError> {
-        Self::map_err(NS_ERROR_NOT_IMPLEMENTED)?;
-        Ok(0)
+        // Why would a caller try to write an empty buffer?
+        if buffer.is_empty() {
+            Self::map_err(NS_ERROR_INVALID_ARG)?;
+        }
+
+        let src = buffer.as_ptr() as *const c_char;
+        let to_write = buffer.len().min(u32::MAX as usize) as u32;
+        let mut wrote = 0;
+        // Safety: we call an XPCOM method available to Rust.
+        // The pointers we pass are valid, as they are guaranteed not to be null
+        // in the case of the bytes object, and we pass a variable from our
+        // stack.
+        Self::map_err(unsafe { self.output_stream.Write(src, to_write, &mut wrote) })?;
+        Ok(wrote)
     }
 
     fn close(&self) -> Result<(), ControlSocketError> {
