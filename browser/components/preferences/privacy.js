@@ -5417,11 +5417,9 @@ var gPrivacyPane = {
       gMainPane.manageProfiles
     );
 
-    setEventListener(
-      "dataCollectionViewProfilesMultiProfileBackupWarning",
-      "click",
-      gMainPane.manageProfiles
-    );
+    // tor-browser#44902.
+    // #dataCollectionViewProfilesMultiProfileBackupWarning is not in markup.
+    // This should be dropped with bugzilla bug 1999769 (Firefox version 151).
 
     let listener = () => gPrivacyPane.updateProfilesPrivacyInfo();
     SelectableProfileService.on("enableChanged", listener);
