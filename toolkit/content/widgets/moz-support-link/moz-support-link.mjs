@@ -17,9 +17,7 @@ window.MozXULElement?.insertFTLIfNeeded("toolkit/global/mozSupportLink.ftl");
 export default class MozSupportLink extends HTMLAnchorElement {
   static SUPPORT_URL = "https://www.mozilla.org/";
   static get observedAttributes() {
-    // We add tor-manual-page for pages hosted at tor project. Also shared with
-    // base-browser/mullvad-browser. See tor-browser#42583.
-    return ["support-page", "utm-content", "tor-manual-page"];
+    return ["support-page", "utm-content"];
   }
 
   /**
@@ -97,18 +95,18 @@ export default class MozSupportLink extends HTMLAnchorElement {
   }
 
   attributeChangedCallback(attrName) {
-    if (
-      attrName === "support-page" ||
-      attrName === "utm-content" ||
-      attrName === "tor-manual-page"
-    ) {
+    if (attrName === "support-page" || attrName === "utm-content") {
       this.#setHref();
     }
   }
 
   #setHref() {
-    let torManualPage = this.getAttribute("tor-manual-page");
-    if (torManualPage) {
+    let supportPage = this.getAttribute("support-page") ?? "";
+    // Support pages that start with "tor-manual:" are meant to point to the
+    // Tor Project's support pages. See tor-browser#44903.
+    const torManualPrefix = "tor-manual:";
+    if (supportPage.startsWith(torManualPrefix)) {
+      const torManualPage = supportPage.substring(torManualPrefix.length);
       const [page, anchor] = torManualPage.split("_", 2);
 
       let locale = Services.locale.appLocaleAsBCP47;
@@ -124,7 +122,6 @@ export default class MozSupportLink extends HTMLAnchorElement {
       this.href = href;
       return;
     }
-    let supportPage = this.getAttribute("support-page") ?? "";
     // For base-browser we sometimes want to override firefox support links with
     // our own.
     // See tor-browser#40899.
