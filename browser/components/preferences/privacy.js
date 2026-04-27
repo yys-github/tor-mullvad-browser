@@ -64,12 +64,6 @@ ChromeUtils.defineLazyGetter(lazy, "gParentalControlsService", () =>
     : null
 );
 
-XPCOMUtils.defineLazyScriptGetter(
-  this,
-  ["OnionServicesAuthPreferences"],
-  "chrome://browser/content/onionservices/authPreferences.js"
-);
-
 // TODO: module import via ChromeUtils.defineModuleGetter
 XPCOMUtils.defineLazyScriptGetter(
   this,
@@ -590,6 +584,15 @@ Preferences.addSetting({
 Preferences.addSetting({
   id: "breachAlerts",
   pref: "signon.management.page.breach-alerts.enabled",
+});
+
+Preferences.addSetting({
+  id: "onionSiteSavedKeys",
+  onUserClick: () => {
+    gSubDialog.open(
+      "chrome://browser/content/onionservices/savedKeysDialog.xhtml"
+    );
+  },
 });
 
 /**
@@ -3577,6 +3580,7 @@ var gPrivacyPane = {
     initSettingGroup("browsingProtection");
     initSettingGroup("cookiesAndSiteData");
     initSettingGroup("cookiesAndSiteData2");
+    initSettingGroup("onionSiteAuthentication");
     initSettingGroup("certificates");
     initSettingGroup("ipprotection");
     // NOTE: "payments" and "addresses" are usually initialised by
@@ -3605,7 +3609,6 @@ var gPrivacyPane = {
     this._initTrackingProtectionExtensionControl();
     this._ensureTrackingProtectionExceptionListMigration();
     this._initProfilesInfo();
-    OnionServicesAuthPreferences.init();
     this._initSecurityLevel();
 
     Preferences.get("privacy.trackingprotection.enabled").on(

@@ -3868,6 +3868,18 @@ SettingGroupManager.registerGroups({
       },
     ],
   },
+  onionSiteAuthentication: {
+    l10nId: "onion-site-authentication-group",
+    headingLevel: 2,
+    supportPage: "tor-manual:onion-services_onion-service-authentication",
+    items: [
+      {
+        id: "onionSiteSavedKeys",
+        control: "moz-box-button",
+        l10nId: "onion-site-authentication-saved-keys-button",
+      },
+    ],
+  },
   // Hide the payments and addresses settings. tor-browser#44460.
   // NOTE: "payments" and "addresses" are usually configured in
   // FormAutofillPreferences.sys.mjs. But this never runs because the "autofill"
