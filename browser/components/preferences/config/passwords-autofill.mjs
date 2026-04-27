@@ -650,6 +650,15 @@ Preferences.addSetting({
   pref: "signon.management.page.breach-alerts.enabled",
 });
 
+Preferences.addSetting({
+  id: "onionSiteSavedKeys",
+  onUserClick: () => {
+    gSubDialog.open(
+      "chrome://browser/content/onionservices/savedKeysDialog.xhtml"
+    );
+  },
+});
+
 SettingGroupManager.registerGroups({
   passwords: {
     inProgress: true,
@@ -756,6 +765,18 @@ SettingGroupManager.registerGroups({
             supportPage: "lockwise-alerts",
           },
         ],
+      },
+    ],
+  },
+  onionSiteAuthentication: {
+    l10nId: "onion-site-authentication-group",
+    headingLevel: 2,
+    supportPage: "tor-manual:onion-services_onion-service-authentication",
+    items: [
+      {
+        id: "onionSiteSavedKeys",
+        control: "moz-box-button",
+        l10nId: "onion-site-authentication-saved-keys-button",
       },
     ],
   },
