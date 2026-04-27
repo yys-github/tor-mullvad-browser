@@ -704,12 +704,15 @@ page-info-onion-site-encryption-with-bits = Connection encrypted (Onion site, { 
 page-info-onion-site-encryption-plain = Connection encrypted (Onion site)
 
 ## Onion site authentication preferences.
-## "Onion site" is an abbreviation of "onion website": a website whose domain URL ends in ".onion", which is reachable through the Tor network.
 
-onion-site-authentication-preferences-heading = Onion site authentication
-onion-site-authentication-preferences-overview = Some onion sites require that you identify yourself with a key (a kind of password) before you can access them.
-onion-site-authentication-preferences-learn-more = Learn more
-onion-site-authentication-preferences-saved-keys-button = Saved keys…
+# "Onion site" is an abbreviation of "onion website": a website whose domain URL ends in ".onion", which is reachable through the Tor network.
+# Here "key" is a noun, and refers to a special code that gives the user access to a website.
+onion-site-authentication-group =
+    .label = Onion site authentication
+    .description = Some onion sites require that you identify yourself with a key (a kind of password) before you can access them.
+# Here "key" is a noun, and refers to a special code that gives the user access to a website.
+onion-site-authentication-saved-keys-button =
+    .label = Saved keys…
 
 ## Onion site saved keys dialog.
 ## "Onion site" is an abbreviation of "onion website": a website whose domain URL ends in ".onion", which is reachable through the Tor network.
