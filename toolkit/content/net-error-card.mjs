@@ -28,9 +28,8 @@ import {
   getResolvedErrorConfig,
   resolveErrorID,
 } from "chrome://global/content/errors/error-lookup.mjs";
-import { html, ifDefined } from "chrome://global/content/vendor/lit.all.mjs";
+import { html } from "chrome://global/content/vendor/lit.all.mjs";
 import { MozLitElement } from "chrome://global/content/lit-utils.mjs";
-import { NET_ERROR_ILLUSTRATIONS } from "chrome://global/content/errors/net-error-illustrations.mjs";
 import "chrome://global/content/elements/moz-button-group.mjs";
 import "chrome://global/content/elements/moz-button.mjs";
 import "chrome://global/content/elements/moz-support-link.mjs";
@@ -1407,16 +1406,8 @@ export class NetErrorCard extends MozLitElement {
       return null;
     }
 
-    const { bodyTitleL10nId, image } = this.errorConfig;
-    // The CTA invites the user to weigh up where to go next, so it shows the
-    // security illustration rather than dnsNotFound's no-connection one.
-    const {
-      src,
-      alt = "",
-      className,
-    } = this.shouldShowSearchCTA()
-      ? NET_ERROR_ILLUSTRATIONS.securityError
-      : (image ?? NET_ERROR_ILLUSTRATIONS.securityError);
+    const { bodyTitleL10nId } = this.errorConfig;
+    // Drop the Firefox mascot images. tor-browser#44832.
     const title = bodyTitleL10nId ?? "fp-certerror-body-title";
 
     return html`<link
@@ -1428,9 +1419,6 @@ export class NetErrorCard extends MozLitElement {
         aria-labelledby="error-title"
         aria-describedby="error-intro whatCanYouDo"
       >
-        <div class="img-container">
-          <img src=${src} class=${ifDefined(className)} alt=${alt} />
-        </div>
         <div class="container">${this.containerContentTemplate(title)}</div>
       </article>`;
   }
