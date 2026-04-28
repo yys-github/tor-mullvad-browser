@@ -316,4 +316,5 @@
     <color name="configure_connection_button_white">#E1E0E7</color>
     <color name="warning_yellow">#FFA436</color>
     <color name="progress_background_tint">#55148C</color>
+    <color name="settings_button_white">#FBFBFE</color>
 </resources>
