@@ -136,6 +136,10 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
     }
 
     private fun setSettingsButton(screen: ConnectAssistUiState) {
+        binding.settingsButtonImage.imageTintList = AppCompatResources.getColorStateList(
+            requireContext(),
+            R.color.settings_button_white,
+        )
         binding.settingsButton.visibility = if (screen.settingsButtonVisible) View.VISIBLE else View.GONE
         binding.settingsButton.setOnClickListener {
             openSettings()
@@ -143,6 +147,10 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
     }
 
     private fun setBackButton(screen: ConnectAssistUiState) {
+        binding.backButtonImage.imageTintList = AppCompatResources.getColorStateList(
+            requireContext(),
+            R.color.settings_button_white,
+        )
         binding.backButton.visibility = if (screen.backButtonVisible) View.VISIBLE else View.INVISIBLE
         binding.backButton.setOnClickListener {
             onBackPressed()
@@ -323,6 +331,10 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
     }
 
     private fun setButton2(screen: ConnectAssistUiState) {
+        binding.torBootstrapButton2.backgroundTintList = AppCompatResources.getColorStateList(
+            requireContext(),
+            R.color.configure_connection_button_white,
+        )
         binding.torBootstrapButton2.visibility =
             if (screen.torBootstrapButton2Visible) View.VISIBLE else View.GONE
         if (screen.torBootstrapButton2ShouldRestartApp) {
