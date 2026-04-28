@@ -1076,6 +1076,8 @@ export class NetErrorCard extends MozLitElement {
     }
 
     const { bodyTitleL10nId, image } = this.errorConfig;
+    // Drop the Firefox mascot images. tor-browser#44832.
+    // eslint-disable-next-line no-unused-vars
     const {
       src,
       alt = "",
@@ -1092,9 +1094,6 @@ export class NetErrorCard extends MozLitElement {
         aria-labelledby="error-title"
         aria-describedby="error-intro whatCanYouDo"
       >
-        <div class="img-container">
-          <img src=${src} class=${ifDefined(className)} alt=${alt} />
-        </div>
         <div class="container">
           ${this.showCustomNetErrorCard
             ? html`${this.customNetErrorContainerTemplate()}`
