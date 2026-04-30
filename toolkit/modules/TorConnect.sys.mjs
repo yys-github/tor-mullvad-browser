@@ -1109,12 +1109,9 @@ export const TorConnect = {
       throw new Error(`Trying to set the stage to ${name} during a bootstrap`);
     }
     if (!this._providerRunning && name !== TorConnectStage.ProviderStopped) {
-      if (!lazy.TorLauncherUtil.isAndroid) {
-        // TODO: Remove Android exception.
-        throw new Error(
-          `Trying to set the stage to ${name} when provider is not running`
-        );
-      }
+      throw new Error(
+        `Trying to set the stage to ${name} when provider is not running`
+      );
     }
 
     lazy.logger.info(`Entering stage ${name}`);
@@ -1596,13 +1593,8 @@ export const TorConnect = {
       return;
     }
     if (!this._providerRunning && stage !== TorConnectStage.ProviderStopped) {
-      if (!lazy.TorLauncherUtil.isAndroid) {
-        // TODO: Remove Android exception.
-        lazy.logger.warn(
-          `Cannot move to ${stage} when provider is not running`
-        );
-        return;
-      }
+      lazy.logger.warn(`Cannot move to ${stage} when provider is not running`);
+      return;
     }
     if (this._stageName === TorConnectStage.Loading) {
       if (stage === TorConnectStage.ProviderStopped) {
@@ -1709,13 +1701,7 @@ export const TorConnect = {
         // But other methods should take into account that _providerRunning is now
         // `false` to early return and guarantee that we enter this
         // ProviderStopped stage.
-        if (lazy.TorLauncherUtil.isAndroid) {
-          // TODO: Remove this Android path when android supports the
-          // `ProviderStopped` stage.
-          this._makeStageRequest(TorConnectStage.Start, true);
-        } else {
-          this._makeStageRequest(TorConnectStage.ProviderStopped, true);
-        }
+        this._makeStageRequest(TorConnectStage.ProviderStopped, true);
       }
     }
 
