@@ -32,6 +32,8 @@ pub enum ControllerError {
     KeyNotFound(String),
     #[error("malformed reply: {0}")]
     MalformedReply(String),
+    #[error("the argument passed to the command was not valid: {0}")]
+    InvalidArgument(String),
 }
 
 impl ControllerError {
