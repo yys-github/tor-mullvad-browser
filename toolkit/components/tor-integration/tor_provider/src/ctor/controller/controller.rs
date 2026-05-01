@@ -103,6 +103,14 @@ impl<CP: ControlPortInterface> TorController<CP> {
 
     // Connection management
 
+    pub fn set_conf(
+        &self,
+        values: &[(&str, ConfValue)],
+        handler: Box<dyn FnOnce(Result<u16, ControllerError>)>,
+    ) {
+        self.send_command(commands::set_conf(values), handler);
+    }
+
     pub fn save_conf(&self, handler: Box<dyn FnOnce(Result<u16, ControllerError>)>) {
         self.send_command(commands::save_conf(), handler);
     }
