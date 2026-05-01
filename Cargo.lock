@@ -8175,6 +8175,7 @@ version = "0.1.0"
 dependencies = [
  "bytes",
  "hex",
+ "itoa",
  "lazy_static",
  "log",
  "memchr",
