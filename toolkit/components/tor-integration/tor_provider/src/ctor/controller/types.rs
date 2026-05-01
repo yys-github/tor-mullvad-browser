@@ -24,6 +24,15 @@ pub enum ClientTransportPlugin {
     Socks5(SocketAddr),
 }
 
+#[derive(Debug, Clone)]
+pub enum ConfValue<'a> {
+    Bool(bool),
+    Int(i32),
+    String(&'a str),
+    Array(Vec<&'a str>),
+    Null,
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct PluggableTransport {
     pub transports: Vec<String>,
