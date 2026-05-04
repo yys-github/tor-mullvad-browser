@@ -43,28 +43,28 @@ features:
         type: Map<HomeScreenSection, Boolean>
         default:
           {
-            "top-sites": true,
-            "jump-back-in": true,
+            "top-sites": false,
+            "jump-back-in": false,
             "bookmarks": true,
-            "recent-explorations": true,
-            "pocket": true,
-            "pocket-sponsored-stories": true,
-            "synced-tabs": true,
-            "collections": true,
-            "privacy-report": true,
+            "recent-explorations": false,
+            "pocket": false,
+            "pocket-sponsored-stories": false,
+            "synced-tabs": false,
+            "collections": false,
+            "privacy-report": false,
           }
     defaults:
       - channel: nightly
         value: {
           "sections-enabled": {
-            "top-sites": true,
-            "jump-back-in": true,
+            "top-sites": false,
+            "jump-back-in": false,
             "bookmarks": true,
-            "recent-explorations": true,
-            "pocket": true,
-            "synced-tabs": true,
-            "collections": true,
-            "privacy-report": true,
+            "recent-explorations": false,
+            "pocket": false,
+            "synced-tabs": false,
+            "collections": false,
+            "privacy-report": false,
           }
         }
   nimbus-validation:
@@ -221,7 +221,7 @@ features:
 
   glean:
     description: "A feature that provides server-side configurations for Glean metrics (aka Server Knobs)."
-    allow-coenrollment: true
+    allow-coenrollment: false
     variables:
       gleanMetricConfiguration:
         description: Configuration for Glean Server Knobs
@@ -230,7 +230,7 @@ features:
       enable-event-timestamps:
         description: "Enables precise event timestamps for Glean events"
         type: Boolean
-        default: true
+        default: false
       delay-ping-lifetime-io:
         description: "Glean will delay io for ping lifetime metrics"
         type: Boolean
@@ -308,7 +308,7 @@ features:
     defaults:
       - channel: developer
         value:
-          enabled: true
+          enabled: false
           template-message: sent_from_firefox_template
           download-link: "[Download Link]"
           show-snackbar: true
@@ -384,11 +384,11 @@ features:
     defaults:
       - channel: developer
         value:
-          enabled: true
-          boost-amp-wiki: true
+          enabled: false
+          boost-amp-wiki: false
       - channel: nightly
         value:
-          enabled: true
+          enabled: false
 
   nimbus-is-ready:
     description: >
@@ -455,10 +455,10 @@ features:
     defaults:
       - channel: developer
         value:
-          enabled: true
+          enabled: false
       - channel: nightly
         value:
-          enabled: true
+          enabled: false
 
   minimal-addressbar:
     description: Show a smaller height bottom addressbar with just the URL.
@@ -510,7 +510,7 @@ features:
           show a "close" button for tabs that are currently open on other supported devices
           in the synced tabs tray.
         type: Boolean
-        default: true
+        default: false
 
   fission:
     description: The feature that controls whether fission is enabled or not in Gecko.
@@ -575,7 +575,7 @@ features:
         description: >
           Enables / disables fingerprinting protection in private browsing mode.
         type: Boolean
-        default: true
+        default: false
       overrides:
         description: >
           The protection overrides to add or remove fingerprinting protection
@@ -629,7 +629,7 @@ features:
         description: >
           Enables / disables third-party cookie blocking in private browsing mode.
         type: Boolean
-        default: true
+        default: false
 
   safe-browsing-v5:
     description: Control Safe Browsing V5.
@@ -903,7 +903,7 @@ features:
         description: >
           Uses search configuration from remote servers .
         type: Boolean
-        default: true
+        default: false
   same-document-navigation-overrides-load-type:
     description: Control whether the same document navigation overrides the load type.
     variables:
@@ -924,7 +924,7 @@ features:
         description: >
           When `true`, include DoH settings in the settings UI.
         type: Boolean
-        default: true
+        default: false
       autoselect-enabled:
         description: >
           Controls the network.android_doh.autoselect_enabled pref and automatically chooses a DoH provider when Default Protection mode is selected.
