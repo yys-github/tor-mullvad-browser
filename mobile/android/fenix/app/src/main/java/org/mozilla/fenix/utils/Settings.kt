@@ -2691,7 +2691,7 @@ class Settings(
      */
     var isFirstTimeEngagingWithSignup: Boolean by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_first_time_engage_with_signup),
-        default = true,
+        default = false,
     )
 
     /**
