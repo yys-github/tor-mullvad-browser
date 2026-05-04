@@ -552,7 +552,7 @@ class Settings(
 
     var privateBrowsingLockedFeatureEnabled by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_private_browsing_locked_enabled),
-        default = { false },
+        default = { FxNimbus.features.privateBrowsingLock.value().enabled },
     )
 
     var privateBrowsingModeLocked by booleanPreference(

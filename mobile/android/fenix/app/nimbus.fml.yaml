@@ -928,7 +928,7 @@ features:
         description: >
           Whether or not to enable private browsing mode lock.
         type: Boolean
-        default: true
+        default: false
 
   app-links:
     description: Control behavior of app links handling in the browser.
