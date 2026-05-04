@@ -305,6 +305,8 @@ class BootstrapAttempt {
 
 /**
  * Each instance can be used to attempt one auto-bootstrapping sequence.
+ *
+ * AKA Connection Assist bootstrap.
  */
 class AutoBootstrapAttempt {
   /**
@@ -812,6 +814,12 @@ export const TorConnect = {
   _bootstrapAttempt: null,
 
   /**
+   * Whether the current or last bootstrap attempt was a "normal" bootstrap (not
+   * Connection Assist).
+   */
+  _wasNormalBootstrap: false,
+
+  /**
    * The bootstrap error that was last generated.
    *
    * @type {?TorConnectError}
@@ -1048,7 +1056,7 @@ export const TorConnect = {
           // No change.
           return;
         }
-        if (this._stageName === "Bootstrapping") {
+        if (this._stageName === TorConnectStage.Bootstrapping) {
           this._bootstrappingStatus.hasWarning = true;
           this._notifyBootstrapProgress();
         }
@@ -1194,6 +1202,19 @@ export const TorConnect = {
       this._stageName === TorConnectStage.ChooseRegion ||
       this._stageName === TorConnectStage.RegionNotFound ||
       this._stageName === TorConnectStage.ConfirmRegion
+    );
+  },
+
+  /**
+   * Whether we are in a stage that is considered part of "Connection Assist".
+   *
+   * @type {boolean}
+   */
+  get inConnectionAssistStage() {
+    return (
+      this.canBeginAutoBootstrap ||
+      (this._stageName === TorConnectStage.Bootstrapping &&
+        !this._wasNormalBootstrap)
     );
   },
 
@@ -1377,9 +1398,10 @@ export const TorConnect = {
 
     const beginStage = this._stageName;
     const bootstrapOptions = { regionCode };
-    const bootstrapAttempt = regionCode
-      ? new AutoBootstrapAttempt()
-      : new BootstrapAttempt();
+    const normalBootstrap = !regionCode;
+    const bootstrapAttempt = normalBootstrap
+      ? new BootstrapAttempt()
+      : new AutoBootstrapAttempt();
 
     this._addSimulateOptions(bootstrapOptions, regionCode);
 
@@ -1398,6 +1420,7 @@ export const TorConnect = {
     this._requestedStage = null;
     this._bootstrapTrigger = beginStage;
     this._isQuickstart = isQuickstart;
+    this._wasNormalBootstrap = normalBootstrap;
     this._setStage(TorConnectStage.Bootstrapping);
     this._bootstrapAttempt = bootstrapAttempt;
 
