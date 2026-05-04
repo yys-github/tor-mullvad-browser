@@ -561,7 +561,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity {
             ),
             downloadSnackbar,
             privateBrowsingLockFeature,
-            externalAppLinkStatusBinding,
             summarizeToolbarHighlightBinding,
             components.core.summarizationSettings,
         )
