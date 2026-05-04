@@ -610,7 +610,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
             ),
             downloadSnackbar,
             privateBrowsingLockFeature,
-            externalAppLinkStatusBinding,
             summarizeToolbarHighlightBinding,
             components.core.summarizationSettings,
             translationsAIControllableFeatureRegistrar,
