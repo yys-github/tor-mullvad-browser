@@ -1138,7 +1138,7 @@ var CustomizableUIInternal = {
         if (buttonIndex >= 0) {
           // NOTE: We expect the SecurityLevel module to already be initialized.
           const { SecurityLevelPrefs } = ChromeUtils.importESModule(
-            "resource://gre/modules/SecurityLevel.sys.mjs"
+            "moz-src:///toolkit/components/securitylevel/SecurityLevel.sys.mjs"
           );
           if (!SecurityLevelPrefs.securityCustom) {
             navbarPlacements.splice(buttonIndex, 1);
