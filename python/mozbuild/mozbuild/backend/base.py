@@ -289,18 +289,17 @@ class BuildBackend(LoggingMixin):
             )
 
         if app == "browser":
-            tbdir = Path(config.topobjdir) / "dist" / "bin"
-
             if config.substs.get("OS_TARGET") == "Darwin":
-                tbdir = next(tbdir.glob("*.app"))
+                tbdir = Path(config.topobjdir) / "dist" / config.substs["MOZ_MACBUNDLE_NAME"]
                 paths = {
                     "docs": tbdir / "Contents/Resources/TorBrowser/Docs",
                     "exts": tbdir / "Contents/Resources/distribution/extensions",
-                    "tor_bin": tbdir / "Contents/MacOS/tor",
+                    "tor_bin": tbdir / "Contents/MacOS/Tor",
                     "tor_config": tbdir / "Contents/Resources/TorBrowser/Tor",
                     "fonts": tbdir / "Resources/fonts",
                 }
             else:
+                tbdir = Path(config.topobjdir) / "dist" / "bin"
                 paths = {
                     "docs": tbdir / "TorBrowser/Docs",
                     "exts": tbdir / "distribution/extensions",
