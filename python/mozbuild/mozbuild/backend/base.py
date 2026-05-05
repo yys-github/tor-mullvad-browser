@@ -279,16 +279,19 @@ class BuildBackend(LoggingMixin):
         noscript_location = config.substs.get("NOSCRIPT")
 
         if app == "browser":
-            tbdir = Path(config.topobjdir) / "dist" / "bin"
-
             if config.substs.get("OS_TARGET") == "Darwin":
-                tbdir = next(tbdir.glob("*.app"))
+                tbdir = (
+                    Path(config.topobjdir)
+                    / "dist"
+                    / config.substs["MOZ_MACBUNDLE_NAME"]
+                )
                 paths = {
                     "docs": tbdir / "Contents/Resources/TorBrowser/Docs",
                     "exts": tbdir / "Contents/Resources/distribution/extensions",
                     "fonts": tbdir / "Resources/fonts",
                 }
             else:
+                tbdir = Path(config.topobjdir) / "dist" / "bin"
                 paths = {
                     "docs": tbdir / "TorBrowser/Docs",
                     "exts": tbdir / "distribution/extensions",
