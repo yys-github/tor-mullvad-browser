@@ -298,7 +298,7 @@ class BuildBackend(LoggingMixin):
                 paths = {
                     "docs": tbdir / "Contents/Resources/TorBrowser/Docs",
                     "exts": tbdir / "Contents/Resources/distribution/extensions",
-                    "tor_bin": tbdir / "Contents/MacOS/tor",
+                    "tor_bin": tbdir / "Contents/MacOS/Tor",
                     "tor_config": tbdir / "Contents/Resources/TorBrowser/Tor",
                     "fonts": tbdir / "Resources/fonts",
                 }
