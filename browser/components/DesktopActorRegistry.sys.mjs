@@ -110,10 +110,12 @@ let JSWINDOWACTORS = {
 
   AboutMullvadBrowser: {
     parent: {
-      esModuleURI: "resource:///actors/AboutMullvadBrowserParent.sys.mjs",
+      esModuleURI:
+        "moz-src:///browser/components/mullvad-browser/AboutMullvadBrowserParent.sys.mjs",
     },
     child: {
-      esModuleURI: "resource:///actors/AboutMullvadBrowserChild.sys.mjs",
+      esModuleURI:
+        "moz-src:///browser/components/mullvad-browser/AboutMullvadBrowserChild.sys.mjs",
       events: {
         DOMContentLoaded: {},
       },
