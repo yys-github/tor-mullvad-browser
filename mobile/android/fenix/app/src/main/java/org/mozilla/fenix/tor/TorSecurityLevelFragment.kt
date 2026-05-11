@@ -5,6 +5,7 @@
 package org.mozilla.fenix.tor
 
 import android.content.Context
+import android.graphics.Typeface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -44,6 +45,9 @@ class TorSecurityLevelFragment : Fragment(), SystemInsetsPaddedFragment {
 
         binding.description.text = getString(R.string.tor_security_level_warning, getString(R.string.app_name))
 
+        binding.saveAndRestartButton.setTypeface(null, Typeface.BOLD)
+        binding.cancelButton.setTypeface(null, Typeface.BOLD)
+
         updateSaveAndRestartButtonUI()
 
         val currentLevel: Int = requireContext().components.core.engine.settings.torSecurityLevel
@@ -79,6 +83,11 @@ class TorSecurityLevelFragment : Fragment(), SystemInsetsPaddedFragment {
             updateSaveAndRestartButtonUI()
         }
 
+        binding.saveAndRestartButton.backgroundTintList = AppCompatResources.getColorStateList(
+            requireContext(),
+            R.color.disabled_connect_button_purple,
+        )
+
         binding.saveAndRestartButton.setOnClickListener {
 
             Toast.makeText(
@@ -111,6 +120,10 @@ class TorSecurityLevelFragment : Fragment(), SystemInsetsPaddedFragment {
             (requireActivity() as HomeActivity).restartApplication()
         }
 
+        binding.cancelButton.backgroundTintList = AppCompatResources.getColorStateList(
+            requireContext(),
+            R.color.settings_button_white,
+        )
         binding.cancelButton.setOnClickListener {
             @Suppress("DEPRECATION")
             requireActivity().onBackPressed()
