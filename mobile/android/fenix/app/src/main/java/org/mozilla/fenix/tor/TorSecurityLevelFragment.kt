@@ -125,8 +125,7 @@ class TorSecurityLevelFragment : Fragment(), SystemInsetsPaddedFragment {
             R.color.settings_button_white,
         )
         binding.cancelButton.setOnClickListener {
-            @Suppress("DEPRECATION")
-            requireActivity().onBackPressed()
+            requireActivity().onBackPressedDispatcher.onBackPressed()
         }
     }
 
