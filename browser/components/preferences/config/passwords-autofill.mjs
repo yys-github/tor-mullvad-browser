@@ -19,10 +19,6 @@ const FormAutofillUtils = ChromeUtils.importESModule(
   "resource://gre/modules/shared/FormAutofillUtils.sys.mjs"
 ).FormAutofillUtils;
 
-const { AppConstants } = ChromeUtils.importESModule(
-  "resource://gre/modules/AppConstants.sys.mjs"
-);
-
 const lazy = XPCOMUtils.declareLazy({
   AppConstants: "resource://gre/modules/AppConstants.sys.mjs",
   OSKeyStore: "resource://gre/modules/OSKeyStore.sys.mjs",
@@ -564,7 +560,8 @@ Preferences.addSetting({
 Preferences.addSetting({
   id: "allowWindowSSO",
   pref: "network.http.windows-sso.enabled",
-  visible: () => AppConstants.platform === "win",
+  // Hide Windows SSO (single sign on). tor-browser#40717.
+  visible: () => false,
 });
 
 Preferences.addSetting({
