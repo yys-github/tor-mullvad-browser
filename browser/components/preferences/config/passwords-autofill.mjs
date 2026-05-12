@@ -564,7 +564,8 @@ Preferences.addSetting({
 Preferences.addSetting({
   id: "allowWindowSSO",
   pref: "network.http.windows-sso.enabled",
-  visible: () => AppConstants.platform === "win",
+  // Hide Windows SSO (single sign on). tor-browser#40717.
+  visible: () => false,
 });
 
 Preferences.addSetting({
