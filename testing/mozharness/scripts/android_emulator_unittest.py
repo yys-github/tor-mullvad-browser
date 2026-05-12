@@ -13,6 +13,8 @@ import sys
 import tempfile
 import time
 
+import yaml
+
 # load modules from parent dir
 here = os.path.abspath(os.path.dirname(__file__))
 sys.path.insert(1, os.path.dirname(here))
@@ -515,12 +517,9 @@ class AndroidEmulatorTest(
         self.run_command([adb, "forward", "tcp:2828", "tcp:2828"])
 
         with tempfile.NamedTemporaryFile(suffix=".yaml") as tmp_file:
-            tmp_file.write(
-                b"""args:
-- --marionette
-- --remote-allow-system-access
-"""
-            )
+            config = {"args": ["--marionette", "--remote-allow-system-access"]}
+
+            tmp_file.write(yaml.dump(config, encoding="utf-8"))
             tmp_file.flush()
 
             remote_path = f"/data/local/tmp/{self.package_name}-geckoview-config.yaml"
@@ -577,7 +576,7 @@ class AndroidEmulatorTest(
         if requirements:
             self.register_virtualenv_module(requirements=[requirements])
 
-        if ("marionette", "marionette") in suites:
+        if any("marionette" in suite_name for _, suite_name in self._query_suites()):
             self._configure_marionette_virtualenv(action)
 
     def download_and_extract(self):
@@ -617,7 +616,7 @@ class AndroidEmulatorTest(
         for per_test_suite, suite in suites:
             self.test_suite = suite
 
-            if self.test_suite == "marionette":
+            if "marionette" in self.test_suite:
                 self._marionette_setup()
 
             try:
@@ -701,7 +700,7 @@ class AndroidEmulatorTest(
 
     @PostScriptAction("run-tests")
     def marionette_teardown(self, *args, **kwargs):
-        if ("marionette", "marionette") in self._query_suites():
+        if any("marionette" in suite_name for _, suite_name in self._query_suites()):
             adb = self.query_exe("adb")
             self.run_command([adb, "shell", "am", "force-stop", self.package_name])
             self.run_command([adb, "shell", "am", "clear-debug-app"])
