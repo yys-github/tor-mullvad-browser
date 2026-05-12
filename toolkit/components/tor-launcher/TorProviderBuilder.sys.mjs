@@ -7,6 +7,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
   TorLauncherUtil:
     "moz-src:///toolkit/components/tor-launcher/TorLauncherUtil.sys.mjs",
   TorProvider: "moz-src:///toolkit/components/tor-launcher/TorProvider.sys.mjs",
+  TorProviderMock:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderMock.sys.mjs",
   TorProviderNone:
     "moz-src:///toolkit/components/tor-launcher/TorProviderNone.sys.mjs",
 });
@@ -74,6 +76,7 @@ export class TorBootstrapError extends Error {
 }
 
 export const TorProviders = Object.freeze({
+  mock: "mock",
   none: "none",
   tor: "tor",
 });
@@ -218,6 +221,9 @@ export class TorProviderBuilder {
 
     let providerClass;
     switch (this.providerType) {
+      case TorProviders.mock:
+        providerClass = lazy.TorProviderMock;
+        break;
       case TorProviders.tor:
         providerClass = lazy.TorProvider;
         break;
