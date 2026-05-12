@@ -530,6 +530,14 @@ class AndroidEmulatorTest(
             adb,
             "shell",
             "am",
+            "set-debug-app",
+            "--persistent",
+            self.package_name,
+        ])
+        self.run_command([
+            adb,
+            "shell",
+            "am",
             "start",
             "-S",
             "-W",
@@ -696,6 +704,7 @@ class AndroidEmulatorTest(
         if ("marionette", "marionette") in self._query_suites():
             adb = self.query_exe("adb")
             self.run_command([adb, "shell", "am", "force-stop", self.package_name])
+            self.run_command([adb, "shell", "am", "clear-debug-app"])
             self.run_command([adb, "uninstall", self.package_name])
             self.run_command([
                 adb,
