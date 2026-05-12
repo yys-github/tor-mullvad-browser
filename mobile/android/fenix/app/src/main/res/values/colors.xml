@@ -141,9 +141,9 @@
     <color name="fx_mobile_private_on_tertiary">@color/photonDarkGrey90</color>
     <color name="fx_mobile_private_tertiary_container">@color/photonPink80</color>
     <color name="fx_mobile_private_on_tertiary_container">@color/photonLightGrey05</color>
-    <color name="fx_mobile_private_background">#FF342B4A</color>
+    <color name="fx_mobile_private_background">#321C64</color>
     <color name="fx_mobile_private_on_background">@color/photonLightGrey05</color>
-    <color name="fx_mobile_private_surface">#FF342B4A</color>
+    <color name="fx_mobile_private_surface">#321C64</color>
     <color name="fx_mobile_private_on_surface">@color/photonLightGrey05</color>
     <color name="fx_mobile_private_surface_variant">#FF413857</color>
     <color name="fx_mobile_private_on_surface_variant">@color/photonLightGrey40</color>
@@ -325,9 +325,9 @@
     <color name="mozac_ui_lock_slash_fill_critical" tools:ignore="UnusedResources">@color/fx_mobile_icon_color_critical</color>
 
     <!-- Connection Assist -->
-    <color name="connect_button_purple">#9059FF</color>
-    <color name="disabled_connect_button_purple">#5C42A9</color>
-    <color name="disabled_text_gray_purple">#8782A9</color>
+    <color name="connect_button_purple">#7542E5</color>
+    <color name="disabled_connect_button_purple">#542FA4</color>
+    <color name="disabled_text_gray_purple">#9781C8</color>
     <color name="configure_connection_button_white">#E1E0E7</color>
     <color name="warning_yellow">#FFA436</color>
     <color name="progress_background_tint">#55148C</color>
