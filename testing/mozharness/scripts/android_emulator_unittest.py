@@ -32,7 +32,14 @@ from mozharness.mozilla.testing.codecoverage import (
 from mozharness.mozilla.testing.testbase import TestingMixin, testing_config_options
 
 SUITE_DEFAULT_E10S = ["geckoview-junit", "mochitest", "reftest"]
-SUITE_NO_E10S = ["cppunittest", "gtest", "jittest", "xpcshell", "marionette"]
+SUITE_NO_E10S = [
+    "cppunittest",
+    "gtest",
+    "jittest",
+    "xpcshell",
+    "marionette",
+    "marionette-mocktorprovider",
+]
 SUITE_REPEATABLE = ["mochitest", "reftest", "xpcshell"]
 
 
@@ -511,13 +518,16 @@ class AndroidEmulatorTest(
 
         self.register_virtualenv_module(requirements=[requirements])
 
-    def _marionette_setup(self):
+    def _marionette_setup(self, mock_tor_provider=False):
         adb = self.query_exe("adb")
 
         self.run_command([adb, "forward", "tcp:2828", "tcp:2828"])
 
         with tempfile.NamedTemporaryFile(suffix=".yaml") as tmp_file:
             config = {"args": ["--marionette", "--remote-allow-system-access"]}
+
+            if mock_tor_provider:
+                config["env"] = {"TOR_PROVIDER": "mock"}
 
             tmp_file.write(yaml.dump(config, encoding="utf-8"))
             tmp_file.flush()
@@ -617,7 +627,7 @@ class AndroidEmulatorTest(
             self.test_suite = suite
 
             if "marionette" in self.test_suite:
-                self._marionette_setup()
+                self._marionette_setup(self.test_suite == "marionette-mocktorprovider")
 
             try:
                 cwd = self._query_tests_dir(self.test_suite)
