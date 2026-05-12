@@ -6,6 +6,7 @@ package org.mozilla.fenix.tor
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
@@ -81,6 +82,9 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        binding.torBootstrapButton1.setTypeface(null, Typeface.BOLD)
+        binding.torBootstrapButton2.setTypeface(null, Typeface.BOLD)
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
