@@ -323,6 +323,19 @@ config = {
                 "%(abs_marionette_manifest_dir)s/unit-tests.toml",
             ],
         },
+        "marionette-mocktorprovider": {
+            "run_filename": "runtests.py",
+            "testsdir": "marionette/harness/marionette_harness",
+            "install": True,
+            "options": [
+                "-vv",
+                "--address=127.0.0.1:2828",
+                "--app=fennec",
+            ],
+            "tests": [
+                "%(abs_marionette_manifest_dir)s/unit-tests.toml",
+            ],
+        },
     },  # end suite_definitions
     "unstructured_suites": [
         "jittest",
