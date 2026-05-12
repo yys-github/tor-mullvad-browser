@@ -9,6 +9,7 @@ MOZ_SRC_FILES += [
     "TorProvider.sys.mjs",
     "TorProviderBase.sys.mjs",
     "TorProviderBuilder.sys.mjs",
+    "TorProviderMock.sys.mjs",
     "TorProviderNone.sys.mjs",
     "TorStartupService.sys.mjs",
 ]
