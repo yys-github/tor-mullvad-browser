@@ -2,7 +2,8 @@ import { TorProviderBase } from "moz-src:///toolkit/components/tor-launcher/TorP
 
 const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
-  TorLauncherUtil: "resource://gre/modules/TorLauncherUtil.sys.mjs",
+  TorLauncherUtil:
+    "moz-src:///toolkit/components/tor-launcher/TorLauncherUtil.sys.mjs",
 });
 
 /**
