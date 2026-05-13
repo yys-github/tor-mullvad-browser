@@ -286,6 +286,8 @@ Preferences.addSetting({
 Preferences.addSetting({
   id: "suggestionsInSearchFieldsCheckbox",
   deps: ["searchSuggestionsEnabledPref", "urlbarSuggestionsEnabledPref"],
+  // Hide search suggestions. mullvad-browser#34.
+  visible: () => false,
   get(_, deps) {
     let searchBarVisible =
       !!lazy.CustomizableUI.getPlacementOfWidget("search-container");
