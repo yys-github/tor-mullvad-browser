@@ -1190,10 +1190,10 @@ features:
     defaults:
       - channel: developer
         value:
-          enabled: true
+          enabled: false
       - channel: nightly
         value:
-          enabled: true
+          enabled: false
 
   private-mode-and-stories-entry-point:
     description: Feature to enable the Private Mode and Stories Entry Point Experiment.
