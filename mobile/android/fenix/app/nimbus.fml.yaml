@@ -1159,7 +1159,7 @@ features:
       enabled:
         description: If true, Mozilla Ads Client support for Top Sites is enabled.
         type: Boolean
-        default: true
+        default: false
 
   private-mode-and-stories-entry-point:
     description: Feature to enable the Private Mode and Stories Entry Point Experiment.
