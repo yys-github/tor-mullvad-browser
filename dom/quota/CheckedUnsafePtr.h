@@ -395,8 +395,9 @@ class CheckingPolicyAccess {
 };
 
 template <typename Derived>
-class CheckCheckedUnsafePtrs : private CheckingPolicyAccess,
-                               private detail::CheckedUnsafePtrBaseAccess {
+class MOZ_EMPTY_BASES CheckCheckedUnsafePtrs
+    : private CheckingPolicyAccess,
+      private detail::CheckedUnsafePtrBaseAccess {
  public:
   using SupportsChecking =
       std::integral_constant<CheckingSupport, CheckingSupport::Enabled>;
@@ -507,7 +508,7 @@ using ReleaseAssertEnabled = std::integral_constant<bool, true>;
 // while release builds forgo all checks. (Release builds incur no size or
 // runtime penalties compared to bare pointers.)
 template <typename CheckingPolicy>
-class SupportsCheckedUnsafePtr
+class MOZ_EMPTY_BASES SupportsCheckedUnsafePtr
     : public detail::SupportCheckedUnsafePtrImpl<CheckingPolicy>,
       public detail::SupportsCheckedUnsafePtrTag {
  public:
