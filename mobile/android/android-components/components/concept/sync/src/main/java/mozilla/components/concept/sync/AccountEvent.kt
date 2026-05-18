@@ -15,6 +15,17 @@ interface AccountEventsObserver {
 typealias OuterDeviceCommandIncoming = DeviceCommandIncoming
 
 /**
+ * Privacy mode for tabs.
+ */
+enum class TabPrivacy {
+    /** A private browsing tab */
+    Private,
+
+    /** A normal (non-private) tab */
+    Normal,
+}
+
+/**
  * Incoming account events.
  */
 sealed class AccountEvent {
