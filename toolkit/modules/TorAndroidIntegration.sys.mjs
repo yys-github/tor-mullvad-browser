@@ -165,19 +165,20 @@ class TorAndroidIntegrationImpl {
     try {
       switch (event) {
         case ListenedEvents.securityLevelGet:
-          // "standard"/"safer"/"safest"
-          // TODO: Switch to securityLevelSummary to allow android to handle
-          // "custom" security level. tor-browser#43819
-          callback?.onSuccess(lazy.SecurityLevelPrefs.securityLevel);
-          break;
+          // "standard"/"safer"/"safest"/"custom"
+          callback?.onSuccess(lazy.SecurityLevelPrefs.securityLevelSummary);
+          return;
         case ListenedEvents.securityLevelSetBeforeRestart:
+          logger.info(
+            `Received event ${event} with levelName ${data.levelName}`
+          );
           lazy.SecurityLevelPrefs.setSecurityLevelBeforeRestart(data.levelName);
           // Let the caller know that the setting is applied and the browser
           // should be restarted now.
           // NOTE: The caller must wait for this callback before triggering
           // the restart.
           callback?.onSuccess();
-          break;
+          return;
         case ListenedEvents.settingsGet:
           callback?.onSuccess(lazy.TorSettings.getSettings());
           return;

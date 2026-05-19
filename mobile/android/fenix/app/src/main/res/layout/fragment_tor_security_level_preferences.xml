@@ -26,6 +26,24 @@
         app:layout_constraintTop_toBottomOf="@+id/description">
 
         <RadioButton
+            android:id="@+id/custom_preference"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/tor_security_level_custom"
+            android:textColor="@color/photonLightGrey05"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/custom_preference_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:text="@string/tor_security_level_custom_description"
+            android:textColor="@color/photonLightGrey40"
+            android:visibility="gone" />
+
+        <RadioButton
             android:id="@+id/standard_preference"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
