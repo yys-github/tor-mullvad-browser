@@ -887,9 +887,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
             requirePreference<Preference>(R.string.pref_key_tor_security_level)
         securityLevelPreference.summary =
             when (requireContext().components.settings.torSecurityLevel) {
-                TorSecurityLevel.STANDARD.level -> getString(R.string.tor_security_level_standard)
-                TorSecurityLevel.SAFER.level    -> getString(R.string.tor_security_level_safer)
-                TorSecurityLevel.SAFEST.level   -> getString(R.string.tor_security_level_safest)
+                TorSecurityLevel.standard.level -> getString(R.string.tor_security_level_standard)
+                TorSecurityLevel.safer.level    -> getString(R.string.tor_security_level_safer)
+                TorSecurityLevel.safest.level   -> getString(R.string.tor_security_level_safest)
+                TorSecurityLevel.custom.level   -> getString(R.string.tor_security_level_custom)
                 else -> throw Exception("Unexpected TorSecurityLevel of ${requireContext().components.settings.torSecurityLevel}")
             }
     }

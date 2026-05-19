@@ -601,13 +601,15 @@ class Settings(
     )
 
     /**
-     * Backing property that should used only for the [SettingsFragment] UI
+     * Backing property that should be used only for the [SettingsFragment] UI
      *
      * 4 -> STANDARD
      *
      * 2 -> SAFER
      *
      * 1 -> SAFEST
+     *
+     * -1 -> CUSTOM
      */
     var torSecurityLevel by intPreference(
         appContext.getPreferenceKey(R.string.pref_key_tor_security_level),
@@ -620,13 +622,13 @@ class Settings(
     private fun migrateTorSecurityLevel(): Int? {
         return when {
             oldSafestSecurityLevel -> {
-                TorSecurityLevel.SAFEST.level
+                TorSecurityLevel.safest.level
             }
             oldSaferSecurityLevel -> {
-                TorSecurityLevel.SAFER.level
+                TorSecurityLevel.safer.level
             }
             oldStandardSecurityLevel -> {
-                TorSecurityLevel.STANDARD.level
+                TorSecurityLevel.standard.level
             }
             else -> null
         }.also {
