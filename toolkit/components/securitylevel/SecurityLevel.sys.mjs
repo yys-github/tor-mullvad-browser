@@ -785,9 +785,6 @@ export const SecurityLevelPrefs = {
     //    by setting the browser.security_level.security_slider preference
     //    value. So it currently uses this path. So we need to set the values
     //    now, before it preforms a restart.
-    // TODO: Have android use the `setSecurityLevelBeforeRestart` method
-    // instead of setting the security_slider preference value directly, so that
-    // it knows exactly when it can restart the browser. tor-browser#43820
     write_setting_to_prefs(Services.prefs.getIntPref(kSliderPref, 0));
     // NOTE: Even though we have written the preferences, the session should
     // still be marked as "custom" because:

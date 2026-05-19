@@ -29,10 +29,10 @@ private const val OS_PARAM_OPTIONAL = "\\{" + "(?:\\w+:)?\\w+?" + "\\}"
 internal class SearchUrlBuilder(
     private val searchEngine: SearchEngine,
 ) {
-    fun buildSearchUrl(searchTerms: String, securityLevel: Int): String {
+    fun buildSearchUrl(searchTerms: String, jsEnabled: Boolean): String {
         // The parser should have put the best URL for this device at the beginning of the list.
         var template = searchEngine.resultUrls[0]
-        if (securityLevel == 1 && (searchEngine.id == "ddg" || searchEngine.id == "ddg-onion")) {
+        if (!jsEnabled && (searchEngine.id == "ddg" || searchEngine.id == "ddg-onion")) {
             template = template.replaceFirst("/?", "/html/?")
         }
         return buildUrl(template, searchTerms)

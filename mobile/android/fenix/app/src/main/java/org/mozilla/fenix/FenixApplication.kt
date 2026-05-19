@@ -145,6 +145,7 @@ import kotlin.math.roundToLong
 import mozilla.components.support.AppServicesInitializer.Config as AppServicesConfig
 
 import org.mozilla.fenix.components.TorBrowserFeatures.NOSCRIPT_ID
+import org.mozilla.fenix.tor.TorSecurityLevel
 
 
 private const val RAM_THRESHOLD_MEGABYTES = 1024
@@ -1045,7 +1046,7 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
                             },
                         )
                         name.set(searchEngine.name)
-                        searchUrl.set(searchEngine.buildSearchUrl(""))
+                        searchUrl.set(searchEngine.buildSearchUrl("", jsEnabled = components.settings.torSecurityLevel != TorSecurityLevel.safest.level))
                     }
                 } else {
                     SearchDefaultEngine.apply {
@@ -1070,7 +1071,7 @@ open class FenixApplication : Application(), Provider, ThemeProvider {
                                 },
                             )
                             name.set(if (isSameAsDefault) "default" else privateEngine.name)
-                            searchUrl.set(privateEngine.buildSearchUrl(""))
+                            searchUrl.set(privateEngine.buildSearchUrl("", jsEnabled = components.settings.torSecurityLevel != TorSecurityLevel.safest.level))
                         }
                     } else {
                         SearchDefaultEngineForPrivate.apply {
