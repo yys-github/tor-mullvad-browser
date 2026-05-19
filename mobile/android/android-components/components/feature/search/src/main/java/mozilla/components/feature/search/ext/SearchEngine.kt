@@ -105,9 +105,9 @@ fun SearchEngine.buildTrendingURL(): String? {
 /**
  * Builds a URL to search for the given search terms with this search engine.
  */
-fun SearchEngine.buildSearchUrl(searchTerm: String, securityLevel: Int = 0): String {
+fun SearchEngine.buildSearchUrl(searchTerm: String, jsEnabled: Boolean = true): String {
     val builder = SearchUrlBuilder(this)
-    return builder.buildSearchUrl(searchTerm, securityLevel)
+    return builder.buildSearchUrl(searchTerm, jsEnabled = jsEnabled)
 }
 
 /**
