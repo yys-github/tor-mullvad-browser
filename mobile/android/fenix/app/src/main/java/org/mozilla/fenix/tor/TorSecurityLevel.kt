@@ -8,6 +8,8 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Suppress("EnumEntryName") // We need the names to be lowercase so that they match the js backend
 enum class TorSecurityLevel(val level: Int) : Parcelable {
-    STANDARD(4), SAFER(2), SAFEST(1)
+    standard(4), safer(2), safest(1), custom(-1)
+
 }

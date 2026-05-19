@@ -201,6 +201,7 @@ import mozilla.components.browser.engine.gecko.GeckoEngine
 import org.mozilla.fenix.compose.core.Action
 import org.mozilla.fenix.compose.snackbar.SnackbarState
 import org.mozilla.fenix.compose.snackbar.Snackbar
+import org.mozilla.fenix.tor.CustomSecurityLevelViewModel
 import org.mozilla.fenix.tor.TorController
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 import org.mozilla.geckoview.TorAndroidIntegration.BootstrapStateChangeListener
@@ -437,6 +438,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
 
     private val urlQuickLoadViewModel: UrlQuickLoadViewModel by viewModels()
 
+    private val customSecurityLevelViewModel: CustomSecurityLevelViewModel by viewModels()
+
     @Suppress("CognitiveComplexMethod", "CyclomaticComplexMethod")
     final override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT MOVE ANYTHING ABOVE THIS getProfilerTime CALL.
@@ -489,6 +492,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
         // https://gitlab.torproject.org/tpo/applications/tor-browser/-/work_items/44880
         EdgeToEdgeFragmentLifecycleCallbacks.register(supportFragmentManager, window)
         // to fetch or apply Nimbus experiments.
+
+        customSecurityLevelViewModel.setUpCustomSecurityLevelObservers(this, navHost)
 
         lifecycleScope.launch {
             val debugSettingsRepository = DefaultDebugSettingsRepository(
