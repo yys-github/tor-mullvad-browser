@@ -2,7 +2,12 @@
   variables:
       GIT_STRATEGY: "none"
       FETCH_TIMEOUT: 180 # 3 minutes
+
+      GIT_CONFIG_GLOBAL: "/tmp/gitconfig"
   before_script:
+    - |
+      echo "[safe]" > "$GIT_CONFIG_GLOBAL"
+      echo "  directory = *" >> "$GIT_CONFIG_GLOBAL"
     - git init
     - git remote add local "$LOCAL_REPO_PATH"
     - |
