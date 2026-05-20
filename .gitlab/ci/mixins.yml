@@ -52,12 +52,8 @@
         return $fetch_exit
       }
 
-      if ! fetch_with_timeout origin "${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}"; then
-        echo "Fetching failed for branch ${CI_COMMIT_BRANCH:-$CI_MERGE_REQUEST_SOURCE_BRANCH_NAME}."
-        echo "Attempting to fetch the merge request branch, assuming this pipeline is not running in a fork."
+      fetch_with_timeout origin "merge-requests/${CI_MERGE_REQUEST_IID}/head" || exit 1
 
-        fetch_with_timeout origin "merge-requests/${CI_MERGE_REQUEST_IID}/head" || exit 1
-      fi
     - git checkout FETCH_HEAD
 
 .with-local-repo-pwsh:
