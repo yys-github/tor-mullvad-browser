@@ -22,6 +22,9 @@ const { XPCOMUtils } = ChromeUtils.importESModule(
   "resource://gre/modules/XPCOMUtils.sys.mjs"
 );
 const lazy = {};
+ChromeUtils.defineESModuleGetters(lazy, {
+  ExtensionCommon: "resource://gre/modules/ExtensionCommon.sys.mjs",
+});
 XPCOMUtils.defineLazyPreferenceGetter(
   lazy,
   "DATA_COLLECTION_PERMISSIONS_ENABLED",
@@ -587,7 +590,7 @@ export class AddonDetails extends AboutAddonsHTMLElement {
       const visibilityLabel = visibilityRow.querySelector(
         ".addon-noscript-visibility-label"
       );
-      visibilityLabel.id = ExtensionCommon.makeWidgetId(
+      visibilityLabel.id = lazy.ExtensionCommon.makeWidgetId(
         `${addon.id}-noscript-visibility-label`
       );
       visibilityRow.setAttribute("aria-labelledby", visibilityLabel.id);

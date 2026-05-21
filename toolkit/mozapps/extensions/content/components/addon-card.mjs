@@ -45,6 +45,8 @@ const PRIVATE_BROWSING_PERMS = {
   origins: [],
 };
 
+const HIDE_NO_SCRIPT_PREF = "extensions.hideNoScript";
+
 /**
  * A card component for managing an add-on. It should be initialized by setting
  * the add-on with `setAddon()` before being connected to the document.
