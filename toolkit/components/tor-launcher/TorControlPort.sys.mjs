@@ -672,6 +672,8 @@ export class TorController {
   /**
    * Authenticate to the tor daemon.
    * Notice that a failure in the authentication makes the connection close.
+   * This function tolerates empty and false-ish passwords because a client
+   * needs to authenticate even when all authentication methods are disabled.
    *
    * @param {Uint8Array} password The password for the control port, as an array
    * of bytes
@@ -680,7 +682,11 @@ export class TorController {
     const passwordString = Array.from(password ?? [], b =>
       b.toString(16).padStart(2, "0")
     ).join("");
-    await this.#sendCommandSimple(`authenticate ${passwordString}`);
+    let command = "AUTHENTICATE";
+    if (passwordString) {
+      command += ` ${passwordString}`;
+    }
+    await this.#sendCommandSimple(command);
   }
 
   // Information
