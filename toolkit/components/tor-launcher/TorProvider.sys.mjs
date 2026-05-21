@@ -834,6 +834,9 @@ export class TorProvider extends TorProviderBase {
           this.#controlPortSettings.cookieFilePath
         );
       }
+      // As per the spec, we must always authenticate to the control port, even
+      // when all authentication methods are disabled.
+      // https://spec.torproject.org/control-spec/commands.html#authenticate
       await controlPort.authenticate(password);
     } catch (e) {
       try {
