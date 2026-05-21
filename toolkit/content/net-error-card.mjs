@@ -27,7 +27,7 @@ import {
   getResolvedErrorConfig,
   resolveErrorID,
 } from "chrome://global/content/errors/error-lookup.mjs";
-import { html, ifDefined } from "chrome://global/content/vendor/lit.all.mjs";
+import { html } from "chrome://global/content/vendor/lit.all.mjs";
 import { MozLitElement } from "chrome://global/content/lit-utils.mjs";
 import { NET_ERROR_ILLUSTRATIONS } from "chrome://global/content/errors/net-error-illustrations.mjs";
 import "chrome://global/content/elements/moz-button-group.mjs";
