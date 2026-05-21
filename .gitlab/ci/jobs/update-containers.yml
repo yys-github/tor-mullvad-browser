@@ -1,7 +1,7 @@
 build-image:
   stage: update-container-images
   interruptible: true
-  image: containers.torproject.org/tpo/tpa/base-images/podman:bookworm
+  image: containers.torproject.org/tpo/tpa/base-images/podman:trixie
   parallel:
     matrix:
       - PLATFORM: desktop
