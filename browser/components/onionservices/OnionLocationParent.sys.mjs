@@ -52,7 +52,7 @@ export class OnionLocationParent extends JSWindowActorParent {
     if (event.button !== 0) {
       return;
     }
-    const win = event.target.ownerGlobal;
+    const win = event.target.documentGlobal;
     if (win.gBrowser) {
       const browser = win.gBrowser.selectedBrowser;
       OnionLocationParent.redirect(browser);
@@ -82,7 +82,7 @@ export class OnionLocationParent extends JSWindowActorParent {
   }
 
   static hideNotification(browser) {
-    const win = browser.ownerGlobal;
+    const win = browser.documentGlobal;
     if (browser._onionLocationPrompt) {
       win.PopupNotifications.remove(browser._onionLocationPrompt);
     }
@@ -94,7 +94,7 @@ export class OnionLocationParent extends JSWindowActorParent {
       return;
     }
 
-    const win = browser.ownerGlobal;
+    const win = browser.documentGlobal;
     Services.prefs.setBoolPref(NOTIFICATION_PREF, false);
 
     const mainAction = {
@@ -148,7 +148,7 @@ export class OnionLocationParent extends JSWindowActorParent {
   }
 
   static setEnabled(browser) {
-    const win = browser.ownerGlobal;
+    const win = browser.documentGlobal;
     const label = win.document.getElementById(ONIONLOCATION_LABEL_ID);
     label.textContent = STRING_ONION_AVAILABLE;
     const elem = win.document.getElementById(ONIONLOCATION_BOX_ID);
@@ -156,7 +156,7 @@ export class OnionLocationParent extends JSWindowActorParent {
   }
 
   static setDisabled(browser) {
-    const win = browser.ownerGlobal;
+    const win = browser.documentGlobal;
     const elem = win.document.getElementById(ONIONLOCATION_BOX_ID);
     elem.setAttribute("hidden", true);
   }
