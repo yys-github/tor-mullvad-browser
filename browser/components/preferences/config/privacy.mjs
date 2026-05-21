@@ -3038,7 +3038,7 @@ Preferences.addSetting({
         lazy.AppConstants.platform == "macosx") &&
       typeof Services.policies.getActivePolicies()?.Certificates
         ?.ImportEnterpriseRoots == "undefined" &&
-      !AppConstants.BASE_BROWSER_VERSION
+      !lazy.AppConstants.BASE_BROWSER_VERSION
     );
   },
 });
