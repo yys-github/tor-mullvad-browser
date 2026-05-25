@@ -326,9 +326,10 @@ class MeekTransportAndroid {
     if (this.#id) {
       throw new Error("MeekTransport: Already initialized");
     }
-    const details = await lazy.EventDispatcher.instance.sendRequestForResult({
-      type: "GeckoView:Tor:StartMeek",
-    });
+    const details = await lazy.EventDispatcher.instance.sendRequestForResult(
+      "GeckoView:Tor:StartMeek",
+      {}
+    );
     this.#id = details.id;
     this.proxyType = "socks";
     this.proxyAddress = details.address;
@@ -341,8 +342,7 @@ class MeekTransportAndroid {
   }
 
   async uninit() {
-    lazy.EventDispatcher.instance.sendRequest({
-      type: "GeckoView:Tor:StopMeek",
+    lazy.EventDispatcher.instance.sendRequest("GeckoView:Tor:StopMeek", {
       id: this.#id,
     });
     this.#id = 0;
