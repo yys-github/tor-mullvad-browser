@@ -76,14 +76,16 @@ export class TorProcessAndroid {
     );
     let config;
     try {
-      config = await lazy.EventDispatcher.instance.sendRequestForResult({
-        type: TorOutgoingEvents.start,
-        handle: this.#processHandle,
-        tcpSocks: Services.prefs.getBoolPref(
-          "extensions.torlauncher.socks_port_use_tcp",
-          false
-        ),
-      });
+      config = await lazy.EventDispatcher.instance.sendRequestForResult(
+        TorOutgoingEvents.start,
+        {
+          handle: this.#processHandle,
+          tcpSocks: Services.prefs.getBoolPref(
+            "extensions.torlauncher.socks_port_use_tcp",
+            false
+          ),
+        }
+      );
       logger.debug("Sent the start event.");
     } catch (e) {
       this.forget();
@@ -96,8 +98,7 @@ export class TorProcessAndroid {
   forget() {
     // Processes usually exit when we close the control port connection to them.
     logger.trace(`Forgetting process ${this.#processHandle}`);
-    lazy.EventDispatcher.instance.sendRequestForResult({
-      type: TorOutgoingEvents.stop,
+    lazy.EventDispatcher.instance.sendRequestForResult(TorOutgoingEvents.stop, {
       handle: this.#processHandle,
     });
     logger.debug("Sent the stop event.");
