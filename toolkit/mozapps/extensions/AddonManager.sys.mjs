@@ -2456,10 +2456,12 @@ var AddonManagerInternal = {
         true
       );
     }
-    await lazy.EventDispatcher.instance.sendRequest({
-      type: "GeckoView:WebExtension:OnInstalled",
-      extension,
-    });
+    await lazy.EventDispatcher.instance.sendRequest(
+      "GeckoView:WebExtension:OnInstalled",
+      {
+        extension,
+      }
+    );
   },
 
   /**
