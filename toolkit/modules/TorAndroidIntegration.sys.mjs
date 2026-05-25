@@ -110,49 +110,54 @@ class TorAndroidIntegrationImpl {
   observe(subj, topic) {
     switch (topic) {
       case lazy.TorConnectTopics.StageChange:
-        lazy.EventDispatcher.instance.sendRequest({
-          type: EmittedEvents.connectStageChanged,
-          stage: subj.wrappedJSObject ?? "",
-        });
+        lazy.EventDispatcher.instance.sendRequest(
+          EmittedEvents.connectStageChanged,
+          {
+            stage: subj.wrappedJSObject ?? "",
+          }
+        );
         break;
       case lazy.TorConnectTopics.RegionNamesChange:
         // TODO: Respond to change in region names if we are showing a
         // TorConnectStage that uses them.
         break;
       case lazy.TorConnectTopics.BootstrapProgress:
-        lazy.EventDispatcher.instance.sendRequest({
-          type: EmittedEvents.bootstrapProgress,
-          progress: subj.wrappedJSObject.progress ?? 0,
-          hasWarnings: subj.wrappedJSObject.hasWarnings ?? false,
-        });
+        lazy.EventDispatcher.instance.sendRequest(
+          EmittedEvents.bootstrapProgress,
+          {
+            progress: subj.wrappedJSObject.progress ?? 0,
+            hasWarnings: subj.wrappedJSObject.hasWarnings ?? false,
+          }
+        );
         break;
       case lazy.TorConnectTopics.BootstrapComplete:
-        lazy.EventDispatcher.instance.sendRequest({
-          type: EmittedEvents.bootstrapComplete,
-        });
+        lazy.EventDispatcher.instance.sendRequest(
+          EmittedEvents.bootstrapComplete,
+          {}
+        );
         break;
       case lazy.TorProviderTopics.TorLog:
-        lazy.EventDispatcher.instance.sendRequest({
-          type: EmittedEvents.torLogs,
+        lazy.EventDispatcher.instance.sendRequest(EmittedEvents.torLogs, {
           logType: subj.wrappedJSObject.type ?? "",
           message: subj.wrappedJSObject.msg ?? "",
           timestamp: subj.wrappedJSObject.timestamp ?? "",
         });
         break;
       case lazy.TorSettingsTopics.Ready:
-        lazy.EventDispatcher.instance.sendRequest({
-          type: EmittedEvents.settingsReady,
+        lazy.EventDispatcher.instance.sendRequest(EmittedEvents.settingsReady, {
           settings: lazy.TorSettings.getSettings(),
         });
         break;
       case lazy.TorSettingsTopics.SettingsChanged:
         // For Android we push also the settings object to avoid a round trip on
         // the event dispatcher.
-        lazy.EventDispatcher.instance.sendRequest({
-          type: EmittedEvents.settingsChanged,
-          changes: subj.wrappedJSObject.changes ?? [],
-          settings: lazy.TorSettings.getSettings(),
-        });
+        lazy.EventDispatcher.instance.sendRequest(
+          EmittedEvents.settingsChanged,
+          {
+            changes: subj.wrappedJSObject.changes ?? [],
+            settings: lazy.TorSettings.getSettings(),
+          }
+        );
         break;
     }
   }
