@@ -184,7 +184,6 @@ import org.mozilla.fenix.wallpapers.Wallpaper
 import java.lang.ref.WeakReference
 import org.mozilla.fenix.ipprotection.store.Surface as IPProtectionSurface
 
-import org.mozilla.fenix.components.toolbar.ToolbarPosition
 import org.mozilla.fenix.tor.TorHomePage
 
 /**
