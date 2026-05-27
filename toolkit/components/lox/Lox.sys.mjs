@@ -1077,15 +1077,12 @@ class LoxImpl {
     if (this.#domainFrontedRequests === null) {
       this.#domainFrontedRequests = new Promise((resolve, reject) => {
         // TODO: Customize to the values for Lox
-        const reflector = Services.prefs.getStringPref(
-          "extensions.torlauncher.bridgedb_reflector"
-        );
-        const front = Services.prefs.getStringPref(
-          "extensions.torlauncher.bridgedb_front"
+        const targets = Services.prefs.getStringPref(
+          "extensions.torlauncher.bridgedb_targets"
         );
         const builder = new lazy.DomainFrontRequestBuilder();
         builder
-          .init(reflector, front)
+          .init(targets)
           .then(() => resolve(builder))
           .catch(reject);
       });
