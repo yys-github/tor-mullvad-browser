@@ -19,7 +19,7 @@
         android:layout_marginStart="54dp"
         android:padding="16dp"
         android:text="@string/tor_spoof_english"
-        android:textColor="?textPrimary"
+        android:textColor="?attr/colorOnSurface"
         android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
