@@ -22,38 +22,20 @@ ChromeUtils.defineESModuleGetters(lazy, {
  * proxy credentials, which can be prepared with this function.
  *
  * @param {string} proxyType The proxy type (socks for socks5 or socks4)
- * @param {string} reflector The URL of the service hosted by the CDN
- * @param {string} front The domain to use as a front
+ * @param {string} targets The string to pass to meek as the targets argument
  * @returns {string[]} An array containing [username, password]
  */
-function makeMeekCredentials(proxyType, reflector, front) {
-  // Construct the per-connection arguments.
-  let meekClientEscapedArgs = "";
-
+function makeMeekCredentials(proxyType, targets) {
   // Escape aValue per section 3.5 of the PT specification:
   //   First the "<Key>=<Value>" formatted arguments MUST be escaped,
   //   such that all backslash, equal sign, and semicolon characters
   //   are escaped with a backslash.
-  const escapeArgValue = aValue =>
-    aValue
-      ? aValue
-          .replaceAll("\\", "\\\\")
-          .replaceAll("=", "\\=")
-          .replaceAll(";", "\\;")
-      : "";
-
-  if (reflector) {
-    meekClientEscapedArgs += "url=";
-    meekClientEscapedArgs += escapeArgValue(reflector);
-  }
-
-  if (front) {
-    if (meekClientEscapedArgs.length) {
-      meekClientEscapedArgs += ";";
-    }
-    meekClientEscapedArgs += "front=";
-    meekClientEscapedArgs += escapeArgValue(front);
-  }
+  targets = targets
+    .replaceAll("\\", "\\\\")
+    .replaceAll("=", "\\=")
+    .replaceAll(";", "\\;");
+  // Construct the per-connection arguments.
+  const meekClientEscapedArgs = `targets=${targets}`;
 
   // socks5
   if (proxyType === "socks") {
@@ -86,7 +68,7 @@ class MeekTransport {
   #meekClientProcess = null;
 
   // launches the meekprocess
-  async init(reflector, front) {
+  async init(targets) {
     // ensure we haven't already init'd
     if (this.#inited) {
       throw new Error("MeekTransport: Already initialized");
@@ -265,8 +247,7 @@ class MeekTransport {
       });
       [this.proxyUsername, this.proxyPassword] = makeMeekCredentials(
         this.proxyType,
-        reflector,
-        front
+        targets
       );
       this.#inited = true;
     } catch (ex) {
@@ -319,7 +300,7 @@ class MeekTransportAndroid {
    */
   #id = 0;
 
-  async init(reflector, front) {
+  async init(targets) {
     // ensure we haven't already init'd
     if (this.#id) {
       throw new Error("MeekTransport: Already initialized");
@@ -333,8 +314,7 @@ class MeekTransportAndroid {
     this.proxyPort = details.port;
     [this.proxyUsername, this.proxyPassword] = makeMeekCredentials(
       this.proxyType,
-      reflector,
-      front
+      targets
     );
   }
 
@@ -455,7 +435,7 @@ export class DomainFrontRequestBuilder {
     return this.#inited;
   }
 
-  async init(reflector, front) {
+  async init(targets) {
     if (this.#inited) {
       throw new Error("DomainFrontRequestBuilder: Already initialized");
     }
@@ -464,7 +444,7 @@ export class DomainFrontRequestBuilder {
       Services.appinfo.OS === "Android"
         ? new MeekTransportAndroid()
         : new MeekTransport();
-    await meekTransport.init(reflector, front);
+    await meekTransport.init(targets);
     this.#meekTransport = meekTransport;
     this.#inited = true;
   }
