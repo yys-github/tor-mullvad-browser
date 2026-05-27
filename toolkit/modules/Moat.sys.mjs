@@ -18,8 +18,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
 });
 
 const TorLauncherPrefs = Object.freeze({
-  bridgedb_front: "extensions.torlauncher.bridgedb_front",
-  bridgedb_reflector: "extensions.torlauncher.bridgedb_reflector",
+  bridgedb_targets: "extensions.torlauncher.bridgedb_targets",
   moat_service: "extensions.torlauncher.moat_service",
 });
 
@@ -68,13 +67,12 @@ export class MoatRPC {
       return;
     }
 
-    const reflector = Services.prefs.getStringPref(
-      TorLauncherPrefs.bridgedb_reflector
+    const targets = Services.prefs.getStringPref(
+      TorLauncherPrefs.bridgedb_targets
     );
-    const front = Services.prefs.getStringPref(TorLauncherPrefs.bridgedb_front);
     this.#requestBuilder = new lazy.DomainFrontRequestBuilder();
     try {
-      await this.#requestBuilder.init(reflector, front);
+      await this.#requestBuilder.init(targets);
     } catch (e) {
       this.#requestBuilder = null;
       throw e;
