@@ -96,7 +96,7 @@
 }
 
 #downloadsPanelTorWarning {
-  margin-block-end: var(--arrowpanel-menuitem-padding-block);
+  margin-block-end: var(--panel-menuitem-padding-block);
 }
 
 #downloadsPanelTorWarningWrapper {
