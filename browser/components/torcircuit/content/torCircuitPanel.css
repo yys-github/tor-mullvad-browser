@@ -61,7 +61,7 @@
 
 #tor-circuit-alias:not([hidden]) {
   /* Same as padding for .panel-header */
-  margin-block-start: var(--arrowpanel-menuitem-margin-inline);
+  margin-block-start: var(--panel-menuitem-margin-inline);
   display: flex;
   align-items: center;
 }
@@ -84,9 +84,9 @@
   /* May grow larger than 480px if we have a long domain name or ip address. */
   min-width: 480px;
   /* Line up with the button at the bottom of the panel. */
-  margin: var(--arrowpanel-menuitem-margin);
-  padding: var(--arrowpanel-menuitem-padding);
-  gap: var(--arrowpanel-menuitem-padding-block);
+  margin: var(--panel-menuitem-margin);
+  padding: var(--panel-menuitem-padding);
+  gap: var(--panel-menuitem-padding-block);
 }
 
 #tor-circuit-node-list-name,
@@ -96,7 +96,7 @@
 
 #tor-circuit-node-list {
   list-style: none;
-  padding-inline-start: var(--arrowpanel-menuitem-margin-inline);
+  padding-inline-start: var(--panel-menuitem-margin-inline);
   /* Do not allow an item to wrap since this would break the circuit diagram. */
   white-space: nowrap;
 }
