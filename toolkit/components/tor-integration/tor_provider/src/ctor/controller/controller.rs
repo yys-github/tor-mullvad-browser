@@ -4,12 +4,13 @@
 // copied, modified, or distributed except according to those terms.
 
 use bytes::Bytes;
-use std::net::IpAddr;
+use std::{net::IpAddr, rc::Rc};
 use tinystr::TinyAsciiStr;
 
 use super::{
     commands::{self, Command},
     error::ControllerError,
+    notification::{AsyncNotification, NotificationListener},
     types::*,
 };
 use crate::ctor::{
@@ -70,6 +71,21 @@ impl<CP: ControlPortInterface> TorController<CP> {
                 Err(e) => handler(Err(e.into())),
             }),
         );
+    }
+
+    pub fn set_notification_listener(&self, listener: Option<Rc<dyn NotificationListener>>) {
+        self.0.set_async_handler(listener.as_ref().map(|l| {
+            let l = l.clone();
+            Box::new(move |notification| {
+                if let Some(notification) = AsyncNotification::parse(notification) {
+                    notification.dispatch(l.as_ref());
+                }
+            }) as Box<dyn Fn(Reply)>
+        }));
+    }
+
+    pub fn set_close_handler(&self, cb: Box<dyn FnOnce()>) {
+        self.0.set_close_handler(cb);
     }
 
     // Setup
@@ -215,10 +231,5 @@ impl<CP: ControlPortInterface> TorController<CP> {
     #[inline]
     pub fn set_async_handler(&self, cb: Option<Box<dyn Fn(Reply)>>) {
         self.0.set_async_handler(cb);
-    }
-
-    #[inline]
-    pub fn set_close_handler(&self, cb: Box<dyn FnOnce()>) {
-        self.0.set_close_handler(cb);
     }
 }
