@@ -8263,6 +8263,7 @@ name = "tor_provider"
 version = "0.1.0"
 dependencies = [
  "bytes",
+ "data-encoding",
  "hex",
  "itoa",
  "lazy_static",
@@ -8270,6 +8271,7 @@ dependencies = [
  "memchr",
  "regex",
  "serde",
+ "sha3",
  "smallvec",
  "thiserror 2.0.12",
  "tinystr",
