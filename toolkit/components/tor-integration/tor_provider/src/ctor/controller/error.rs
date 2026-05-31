@@ -5,6 +5,7 @@
 
 use thiserror::Error;
 
+use super::OnionValidationError;
 use crate::ctor::{
     control_port::ControlPortError,
     reply_parser::{Reply, ReplyError},
@@ -34,6 +35,8 @@ pub enum ControllerError {
     MalformedReply(String),
     #[error("the argument passed to the command was not valid: {0}")]
     InvalidArgument(String),
+    #[error("invalid onion address: {0}")]
+    InvalidOnionAddress(#[from] OnionValidationError),
 }
 
 impl ControllerError {

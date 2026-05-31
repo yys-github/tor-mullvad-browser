@@ -159,6 +159,31 @@ impl<CP: ControlPortInterface> TorController<CP> {
 
     // Onion authentication
 
+    pub fn onion_auth_view_keys(
+        &self,
+        handler: Box<dyn FnOnce(Result<Vec<OnionClientAuth>, ControllerError>)>,
+    ) {
+        self.send_command(commands::onion_auth_view_keys(), handler);
+    }
+
+    pub fn onion_auth_add(
+        &self,
+        address: HSAddress,
+        key: &[u8],
+        permanent: bool,
+        handler: Box<dyn FnOnce(Result<u16, ControllerError>)>,
+    ) {
+        self.send_command(commands::onion_auth_add(address, key, permanent), handler);
+    }
+
+    pub fn onion_auth_remove(
+        &self,
+        address: HSAddress,
+        handler: Box<dyn FnOnce(Result<u16, ControllerError>)>,
+    ) {
+        self.send_command(commands::onion_auth_remove(address), handler);
+    }
+
     // Miscellaneous
 
     pub fn get_pluggable_transports(
