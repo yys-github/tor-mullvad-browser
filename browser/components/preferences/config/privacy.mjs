@@ -742,6 +742,13 @@ Preferences.addAll([
   },
   { id: "app.normandy.enabled", type: "bool" },
   { id: "browser.privacySegmentation.preferences.show", type: "bool" },
+
+  // Preference instances for prefs that we need to monitor while the page is open.
+  { id: "app.shield.optoutstudies.enabled", type: "bool" },
+  { id: "browser.discovery.enabled", type: "bool" },
+  { id: "datareporting.healthreport.uploadEnabled", type: "bool" },
+  { id: "datareporting.usage.uploadEnabled", type: "bool" },
+  { id: "dom.private-attribution.submission.enabled", type: "bool" },
 ]);
 
 if (SECURITY_PRIVACY_STATUS_CARD_ENABLED) {
@@ -2983,17 +2990,6 @@ Preferences.addSetting({
     !ipProtectionSubscribedToVpn.value,
 });
 
-// Study opt out
-if (lazy.AppConstants.MOZ_DATA_REPORTING) {
-  Preferences.addAll([
-    // Preference instances for prefs that we need to monitor while the page is open.
-    { id: "app.shield.optoutstudies.enabled", type: "bool" },
-    { id: "browser.discovery.enabled", type: "bool" },
-    { id: "datareporting.healthreport.uploadEnabled", type: "bool" },
-    { id: "datareporting.usage.uploadEnabled", type: "bool" },
-    { id: "dom.private-attribution.submission.enabled", type: "bool" },
-  ]);
-}
 // Privacy segmentation section
 Preferences.add({
   id: "browser.dataFeatureRecommendations.enabled",
