@@ -1908,7 +1908,7 @@ class Settings(
 
     var shouldShowVoiceSearch by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_show_voice_search),
-        default = true,
+        default = false,
     )
 
     /**
@@ -2799,7 +2799,7 @@ class Settings(
 
     var aiControlsFeatureFlagEnabled by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_enable_ai_controls),
-        default = Config.channel.isNightlyOrDebug,
+        default = false,
     )
 
     var importBookmarksFeatureFlagEnabled by booleanPreference(
