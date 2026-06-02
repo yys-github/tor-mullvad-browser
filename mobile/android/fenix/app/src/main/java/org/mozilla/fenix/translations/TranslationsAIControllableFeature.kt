@@ -22,8 +22,8 @@ class TranslationsAIControllableFeature(
     override val isEnabled: Flow<Boolean> = settings.isEnabled
 
     override suspend fun set(enabled: Boolean) {
-        settings.setEnabled(enabled)
-        browserStore.dispatch(TranslationsAction.SetTranslationsEnabledAction(enabled))
+        settings.setEnabled(false)
+        browserStore.dispatch(TranslationsAction.SetTranslationsEnabledAction(false))
     }
 
     companion object : AIFeatureMetadata {
