@@ -146,8 +146,9 @@ if CONFIG["MOZ_BUILD_APP"] == "browser":
         DIRS += ["normandy"]
     DIRS += ["messaging-system"]
 
-if CONFIG["MOZ_BUILD_APP"] != "comm/mail":
-    DIRS += ["ipprotection"]
+# tor-browser#44528 Disable IP protection feature
+# if CONFIG["MOZ_BUILD_APP"] != "comm/mail":
+#     DIRS += ["ipprotection"]
 
 DIRS += ["nimbus"]
 
