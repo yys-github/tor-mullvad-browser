@@ -219,52 +219,45 @@ static nsAutoCString GetAboutModuleName(nsIURI* aURI) {
   return path;
 }
 
-static nsTHashSet<nsCStringHashKey> GetManualLocales() {
-  nsTHashSet<nsCStringHashKey> locales;
-  RefPtr<nsZipArchive> zip = Omnijar::GetReader(Omnijar::APP);
-  if (!zip) {
-    // Probably a local build started with ./mach run
-    return locales;
-  }
-  UniquePtr<nsZipFind> find;
-  const nsAutoCString prefix("chrome/browser/content/browser/manual/");
-  nsAutoCString needle = prefix;
-  needle.Append("*.html");
-  if (NS_SUCCEEDED(zip->FindInit(needle.get(), getter_Transfers(find)))) {
-    const char* entryName;
-    uint16_t entryNameLen;
-    while (NS_SUCCEEDED(find->FindNext(&entryName, &entryNameLen))) {
-      // 5 is to remove the final `.html`
-      const size_t length = entryNameLen - prefix.Length() - 5;
-      locales.Insert(nsAutoCString(entryName + prefix.Length(), length));
+static nsAutoCString GetManualChromeURI() {
+  nsTArray<nsCString> availableLocales;
+  nsCString availableLocalesStr;
+  if (NS_SUCCEEDED(mozilla::Preferences::GetCString(
+          "torbrowser.manual.available-locales", availableLocalesStr)) &&
+      availableLocalesStr.Length() > 0) {
+    for (const nsACString& locale : availableLocalesStr.Split(',')) {
+      availableLocales.AppendElement(locale);
     }
   }
-  return locales;
-}
-
-static nsAutoCString GetManualChromeURI() {
-  static nsTHashSet<nsCStringHashKey> locales = GetManualLocales();
-
-  nsAutoCString reqLocale;
-  intl::LocaleService::GetInstance()->GetAppLocaleAsBCP47(reqLocale);
-  // Check every time the URL is needed in case the locale has changed.
-  // It might help also if we start allowing to change language, e.g., with a
-  // get parameter (see tor-browser#42675).
-  if (!locales.Contains(reqLocale) && reqLocale.Length() > 2 &&
-      reqLocale[2] == '-') {
-    // At the moment, codes in our manual output are either 2 letters (en) or
-    // 5 letters (pt-BR)
-    reqLocale.SetLength(2);
+  nsCString tryLocale;
+  if (!NS_SUCCEEDED(mozilla::Preferences::GetCString("torbrowser.manual.locale",
+                                                     tryLocale)) ||
+      !availableLocales.Contains(tryLocale)) {
+    nsTArray<nsCString> appLocales;
+    intl::LocaleService::GetInstance()->GetAppLocalesAsBCP47(appLocales);
+    bool found = false;
+    for (size_t i = 0; i < appLocales.Length(); i++) {
+      tryLocale = appLocales[i];
+      if (availableLocales.Contains(tryLocale)) {
+        found = true;
+        break;
+      } else if (tryLocale.Length() > 3 && tryLocale[2] == '-') {
+        // Strip the region code and see if the lang matches.
+        tryLocale.SetLength(2);
+        if (availableLocales.Contains(tryLocale)) {
+          found = true;
+          break;
+        }
+      }
+    }
+    if (!found) {
+      tryLocale.AssignLiteral("en");
+    }
   }
-  if (!locales.Contains(reqLocale)) {
-    reqLocale = "en";
-  }
-
-  // %s is the language
-  constexpr char model[] = "chrome://browser/content/manual/%s.html";
-  nsAutoCString url;
-  url.AppendPrintf(model, reqLocale.get());
-  return url;
+  nsAutoCString uri;
+  uri.AppendPrintf("chrome://browser/content/aboutmanual/aboutManual-%s.html",
+                   tryLocale.get());
+  return uri;
 }
 
 NS_IMETHODIMP
