@@ -1283,7 +1283,8 @@ export let ProfileDataUpgrader = {
     //            (mullvad-browser#411).
     // Version 2: Mullvad Browser 15.0a2: Remove legacy search addons
     //            (tor-browser#43111).
-    const MB_MIGRATION_VERSION = 2;
+    // Version 3: Mullvad Browser 16.0a12: DoH migration (mullvad-browser#537).
+    const MB_MIGRATION_VERSION = 3;
     const MIGRATION_PREF = "mullvadbrowser.migration.version";
 
     if (isNewProfile) {
@@ -1303,6 +1304,7 @@ export let ProfileDataUpgrader = {
     if (currentVersion < 1) {
       Services.prefs.clearUserPref("mullvadbrowser.post_update.url");
     }
+
     const dropAddons = async list => {
       for (const id of list) {
         try {
@@ -1311,6 +1313,7 @@ export let ProfileDataUpgrader = {
         } catch {}
       }
     };
+
     if (currentVersion < 2) {
       await dropAddons([
         "brave@search.mozilla.org",
@@ -1323,6 +1326,36 @@ export let ProfileDataUpgrader = {
       ]);
     }
 
+    if (currentVersion < 3) {
+      this.upgradeDoH();
+    }
+
     Services.prefs.setIntPref(MIGRATION_PREF, MB_MIGRATION_VERSION);
+  },
+
+  upgradeDoH() {
+    const DOH_NOTIFICATION_PREF =
+      "mullvadbrowser.migration.show_doh_notification";
+    const DOH_URI_PREF = "network.trr.uri";
+    const DOH_MODE_PREF = "network.trr.mode";
+    const MULLVAD_ADBLOCK_URL = "https://adblock.dns.mullvad.net/dns-query";
+
+    const dohMode = Services.prefs.getIntPref(DOH_MODE_PREF, -1);
+    const usesAdBlock =
+      Services.prefs.getStringPref(DOH_URI_PREF, "") === MULLVAD_ADBLOCK_URL;
+    const usesCustomUri =
+      Services.prefs.prefHasUserValue(DOH_URI_PREF) && !usesAdBlock;
+    if (
+      dohMode === Ci.nsIDNSService.MODE_TRROFF ||
+      (dohMode === Ci.nsIDNSService.MODE_TRRONLY && usesCustomUri)
+    ) {
+      return;
+    }
+
+    Services.prefs.setIntPref(DOH_MODE_PREF, Ci.nsIDNSService.MODE_TRRONLY);
+    if (usesAdBlock) {
+      Services.prefs.clearUserPref(DOH_URI_PREF);
+    }
+    Services.prefs.setBoolPref(DOH_NOTIFICATION_PREF, true);
   },
 };
