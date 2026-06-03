@@ -49,6 +49,9 @@ skip-if = [
 
 ["test_profileDataUpgrade_separatePrivateDefault.js"]
 
+["test_profileDataUpgrade_mullvad_doh.js"]
+tags = "mullvad-browser"
+
 ["test_profileDataUpgrade_smartwindow.js"]
 
 ["test_profileDataUpgrade_smartwindow_semanticHistory.js"]
