@@ -11,12 +11,14 @@ pref("browser.base-browser-support-url", "https://mullvad.net/en/help/");
 pref("browser.toolbars.bookmarks.visibility", "never");
 
 // mullvad-browser#19: Enable Mullvad's DOH
-pref("network.trr.uri", "https://dns.mullvad.net/dns-query");
-pref("network.trr.default_provider_uri", "https://dns.mullvad.net/dns-query");
+pref("network.trr.uri", "https://doh-mullvad.quad9.net/dns-query");
+pref("network.trr.default_provider_uri", "https://doh-mullvad.quad9.net/dns-query");
 pref("network.trr.mode", 3);
-pref("doh-rollout.provider-list", "[{\"UIName\":\"Mullvad\",\"autoDefault\":true,\"canonicalName\":\"\",\"id\":\"mullvad\",\"last_modified\":0,\"schema\":0,\"uri\":\"https://dns.mullvad.net/dns-query\"},{\"UIName\":\"Mullvad (Ad-blocking)\",\"autoDefault\":false,\"canonicalName\":\"\",\"id\":\"mullvad\",\"last_modified\":0,\"schema\":0,\"uri\":\"https://adblock.dns.mullvad.net/dns-query\"}]");
+pref("doh-rollout.provider-list", "[{\"uri\":\"https://doh-mullvad.quad9.net/dns-query\",\"UIName\":\"Quad9 - no threat blocking\",\"schema\":0,\"autoDefault\":false,\"canonicalName\":\"\",\"id\":\"quad9-no-threat-blocking\",\"last_modified\":0},{\"uri\":\"https://dns.quad9.net/dns-query\",\"UIName\":\"Quad9 - secure: threat blocking\",\"schema\":0,\"autoDefault\":true,\"canonicalName\":\"\",\"id\":\"quad9-threat-blocking\",\"last_modified\":0}]");
 // mullvad-browser#122: Audit DoH heuristics
 pref("doh-rollout.disable-heuristics", true);
+// mullvad-browser#537: migrate users from Mullvad DoH service.
+pref("mullvadbrowser.migration.show_doh_notification", false);
 
 // mullvad-browser#87: Windows and Linux need additional work to make the
 // default browser choice working.
