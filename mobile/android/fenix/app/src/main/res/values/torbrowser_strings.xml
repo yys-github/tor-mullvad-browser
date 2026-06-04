@@ -91,6 +91,10 @@
     <!-- Connection assist, -->
     <string name="connection_assist_select_country_or_region">Select country or region</string>
     <!-- Connection assist. -->
+    <string name="connection_assist_frequently_selected_locations">Frequently selected locations</string>
+    <!-- Connection assist. -->
+    <string name="connection_assist_other_locations">Other locations</string>
+    <!-- Connection assist. -->
     <string name="connection_assist_try_a_bridge_button">Try a bridge</string>
     <!-- Connection assist. -->
     <string name="connection_assist_trying_a_bridge_title">Trying a bridge…</string>
