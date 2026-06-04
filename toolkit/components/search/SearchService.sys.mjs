@@ -3881,9 +3881,9 @@ export const SearchService = new (class SearchService {
 
       case TOPIC_JSENABLED_CHANGED:
         lazy.logConsole.debug("JavaScript toggled");
-        this._maybeReloadEngines(
-          Ci.nsISearchService.CHANGE_REASON_CONFIG
-        ).catch(console.error);
+        this.#maybeReloadEngines(this.CHANGE_REASON.CONFIG).catch(
+          console.error
+        );
         break;
     }
   }
