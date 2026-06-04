@@ -1026,7 +1026,15 @@ export let ProfileDataUpgrader = {
     Services.prefs.setIntPref("browser.migration.version", newVersion);
   },
 
-  upgradeBB(isNewProfile) {
+  /**
+   * Run the profile data migration for Base Browser if needed.
+   *
+   * @param {boolean} isNewProfile When true, just set the migration version
+   * without actually changing anything.
+   * @param {number} [currentVersion] The version to migrating from. To be used
+   * only by tests.
+   */
+  upgradeBB(isNewProfile, currentVersion) {
     // Version 1: 13.0a3. Reset layout.css.prefers-color-scheme.content-override
     //            for tor-browser#41739.
     // Version 2: 14.0a5: Reset the privacy tracking headers preferences since
@@ -1056,7 +1064,10 @@ export let ProfileDataUpgrader = {
       console.error("upgradeBB: isNewProfile is undefined.");
     }
 
-    const currentVersion = Services.prefs.getIntPref(MIGRATION_PREF, 0);
+    if (currentVersion === undefined) {
+      currentVersion = Services.prefs.getIntPref(MIGRATION_PREF, 0);
+    }
+
     if (currentVersion < 1) {
       Services.prefs.clearUserPref(
         "layout.css.prefers-color-scheme.content-override"
