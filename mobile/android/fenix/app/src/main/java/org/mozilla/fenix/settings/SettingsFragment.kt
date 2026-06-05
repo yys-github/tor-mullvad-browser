@@ -583,8 +583,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         val debuggingKey = getPreferenceKey(R.string.pref_key_remote_debugging)
         val preferenceLeakCanary = findPreference<Preference>(leakKey)
         val preferenceRemoteDebugging = findPreference<Preference>(debuggingKey)
-        val preferenceMakeDefaultBrowser =
-            requirePreference<DefaultBrowserPreference>(R.string.pref_key_make_default_browser)
 
         if (!Config.channel.isReleased) {
             preferenceLeakCanary?.setOnPreferenceChangeListener { _, newValue ->
@@ -599,12 +597,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
             settings.preferences.edit { putBoolean(preference.key, newValue) }
             requireComponents.core.engine.settings.remoteDebuggingEnabled = newValue
             true
-        }
-
-        preferenceMakeDefaultBrowser.apply {
-            updateSwitch()
-            onPreferenceClickListener =
-                getClickListenerForMakeDefaultBrowser()
         }
 
         val preferenceStartProfiler =
@@ -646,30 +638,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         setupTrackingProtectionPreference(settings)
         setupDnsOverHttpsPreference(settings)
         setupEmailMaskPreference(settings, requireComponents)
-    }
-
-    private val setToDefaultPromptRequestLauncher: ActivityResultLauncher<Intent> =
-        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-            with(requireContext()) {
-                maybeNavigateToSystemSetToDefaultAction(result.resultCode, components.settings, dateTimeProvider) {
-                    navigateToDefaultBrowserAppsSettings(BuildManufacturerChecker())
-                }
-            }
-        }
-
-    /**
-     * For >=Q -> Use new RoleManager API to show in-app browser switching dialog.
-     * For <Q && >=N -> Navigate user to Android Default Apps Settings.
-     * For <N -> Open sumo page to show user how to change default app.
-     */
-    private fun getClickListenerForMakeDefaultBrowser(): Preference.OnPreferenceClickListener {
-        return Preference.OnPreferenceClickListener {
-            maybeRequestDefaultBrowserPrompt(
-                WeakReference((requireActivity() as? HomeActivity)),
-                setToDefaultPromptRequestLauncher,
-            )
-            true
-        }
     }
 
     private fun navigateFromSettings(directions: NavDirections) {
