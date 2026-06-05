@@ -521,7 +521,6 @@
                 <data android:host="home"/>
                 <data android:host="home_collections"/>
                 <data android:host="install_search_widget"/>
-                <data android:host="make_default_browser"/>
                 <data android:host="open"/>
                 <data android:host="settings"/>
                 <data android:host="settings_accessibility"/>
@@ -561,54 +560,6 @@
             android:exported="true"
             android:excludeFromRecents="true" >
 
-            <!--
-              Respond to `Intent.makeMainSelectorActivity(Intent.ACTION_MAIN, Intent.CATEGORY_APP_BROWSER)`
-            -->
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.APP_BROWSER"/>
-                <category android:name="android.intent.category.DEFAULT"/>
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="mozilla.components.pwa.category.SHORTCUT" />
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-            </intent-filter>
-
-            <!--Exposed specific deep links for third-party apps to open wallpaper settings.-->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="${deepLinkScheme}"
-                    android:host="settings_wallpapers"/>
-            </intent-filter>
-
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.BROWSABLE" />
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data android:scheme="http" />
-                <data android:scheme="https" />
-                <data android:mimeType="text/html" />
-                <data android:mimeType="text/plain" />
-                <data android:mimeType="application/xhtml+xml" />
-            </intent-filter>
-
-<!--
-            <intent-filter>
-                <action android:name="android.intent.action.SEND" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data android:mimeType="text/plain" />
-            </intent-filter>
--->
 
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
