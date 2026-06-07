@@ -13,7 +13,7 @@ class ControlPortServer {
   #ipcFile;
   #protocol;
 
-  constructor(protocol, listener) {
+  constructor(protocol) {
     this.#server = Cc["@mozilla.org/network/server-socket;1"].createInstance(
       Ci.nsIServerSocket
     );
@@ -35,19 +35,23 @@ class ControlPortServer {
         return;
     }
     this.#protocol = protocol;
+  }
 
+  listenOnce() {
     const address =
-      protocol === "tcp"
+      this.#protocol === "tcp"
         ? `localhost:${this.#server.port}`
         : this.#ipcFile.path;
-    this.#server.asyncListen({
-      onSocketAccepted(_socket, transport) {
-        info(`Got a new connection on ${address}.`);
-        listener(new Transport(transport));
-      },
-      onStopListening() {
-        info(`Stopped listening on ${address}.`);
-      },
+    return new Promise(resolve => {
+      this.#server.asyncListen({
+        onSocketAccepted(_socket, transport) {
+          info(`Got a new connection on ${address}.`);
+          resolve(new Transport(transport));
+        },
+        onStopListening() {
+          info(`Stopped listening on ${address}.`);
+        },
+      });
     });
   }
 
@@ -73,6 +77,7 @@ class ControlPortServer {
     this.#server.close();
     if (this.#ipcFile) {
       this.#ipcFile.remove(false);
+      this.#ipcFile = null;
     }
   }
 }
@@ -111,11 +116,13 @@ class Transport {
           try {
             available = this.#scriptableInputStream.available();
           } catch (e) {
-            reject(e);
-            return;
+            if (e.result !== Cr?.NS_BASE_STREAM_CLOSED) {
+              reject(e);
+              return;
+            }
           }
           if (!available) {
-            reject(new Error("Connection closed"));
+            resolve("");
             return;
           }
           const str = this.#scriptableInputStream.read(available);
@@ -131,7 +138,7 @@ class Transport {
 
   async readLine() {
     const updateBuffer = idx => {
-      const line = this.#lineBuffer.substring(0, idx);
+      const line = this.#lineBuffer.substring(0, idx + 2);
       this.#lineBuffer = this.#lineBuffer.substring(idx + 2);
       return line;
     };
@@ -140,7 +147,13 @@ class Transport {
       return updateBuffer(idx);
     }
     do {
-      this.#lineBuffer += await this.read();
+      const r = await this.read();
+      if (!r) {
+        const line = this.#lineBuffer;
+        this.#lineBuffer = "";
+        return line;
+      }
+      this.#lineBuffer += r;
       idx = this.#lineBuffer.indexOf("\r\n");
     } while (idx == -1);
     return updateBuffer(idx);
@@ -171,48 +184,4 @@ class Transport {
     this.#outputStream.close();
     this.#transport.close(Cr.NS_OK);
   }
-}
-
-/**
- * A wrapper to the XPCOM code we are testing for turning it into async JS.
- * It can be extended to actually handle async notifications.
- */
-class ControlPortClient {
-  #controlPort;
-  constructor(server) {
-    if (server.protocol === "tcp") {
-      this.#controlPort = Services.tor.createControlPort(
-        "localhost",
-        server.port
-      );
-    } else if (server.protocol === "ipc") {
-      this.#controlPort = Services.tor.createControlPortIPC(server.ipcFile);
-    } else {
-      throw new Error("Unknown server protocol");
-    }
-    this.#controlPort.start(this);
-  }
-
-  sendCommand(command) {
-    const { promise, resolve, reject } = Promise.withResolvers();
-    this.#controlPort.sendCommand(`${command}\r\n`, {
-      onMessage(message) {
-        resolve(message);
-      },
-      onError(error) {
-        reject(new Error(error));
-      },
-    });
-    return promise;
-  }
-
-  close() {
-    this.#controlPort.close();
-  }
-
-  onAsyncMessage(_message) {
-    Assert.ok(false, "This test does not use async notifications.");
-  }
-
-  onClosed() {}
 }
