@@ -557,11 +557,6 @@ pref("pdfjs.disabled", false, locked);
 // tor-browser#43850. Keep forced colors off by default for all platforms.
 // Upstream sets a value of "0" for Windows.
 pref("browser.display.document_color_use", 1);
-// Bug 40057: Ensure system colors are not used for CSS4 colors.
-// FIXME: This preference seems to be unread since bugzilla bug 1898096, but
-// still exists in the static preference list. Remove when upstream removes
-// this or confirms it will not be used again in the future.
-pref("browser.display.use_system_colors", false);
 // tor-browser#43366: do not use system accent color in inputs.
 // See also https://bugzilla.mozilla.org/show_bug.cgi?id=1861362.
 pref("widget.non-native-theme.use-theme-accent", false);
