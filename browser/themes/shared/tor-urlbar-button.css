@@ -54,7 +54,7 @@
 
 /* Make the button look plain like the identity #urlbar-label-box. */
 .tor-urlbar-button.tor-urlbar-button-plain {
-  background-color: var(--urlbar-box-bgcolor);
+  background-color: var(--urlbar-box-background-color);
   color: var(--urlbar-box-text-color);
 }
 
@@ -63,11 +63,11 @@
 }
 
 .tor-urlbar-button.tor-urlbar-button-plain:hover {
-  background-color: var(--urlbar-box-hover-bgcolor);
-  color: var(--urlbar-box-hover-text-color);
+  background-color: var(--urlbar-box-background-color-hover);
+  color: var(--urlbar-box-text-color-hover);
 }
 
 .tor-urlbar-button.tor-urlbar-button-plain:hover:active {
-  background-color: var(--urlbar-box-active-bgcolor);
-  color: var(--urlbar-box-hover-text-color);
+  background-color: var(--urlbar-box-background-color-active);
+  color: var(--urlbar-box-text-color-hover);
 }
