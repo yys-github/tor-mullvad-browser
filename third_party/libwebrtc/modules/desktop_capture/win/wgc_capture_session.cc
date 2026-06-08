@@ -193,8 +193,7 @@ bool WgcCaptureSession::MayContainCursor() const {
   // IsCursorCaptureEnabled was introduced in IGraphicsCaptureSession2.
   // Default to true (cursor captured) if the interface is not available.
   ComPtr<ABI::Windows::Graphics::Capture::IGraphicsCaptureSession2> session2;
-  HRESULT hr = session_->QueryInterface(
-      ABI::Windows::Graphics::Capture::IID_IGraphicsCaptureSession2, &session2);
+  HRESULT hr = session_->QueryInterface(IID_PPV_ARGS(&session2));
   if (FAILED(hr)) {
     return true;
   }
