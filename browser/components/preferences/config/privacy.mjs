@@ -3581,11 +3581,6 @@ Preferences.addSetting({
 });
 
 Preferences.addSetting({
-  id: "resistFingerprinting",
-  pref: "privacy.resistFingerprinting",
-});
-
-Preferences.addSetting({
   id: "resistFingerprintingPBM",
   pref: "privacy.resistFingerprinting.pbmode",
 });

@@ -39,6 +39,16 @@ ChromeUtils.defineESModuleGetters(this, {
     "resource://autofill/FormAutofillPreferences.sys.mjs",
 });
 
+// Rather than add "privacy.resistFingerprinting" preference and the
+// "resistFingerprinting" Setting in privacy.mjs, we add them early *prior* to
+// importing any config/ modules which require it.
+// See tor-browser#44630 and tor-browser#45018.
+Preferences.add({ id: "privacy.resistFingerprinting", type: "bool" });
+Preferences.addSetting({
+  id: "resistFingerprinting",
+  pref: "privacy.resistFingerprinting",
+});
+
 ChromeUtils.importESModule(
   "chrome://browser/content/preferences/config/accessibility.mjs",
   { global: "current" }
@@ -93,10 +103,6 @@ function canShowAiFeature(featureSetting, defaultSetting) {
 }
 
 Preferences.addAll([
-  // Rather than add "privacy.resistFingerprinting" in privacy.js, we add it
-  // early so we can define the "resistFingerprinting" `Setting` in this file.
-  // See below. See tor-browser#44630.
-  { id: "privacy.resistFingerprinting", type: "bool" },
   // Startup
   { id: "browser.startup.page", type: "int" },
   { id: "browser.startup.windowsLaunchOnLogin.enabled", type: "bool" },
@@ -128,18 +134,6 @@ if (AppConstants.HAVE_SHELL_SERVICE) {
     { id: "pref.general.disable_button.default_browser", type: "bool" },
   ]);
 }
-
-// Rather than add "resistFingerprinting" in privacy.js, we add it to the
-// settings early so we can have it be part of the setting config's `deps` field
-// early. See tor-browser#44630.
-// In particular, `Setting.deps` is lazy set. For many settings, this will only
-// be set *after* all settings have been added. However, for settings with a
-// `setup` field, the `deps` value will be set during construction, so we need
-// the corresponding dependency available prior to construction.
-Preferences.addSetting({
-  id: "resistFingerprinting",
-  pref: "privacy.resistFingerprinting",
-});
 
 Preferences.addSetting({
   id: "privateBrowsingAutoStart",
