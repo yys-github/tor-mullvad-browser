@@ -2264,6 +2264,13 @@ Preferences.addSetting({
   id: "relayIntegration",
   deps: ["savePasswords", "relayFeature"],
   visible: () => {
+    // Hide Firefox Relay. tor-browser#43109 and tor-browser#42814.
+    // NOTE: Whilst `FirefoxRelay.isDisabled` is `true` due to preferences we
+    // set for Base Browser, `FirefoxRelay.isAvailable` is also `true` in this
+    // case, hence why we still need to hide this unconditionally.
+    if (lazy.AppConstants.BASE_BROWSER_VERSION) {
+      return false;
+    }
     return lazy.FirefoxRelay.isAvailable;
   },
   disabled: ({ savePasswords, relayFeature }) => {
@@ -3553,6 +3560,8 @@ Preferences.addSetting({
 
 Preferences.addSetting({
   id: "etpStatusBoxGroup",
+  // Hide enhanced tracking protection (ETP). tor-browser#26345.
+  visible: () => false,
 });
 
 Preferences.addSetting({
@@ -3585,6 +3594,8 @@ Preferences.addSetting({
 
 Preferences.addSetting({
   id: "protectionsDashboardLink",
+  // Hide enhanced tracking protection (ETP). tor-browser#26345.
+  visible: () => false,
 });
 
 Preferences.addSetting({
