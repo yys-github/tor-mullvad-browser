@@ -6,6 +6,8 @@
   align-items: center;
   gap: var(--space-small);
   border-radius: var(--urlbar-inner-border-radius);
+  outline: var(--toolbarbutton-outline);
+  outline-offset: var(--toolbarbutton-outline-offset);
   --tor-urlbar-focus-outline-difference: 0px;
   /* For the inline direction, we shrink the padding by the difference, and
    * increase the margin by the same amount so that the button text remains in
@@ -26,7 +28,8 @@
      * fits within the non-focused button boundary. Essentially, this has a
      * similar effect to using an inset outline that matches the color of the
      * urlbar background, but we keep the rounded corners. */
-    outline: var(--focus-outline);
+    outline-style: solid;
+    outline-width: var(--focus-outline-width);
     outline-offset: var(--focus-outline-offset);
     /* Calculate the difference between the button's border area and the outline
      * area. */
@@ -38,6 +41,10 @@
     background-color: var(--urlbar-box-background-color);
     color: var(--urlbar-box-text-color);
 
+    :where(#urlbar[focused]) & {
+      background-color: var(--urlbar-box-background-color-focus);
+    }
+
     &:focus-visible {
       outline-color: var(--focus-outline-color);
     }
@@ -45,11 +52,26 @@
     &:hover {
       background-color: var(--urlbar-box-background-color-hover);
       color: var(--urlbar-box-text-color-hover);
+      outline-color: var(--toolbarbutton-outline-color-hover);
     }
 
     &:hover:active {
       background-color: var(--urlbar-box-background-color-active);
       color: var(--urlbar-box-text-color-hover);
+      outline-color: var(--toolbarbutton-outline-color-active);
+    }
+  }
+
+  &.tor-button:not(:focus-visible) {
+    /* Set the outline color based on a primary button. */
+    outline-color: var(--button-border-color-primary);
+
+    &:hover {
+      outline-color: var(--button-border-color-primary-hover);
+    }
+
+    &:hover:active {
+      outline-color: var(--button-border-color-primary-active);
     }
   }
 }
