@@ -195,12 +195,6 @@
   display: none;
 }
 
-#aboutDialogContainer {
-  background-color: var(--about-dialog-background-color);
-  color: var(--about-dialog-text-color);
-  color-scheme: var(--about-dialog-color-scheme);
-}
-
 #rightBox {
   padding-block-start: 38px;
   background-size: auto;
@@ -208,13 +202,27 @@
 }
 
 #bottomBox {
-  background-color: var(--about-dialog-background-color-bottom);
   padding: 15px 10px 15px;
 }
 
 #trademark {
   font-size: xx-small;
   text-align: center;
-  color: var(--about-dialog-text-color-trademark);
   margin-block: 10px;
+}
+
+@media not ((prefers-contrast) or (forced-colors)) {
+  #aboutDialogContainer {
+    background-color: var(--about-dialog-background-color);
+    color: var(--about-dialog-text-color);
+    color-scheme: var(--about-dialog-color-scheme);
+  }
+
+  #bottomBox {
+    background-color: var(--about-dialog-background-color-bottom);
+  }
+
+  #trademark {
+    color: var(--about-dialog-text-color-trademark);
+  }
 }
