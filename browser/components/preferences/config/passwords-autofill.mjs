@@ -778,9 +778,6 @@ SettingGroupManager.registerGroups({
     ],
   },
   managePayments: {
-    // Hide the payments settings. tor-browser#44460.
-    hidden: true,
-    hiddenFromSearch: true,
     items: [
       {
         id: "add-payment-button",
@@ -797,9 +794,6 @@ SettingGroupManager.registerGroups({
     ],
   },
   manageAddresses: {
-    // Hide the addresses settings. tor-browser#44460.
-    hidden: true,
-    hiddenFromSearch: true,
     items: [
       {
         id: "add-address-button",
