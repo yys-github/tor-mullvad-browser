@@ -4,14 +4,24 @@
   align-items: center;
   gap: var(--space-small);
   border-radius: var(--urlbar-inner-border-radius);
-  --tor-urlbar-button-inline-padding: var(--space-small);
-  padding-inline: var(--tor-urlbar-button-inline-padding);
-  margin: 0;
+  --tor-urlbar-focus-outline-difference: 0px;
+  /* For the inline direction, we shrink the padding by the difference, and
+   * increase the margin by the same amount so that the button text remains in
+   * the same position.
+   * For the block direction, the height of the button is flexibly sized with
+   * the urlbar height, so we should only need to increase the margin. */
+  padding-inline: calc(var(--space-small) - var(--tor-urlbar-focus-outline-difference));
+  margin: var(--tor-urlbar-focus-outline-difference);
 }
 
 .tor-urlbar-button > * {
   flex: 0 0 auto;
-  margin: 0;
+  margin-inline: 0;
+  /* Negate the margin that would be added on focus to ensure the button does
+   * not grow in height.
+   * Ideally, this should not change anything noticeable, otherwise the text
+   * could be clipped when focused. */
+  margin-block: calc(-1 * var(--tor-urlbar-focus-outline-difference));
 }
 
 .tor-urlbar-button:focus-visible {
@@ -30,21 +40,6 @@
   /* Calculate the difference between the button's border area and the outline
    * area. */
   --tor-urlbar-focus-outline-difference: calc(var(--focus-outline-offset) + var(--focus-outline-width));
-  /* For the inline direction, we shrink the padding by the difference, and
-   * increase the margin by the same amount so that the button text remains in
-   * the same position.
-   * For the block direction, the height of the button is flexibly sized with
-   * the urlbar height, so we should only need to increase the margin. */
-  padding-inline: calc(var(--tor-urlbar-button-inline-padding) - var(--tor-urlbar-focus-outline-difference));
-  margin: var(--tor-urlbar-focus-outline-difference);
-}
-
-.tor-urlbar-button:focus-visible > * {
-  /* Negate the margin that would be added on focus to ensure the button does
-   * not grow in height.
-   * Ideally, this should not change anything noticeable, otherwise the text
-   * could be clipped when focused. */
-  margin-block: calc(-1 * var(--tor-urlbar-focus-outline-difference));
 }
 
 #urlbar[usertyping] .tor-urlbar-button {
