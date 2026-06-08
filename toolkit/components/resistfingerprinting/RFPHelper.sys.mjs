@@ -781,7 +781,7 @@ class _RFPHelper {
     let colorRGBA;
     if (!verticalTabs) {
       lazy.logConsole.debug("Toolbar background used.");
-      colorRGBA = this._convertToRGBA(win, style, "--toolbar-bgcolor");
+      colorRGBA = this._convertToRGBA(win, style, "--toolbar-background-color");
       if (colorRGBA.a === 1) {
         return colorRGBA;
       }
@@ -811,7 +811,7 @@ class _RFPHelper {
       lazy.logConsole.debug("Toolbox background used.");
       colorRGBA = this._composeRGBA(
         colorRGBA,
-        this._convertToRGBA(win, style, "--toolbox-bgcolor")
+        this._convertToRGBA(win, style, "--toolbox-background-color")
       );
       if (colorRGBA.a === 1) {
         return colorRGBA;
@@ -824,7 +824,11 @@ class _RFPHelper {
     // We use the theme's text colour to figure out whether the urlbar
     // background is overall meant to be light or dark. Unlike the urlbar, we
     // expect this colour to be (almost) opaque.
-    const textRGBA = this._convertToRGBA(win, style, "--toolbar-field-color");
+    const textRGBA = this._convertToRGBA(
+      win,
+      style,
+      "--toolbar-field-text-color"
+    );
     const textColor = new lazy.Color(textRGBA.r, textRGBA.g, textRGBA.b);
     if (textColor.relativeLuminance >= 0.5) {
       // Light text, so assume it has a dark background.
@@ -861,8 +865,8 @@ class _RFPHelper {
 
       const verticalTabs = Services.prefs.getBoolPref(kPrefVerticalTabs);
       const chromeTextColorProperty = verticalTabs
-        ? "--toolbox-textcolor"
-        : "--toolbar-color";
+        ? "--toolbox-text-color"
+        : "--toolbar-text-color";
 
       const navbarStyle = win.getComputedStyle(
         win.document.getElementById("nav-bar")
@@ -883,10 +887,10 @@ class _RFPHelper {
       // NOTE: In the default theme (no "lwtheme" attribute) with
       // browser.theme.native-theme set to false, --toolbar-field-color can be
       // set to "inherit", which means it will have a blank computed value. We
-      // fallback to --toolbar-color or --toolbox-textcolor in this case.
+      // fallback to --toolbar-text-color or --toolbox-text-color in this case.
       // Similarly, for windows OS, it can be set to "currentColor".
       urlbarTextRGBA = this._composeRGBA(
-        this._convertToRGBA(win, navbarStyle, "--toolbar-field-color", {
+        this._convertToRGBA(win, navbarStyle, "--toolbar-field-text-color", {
           fallbackProperty: chromeTextColorProperty,
           currentColorProperty: chromeTextColorProperty,
         }),
