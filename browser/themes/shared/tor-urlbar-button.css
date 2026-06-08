@@ -1,5 +1,7 @@
-.tor-urlbar-button:not([hidden]) {
-  display: flex;
+.tor-urlbar-button {
+  &:not([hidden]) {
+    display: flex;
+  }
   align-self: stretch;
   align-items: center;
   gap: var(--space-small);
@@ -12,6 +14,44 @@
    * the urlbar height, so we should only need to increase the margin. */
   padding-inline: calc(var(--space-small) - var(--tor-urlbar-focus-outline-difference));
   margin: var(--tor-urlbar-focus-outline-difference);
+
+  &:focus-visible {
+    /* This button lies within the urlbar, so if the outline extends beyond the
+     * button's boundary, it will be clipped by the urlbar.
+     * Most button's in the urlbar get around this by using
+     * --focus-outline-inset, but our button has a purple background, which does
+     * not contrast well with the focus outline.
+     * Therefore, we use an offset outline rather than an inset outline, and
+     * compensate by shrinking the button's width and height so that the outline
+     * fits within the non-focused button boundary. Essentially, this has a
+     * similar effect to using an inset outline that matches the color of the
+     * urlbar background, but we keep the rounded corners. */
+    outline: var(--focus-outline);
+    outline-offset: var(--focus-outline-offset);
+    /* Calculate the difference between the button's border area and the outline
+     * area. */
+    --tor-urlbar-focus-outline-difference: calc(var(--focus-outline-offset) + var(--focus-outline-width));
+  }
+
+  &:not(.tor-button) {
+    /* Make the button look plain like the identity .identity-box-button. */
+    background-color: var(--urlbar-box-background-color);
+    color: var(--urlbar-box-text-color);
+
+    &:focus-visible {
+      outline-color: var(--focus-outline-color);
+    }
+
+    &:hover {
+      background-color: var(--urlbar-box-background-color-hover);
+      color: var(--urlbar-box-text-color-hover);
+    }
+
+    &:hover:active {
+      background-color: var(--urlbar-box-background-color-active);
+      color: var(--urlbar-box-text-color-hover);
+    }
+  }
 }
 
 .tor-urlbar-button > * {
@@ -24,45 +64,7 @@
   margin-block: calc(-1 * var(--tor-urlbar-focus-outline-difference));
 }
 
-.tor-urlbar-button:focus-visible {
-  /* This button lies within the urlbar, so if the outline extends beyond the
-   * button's boundary, it will be clipped by the urlbar.
-   * Most button's in the urlbar get around this by using --focus-outline-inset,
-   * but our button has a purple background, which does not contrast well with
-   * the focus outline.
-   * Therefore, we use an offset outline rather than an inset outline, and
-   * compensate by shrinking the button's width and height so that the outline
-   * fits within the non-focused button boundary. Essentially, this has a
-   * similar effect to using an inset outline that matches the color of the
-   * urlbar background, but we keep the rounded corners. */
-  outline: var(--focus-outline);
-  outline-offset: var(--focus-outline-offset);
-  /* Calculate the difference between the button's border area and the outline
-   * area. */
-  --tor-urlbar-focus-outline-difference: calc(var(--focus-outline-offset) + var(--focus-outline-width));
-}
-
 #urlbar[usertyping] .tor-urlbar-button {
   /* Hide whilst the user is typing in the url bar. */
   display: none;
-}
-
-/* Make the button look plain like the identity #urlbar-label-box. */
-.tor-urlbar-button.tor-urlbar-button-plain {
-  background-color: var(--urlbar-box-background-color);
-  color: var(--urlbar-box-text-color);
-}
-
-.tor-urlbar-button.tor-urlbar-button-plain:focus-visible {
-  outline-color: var(--focus-outline-color);
-}
-
-.tor-urlbar-button.tor-urlbar-button-plain:hover {
-  background-color: var(--urlbar-box-background-color-hover);
-  color: var(--urlbar-box-text-color-hover);
-}
-
-.tor-urlbar-button.tor-urlbar-button-plain:hover:active {
-  background-color: var(--urlbar-box-background-color-active);
-  color: var(--urlbar-box-text-color-hover);
 }

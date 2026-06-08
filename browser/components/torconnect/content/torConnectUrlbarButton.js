@@ -141,7 +141,6 @@ var gTorConnectUrlbarButton = {
       !this._isActive ||
       !TorConnect.canBeginNormalBootstrap ||
       TorConnect.potentiallyBlocked;
-    this.button.classList.toggle("tor-urlbar-button-plain", plainButton);
     this.button.classList.toggle("tor-button", !plainButton);
   },
 };
