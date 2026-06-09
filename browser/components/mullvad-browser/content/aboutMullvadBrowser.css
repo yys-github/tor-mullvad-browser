@@ -50,10 +50,9 @@ body {
 #heading-wordmark {
   flex: 0 0 auto;
   height: 22.4px;
-  /* When using a contrast theme we want to replace the wordmark's default
-   * colors with the text color instead. */
-  -moz-context-properties: fill;
+  -moz-context-properties: fill, stroke;
   fill: currentColor;
+  stroke: currentColor;
 }
 
 #mullvad-browser-update,
@@ -104,9 +103,10 @@ body:not(.no-update) #mullvad-browser-intro {
   }
 
   #heading-wordmark {
-    /* Have a dark background, so can use about-wordmark.svg's default colors
-     * instead. */
-    -moz-context-properties: none;
+    /* Have a dark background, so can use fixed colours.
+     * NOTE: For the stable release, there is no accent color. */
+    fill: white;
+    stroke: var(--branding-wordmark-accent, white);
   }
 
   #footer {
