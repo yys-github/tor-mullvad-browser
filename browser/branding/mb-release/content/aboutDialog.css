@@ -9,3 +9,9 @@
   --about-dialog-background-color-bottom: rgba(0, 0, 0, 0.2);
   --about-dialog-text-color-trademark: #999999;
 }
+
+#rightBox {
+  -moz-context-properties: fill, stroke;
+  fill: currentColor;
+  stroke: currentColor;
+}

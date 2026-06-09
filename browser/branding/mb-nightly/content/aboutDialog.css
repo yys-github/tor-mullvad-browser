@@ -2,6 +2,8 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
+@import url("chrome://branding/content/mullvad-branding.css");
+
 :root {
   --about-dialog-background-color: #0b2138;
   --about-dialog-text-color: #fff;
@@ -13,4 +15,13 @@
 #rightBox {
   /* Increase the default width to fit the about-wordmark.svg width. */
   max-width: 601px;
+  -moz-context-properties: fill, stroke;
+  fill: currentColor;
+  stroke: currentColor;
+}
+
+@media not ((prefers-contrast) or (forced-colors)) {
+  #rightBox {
+    stroke: var(--branding-wordmark-accent);
+  }
 }
