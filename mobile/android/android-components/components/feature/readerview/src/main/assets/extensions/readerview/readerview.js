@@ -3,7 +3,6 @@
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 /* eslint-env webextensions */
-/* eslint-disable no-unsanitized/property */ /* bug 1903144 */
 /* import-globals-from readability/readability-0.4.2.js */
 /* import-globals-from readability/JSDOMParser-0.4.2.js */
 
@@ -61,7 +60,36 @@ class ReaderView {
       { title: this.getTitle(result) }
     );
 
-    document.body.outerHTML = this.createHtmlBody(article);
+    const sanitizer = new Sanitizer({
+      allowAttributes: {
+        class: ["*"],
+        id: ["*"],
+        src: ["img", "audio", "video", "source"],
+        srcset: ["img", "source"],
+        sizes: ["img", "source"],
+        alt: ["img"],
+        href: ["a"],
+        rel: ["a"],
+        dir: ["*"],
+        lang: ["*"],
+        title: ["*"],
+        width: ["img", "video", "table", "td", "th", "col", "colgroup"],
+        height: ["img", "video"],
+        colspan: ["td", "th"],
+        rowspan: ["td", "th"],
+        scope: ["th"],
+        datetime: ["del", "ins", "time"],
+        cite: ["blockquote", "del", "ins", "q"],
+        start: ["ol"],
+        reversed: ["ol"],
+        value: ["li"],
+        open: ["details"],
+        type: ["a", "ol", "li", "source"],
+        target: ["a"],
+      },
+    });
+
+    document.body.setHTML(this.createHtmlBody(article), { sanitizer });
 
     this.setFontSize(options.fontSize);
     this.setFontType(options.fontType);
