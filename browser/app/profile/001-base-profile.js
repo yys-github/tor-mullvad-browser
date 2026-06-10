@@ -576,8 +576,6 @@ pref("javascript.options.spectre.disable_for_isolated_content", false);
 
 // Third party stuff
 pref("privacy.firstparty.isolate", true); // Always enforce first party isolation
-// tor-browser#40123 and #40308: Disable for now until audit
-pref("privacy.partition.network_state", false);
 // Only accept cookies from the originating site (block third party cookies)
 pref("network.cookie.cookieBehavior", 1);
 pref("network.cookie.cookieBehavior.pbmode", 1);
