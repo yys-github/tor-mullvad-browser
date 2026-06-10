@@ -403,6 +403,9 @@ class AndroidEmulatorTest(
             )
         cmd.extend([f"--setpref={p}" for p in self.extra_prefs])
 
+        if "marionette" in self.test_suite:
+            cmd.append("--log-raw=-")
+
         if not (self.verify_enabled or self.per_test_coverage):
             if user_paths or self.test_tags:
                 if user_paths:
