@@ -305,7 +305,11 @@ void nsHTMLFramesetFrame::Init(nsIContent* aContent, nsContainerFrame* aParent,
       mChildFrameborder[mChildCount] = GetFrameBorder(child);
       mChildBorderColors[mChildCount].Set(GetBorderColor(child));
     }
-    child->SetPrimaryFrame(frame);
+    if (MOZ_LIKELY(!child->GetPrimaryFrame())) {
+      // Child might have a pre-existing primary frame if we're doing fixed-pos
+      // replication... This code is really disgusting.
+      child->SetPrimaryFrame(frame);
+    }
 
     mFrames.AppendFrame(nullptr, frame);
 
