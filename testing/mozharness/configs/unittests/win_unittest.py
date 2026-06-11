@@ -22,7 +22,7 @@ USE_HARDWARE = False
 if "USE_HARDWARE" in os.environ:
     USE_HARDWARE = os.environ["USE_HARDWARE"] == "1"
 
-PYWIN32 = "pywin32==306"
+PYWIN32 = "pywin32==312"
 
 XPCSHELL_NAME = "xpcshell.exe"
 EXE_SUFFIX = ".exe"
