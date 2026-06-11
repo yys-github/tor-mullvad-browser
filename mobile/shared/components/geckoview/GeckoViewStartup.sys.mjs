@@ -18,8 +18,6 @@ ChromeUtils.defineESModuleGetters(lazy, {
   RFPHelper: "resource://gre/modules/RFPHelper.sys.mjs",
   TorAndroidIntegration:
     "moz-src:///toolkit/modules/TorAndroidIntegration.sys.mjs",
-  TorDomainIsolator:
-    "moz-src:///toolkit/components/tor-launcher/TorDomainIsolator.sys.mjs",
 });
 
 const { debug, warn } = GeckoViewUtils.initLogging("Startup");
@@ -330,8 +328,6 @@ export class GeckoViewStartup {
         this.#migratePreferences();
 
         lazy.TorAndroidIntegration.init();
-        lazy.TorDomainIsolator.init();
-
         Services.obs.addObserver(this, "browser-idle-startup-tasks-finished");
         Services.obs.addObserver(this, "handlersvc-store-initialized");
 
