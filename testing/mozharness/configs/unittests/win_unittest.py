@@ -9,9 +9,9 @@ import sys
 # OS Specifics
 ABS_WORK_DIR = os.path.join(os.getcwd(), "build")
 BINARY_PATH = os.path.join(ABS_WORK_DIR, "firefox", "firefox.exe")
-INSTALLER_PATH = os.path.join(ABS_WORK_DIR, "installer.zip")
-NODEJS_PATH = None
-if "MOZ_FETCHES_DIR" in os.environ:
+INSTALLER_PATH = os.path.join(ABS_WORK_DIR, "installer.exe")
+NODEJS_PATH = os.environ.get("NODEJS_PATH")
+if NODEJS_PATH is None and "MOZ_FETCHES_DIR" in os.environ:
     NODEJS_PATH = os.path.join(os.environ["MOZ_FETCHES_DIR"], "node/node.exe")
 
 REQUIRE_GPU = False
