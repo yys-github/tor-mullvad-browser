@@ -7,8 +7,8 @@ import sys
 
 # OS Specifics
 INSTALLER_PATH = os.path.join(os.getcwd(), "installer.dmg")
-NODEJS_PATH = None
-if "MOZ_FETCHES_DIR" in os.environ:
+NODEJS_PATH = os.environ.get("NODEJS_PATH")
+if NODEJS_PATH is None and "MOZ_FETCHES_DIR" in os.environ:
     NODEJS_PATH = os.path.join(os.environ["MOZ_FETCHES_DIR"], "node/bin/node")
 
 XPCSHELL_NAME = "xpcshell"
