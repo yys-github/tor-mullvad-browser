@@ -55,10 +55,12 @@ home-mode-choice-tor =
 
 # "Connection" refers to the Tor Browser's connection to the Tor network.
 tor-connection-settings-heading = Connection
-# The tooltip text for the "Connection" settings, shown in the preferences side bar.
-# Likely should just be "{ tor-connection-settings-heading }", which will match the displayed text exactly.
-tor-connection-settings-category =
-    .tooltiptext = { tor-connection-settings-heading }
+# "Connection" refers to the Tor Browser's connection to the Tor network.
+tor-connection-settings-pane =
+    .heading = Connection
+# "Connection" refers to the Tor Browser's connection to the Tor network.
+tor-connection-settings-nav-button = Connection
+    .title = Connection
 # -brand-short-name refers to 'Tor Browser', localized.
 tor-connection-overview = { -brand-short-name } routes your traffic over the Tor network, run by thousands of volunteers around the world.
 tor-connection-browser-learn-more-link = Learn more
@@ -67,6 +69,10 @@ tor-connection-automatic-description = Automatically connect to the Tor network 
 tor-connection-quickstart-checkbox =
     .label = Always connect automatically
 
+# "{ -brand-short-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
+tor-connection-internet-status-group =
+    .label = Connection status
+    .description = { -brand-short-name } routes your traffic over the Tor network, run by thousands of volunteers around the world.
 # Prefix before the internet connection status.
 # "Internet" is not a proper noun, but is capitalized because it is the start of a sentence.
 tor-connection-internet-status-label = Internet:
@@ -96,6 +102,10 @@ tor-connection-network-status-blocked = Potentially blocked
 # It will open a page to start connecting to the Tor network.
 # Uses sentence case in English (US).
 tor-connection-network-status-connect-button = Connect
+# Here "Connect" refers to connecting to the Tor network.
+# Uses sentence case in English (US).
+tor-connection-status-connect-button =
+    .label = Connect
 
 ## Tor Bridges Settings.
 
