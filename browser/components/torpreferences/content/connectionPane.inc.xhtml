@@ -10,6 +10,7 @@
     class="subcategory"
     data-category="paneConnection"
     hidden="true"
+    data-srd-groupid="connectionStatus"
   >
     <html:h1 data-l10n-id="tor-connection-settings-heading"></html:h1>
     <description class="description-deemphasized" flex="1">
@@ -67,7 +68,11 @@
   </vbox>
 
   <!-- Quickstart -->
-  <groupbox data-category="paneConnection" hidden="true">
+  <groupbox
+    data-category="paneConnection"
+    hidden="true"
+    data-srd-groupid="connectionStatus"
+  >
     <label>
       <html:h2 data-l10n-id="tor-connection-automatic-heading"></html:h2>
     </label>
@@ -85,7 +90,12 @@
   </groupbox>
 
   <!-- Bridges -->
-  <hbox class="subcategory" data-category="paneConnection" hidden="true">
+  <hbox
+    class="subcategory"
+    data-category="paneConnection"
+    hidden="true"
+    data-srd-groupid="connectionStatus"
+  >
     <html:h1
       id="tor-bridges-subcategory-heading-non-search"
       class="tor-bridges-subcategory-heading tor-focusable-heading"
@@ -98,6 +108,7 @@
     data-category="paneConnection"
     hidden="true"
     aria-labelledby="tor-bridges-subcategory-heading-non-search"
+    data-srd-groupid="connectionStatus"
   >
     <!-- Add a search-header that only appears in search results as a substitute
        - for the hidden h1 element. See tor-browser#43320.
@@ -580,7 +591,12 @@
   </groupbox>
 
   <!-- Advanced -->
-  <hbox class="subcategory" data-category="paneConnection" hidden="true">
+  <hbox
+    class="subcategory"
+    data-category="paneConnection"
+    hidden="true"
+    data-srd-groupid="connectionStatus"
+  >
     <html:h1
       id="tor-advanced-subcategory-heading-non-search"
       data-l10n-id="tor-advanced-settings-heading"
@@ -591,6 +607,7 @@
     data-category="paneConnection"
     hidden="true"
     aria-labelledby="tor-advanced-subcategory-heading-non-search"
+    data-srd-groupid="connectionStatus"
   >
     <!-- Add a search-header that only appears in search results as a substitute
        - for the hidden h1 element. See tor-browser#43320.
