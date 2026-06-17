@@ -24,7 +24,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   Management: "resource://gre/modules/Extension.sys.mjs",
 });
 
-const DEFAULT_HOMEPAGE_URL = "about:home";
+const DEFAULT_HOMEPAGE_URL = "about:tor";
 const HOMEPAGE_OVERRIDE_KEY = "homepage_override";
 const URL_OVERRIDES_TYPE = "url_overrides";
 const NEW_TAB_KEY = "newTabURL";
@@ -489,6 +489,7 @@ function setupHomepageGroup(prefWindow) {
             value: "home",
             l10nId: "home-mode-choice-default-fx",
           },
+          { value: "home", l10nId: "home-mode-choice-tor" },
           { value: "blank", l10nId: "home-mode-choice-blank" },
           { value: "custom", l10nId: "home-mode-choice-custom" },
         ],
@@ -509,6 +510,7 @@ function setupHomepageGroup(prefWindow) {
             value: "home",
             l10nId: "home-mode-choice-default-fx",
           },
+          { value: "home", l10nId: "home-mode-choice-tor" },
           { value: "blank", l10nId: "home-mode-choice-blank" },
         ],
       },
