@@ -135,5 +135,11 @@
   "color/black/alpha/60": "oklch(0 0 0 / 60%)",
   "color/black/alpha/70": "oklch(0 0 0 / 70%)",
   "color/black/alpha/80": "oklch(0 0 0 / 80%)",
-  "color/black/alpha/90": "oklch(0 0 0 / 90%)"
+  "color/black/alpha/90": "oklch(0 0 0 / 90%)",
+  "color/accent/tor/light": "{Colors$color/purple/60}",
+  "color/accent/tor/dark": "{Colors$color/purple/30}",
+  "color/accent/tor/hover/light": "{Colors$color/purple/70}",
+  "color/accent/tor/hover/dark": "{Colors$color/purple/20}",
+  "color/accent/tor/active/light": "{Colors$color/purple/80}",
+  "color/accent/tor/active/dark": "{Colors$color/purple/10}"
 }
