@@ -27,9 +27,8 @@ import {
   getResolvedErrorConfig,
   resolveErrorID,
 } from "chrome://global/content/errors/error-lookup.mjs";
-import { html, ifDefined } from "chrome://global/content/vendor/lit.all.mjs";
+import { html } from "chrome://global/content/vendor/lit.all.mjs";
 import { MozLitElement } from "chrome://global/content/lit-utils.mjs";
-import { NET_ERROR_ILLUSTRATIONS } from "chrome://global/content/errors/net-error-illustrations.mjs";
 import "chrome://global/content/elements/moz-button-group.mjs";
 import "chrome://global/content/elements/moz-button.mjs";
 import "chrome://global/content/elements/moz-support-link.mjs";
@@ -1075,14 +1074,8 @@ export class NetErrorCard extends MozLitElement {
       return null;
     }
 
-    const { bodyTitleL10nId, image } = this.errorConfig;
+    const { bodyTitleL10nId } = this.errorConfig;
     // Drop the Firefox mascot images. tor-browser#44832.
-    // eslint-disable-next-line no-unused-vars
-    const {
-      src,
-      alt = "",
-      className,
-    } = image ?? NET_ERROR_ILLUSTRATIONS.securityError;
     const title = bodyTitleL10nId ?? "fp-certerror-body-title";
 
     return html`<link
