@@ -222,38 +222,8 @@ config = {
             "halt_on_failure": False,
             "enabled": DISABLE_SCREEN_SAVER,
         },
-        {
-            "name": "run mouse & screen adjustment script",
-            "cmd": [
-                sys.executable,
-                os.path.join(
-                    os.getcwd(),
-                    "mozharness",
-                    "external_tools",
-                    "mouse_and_screen_resolution.py",
-                ),
-                "--configuration-file",
-                os.path.join(
-                    os.getcwd(),
-                    "mozharness",
-                    "external_tools",
-                    "machine-configuration.json",
-                ),
-                (
-                    "--platform=win10-vm"
-                    if REQUIRE_GPU and (platform.uname().version == "10.0.19045")
-                    else (
-                        "--platform=win11-hw"
-                        if REQUIRE_GPU
-                        and platform.uname().version in ("10.0.26100", "10.0.26200")
-                        else "--platform=win7"
-                    )
-                ),
-            ],
-            "architectures": ["32bit", "64bit"],
-            "halt_on_failure": True,
-            "enabled": ADJUST_MOUSE_AND_SCREEN,
-        },
+        # tor-browser-bundle-testsuite#40107: Skip environment configurations
+        # from upstream that are unnecessary in our CI setup.
         {
             "name": "enable microphone access for msix",
             "cmd": [
