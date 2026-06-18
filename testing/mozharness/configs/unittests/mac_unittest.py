@@ -3,7 +3,6 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import os
-import sys
 
 # OS Specifics
 INSTALLER_PATH = os.path.join(os.getcwd(), "installer.dmg")
@@ -202,45 +201,8 @@ config = {
             "halt_on_failure": True,
             "enabled": True,
         },
-        {
-            "name": "kill_dock",
-            "cmd": ["killall", "Dock"],
-            "architectures": ["64bit"],
-            "halt_on_failure": True,
-            "enabled": True,
-        },
-        {
-            "name": "verify refresh rate",
-            "cmd": [
-                sys.executable,
-                os.path.join(
-                    os.getcwd(),
-                    "mozharness",
-                    "external_tools",
-                    "macosx_resolution_refreshrate.py",
-                ),
-                "--check=refresh-rate",
-            ],
-            "architectures": ["64bit"],
-            "halt_on_failure": True,
-            "enabled": True,
-        },
-        {
-            "name": "verify screen resolution",
-            "cmd": [
-                sys.executable,
-                os.path.join(
-                    os.getcwd(),
-                    "mozharness",
-                    "external_tools",
-                    "macosx_resolution_refreshrate.py",
-                ),
-                "--check=resolution",
-            ],
-            "architectures": ["64bit"],
-            "halt_on_failure": True,
-            "enabled": True,
-        },
+        # tor-browser-bundle-testsuite#40107: Skip environment configurations
+        # from upstream that are unnecessary in our CI setup.
     ],
     "vcs_output_timeout": 1000,
     "minidump_save_path": "%(abs_work_dir)s/../minidumps",
