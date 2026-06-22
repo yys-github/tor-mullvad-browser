@@ -1,6 +1,5 @@
-package org.mozilla.fenix
+package org.mozilla.fenix.torbrowser
 
-import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
@@ -10,12 +9,11 @@ import org.junit.runner.RunWith
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 
-
 @RunWith(AndroidJUnit4::class)
 class LaunchTest {
 
     @get:Rule
-    var rule: ActivityScenarioRule<HomeActivity> = ActivityScenarioRule(HomeActivity::class.java)
+    var rule = HomeActivityScenarioRule()
 
     @Test
     fun appLaunchesWithoutCrash() {
