@@ -4617,6 +4617,8 @@ void nsFlexContainerFrame::Reflow(nsPresContext* aPresContext,
                                   ReflowOutput& aReflowOutput,
                                   const ReflowInput& aReflowInput,
                                   nsReflowStatus& aStatus) {
+  NormalizeChildLists();
+
   if (IsHiddenByContentVisibilityOfInFlowParentForLayout()) {
     return;
   }
@@ -4635,8 +4637,6 @@ void nsFlexContainerFrame::Reflow(nsPresContext* aPresContext,
   if (IsFrameTreeTooDeep(aReflowInput, aReflowOutput, aStatus)) {
     return;
   }
-
-  NormalizeChildLists();
 
 #ifdef DEBUG
   mDidPushItemsBitMayLie = false;
