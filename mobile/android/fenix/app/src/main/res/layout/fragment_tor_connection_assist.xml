@@ -99,6 +99,19 @@
         android:textSize="14sp"
         app:layout_constraintTop_toBottomOf="@id/title_large_text_view" />
 
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/daemon_failed_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:paddingHorizontal="24dp"
+        android:paddingVertical="16dp"
+        app:layout_constraintBottom_toTopOf="@id/tor_bootstrap_button_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title_large_text_view"
+        app:layout_constraintVertical_bias="0" />
+
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/quickstart_switch"
         android:layout_width="match_parent"
