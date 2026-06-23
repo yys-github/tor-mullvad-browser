@@ -33,6 +33,7 @@ enum class ConnectAssistUiState(
     val torBootstrapButton2ShouldOpenSettings: Boolean = true,
     val wordmarkLogoVisible: Boolean = false,
     val torBootstrapButton2ShouldRestartApp: Boolean = false,
+    val torBootstrapButton1ShouldRestartTor: Boolean = false,
 ) {
     Loading(
         progressBarVisible = false,
@@ -298,5 +299,30 @@ enum class ConnectAssistUiState(
         torBootstrapButton2TextStringResource = crashR.string.mozac_lib_crash_dialog_button_restart,
         torBootstrapButton2ShouldOpenSettings = false,
         torBootstrapButton2ShouldRestartApp = true,
-    )
+    ),
+    ProviderStopped(
+        progressBarVisible = false,
+        backButtonVisible = false,
+        settingsButtonVisible = true,
+        torConnectImageVisible = true,
+        torConnectImageResource = R.drawable.onion_broken,
+        titleLargeTextViewVisible = true,
+        titleLargeTextViewTextStringResource = R.string.connection_assist_provider_stopped_title,
+        titleDescriptionVisible = true,
+        learnMoreStringResource = R.string.connection_assist_final_error_learn_more_link,
+        internetErrorDescription = R.string.connection_assist_provider_stopped_description1,
+        internetErrorDescription1 = R.string.connection_assist_provider_stopped_description2,
+        internetErrorDescription2 = R.string.connection_assist_provider_stopped_description3,
+        titleDescriptionTextStringResource = null,
+        quickstartSwitchVisible = false,
+        regionDropDownVisible = false,
+        torBootstrapButton1Visible = true,
+        torBootstrapButton1TextStringResource = R.string.connection_assist_restart_connection_button,
+        torBootstrapButton1ShouldOpenSettings = false,
+        torBootstrapButton1ShouldRestartTor = true,
+        torBootstrapButton2Visible = false,
+        torBootstrapButton2TextStringResource = null,
+        torBootstrapButton2ShouldOpenSettings = false,
+        torBootstrapButton2ShouldRestartApp = false,
+    ),;
 }
