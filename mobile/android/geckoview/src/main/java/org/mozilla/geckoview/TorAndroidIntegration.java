@@ -57,6 +57,7 @@ public class TorAndroidIntegration implements BundleEventListener {
   private static final String EVENT_BOOTSTRAP_BEGIN_AUTO = "GeckoView:Tor:BootstrapBeginAuto";
   private static final String EVENT_BOOTSTRAP_CANCEL = "GeckoView:Tor:BootstrapCancel";
   private static final String EVENT_START_AGAIN = "GeckoView:Tor:StartAgain";
+  private static final String EVENT_RESTART_PROVIDER = "GeckoView:Tor:RestartProvider";
   private static final String EVENT_QUICKSTART_GET = "GeckoView:Tor:QuickstartGet";
   private static final String EVENT_QUICKSTART_SET = "GeckoView:Tor:QuickstartSet";
   private static final String EVENT_REGION_NAMES_GET = "GeckoView:Tor:RegionNamesGet";
@@ -704,6 +705,10 @@ public class TorAndroidIntegration implements BundleEventListener {
 
   public @NonNull GeckoResult<Void> startAgain() {
     return EventDispatcher.getInstance().queryVoid(EVENT_START_AGAIN);
+  }
+
+  public @NonNull GeckoResult<Void> restartProvider() {
+    return EventDispatcher.getInstance().queryVoid(EVENT_RESTART_PROVIDER);
   }
 
   public interface QuickstartGetter {
