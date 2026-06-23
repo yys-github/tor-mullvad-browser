@@ -13,6 +13,7 @@ public class TorConnectStage {
     public Boolean potentiallyBlocked;
     public Boolean tryAgain;
     public TorBootstrappingStatus bootstrappingStatus;
+    public ProviderStatus providerStatus;
 
     public TorConnectStage(GeckoBundle bundle) {
         name = TorConnectStageName.fromString(bundle.getString("name"));
@@ -26,6 +27,7 @@ public class TorConnectStage {
             error = new TorConnectError(bundle.getBundle("error"));
         }
         bootstrappingStatus = new TorBootstrappingStatus(bundle.getBundle("bootstrappingStatus"));
+        providerStatus = new ProviderStatus(bundle.getBundle("providerStatus"));
     }
 
     public Boolean isBootstrapped() {
