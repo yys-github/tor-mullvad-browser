@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextPaint
@@ -17,9 +18,11 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.StringRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -43,14 +46,22 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ViewCompositionStrategy
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.LinkAnnotation
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.getSystemService
 import androidx.core.view.isEmpty
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -68,6 +79,7 @@ import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.databinding.FragmentTorConnectionAssistBinding
 import org.mozilla.fenix.e2e.SystemInsetsPaddedFragment
+import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.hideToolbar
 
 class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemInsetsPaddedFragment {
@@ -76,6 +88,7 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
     private val progressViewModel: TorBootstrapProgressViewModel by viewModels()
     private val quickstartViewModel: QuickstartViewModel by activityViewModels()
     private val torConnectionAssistViewModel : TorConnectionAssistViewModel by viewModels()
+    private val providerStoppedViewModel : ProviderStoppedViewModel by activityViewModels()
 
     private var _binding: FragmentTorConnectionAssistBinding? = null
     private val binding get() = _binding!!
@@ -103,6 +116,7 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
             Log.d(TAG, "shouldOpenHome = $it")
             if (it) {
                 openHome()
+                torConnectionAssistViewModel.shouldOpenHome.value = false
             }
         }
 
@@ -200,13 +214,142 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
         binding.torConnectImage.setImageResource(screen.torConnectImageResource)
     }
 
+    @Composable
+    fun TextWithClickable(
+        @StringRes mainTextRes: Int,
+        @StringRes clickableTextRes: Int,
+        onClick: () -> Unit,
+        style: TextStyle,
+        tag: String,
+    ) {
+        Text(
+            text = buildAnnotatedString {
+                val clickableText = stringResource(clickableTextRes)
+                val plainText = stringResource(mainTextRes, clickableText)
+                append(plainText)
+                addLink(
+                    clickable = LinkAnnotation.Clickable(
+                        tag = tag,
+                        styles = TextLinkStyles(
+                            style = style.toSpanStyle().copy(textDecoration = TextDecoration.Underline),
+                            pressedStyle = style.toSpanStyle(),
+                        ),
+                        linkInteractionListener = { onClick() }
+                    ),
+                    start = plainText.indexOf(clickableText),
+                    end = plainText.indexOf(clickableText) + clickableText.length,
+                )
+            },
+            style = style,
+        )
+    }
+
+    @Preview
+    @Composable
+    fun DaemonFailedScreen(
+        isDeviceInPowerSaveMode: Boolean = false,
+        maybeConfigIssue: Boolean = false,
+        style: TextStyle = TextStyle(
+            fontSize = 16.sp,
+            lineHeight = 24.sp,
+            fontWeight = FontWeight(400),
+            color = PhotonColors.LightGrey05,
+            letterSpacing = 0.5.sp,
+        )
+    ) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(12.dp, Alignment.CenterVertically),
+        ) {
+            Text(
+                text = stringResource(R.string.connection_assist_provider_stopped_description1),
+                style = style,
+            )
+            Text(
+                text = stringResource(R.string.connection_assist_provider_stopped_description2),
+                style = style.copy(fontWeight = FontWeight.Bold),
+            )
+            if (isDeviceInPowerSaveMode && !maybeConfigIssue) {
+                Row {
+                    Image(
+                        painter = painterResource(R.drawable.bullet_point),
+                        contentDescription = null,
+                        modifier = Modifier.padding(6.dp)
+                    )
+                    Text(
+                        style = style,
+                        text = stringResource(R.string.connection_assist_provider_stopped_description_battery1),
+                    )
+                }
+            }
+            Row {
+                Image(
+                    painter = painterResource(R.drawable.bullet_point),
+                    contentDescription = null,
+                    modifier = Modifier.padding(6.dp)
+                )
+                Text(
+                    style = style,
+                    text = stringResource(R.string.connection_assist_provider_stopped_description3),
+                )
+            }
+            Text(
+                text = stringResource(R.string.connection_assist_provider_stopped_description4),
+                style = style.copy(fontWeight = FontWeight.Bold),
+            )
+            if (isDeviceInPowerSaveMode && !maybeConfigIssue) {
+                Row {
+                    Image(
+                        painter = painterResource(R.drawable.bullet_point),
+                        contentDescription = null,
+                        modifier = Modifier.padding(6.dp),
+                    )
+                    TextWithClickable(
+                        mainTextRes = R.string.connection_assist_provider_stopped_description_turn_off_battery_saver2,
+                        clickableTextRes = R.string.connection_assist_provider_stopped_description_turn_off_battery_saver_clickable,
+                        onClick = { (requireActivity() as HomeActivity).openBatterySaverSettings() },
+                        style = style,
+                        tag = BATTERY_SETTINGS_TAG,
+                    )
+                }
+            } else {
+                Row {
+                    Image(
+                        painter = painterResource(R.drawable.bullet_point),
+                        contentDescription = null,
+                        modifier = Modifier.padding(6.dp),
+                    )
+                    Text(
+                        text = stringResource(R.string.connection_assist_provider_stopped_description5),
+                        style = style,
+                    )
+                }
+            }
+            Text(
+                text = stringResource(R.string.connection_assist_provider_stopped_description6,
+                    stringResource(R.string.connection_assist_provider_stopped_description7)
+                ),
+                style = style,
+            )
+        }
+    }
+
     private fun setTitle(screen: ConnectAssistUiState) {
         binding.titleLargeTextView.visibility =
             if (screen.titleLargeTextViewVisible) View.VISIBLE else View.GONE
         binding.titleLargeTextView.text = getString(screen.titleLargeTextViewTextStringResource)
         binding.titleDescription.visibility =
             if (screen.titleDescriptionVisible) View.VISIBLE else View.GONE
-        if (screen.learnMoreStringResource != null && screen.internetErrorDescription != null) {
+        binding.daemonFailedDescription.visibility = View.GONE
+        if (screen == ConnectAssistUiState.ProviderStopped) {
+            binding.titleDescription.visibility = View.GONE
+            binding.daemonFailedDescription.setContent {
+                DaemonFailedScreen(
+                    isDeviceInPowerSaveMode = requireContext().getSystemService<PowerManager>()?.isPowerSaveMode ?: false,
+                    maybeConfigIssue = providerStoppedViewModel.maybeConfigIssue.collectAsState().value,
+                    )
+            }
+            binding.daemonFailedDescription.visibility = View.VISIBLE
+        } else if (screen.learnMoreStringResource != null && screen.internetErrorDescription != null) {
             val learnMore: String = "" // getString(screen.learnMoreStringResource) tor-browser#43198 uncomment and add back once we have the "Learn more" screens for relevant pages
             val internetErrorDescription: String =
                 if (screen.internetErrorDescription1 == null) {
@@ -434,6 +577,13 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
             setOnClickListener {
                 if (screen.torBootstrapButton1ShouldOpenSettings) {
                     openTorConnectionSettings()
+                } else if (screen.torBootstrapButton1ShouldRestartTor) {
+                    requireContext().components.core.geckoRuntime.torIntegrationController.restartProvider()
+                    backgroundTintList = AppCompatResources.getColorStateList(
+                        requireContext(),
+                        R.color.disabled_connect_button_purple,
+                    )
+                    text = getString(R.string.connection_assist_restarting_connection_button)
                 } else {
                     torConnectionAssistViewModel.handleConnect(screen)
                 }
@@ -561,8 +711,11 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
     }
 
     override fun onBackPressed(): Boolean {
-        torConnectionAssistViewModel.handleBackButtonPressed(requireActivity() as HomeActivity)
-        return true
+        return torConnectionAssistViewModel.handleBackButtonPressed(requireActivity() as HomeActivity)
+    }
+
+    companion object {
+        const val BATTERY_SETTINGS_TAG = "BATTERY_SETTINGS_TAG"
     }
 
 }
