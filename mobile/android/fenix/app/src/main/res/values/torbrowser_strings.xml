@@ -135,6 +135,32 @@
     <string name="connection_assist_back_button_content_description_start_again">Start again</string>
     <!-- Connection assist. This message is shown briefly after the connection to the Tor network completes. -->
     <string name="connection_assist_bootstrap_succeeded_toast_message">Connected to Tor</string>
+    <!-- Connection assist. Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network". -->
+    <string name="connection_assist_provider_stopped_title">The Tor process has stopped working</string>
+    <!-- Connection assist. Here "process" is a noun, referring to the execution of a computer program. -->
+    <string name="connection_assist_provider_stopped_description1">The underlying process that controls your connection to the Tor network has stopped working.</string>
+    <!-- Connection assist. -->
+    <string name="connection_assist_provider_stopped_description2">What could be causing this?</string>
+    <!-- Connection assist. Here "process" is a noun, referring to the execution of a computer program. -->
+    <string name="connection_assist_provider_stopped_description_battery1">Your device has quit the process to save battery.</string>
+    <!-- Connection assist. Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network". -->
+    <string name="connection_assist_provider_stopped_description3">The Tor process has stopped working due to a technical issue.</string>
+    <!-- Connection assist. -->
+    <string name="connection_assist_provider_stopped_description4">What can you do about it?</string>
+    <!-- Connection assist. Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network". -->
+    <string name="connection_assist_provider_stopped_description5">Try restarting the Tor process (this won’t close your browser tabs).</string>
+    <!-- Connection assist.-->
+    <string name="connection_assist_provider_stopped_description_turn_off_battery_saver_clickable">Turn off Battery Saver on your device</string>
+    <!-- Connection assist. "%1$s" will be replaced with connection_assist_provider_stopped_description_turn_off_battery_saver_clickable. Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network". -->
+    <string name="connection_assist_provider_stopped_description_turn_off_battery_saver2">%1$s and try restarting the Tor process (this won’t close your browser tabs).</string>
+    <!-- Connection assist. "%1$s" will be replaced with connection_assist_provider_stopped_description7. -->
+    <string name="connection_assist_provider_stopped_description6">If the problem remains, get in contact with us through one of our %1$s.</string>
+    <!-- Connection assist. -->
+    <string name="connection_assist_provider_stopped_description7">support channels</string>
+    <!-- Connection assist. Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network". -->
+    <string name="connection_assist_restart_connection_button">Restart Tor process</string>
+    <!-- Connection assist. Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network". -->
+    <string name="connection_assist_restarting_connection_button">Restarting Tor process…</string>
 
     <!-- Notification title for closing browser tabs. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
     <string name="notification_close_tor_browser_tabs">Close %s’s tabs?</string>
