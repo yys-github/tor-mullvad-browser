@@ -138,17 +138,18 @@ class TorConnectionAssistViewModel(
         torConnectStage.collect {
             Log.d(TAG, "torConnectStageName: ${it?.name}")
             when (it?.name) {
-                TorConnectStageName.Disabled       -> shouldOpenHome.value = true // TODO use TorConnect.enabled instead to determine this
-                TorConnectStageName.Loading        -> _torConnectScreen.value = ConnectAssistUiState.Loading
-                TorConnectStageName.Start          -> _torConnectScreen.value = ConnectAssistUiState.Start
-                TorConnectStageName.Bootstrapping  -> _torConnectScreen.value = handleBootstrapTrigger(it.bootstrapTrigger)
-                TorConnectStageName.Offline        -> _torConnectScreen.value = ConnectAssistUiState.Offline
-                TorConnectStageName.ChooseRegion   -> _torConnectScreen.value = ConnectAssistUiState.ChooseRegion
-                TorConnectStageName.RegionNotFound -> _torConnectScreen.value = ConnectAssistUiState.RegionNotFound
-                TorConnectStageName.ConfirmRegion  -> _torConnectScreen.value = ConnectAssistUiState.ConfirmRegion
-                TorConnectStageName.FinalError     -> _torConnectScreen.value = ConnectAssistUiState.FinalError
-                TorConnectStageName.Bootstrapped   -> shouldOpenHome.value = true
-                null                               -> {}
+                TorConnectStageName.Disabled        -> shouldOpenHome.value = true // TODO use TorConnect.enabled instead to determine this
+                TorConnectStageName.Loading         -> _torConnectScreen.value = ConnectAssistUiState.Loading
+                TorConnectStageName.ProviderStopped -> _torConnectScreen.value = ConnectAssistUiState.ProviderStopped
+                TorConnectStageName.Start           -> _torConnectScreen.value = ConnectAssistUiState.Start
+                TorConnectStageName.Bootstrapping   -> _torConnectScreen.value = handleBootstrapTrigger(it.bootstrapTrigger)
+                TorConnectStageName.Offline         -> _torConnectScreen.value = ConnectAssistUiState.Offline
+                TorConnectStageName.ChooseRegion    -> _torConnectScreen.value = ConnectAssistUiState.ChooseRegion
+                TorConnectStageName.RegionNotFound  -> _torConnectScreen.value = ConnectAssistUiState.RegionNotFound
+                TorConnectStageName.ConfirmRegion   -> _torConnectScreen.value = ConnectAssistUiState.ConfirmRegion
+                TorConnectStageName.FinalError      -> _torConnectScreen.value = ConnectAssistUiState.FinalError
+                TorConnectStageName.Bootstrapped    -> shouldOpenHome.value = true
+                null                                -> {}
             }
         }
     }
@@ -168,11 +169,12 @@ class TorConnectionAssistViewModel(
         }
     }
 
-    fun handleBackButtonPressed(homeActivity: HomeActivity) {
-        when (torConnectScreen.value) {
-            ConnectAssistUiState.Loading -> homeActivity.shutDown()
-            ConnectAssistUiState.Start   -> homeActivity.shutDown()
-            else                         -> torAndroidIntegration.startAgain()
+    fun handleBackButtonPressed(homeActivity: HomeActivity): Boolean {
+        return when (torConnectScreen.value) {
+            ConnectAssistUiState.Loading         -> homeActivity.shutDown()
+            ConnectAssistUiState.Start           -> homeActivity.shutDown()
+            ConnectAssistUiState.ProviderStopped -> false
+            else                                 -> torAndroidIntegration.startAgain().let { true }
         }
     }
 
