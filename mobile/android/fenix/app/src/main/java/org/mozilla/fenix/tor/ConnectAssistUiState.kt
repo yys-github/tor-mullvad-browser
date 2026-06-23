@@ -3,8 +3,8 @@ package org.mozilla.fenix.tor
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import mozilla.components.lib.crash.R as crashR
 import org.mozilla.fenix.R
+import mozilla.components.lib.crash.R as crashR
 
 enum class ConnectAssistUiState(
     val progressBarVisible: Boolean,
@@ -324,5 +324,5 @@ enum class ConnectAssistUiState(
         torBootstrapButton2TextStringResource = null,
         torBootstrapButton2ShouldOpenSettings = false,
         torBootstrapButton2ShouldRestartApp = false,
-    ),;
+    ),
 }

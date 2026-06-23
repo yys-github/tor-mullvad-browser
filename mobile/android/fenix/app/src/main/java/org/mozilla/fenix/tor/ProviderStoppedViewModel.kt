@@ -27,10 +27,10 @@ class ProviderStoppedViewModel(
                 Log.d(TAG, "ProviderStopped detected")
                 providerStoppedStateFlow.value = true
             }
-            TorConnectStageName.Start -> {
+
+            else -> {
                 providerStoppedStateFlow.value = false
             }
-            else -> {}
         }
 
         _maybeConfigIssue.value = stage.providerStatus.maybeConfigIssue
