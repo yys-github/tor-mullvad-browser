@@ -3,9 +3,10 @@ package org.mozilla.geckoview;
 import java.security.InvalidParameterException;
 
 public enum TorConnectStageName {
-    // These names should match entries from TorConnectStage in TorConnect.sys.mjs at ~ln163.
+    // These names should match entries from TorConnectStage in TorConnect.sys.mjs at ~ln674.
     Disabled("Disabled"),
     Loading("Loading"),
+    ProviderStopped("ProviderStopped"),
     Start("Start"),
     Bootstrapping("Bootstrapping"),
     Offline("Offline"),
