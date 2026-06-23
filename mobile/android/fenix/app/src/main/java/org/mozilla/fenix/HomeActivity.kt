@@ -7,6 +7,7 @@ package org.mozilla.fenix
 import android.annotation.SuppressLint
 import android.app.assist.AssistContent
 import android.app.PendingIntent
+import android.content.ActivityNotFoundException
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
@@ -19,6 +20,7 @@ import android.os.Bundle
 import android.os.StrictMode
 import android.text.format.DateUtils
 import android.util.AttributeSet
+import android.util.Log
 import android.view.ActionMode
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -40,7 +42,9 @@ import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.core.text.layoutDirection
 import androidx.core.view.doOnLayout
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.NavDirections
 import androidx.navigation.fragment.NavHostFragment
@@ -203,6 +207,7 @@ import org.mozilla.fenix.compose.snackbar.SnackbarState
 import org.mozilla.fenix.compose.snackbar.Snackbar
 import org.mozilla.fenix.tor.CustomSecurityLevelViewModel
 import org.mozilla.fenix.tor.TorController
+import org.mozilla.fenix.tor.ProviderStoppedViewModel
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 import org.mozilla.geckoview.TorAndroidIntegration.BootstrapStateChangeListener
 import org.mozilla.geckoview.TorConnectStage
@@ -436,6 +441,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
 
     private var dialog: RedirectDialogFragment? = null
 
+    private val providerStoppedViewModel: ProviderStoppedViewModel by viewModels()
+
     private val urlQuickLoadViewModel: UrlQuickLoadViewModel by viewModels()
 
     private val customSecurityLevelViewModel: CustomSecurityLevelViewModel by viewModels()
@@ -444,6 +451,18 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
     final override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT MOVE ANYTHING ABOVE THIS getProfilerTime CALL.
         val startTimeProfiler = components.core.engine.profiler?.getProfilerTime()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                providerStoppedViewModel.providerStoppedStateFlow.collect { isStopped ->
+                    Log.d("providerStoppedViewModel", "isStopped = $isStopped")
+                    if (isStopped) {
+                        navHost.navController.navigate(NavGraphDirections.actionNavigateToConnectionAssistFromAnywhere())
+                        providerStoppedViewModel.providerStoppedStateFlow.value = false
+                    }
+                }
+            }
+        }
 
         // Setup nimbus-cli tooling. This is a NOOP when launching normally.
         components.nimbus.sdk.initializeTooling(applicationContext, intent)
@@ -1786,5 +1805,15 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
         finishAndRemoveTask()
         components.torController.shutdown()
         exitProcess(0)
+    }
+
+    fun openBatterySaverSettings() {
+        try {
+            startActivity(
+                Intent(android.provider.Settings.ACTION_BATTERY_SAVER_SETTINGS)
+            )
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+        }
     }
 }
