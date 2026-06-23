@@ -216,7 +216,10 @@ import org.mozilla.fenix.utils.AccessibilityUtils.announcePrivateModeForAccessib
 import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.changeAppLauncherIcon
 
+import android.content.ActivityNotFoundException
+import android.util.Log
 import androidx.activity.viewModels
+import androidx.lifecycle.repeatOnLifecycle
 import kotlin.system.exitProcess
 import mozilla.components.browser.engine.gecko.GeckoEngine
 import mozilla.components.support.utils.ext.getParcelableExtraCompat
@@ -224,6 +227,7 @@ import org.mozilla.fenix.compose.core.Action
 import org.mozilla.fenix.compose.snackbar.SnackbarState
 import org.mozilla.fenix.compose.snackbar.Snackbar
 import org.mozilla.fenix.tor.CustomSecurityLevelViewModel
+import org.mozilla.fenix.tor.ProviderStoppedViewModel
 import org.mozilla.fenix.tor.TorConnectionAssistFragmentDirections
 import org.mozilla.fenix.tor.TorController
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
@@ -470,6 +474,8 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
             }
         }
 
+    private val providerStoppedViewModel: ProviderStoppedViewModel by viewModels()
+
     private val urlQuickLoadViewModel: UrlQuickLoadViewModel by viewModels()
 
     private val customSecurityLevelViewModel: CustomSecurityLevelViewModel by viewModels()
@@ -478,6 +484,18 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
     final override fun onCreate(savedInstanceState: Bundle?) {
         // DO NOT MOVE ANYTHING ABOVE THIS getProfilerTime CALL.
         val startTimeProfiler = components.core.engine.profiler?.getProfilerTime()
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                providerStoppedViewModel.providerStoppedStateFlow.collect { isStopped ->
+                    Log.d("providerStoppedViewModel", "isStopped = $isStopped")
+                    if (isStopped) {
+                        navHost.navController.navigate(NavGraphDirections.actionNavigateToConnectionAssistFromAnywhere())
+                        providerStoppedViewModel.providerStoppedStateFlow.value = false
+                    }
+                }
+            }
+        }
 
         components.strictMode.attachListenerToDisablePenaltyDeath(supportFragmentManager)
         MarkersFragmentLifecycleCallbacks.register(supportFragmentManager, components.core.engine)
@@ -1993,5 +2011,15 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
         finishAndRemoveTask()
         components.torController.shutdown()
         exitProcess(0)
+    }
+
+    fun openBatterySaverSettings() {
+        try {
+            startActivity(
+                Intent(android.provider.Settings.ACTION_BATTERY_SAVER_SETTINGS)
+            )
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+        }
     }
 }
