@@ -268,6 +268,7 @@ const CONFIG_PANES = Object.freeze({
       "appearance",
       "browserTheme",
       "browserIconEntry",
+      "letterboxing",
       "windowDensity",
       "relatedSettings",
     ],
