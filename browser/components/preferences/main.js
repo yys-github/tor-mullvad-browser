@@ -10,7 +10,6 @@
 /** @import { HandlerInfoWrapper, ApplicationListItem } from './config/downloads.mjs';*/
 
 /* import-globals-from extensionControlled.js */
-/* import-globals-from letterboxing.js */
 /* import-globals-from preferences.js */
 /* import-globals-from /toolkit/mozapps/preferences/fontbuilder.js */
 /* import-globals-from /browser/base/content/aboutDialog-appUpdater.js */
@@ -841,6 +840,7 @@ var gMainPane = {
     initSettingGroup("tabs");
     initSettingGroup("profiles");
     initSettingGroup("profilePane");
+    initSettingGroup("letterboxing");
 
     setEventListener("manageBrowserLanguagesButton", "command", function () {
       gMainPane.showBrowserLanguagesSubDialog({ search: false });
@@ -856,8 +856,6 @@ var gMainPane = {
 
     // Listen for window unload so we can remove our preference observers.
     window.addEventListener("unload", this);
-
-    gLetterboxingPrefs.init();
 
     // Notify observers that the UI is now ready
     Services.obs.notifyObservers(window, "main-pane-loaded");
