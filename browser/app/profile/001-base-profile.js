@@ -476,6 +476,9 @@ pref("dom.push.enabled", false);
 // See tor-browser#18801.
 pref("dom.push.serverURL", "");
 
+// tor-browser#45072: Disable XSLT even before Mozilla does it for Firefox.
+pref("dom.xslt.enabled", false);
+
 // Fingerprinting
 // tor-browser#41797: For release builds, lock RFP
 // tor-browser#42125: Set (and lock in release) also exempted domains.
