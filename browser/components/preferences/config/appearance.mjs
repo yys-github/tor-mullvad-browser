@@ -9,6 +9,11 @@ const { AppConstants } = ChromeUtils.importESModule(
   "resource://gre/modules/AppConstants.sys.mjs"
 );
 
+ChromeUtils.importESModule(
+  "chrome://browser/content/preferences/config/letterboxing.mjs",
+  { global: "current" }
+);
+
 const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
   WindowsVersionInfo:
