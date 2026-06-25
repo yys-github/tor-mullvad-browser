@@ -41,7 +41,7 @@ DIRS += [
     "enterprisepolicies",
     "extensions",
     # Exclude "genai" component. tor-browser#44045.
-    # Exclude "ipprotection" component. tor-browser#44528.
+    "ipprotection",
     "messagepreview",
     "migration",
     "mozcachedohttp",
