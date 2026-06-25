@@ -6,10 +6,6 @@
 import { XPCOMUtils } from "resource://gre/modules/XPCOMUtils.sys.mjs";
 
 const lazy = {};
-ChromeUtils.defineESModuleGetters(lazy, {
-  resolveChatModelChoice:
-    "moz-src:///browser/components/aiwindow/models/Utils.sys.mjs",
-});
 
 XPCOMUtils.defineLazyPreferenceGetter(
   lazy,
@@ -69,7 +65,8 @@ export async function getModelForChoice(choiceId = lazy.modelChoice) {
     return null;
   }
 
-  const resolved = await lazy.resolveChatModelChoice(choiceId);
+  // tor-browser#45016: EngineProcess.sys.mjs is not available for us.
+  const resolved = { model: "unknown", ownerName: "unknown" };
   if (resolved) {
     return resolved;
   }
