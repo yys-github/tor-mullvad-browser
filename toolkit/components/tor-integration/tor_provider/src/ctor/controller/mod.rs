@@ -7,6 +7,8 @@ mod commands;
 mod controller;
 mod error;
 mod parsers;
+mod types;
 
 pub use controller::*;
 pub use error::*;
+pub use types::*;
