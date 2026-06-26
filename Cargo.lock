@@ -8175,8 +8175,11 @@ version = "0.1.0"
 dependencies = [
  "bytes",
  "hex",
+ "lazy_static",
  "log",
  "memchr",
+ "regex",
+ "serde",
  "thiserror 2.0.12",
 ]
 
