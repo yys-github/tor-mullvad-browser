@@ -4,6 +4,7 @@
 // copied, modified, or distributed except according to those terms.
 
 mod ack;
+mod bridge_line;
 mod escape;
 mod unescape;
 
@@ -11,5 +12,6 @@ mod unescape;
 mod tests;
 
 pub use ack::parse_ack;
+pub use bridge_line::parse_bridge_line;
 pub use escape::tor_escape_into;
 pub use unescape::tor_unescape;
