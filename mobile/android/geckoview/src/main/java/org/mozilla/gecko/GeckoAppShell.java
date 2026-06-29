@@ -1761,6 +1761,11 @@ public class GeckoAppShell {
     return id == 0 ? info.nonLocalizedLabel.toString() : context.getString(id);
   }
 
+  @WrapForJNI
+  public static String getApkPath() {
+    return getApplicationContext().getPackageResourcePath();
+  }
+
   @WrapForJNI(calledFrom = "gecko")
   private static int getMemoryUsage(final String stateName) {
     final Debug.MemoryInfo memInfo = new Debug.MemoryInfo();
