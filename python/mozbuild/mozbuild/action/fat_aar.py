@@ -133,7 +133,9 @@ def fat_aar(
             jar_finder = JarFinder(
                 aar_file.file.filename, JarReader(fileobj=aar_file.open())
             )
-            for path, fileobj in UnpackFinder(jar_finder):
+            for path, fileobj in UnpackFinder(
+                jar_finder, omnijar_name="assets/omni.ja.xz"
+            ):
                 path_with_prefix = mozpath.join(aar_prefix, path)
 
                 # Native libraries go straight through.
@@ -178,6 +180,7 @@ def fat_aar(
         "geckoview/**/*.properties",
         "appservices/AndroidManifest.xml",
         "appservices/classes.jar!/org/mozilla/appservices/**/BuildConfig.class",
+        "geckoview/assets/omni.ja.sha256",
     }
 
     not_allowed = OrderedDict()
