@@ -82,8 +82,18 @@ android {
         buildConfigField 'boolean', 'MOZ_ANDROID_CONTENT_SERVICE_ISOLATED_PROCESS', mozconfig.substs.MOZ_ANDROID_CONTENT_SERVICE_ISOLATED_PROCESS ? 'true' : 'false';
     }
 
+    aaptOptions {
+        noCompress 'xz'
+    }
+
     lint {
         abortOnError = false
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 
     sourceSets {
@@ -194,6 +204,7 @@ dependencies {
     implementation libs.androidx.lifecycle.common
     implementation libs.androidx.lifecycle.process
     implementation libs.play.services.fido
+    implementation "org.tukaani:xz:1.12"
     implementation "org.yaml:snakeyaml:2.2"
 
     if (mozconfig.substs.MOZ_ANDROID_HLS_SUPPORT) {
