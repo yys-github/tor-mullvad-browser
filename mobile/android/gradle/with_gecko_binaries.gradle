@@ -23,10 +23,27 @@ ext.configureVariantWithGeckoBinaries = { variant ->
         // the moz.build system and should never be re-entrant in this way.
         def assetGenTask = tasks.findByName("generate${variant.name.capitalize()}Assets")
         def jniLibFoldersTask = tasks.findByName("merge${variant.name.capitalize()}JniLibFolders")
+
+        def omnijarName = "omni.ja"
+        def assetsDir = "${topobjdir}/dist/geckoview/assets"
+        def compressOmnijarTask = tasks.register("compressOmnijar${variant.name.capitalize()}", Exec) {
+            inputs.file("${assetsDir}/${omnijarName}")
+            outputs.files(
+                "${assetsDir}/${omnijarName}.xz",
+                "${assetsDir}/${omnijarName}.sha256"
+            )
+            commandLine "sh",
+                "${topsrcdir}/mobile/android/geckoview/omnijar_repack.sh",
+                "${assetsDir}/${omnijarName}",
+                "${assetsDir}/${omnijarName}.xz",
+                "${assetsDir}/${omnijarName}.sha256"
+        }
+
         if (!mozconfig.substs.MOZILLA_OFFICIAL && !mozconfig.substs.ENABLE_MOZSEARCH_PLUGIN) {
-            assetGenTask.dependsOn rootProject.machStagePackage
+            compressOmnijarTask.configure { dependsOn rootProject.machStagePackage }
             jniLibFoldersTask.dependsOn rootProject.machStagePackage
         }
+        assetGenTask.dependsOn compressOmnijarTask
     }
 }
 
