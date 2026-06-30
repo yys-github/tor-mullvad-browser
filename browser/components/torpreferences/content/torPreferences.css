@@ -63,11 +63,11 @@ button.spoof-button-disabled {
 }
 
 #network-status-internet-area .network-status-icon {
-  content: url("chrome://browser/content/torpreferences/network.svg");
+  content: url("chrome://browser/content/torconnect/network.svg");
 }
 
 #network-status-internet-area.status-offline .network-status-icon {
-  content: url("chrome://browser/content/torpreferences/network-broken.svg");
+  content: url("chrome://browser/content/torconnect/network-broken.svg");
 }
 
 #network-status-tor-area .network-status-icon {
@@ -665,7 +665,7 @@ button.spoof-button-disabled {
 }
 
 #tor-bridges-provider-icon-web {
-  content: url("chrome://browser/content/torpreferences/network.svg");
+  content: url("chrome://browser/content/torconnect/network.svg");
 }
 
 #tor-bridges-provider-icon-email {
