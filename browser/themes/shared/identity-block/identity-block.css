@@ -237,15 +237,15 @@
 #identity-box[pageproxystate="valid"].onionCertUserOverridden #identity-icon {
   list-style-image: url(chrome://global/skin/icons/onion-warning.svg);
   visibility: visible;
-  /* onion-warning includes another context-stroke color. Here we want it to
-   * match the context-fill color, which should be currentColor. */
-  -moz-context-properties: fill, fill-opacity, stroke;
-  stroke: currentColor;
 }
 
 #identity-box[pageproxystate="valid"].onionMixedActiveContent #identity-icon {
   list-style-image: url(chrome://global/skin/icons/onion-slash.svg);
   visibility: visible;
+  /* onion-slash includes another context-stroke color. */
+  -moz-context-properties: fill, fill-opacity, stroke;
+  /* Match the slash in security-broken.svg. */
+  stroke: #f90d3f;
 }
 
 #permissions-granted-icon {
