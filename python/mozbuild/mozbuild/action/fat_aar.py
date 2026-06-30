@@ -90,7 +90,7 @@ def fat_aar(distdir, zip_paths, no_process=False, no_compatibility_check=False):
         jar_finder = JarFinder(
             aar_file.file.filename, JarReader(fileobj=aar_file.open())
         )
-        for path, fileobj in UnpackFinder(jar_finder):
+        for path, fileobj in UnpackFinder(jar_finder, omnijar_name="assets/omni.ja.xz"):
             # Native libraries go straight through.
             if mozpath.match(path, "jni/**"):
                 copier.add(path, fileobj)
@@ -130,6 +130,7 @@ def fat_aar(distdir, zip_paths, no_process=False, no_compatibility_check=False):
         "**/*.ftl",
         "**/*.dtd",
         "**/*.properties",
+        "assets/omni.ja.sha256",
     }
 
     not_allowed = OrderedDict()

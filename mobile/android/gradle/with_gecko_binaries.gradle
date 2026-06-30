@@ -20,12 +20,30 @@ ext.configureVariantWithGeckoBinaries = { variantName ->
     // the native binaries.  To do this, the Gradle build calls out to the
     // moz.build system, which can be re-entrant.  Official builds are driven by
     // the moz.build system and should never be re-entrant in this way.
+    def omnijarName = "omni.ja"
+    def assetsDir = "${topobjdir}/dist/geckoview/assets"
+    def compressOmnijarTask = tasks.register("compressOmnijar${variantName.capitalize()}", Exec) {
+        inputs.file("${assetsDir}/${omnijarName}")
+        outputs.files(
+            "${assetsDir}/${omnijarName}.xz",
+            "${assetsDir}/${omnijarName}.sha256"
+        )
+        commandLine "sh",
+            "${topsrcdir}/mobile/android/geckoview/omnijar_repack.sh",
+            "${assetsDir}/${omnijarName}",
+            "${assetsDir}/${omnijarName}.xz",
+            "${assetsDir}/${omnijarName}.sha256"
+    }
+
+    // `onVariants` runs before AGP creates these tasks, so defer the wiring with `configureEach`.
+    tasks.matching { it.name == "generate${variantName.capitalize()}Assets" }.configureEach {
+        dependsOn compressOmnijarTask
+    }
+
     if (!mozconfig.substs.MOZILLA_OFFICIAL && !mozconfig.substs.ENABLE_MOZSEARCH_PLUGIN) {
-        // `onVariants` runs before AGP creates these tasks, so defer the wiring with `configureEach`.
-        ["generate${variantName.capitalize()}Assets", "merge${variantName.capitalize()}JniLibFolders"].each { taskName ->
-            tasks.matching { it.name == taskName }.configureEach {
-                dependsOn rootProject.machStagePackage
-            }
+        compressOmnijarTask.configure { dependsOn rootProject.machStagePackage }
+        tasks.matching { it.name == "merge${variantName.capitalize()}JniLibFolders" }.configureEach {
+            dependsOn rootProject.machStagePackage
         }
     }
 }
