@@ -12,8 +12,9 @@
   align-self: start;
   width: var(--icon-size-large);
   height: var(--icon-size-large);
-  -moz-context-properties: fill;
+  -moz-context-properties: fill, stroke;
   fill: var(--icon-color);
+  stroke: var(--icon-color-warning);
   margin-block-start: var(--space-xsmall);
   margin-inline-end: var(--space-large);
 }
@@ -128,19 +129,19 @@
 }
 
 #security-level-current[data-current-level="standard"] .security-level-icon {
-  content: url("chrome://browser/content/securitylevel/securityLevelIcon.svg#standard");
+  content: url("chrome://browser/content/securitylevel/security-level-standard.svg");
 }
 
 #security-level-current[data-current-level="safer"] .security-level-icon {
-  content: url("chrome://browser/content/securitylevel/securityLevelIcon.svg#safer");
+  content: url("chrome://browser/content/securitylevel/security-level-safer.svg");
 }
 
 #security-level-current[data-current-level="safest"] .security-level-icon {
-  content: url("chrome://browser/content/securitylevel/securityLevelIcon.svg#safest");
+  content: url("chrome://browser/content/securitylevel/security-level-safest.svg");
 }
 
 #security-level-current[data-current-level="custom"] .security-level-icon {
-  content: url("chrome://browser/content/securitylevel/securityLevelIcon.svg#standard_custom");
+  content: url("chrome://browser/content/securitylevel/security-level-custom.svg");
 }
 
 /* Tweak security level dialog. */

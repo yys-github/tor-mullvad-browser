@@ -27,8 +27,7 @@
   /* This icon is meant to act as background, so disable dragging or interfering
    * with clicks. */
   pointer-events: none;
-  -moz-context-properties: fill, fill-opacity;
-  fill-opacity: 1;
+  -moz-context-properties: fill;
   fill: var(--card-border-color);
 }
 
@@ -38,15 +37,15 @@
 }
 
 #securityLevel-panel:is([level="standard"], [level="custom"]) #securityLevel-background-image {
-  content: url("chrome://browser/content/securitylevel/securityLevelIcon.svg#standard");
+  content: url("chrome://browser/content/securitylevel/security-level-standard.svg");
 }
 
 #securityLevel-panel[level="safer"] #securityLevel-background-image {
-  content: url("chrome://browser/content/securitylevel/securityLevelIcon.svg#safer");
+  content: url("chrome://browser/content/securitylevel/security-level-safer.svg");
 }
 
 #securityLevel-panel[level="safest"] #securityLevel-background-image {
-  content: url("chrome://browser/content/securitylevel/securityLevelIcon.svg#safest");
+  content: url("chrome://browser/content/securitylevel/security-level-safest.svg");
 }
 
 #securityLevel-background p {
