@@ -193,7 +193,7 @@ android {
 
         // manifest.template.json is converted to manifest.json at build time.
         // No need to package the template in the APK.
-        ignoreAssetsPattern = "manifest.template.json"
+        ignoreAssetsPattern = "manifest.template.json:omni.ja"
     }
 
     testOptions {
