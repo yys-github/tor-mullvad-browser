@@ -3,6 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import codecs
+import lzma
 from urllib.parse import urlparse
 
 import mozpack.path as mozpath
@@ -143,7 +144,11 @@ class UnpackFinder(BaseFinder):
         Return a JarReader for the given BaseFile instance, keeping a log of
         the preloaded entries it has.
         """
-        jar = JarReader(fileobj=file.open())
+        if path.endswith(".xz"):
+            f = lzma.open(file.open())
+        else:
+            f = file.open()
+        jar = JarReader(fileobj=f)
         self.compressed = max(self.compressed, jar.compression)
         if jar.last_preloaded:
             jarlog = list(jar.entries.keys())
@@ -158,8 +163,17 @@ class UnpackFinder(BaseFinder):
         """
         Return whether the given BaseFile looks like a ZIP/Jar.
         """
+
+        def check_header(header):
+            return len(header) == 8 and (header[0:2] == b"PK" or header[4:6] == b"PK")
+
         header = file.open().read(8)
-        return len(header) == 8 and (header[0:2] == b"PK" or header[4:6] == b"PK")
+        if check_header(header):
+            return True
+        if header[0:6] == b"\xfd7zXZ\x00":
+            with lzma.open(file.open()) as f:
+                return check_header(f.read(8))
+        return False
 
     def _unjarize(self, entry, relpath):
         """
