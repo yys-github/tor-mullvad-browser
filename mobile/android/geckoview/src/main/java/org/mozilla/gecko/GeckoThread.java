@@ -19,6 +19,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -30,6 +32,7 @@ import org.mozilla.gecko.annotation.WrapForJNI;
 import org.mozilla.gecko.mozglue.GeckoLoader;
 import org.mozilla.gecko.process.MemoryController;
 import org.mozilla.gecko.util.GeckoBundle;
+import org.mozilla.gecko.util.XzExtractor;
 import org.mozilla.gecko.util.ThreadUtils;
 import org.mozilla.geckoview.BuildConfig;
 import org.mozilla.geckoview.GeckoResult;
@@ -327,6 +330,15 @@ public class GeckoThread extends Thread {
     loadGeckoLibs(context);
   }
 
+  private static File extractOmnijar(final Context context) throws IOException {
+    return new XzExtractor(
+            context,
+            "omni.ja",
+            context.getNoBackupFilesDir(),
+            "omni.ja")
+        .extract();
+  }
+
   private String[] getMainProcessArgs() {
     final Context context = GeckoAppShell.getApplicationContext();
     final ArrayList<String> args = new ArrayList<>();
@@ -335,8 +347,13 @@ public class GeckoThread extends Thread {
     args.add(context.getPackageName());
 
     if (!mInitInfo.xpcshell) {
-      args.add("-greomni");
-      args.add(context.getPackageResourcePath());
+      try {
+        args.add("-greomni");
+        String greomni = extractOmnijar(context).getAbsolutePath();
+        args.add(greomni);
+      } catch (final IOException e) {
+        throw new RuntimeException("Failed to extract omnijar", e);
+      }
     }
 
     if (mInitInfo.args != null) {

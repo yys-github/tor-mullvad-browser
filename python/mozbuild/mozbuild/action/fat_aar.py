@@ -90,7 +90,7 @@ def fat_aar(distdir, zip_paths, no_process=False, no_compatibility_check=False):
         jar_finder = JarFinder(
             aar_file.file.filename, JarReader(fileobj=aar_file.open())
         )
-        for path, fileobj in UnpackFinder(jar_finder):
+        for path, fileobj in UnpackFinder(jar_finder, omnijar_name="assets/omni.ja.xz"):
             path_with_prefix = mozpath.join("geckoview", path)
 
             # Native libraries go straight through.
@@ -132,6 +132,7 @@ def fat_aar(distdir, zip_paths, no_process=False, no_compatibility_check=False):
         "geckoview/**/*.ftl",
         "geckoview/**/*.dtd",
         "geckoview/**/*.properties",
+        "geckoview/assets/omni.ja.sha256",
     }
 
     not_allowed = OrderedDict()
