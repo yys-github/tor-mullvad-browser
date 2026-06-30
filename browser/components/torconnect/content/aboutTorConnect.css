@@ -230,8 +230,7 @@ form#locationDropdown select {
   height: 52px;
   margin-inline-end: var(--space-xlarge);
   content: url("chrome://browser/content/torconnect/tor-connect.svg");
-  -moz-context-properties: stroke, fill, fill-opacity;
-  fill-opacity: 1;
+  -moz-context-properties: stroke, fill;
   fill: var(--icon-color);
   stroke: var(--icon-color);
   /* Make non-interactive (non-draggable). */
@@ -239,7 +238,7 @@ form#locationDropdown select {
 }
 
 .torconnect-icon.offline-icon {
-  content: url("chrome://browser/content/torconnect/connection-failure.svg");
+  content: url("chrome://browser/content/torconnect/network-broken.svg");
 }
 
 .torconnect-icon.assist-icon {
