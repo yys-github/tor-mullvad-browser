@@ -60,8 +60,6 @@ const lazy = XPCOMUtils.declareLazy({
     default: true,
   },
   SitePermissions: "resource:///modules/SitePermissions.sys.mjs",
-  SponsorProtection:
-    "moz-src:///browser/components/newtab/SponsorProtection.sys.mjs",
   TabCrashHandler: "resource:///modules/ContentCrashHandlers.sys.mjs",
   tabLocalization: () =>
     new Localization(
@@ -9468,10 +9466,6 @@ export class Tabbrowser {
         debugStringArray.push("[A]");
       }
 
-      if (lazy.SponsorProtection.isProtectedBrowser(tab.linkedBrowser)) {
-        debugStringArray.push("[S]");
-      }
-
       if (debugStringArray.length) {
         labelArray.push(debugStringArray.join(" "));
       }
@@ -10898,10 +10892,6 @@ let URILoadingWrapper = {
     { loadFlags, globalHistoryOptions }
   ) {
     if (globalHistoryOptions?.triggeringSponsoredURL) {
-      if (globalHistoryOptions.triggeringSource == "newtab") {
-        lazy.SponsorProtection.addProtectedBrowser(browser);
-      }
-
       try {
         // Browser may access URL after fixing it up, then store the URL into DB.
         // To match with it, fix the link up explicitly.
@@ -10918,8 +10908,6 @@ let URILoadingWrapper = {
           globalHistoryOptions.triggeringSource
         );
       } catch (e) {}
-    } else {
-      lazy.SponsorProtection.removeProtectedBrowser(browser);
     }
 
     if (globalHistoryOptions?.triggeringSearchEngine) {
