@@ -22,6 +22,7 @@
 #define ABOUT_WELCOME_CHROME_URL \
   "chrome://browser/content/aboutwelcome/aboutwelcome.html"
 #define ABOUT_HOME_URL "about:home"
+#define BASE_BROWSER_HOME_PAGE_URL "chrome://browser/content/blanktab.html"
 
 namespace mozilla {
 namespace browser {
@@ -33,6 +34,12 @@ struct RedirEntry {
   const char* url;
   uint32_t flags;
 };
+
+static const uint32_t BASE_BROWSER_HOME_PAGE_FLAGS =
+    nsIAboutModule::URI_MUST_LOAD_IN_CHILD |
+    nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS |
+    nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
+    nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::IS_SECURE_CHROME_UI;
 
 /*
   Entries which do not have URI_SAFE_FOR_UNTRUSTED_CONTENT will run with chrome
@@ -76,6 +83,7 @@ static const RedirEntry kRedirMap[] = {
          nsIAboutModule::IS_SECURE_CHROME_UI | nsIAboutModule::ALLOW_SCRIPT |
          nsIAboutModule::URI_MUST_LOAD_IN_CHILD |
          nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS},
+    {"home", "about:blank", BASE_BROWSER_HOME_PAGE_FLAGS},
     {"logins", "chrome://browser/content/aboutlogins/aboutLogins.html",
      nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::URI_MUST_LOAD_IN_CHILD |
          nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS |
@@ -93,6 +101,8 @@ static const RedirEntry kRedirMap[] = {
          nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS |
          nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
          nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::HIDE_FROM_ABOUTABOUT},
+    {"newtab", "chrome://browser/content/blanktab.html",
+     BASE_BROWSER_HOME_PAGE_FLAGS},
 // Drop about:opentabs. tor-browser#44431.
 #ifndef BASE_BROWSER_VERSION
     {"opentabs", "chrome://browser/content/tabbrowser/opentabs.html",
@@ -103,10 +113,7 @@ static const RedirEntry kRedirMap[] = {
      nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::IS_SECURE_CHROME_UI},
     {"preferences", "chrome://browser/content/preferences/preferences.xhtml",
      nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::IS_SECURE_CHROME_UI},
-    {"privatebrowsing", "chrome://browser/content/aboutPrivateBrowsing.html",
-     nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
-         nsIAboutModule::URI_MUST_LOAD_IN_CHILD | nsIAboutModule::ALLOW_SCRIPT |
-         nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS},
+    {"privatebrowsing", "about:blank", BASE_BROWSER_HOME_PAGE_FLAGS},
     {"profiling",
      "chrome://devtools/content/performance-new/aboutprofiling/index.html",
      nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::IS_SECURE_CHROME_UI},
@@ -141,11 +148,7 @@ static const RedirEntry kRedirMap[] = {
          nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::HIDE_FROM_ABOUTABOUT},
     {"unloads", "chrome://browser/content/tabunloader/aboutUnloads.html",
      nsIAboutModule::ALLOW_SCRIPT},
-    {"welcome", "about:blank",
-     nsIAboutModule::URI_MUST_LOAD_IN_CHILD |
-         nsIAboutModule::URI_CAN_LOAD_IN_PRIVILEGEDABOUT_PROCESS |
-         nsIAboutModule::URI_SAFE_FOR_UNTRUSTED_CONTENT |
-         nsIAboutModule::ALLOW_SCRIPT},
+    {"welcome", "about:blank", BASE_BROWSER_HOME_PAGE_FLAGS},
     {"welcomeback", "chrome://browser/content/aboutWelcomeBack.xhtml",
      nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::HIDE_FROM_ABOUTABOUT |
          nsIAboutModule::IS_SECURE_CHROME_UI},
@@ -230,13 +233,11 @@ AboutRedirector::NewChannel(nsIURI* aURI, nsILoadInfo* aLoadInfo,
     if (!strcmp(path.get(), redir.id)) {
       nsAutoCString url;
 
-      if (path.EqualsLiteral("welcome")) {
-        NimbusFeatures::RecordExposureEvent("aboutwelcome"_ns, true);
-        if (NimbusFeatures::GetBool("aboutwelcome"_ns, "enabled"_ns, true)) {
-          url.AssignASCII(ABOUT_WELCOME_CHROME_URL);
-        } else {
-          url.AssignASCII(ABOUT_HOME_URL);
-        }
+      if (path.EqualsLiteral("welcome") || path.EqualsLiteral("home") ||
+          path.EqualsLiteral("privatebrowsing") ||
+          (path.EqualsLiteral("newtab") &&
+           StaticPrefs::browser_newtabpage_enabled())) {
+        url.AssignASCII(BASE_BROWSER_HOME_PAGE_URL);
       }
 
       if (path.EqualsLiteral("referrals")) {
