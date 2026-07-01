@@ -247,7 +247,7 @@ body:not(.show-survey) #survey {
     /* Same as --text-color when "prefers-color-scheme: light" */
     --text-color-light: var(--color-gray-100);
     /* Same as --text-color when "prefers-color-scheme: dark" */
-    --text-color-dark: var(--color-gray-05);
+    --text-color-dark: var(--color-gray-0);
   }
 
   #tor-check {
