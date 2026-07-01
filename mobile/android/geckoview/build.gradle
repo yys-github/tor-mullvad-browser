@@ -165,6 +165,10 @@ android {
         singleVariant('debug')
     }
 
+    androidResources {
+        ignoreAssetsPattern "omni.ja"
+    }
+
     namespace = 'org.mozilla.geckoview'
 }
 
