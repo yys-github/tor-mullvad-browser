@@ -357,6 +357,8 @@ const DEFAULT_ACTIONS = {
     icon: "chrome://global/skin/icons/experiments.svg",
     label: "quickactions-labs",
     onPick: openUrlFun("about:preferences#experimental"),
+    // Disabled in base browser since labs is disabled. tor-browser#44883.
+    disabled: () => true,
   },
 };
 
