@@ -43,7 +43,7 @@ DIRS += [
     "extensions",
     "firefoxview",
     "genai",
-    "ipprotection",
+    # Exclude "ipprotection" component. tor-browser#44528.
     "messagepreview",
     "migration",
     "mozcachedohttp",
