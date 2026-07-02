@@ -945,7 +945,7 @@ features:
           opening_animation_enabled: false
       - channel: nightly
         value:
-          opening_animation_enabled: true
+          opening_animation_enabled: false
 
   tab-groups:
     description: Control the visibility of the tab groups feature.
@@ -961,10 +961,10 @@ features:
           enabled: false
       - channel: beta
         value:
-          enabled: true
+          enabled: false
       - channel: nightly
         value:
-          enabled: true
+          enabled: false
   tab-groups-drag-and-drop:
     description: Control the visibility of drag and drop for tab groups.
     variables:
@@ -979,10 +979,10 @@ features:
           enabled: false
       - channel: beta
         value:
-          enabled: true
+          enabled: false
       - channel: nightly
         value:
-          enabled: true
+          enabled: false
   tab-groups-onboarding:
     description: Control the visibility of onboarding for tab groups.
     variables:
