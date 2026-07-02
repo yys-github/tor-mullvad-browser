@@ -20,9 +20,9 @@ import android.widget.ImageView
 import android.widget.LinearLayout.LayoutParams
 import android.widget.TextView
 import androidx.annotation.VisibleForTesting
-import androidx.appcompat.app.AppCompatDialogFragment
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toDrawable
+import mozilla.components.support.base.android.NoObscuredTouchesDialogFragment
 import mozilla.components.support.base.log.logger.Logger
 import mozilla.components.support.ktx.util.PromptAbuserDetector
 
@@ -42,7 +42,7 @@ private const val KEY_IS_NOTIFICATION_REQUEST = "KEY_IS_NOTIFICATION_REQUEST"
 private const val DEFAULT_VALUE = Int.MAX_VALUE
 private const val KEY_PERMISSION_ID = "KEY_PERMISSION_ID"
 
-internal open class SitePermissionsDialogFragment : AppCompatDialogFragment() {
+internal open class SitePermissionsDialogFragment : NoObscuredTouchesDialogFragment() {
 
     private val logger = Logger("SitePermissionsDialogFragment")
 
