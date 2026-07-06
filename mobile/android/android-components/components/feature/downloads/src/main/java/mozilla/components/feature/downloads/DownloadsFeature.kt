@@ -122,6 +122,8 @@ value class OpenFileCallback(val value: () -> Unit)
  * manager is provided, a dialog will be shown before every download.
  * @property promptsStyling styling properties for the dialog.
  * @property onDownloadStartedListener a callback invoked when a download is started.
+ * @property dismissCustomFirstPartyDownloadDialog A callback invoked when the custom first party
+ * download dialog should be dismissed.
  * @property shouldForwardToThirdParties Indicates if downloads should be forward to third party apps,
  * if there are multiple apps a chooser dialog will shown.
  * @property customFirstPartyDownloadDialog An optional delegate for showing a dialog for a download
@@ -145,6 +147,7 @@ class DownloadsFeature(
     private val fragmentManager: FragmentManager? = null,
     private val promptsStyling: PromptsStyling? = null,
     private val onDownloadStartedListener: ((String) -> Unit) = {},
+    private val dismissCustomFirstPartyDownloadDialog: () -> Unit = {},
     private val shouldForwardToThirdParties: () -> Boolean = { false },
     private val customFirstPartyDownloadDialog: (
         (
@@ -555,6 +558,7 @@ class DownloadsFeature(
     internal fun dismissAllDownloadDialogs() {
         findPreviousDownloadDialogFragment()?.dismiss()
         findPreviousAppDownloaderDialogFragment()?.dismiss()
+        dismissCustomFirstPartyDownloadDialog.invoke()
     }
 
     private val ActivityInfo.identifier: String get() = packageName + name
