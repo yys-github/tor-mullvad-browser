@@ -12,6 +12,8 @@ import { TorProviderTopics } from "moz-src:///toolkit/components/tor-launcher/To
 const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
   FileUtils: "resource://gre/modules/FileUtils.sys.mjs",
+  OxidizedControlPort:
+    "moz-src:///toolkit/components/tor-integration/OxidizedControlPort.sys.mjs",
   TorController:
     "moz-src:///toolkit/components/tor-launcher/TorControlPort.sys.mjs",
   TorProcess: "moz-src:///toolkit/components/tor-launcher/TorProcess.sys.mjs",
@@ -799,12 +801,18 @@ export class TorProvider extends TorProviderBase {
    */
   async #openControlPort() {
     let controlPort;
+    const controllerClass = Services.prefs.getBoolPref(
+      "browser.tor_provider.oxidize",
+      false
+    )
+      ? lazy.OxidizedControlPort
+      : lazy.TorController;
     if (this.#controlPortSettings.ipcFile) {
-      controlPort = lazy.TorController.fromIpcFile(
+      controlPort = controllerClass.fromIpcFile(
         this.#controlPortSettings.ipcFile
       );
     } else {
-      controlPort = lazy.TorController.fromSocketAddress(
+      controlPort = controllerClass.fromSocketAddress(
         this.#controlPortSettings.host,
         this.#controlPortSettings.port
       );
