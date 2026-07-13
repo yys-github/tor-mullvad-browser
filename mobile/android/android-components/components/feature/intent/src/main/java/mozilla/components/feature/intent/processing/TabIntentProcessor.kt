@@ -48,7 +48,7 @@ class TabIntentProcessor(
     private val newTabSearchUseCase: SearchUseCases.NewTabSearchUseCase,
     private val isPrivate: Boolean = false,
     private val engine: Engine? = null,
-    private val jsEnabled: Boolean,
+    private val jsEnabled: Boolean = true,
 ) : IntentProcessor {
 
     private val logger = Logger("TabIntentProcessor")
