@@ -359,6 +359,12 @@ class TorSettingsImpl {
   #initialized = false;
 
   /**
+   * Whether init has been called.
+   *
+   * @type {boolean}
+   */
+  #initCalled = false;
+  /**
    * Whether uninit cleanup has been called.
    *
    * @type {boolean}
@@ -510,11 +516,12 @@ class TorSettingsImpl {
    * Load or init our settings.
    */
   async init() {
-    if (this.#initialized) {
+    if (this.#initCalled) {
       lazy.logger.warn("Called init twice.");
       await this.#initializedPromise;
       return;
     }
+    this.#initCalled = true;
     try {
       await this.#initInternal();
       this.#initialized = true;
