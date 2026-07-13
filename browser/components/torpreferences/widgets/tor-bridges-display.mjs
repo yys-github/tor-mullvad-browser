@@ -1,3 +1,73 @@
+const lazy = {};
+ChromeUtils.defineESModuleGetters(lazy, {
+  Lox: "moz-src:///toolkit/components/lox/Lox.sys.mjs",
+  LoxTopics: "moz-src:///toolkit/components/lox/Lox.sys.mjs",
+  moveFocusToBridgeHeading:
+    "chrome://browser/content/torpreferences/config/helpers.mjs",
+  openUserProvideBridgeDialog:
+    "chrome://browser/content/torpreferences/config/helpers.mjs",
+  TorBridgeSource: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
+  TorParsers: "moz-src:///toolkit/components/tor-launcher/TorParsers.sys.mjs",
+  TorSettings: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
+});
+
+/**
+ * Show the bridge QR to the user.
+ *
+ * @param {string} bridgeString - The string to use in the QR.
+ */
+function showBridgeQr(bridgeString) {
+  window.gSubDialog.open(
+    "chrome://browser/content/torpreferences/bridgeQrDialog.xhtml",
+    { features: "resizable=yes" },
+    bridgeString
+  );
+}
+
+/**
+ * Post a new notification, replacing any existing one.
+ *
+ * @param {string} type - The notification type.
+ */
+async function postBridgeNotification(type) {
+  let updateId;
+  switch (type) {
+    case "removed-one":
+      updateId = "tor-bridges-update-removed-one-bridge";
+      break;
+    case "removed-all":
+      updateId = "tor-bridges-update-removed-all-bridges";
+      break;
+    case "changed":
+    default:
+      // Generic message for when bridges change.
+      updateId = "tor-bridges-update-changed-bridges";
+      break;
+  }
+  const bridgeDisplay = document.querySelector("tor-bridges-display");
+  const settingGroup = bridgeDisplay?.closest("setting-group");
+  if (!settingGroup) {
+    console.error("Missing a setting-group for a notification.");
+    return;
+  }
+  if (!settingGroup.checkVisibility()) {
+    // Only ping the user if the bridge settings are visible.
+    // NOTE: Most operations to change the bridges will occur within the
+    // connection settings. However, in principle the user could have multiple
+    // setting tabs open, or they may have the settings open whilst Connection
+    // Assist is setting their bridges.
+    return;
+  }
+  const [message] = await Promise.all([
+    document.l10n.formatValue(updateId),
+    // Wait at least a small amount of time to actually trigger ariaNotify.
+    // Otherwise Orca will ignore the notification when it almost coincides with
+    // a change in focus, which is normally the case.
+    new Promise(resolve => setTimeout(resolve, 500)),
+  ]);
+  bridgeDisplay.ariaNotify(message);
+}
+
 /**
  * Controls the bridge grid.
  */
@@ -74,20 +144,11 @@ const gBridgeGrid = {
     this._grid.addEventListener("mousedown", this);
     this._grid.addEventListener("focusin", this);
 
-    Services.obs.addObserver(this, TorSettingsTopics.SettingsChanged);
-
-    // NOTE: Before initializedPromise completes, this area is hidden.
-    TorSettings.initializedPromise.then(() => {
-      this._updateRows(true);
-    });
-  },
-
-  /**
-   * Uninitialize the bridge grid.
-   */
-  uninit() {
-    Services.obs.removeObserver(this, TorSettingsTopics.SettingsChanged);
-    this.deactivate();
+    this._supportedSources = [
+      lazy.TorBridgeSource.BridgeDB,
+      lazy.TorBridgeSource.UserProvided,
+      lazy.TorBridgeSource.Lox,
+    ];
   },
 
   /**
@@ -107,11 +168,7 @@ const gBridgeGrid = {
 
     this._active = true;
 
-    Services.obs.addObserver(this, TorProviderTopics.BridgeChanged);
-
     this._grid.hidden = false;
-
-    this._updateConnectedBridge();
   },
 
   /**
@@ -127,26 +184,6 @@ const gBridgeGrid = {
     this._forceCloseRowMenus();
 
     this._grid.hidden = true;
-
-    Services.obs.removeObserver(this, TorProviderTopics.BridgeChanged);
-  },
-
-  observe(subject, topic) {
-    switch (topic) {
-      case TorSettingsTopics.SettingsChanged: {
-        const { changes } = subject.wrappedJSObject;
-        if (
-          changes.includes("bridges.source") ||
-          changes.includes("bridges.bridge_strings")
-        ) {
-          this._updateRows();
-        }
-        break;
-      }
-      case TorProviderTopics.BridgeChanged:
-        this._updateConnectedBridge();
-        break;
-    }
   },
 
   handleEvent(event) {
@@ -332,11 +369,8 @@ const gBridgeGrid = {
    * @type {string?}
    */
   _connectedBridgeId: null,
-  /**
-   * Update _connectedBridgeId.
-   */
-  async _updateConnectedBridge() {
-    const bridgeId = await getConnectedBridgeId();
+
+  set connectedBridgeId(bridgeId) {
     if (bridgeId === this._connectedBridgeId) {
       return;
     }
@@ -388,7 +422,7 @@ const gBridgeGrid = {
   _createRow(bridgeLine) {
     let details;
     try {
-      details = TorParsers.parseBridgeLine(bridgeLine);
+      details = lazy.TorParsers.parseBridgeLine(bridgeLine);
     } catch (e) {
       console.error(`Detected invalid bridge line: ${bridgeLine}`, e);
     }
@@ -498,8 +532,8 @@ const gBridgeGrid = {
     );
     row.menu.addEventListener("showing", () => {
       const show =
-        this._bridgeSource === TorBridgeSource.UserProvided ||
-        this._bridgeSource === TorBridgeSource.BridgeDB;
+        this._bridgeSource === lazy.TorBridgeSource.UserProvided ||
+        this._bridgeSource === lazy.TorBridgeSource.BridgeDB;
       qrItem.hidden = !show;
       removeItem.hidden = !show;
     });
@@ -521,8 +555,12 @@ const gBridgeGrid = {
       });
     removeItem.addEventListener("click", () => {
       const bridgeLine = row.bridgeLine;
-      const source = TorSettings.bridges.source;
-      const strings = TorSettings.bridges.bridge_strings;
+      const source = lazy.TorSettings.bridges.source;
+      if (source !== this._bridgesVal?.source) {
+        // Our value is stale, abort.
+        return;
+      }
+      const strings = lazy.TorSettings.bridges.bridge_strings;
       const index = strings.indexOf(bridgeLine);
       if (index === -1) {
         return;
@@ -530,13 +568,13 @@ const gBridgeGrid = {
       strings.splice(index, 1);
 
       if (strings.length) {
-        TorSettings.changeSettings({
+        lazy.TorSettings.changeSettings({
           bridges: { source, bridge_strings: strings },
         });
       } else {
         // Remove all bridges and disable.
-        TorSettings.changeSettings({
-          bridges: { source: TorBridgeSource.Invalid },
+        lazy.TorSettings.changeSettings({
+          bridges: { source: lazy.TorBridgeSource.Invalid },
         });
       }
     });
@@ -564,26 +602,39 @@ const gBridgeGrid = {
    *
    * @type {string[]}
    */
-  _supportedSources: [
-    TorBridgeSource.BridgeDB,
-    TorBridgeSource.UserProvided,
-    TorBridgeSource.Lox,
-  ],
+  _supportedSources: [],
+
+  /**
+   * The bridges value, set by the setting-control element.
+   *
+   * @type {object}
+   */
+  _bridgesVal: null,
+
+  set bridges(val) {
+    if (val === null) {
+      // Ignore and wait for the initial.
+      return;
+    }
+    const initial = this._bridgesVal === null;
+    this._bridgesVal = val;
+    this._updateRows(initial);
+  },
 
   /**
    * Update the grid to show the latest bridge strings.
    *
-   * @param {boolean} [initializing=false] - Whether this is being called as
-   *   part of initialization.
+   * @param {boolean} initializing - Whether this is being called as part of
+   *   initialization.
    */
-  _updateRows(initializing = false) {
+  _updateRows(initializing) {
     // Store whether we have focus within the grid, before removing or hiding
     // DOM elements.
     const focusWithin = this._focusWithin();
 
     let lostAllBridges = false;
     let newSource = false;
-    const bridgeSource = TorSettings.bridges.source;
+    const bridgeSource = this._bridgesVal.source;
     if (bridgeSource !== this._bridgeSource) {
       newSource = true;
 
@@ -592,7 +643,7 @@ const gBridgeGrid = {
       if (this._supportedSources.includes(bridgeSource)) {
         this.activate();
       } else {
-        if (this._active && bridgeSource === TorBridgeSource.Invalid) {
+        if (this._active && bridgeSource === lazy.TorBridgeSource.Invalid) {
           lostAllBridges = true;
         }
         this.deactivate();
@@ -600,7 +651,7 @@ const gBridgeGrid = {
     }
 
     const ordered = this._active
-      ? TorSettings.bridges.bridge_strings.map(bridgeLine => {
+      ? this._bridgesVal.bridgeStrings.map(bridgeLine => {
           const row = this._rows.find(r => r.bridgeLine === bridgeLine);
           if (row) {
             return row;
@@ -679,10 +730,8 @@ const gBridgeGrid = {
       // when we are shown again.
       this._resetFocus(this._active && focusWithin);
     }
-    if (!this._active && focusWithin) {
-      // Move focus out of this element, which has been hidden.
-      gBridgeSettings.takeFocus();
-    }
+    // NOTE: In the case we were previously active and now inactive,
+    // tor-bridges-display will have already moved the focus out of this area.
 
     // Notify the user if there was some change to the DOM.
     // If we are initializing, we generate no notification since there has been
@@ -713,7 +762,7 @@ const gBridgeGrid = {
       }
 
       if (notificationType) {
-        gBridgesNotification.post(notificationType);
+        postBridgeNotification(notificationType);
       }
     }
   },
@@ -760,21 +809,6 @@ const gBuiltinBridgesArea = {
     this._connectionStatusEl = document.getElementById(
       "tor-bridges-built-in-connected"
     );
-
-    Services.obs.addObserver(this, TorSettingsTopics.SettingsChanged);
-
-    // NOTE: Before initializedPromise completes, this area is hidden.
-    TorSettings.initializedPromise.then(() => {
-      this._updateBridgeType(true);
-    });
-  },
-
-  /**
-   * Uninitialize the built-in bridges area.
-   */
-  uninit() {
-    Services.obs.removeObserver(this, TorSettingsTopics.SettingsChanged);
-    this.deactivate();
   },
 
   /**
@@ -793,12 +827,7 @@ const gBuiltinBridgesArea = {
     }
     this._active = true;
 
-    Services.obs.addObserver(this, TorProviderTopics.BridgeChanged);
-
     this._area.hidden = false;
-
-    this._updateBridgeIds();
-    this._updateConnectedBridge();
   },
 
   /**
@@ -811,29 +840,6 @@ const gBuiltinBridgesArea = {
     this._active = false;
 
     this._area.hidden = true;
-
-    Services.obs.removeObserver(this, TorProviderTopics.BridgeChanged);
-  },
-
-  observe(subject, topic) {
-    switch (topic) {
-      case TorSettingsTopics.SettingsChanged: {
-        const { changes } = subject.wrappedJSObject;
-        if (
-          changes.includes("bridges.source") ||
-          changes.includes("bridges.builtin_type")
-        ) {
-          this._updateBridgeType();
-        }
-        if (changes.includes("bridges.bridge_strings")) {
-          this._updateBridgeIds();
-        }
-        break;
-      }
-      case TorProviderTopics.BridgeChanged:
-        this._updateConnectedBridge();
-        break;
-    }
   },
 
   /**
@@ -846,6 +852,23 @@ const gBuiltinBridgesArea = {
         this._connectedBridgeId &&
         this._bridgeIds.includes(this._connectedBridgeId)
     );
+  },
+
+  /**
+   * The bridges value, set by the setting-control element.
+   *
+   * @type {object}
+   */
+  _bridgesVal: null,
+  set bridges(val) {
+    if (val === null) {
+      // Ignore and wait for the initial.
+      return;
+    }
+    const initial = this._bridgesVal === null;
+    this._bridgesVal = val;
+    this._updateBridgeType(initial);
+    this._updateBridgeIds();
   },
 
   /**
@@ -887,33 +910,31 @@ const gBuiltinBridgesArea = {
   /**
    * Update the shown bridge type.
    *
-   * @param {boolean} [initializing=false] - Whether this is being called as
-   *   part of initialization.
+   * @param {boolean} initializing - Whether this is being called as part of
+   *   initialization.
    */
-  async _updateBridgeType(initializing = false) {
+  async _updateBridgeType(initializing) {
     let lostAllBridges = false;
     let newSource = false;
-    const bridgeSource = TorSettings.bridges.source;
+    const bridgeSource = this._bridgesVal.source;
     if (bridgeSource !== this._bridgeSource) {
       newSource = true;
 
       this._bridgeSource = bridgeSource;
 
-      if (bridgeSource === TorBridgeSource.BuiltIn) {
+      if (bridgeSource === lazy.TorBridgeSource.BuiltIn) {
         this.activate();
       } else {
-        if (this._active && bridgeSource === TorBridgeSource.Invalid) {
+        if (this._active && bridgeSource === lazy.TorBridgeSource.Invalid) {
           lostAllBridges = true;
         }
-        const hadFocus = this._area.contains(document.activeElement);
         this.deactivate();
-        if (hadFocus) {
-          gBridgeSettings.takeFocus();
-        }
+        // NOTE: In the case we were previously active, tor-bridges-display will
+        // have already moved the focus out of this area.
       }
     }
 
-    const bridgeType = this._active ? TorSettings.bridges.builtin_type : "";
+    const bridgeType = this._active ? this._bridgesVal.builtinType : "";
 
     let newType = false;
     if (bridgeType !== this._bridgeType) {
@@ -955,7 +976,7 @@ const gBuiltinBridgesArea = {
       }
 
       if (notificationType) {
-        gBridgesNotification.post(notificationType);
+        postBridgeNotification(notificationType);
       }
     }
   },
@@ -971,9 +992,9 @@ const gBuiltinBridgesArea = {
    */
   _updateBridgeIds() {
     this._bridgeIds = [];
-    for (const bridgeLine of TorSettings.bridges.bridge_strings) {
+    for (const bridgeLine of this._bridgesVal.bridgeStrings) {
       try {
-        this._bridgeIds.push(TorParsers.parseBridgeLine(bridgeLine).id);
+        this._bridgeIds.push(lazy.TorParsers.parseBridgeLine(bridgeLine).id);
       } catch (e) {
         console.error(`Detected invalid bridge line: ${bridgeLine}`, e);
       }
@@ -990,11 +1011,9 @@ const gBuiltinBridgesArea = {
    * @type {string?}
    */
   _connectedBridgeId: null,
-  /**
-   * Update _connectedBridgeId.
-   */
-  async _updateConnectedBridge() {
-    this._connectedBridgeId = await getConnectedBridgeId();
+
+  set connectedBridgeId(val) {
+    this._connectedBridgeId = val;
     this._updateConnectedState();
   },
 };
@@ -1072,15 +1091,18 @@ const gLoxStatus = {
    */
   _unlockAlertButton: null,
 
+  _enabled: false,
+
   /**
    * Initialize the bridge pass area.
    */
   init() {
-    if (!Lox.enabled) {
+    if (!lazy.Lox.enabled) {
       // Area should remain inactive and hidden.
       return;
     }
 
+    this._enabled = true;
     this._area = document.getElementById("tor-bridges-lox-status");
     this._detailsArea = document.getElementById("tor-bridges-lox-details");
     this._nextUnlockItems = {
@@ -1124,74 +1146,74 @@ const gLoxStatus = {
     );
 
     this._invitesButton.addEventListener("click", () => {
-      gSubDialog.open(
+      window.gSubDialog.open(
         "chrome://browser/content/torpreferences/loxInviteDialog.xhtml",
         { features: "resizable=yes" }
       );
     });
     this._unlockAlertButton.addEventListener("click", () => {
-      Lox.clearEventData(this._loxId);
+      lazy.Lox.clearEventData(this._loxId);
     });
 
-    Services.obs.addObserver(this, TorSettingsTopics.SettingsChanged);
-    Services.obs.addObserver(this, LoxTopics.UpdateActiveLoxId);
-    Services.obs.addObserver(this, LoxTopics.UpdateEvents);
-    Services.obs.addObserver(this, LoxTopics.UpdateNextUnlock);
-    Services.obs.addObserver(this, LoxTopics.UpdateRemainingInvites);
-    Services.obs.addObserver(this, LoxTopics.NewInvite);
+    Services.obs.addObserver(this, lazy.LoxTopics.UpdateActiveLoxId);
+    Services.obs.addObserver(this, lazy.LoxTopics.UpdateEvents);
+    Services.obs.addObserver(this, lazy.LoxTopics.UpdateNextUnlock);
+    Services.obs.addObserver(this, lazy.LoxTopics.UpdateRemainingInvites);
+    Services.obs.addObserver(this, lazy.LoxTopics.NewInvite);
 
-    // NOTE: Before initializedPromise completes, this area is hidden.
-    TorSettings.initializedPromise.then(() => {
-      this._updateLoxId();
-    });
-  },
-
-  /**
-   * Uninitialize the built-in bridges area.
-   */
-  uninit() {
-    if (!Lox.enabled) {
-      return;
-    }
-
-    Services.obs.removeObserver(this, TorSettingsTopics.SettingsChanged);
-    Services.obs.removeObserver(this, LoxTopics.UpdateActiveLoxId);
-    Services.obs.removeObserver(this, LoxTopics.UpdateEvents);
-    Services.obs.removeObserver(this, LoxTopics.UpdateNextUnlock);
-    Services.obs.removeObserver(this, LoxTopics.UpdateRemainingInvites);
-    Services.obs.removeObserver(this, LoxTopics.NewInvite);
+    window.addEventListener(
+      "unload",
+      () => {
+        Services.obs.removeObserver(this, lazy.LoxTopics.UpdateActiveLoxId);
+        Services.obs.removeObserver(this, lazy.LoxTopics.UpdateEvents);
+        Services.obs.removeObserver(this, lazy.LoxTopics.UpdateNextUnlock);
+        Services.obs.removeObserver(
+          this,
+          lazy.LoxTopics.UpdateRemainingInvites
+        );
+        Services.obs.removeObserver(this, lazy.LoxTopics.NewInvite);
+      },
+      { once: true }
+    );
   },
 
   observe(subject, topic) {
     switch (topic) {
-      case TorSettingsTopics.SettingsChanged: {
-        const { changes } = subject.wrappedJSObject;
-        if (changes.includes("bridges.source")) {
-          this._updateLoxId();
-        }
-        // NOTE: We do not call _updateLoxId when "bridges.lox_id" is in the
-        // changes. Instead we wait until LoxTopics.UpdateActiveLoxId to ensure
-        // that the Lox module has responded to the change in ID strictly
-        // *before* we do. In particular, we want to make sure the invites and
-        // event data has been cleared.
-        break;
-      }
-      case LoxTopics.UpdateActiveLoxId:
+      case lazy.LoxTopics.UpdateActiveLoxId:
         this._updateLoxId();
         break;
-      case LoxTopics.UpdateNextUnlock:
+      case lazy.LoxTopics.UpdateNextUnlock:
         this._updateNextUnlock();
         break;
-      case LoxTopics.UpdateEvents:
+      case lazy.LoxTopics.UpdateEvents:
         this._updatePendingEvents();
         break;
-      case LoxTopics.UpdateRemainingInvites:
+      case lazy.LoxTopics.UpdateRemainingInvites:
         this._updateRemainingInvites();
         break;
-      case LoxTopics.NewInvite:
+      case lazy.LoxTopics.NewInvite:
         this._updateHaveExistingInvites();
         break;
     }
+  },
+
+  /**
+   * The bridges value, set by the setting-control element.
+   *
+   * @type {object}
+   */
+  _bridgesVal: null,
+  set bridges(val) {
+    if (val === null) {
+      // Ignore and wait for initial.
+      return;
+    }
+    if (!this._enabled) {
+      // Area should remain inactive and hidden.
+      return;
+    }
+    this._bridgesVal = val;
+    this._updateLoxId();
   },
 
   /**
@@ -1207,7 +1229,9 @@ const gLoxStatus = {
    */
   async _updateLoxId() {
     let loxId =
-      TorSettings.bridges.source === TorBridgeSource.Lox ? Lox.activeLoxId : "";
+      this._bridgesVal?.source === lazy.TorBridgeSource.Lox
+        ? lazy.Lox.activeLoxId
+        : "";
     if (loxId === this._loxId) {
       return;
     }
@@ -1232,7 +1256,7 @@ const gLoxStatus = {
    */
   _updateRemainingInvites() {
     const numInvites = this._loxId
-      ? Lox.getRemainingInviteCount(this._loxId)
+      ? lazy.Lox.getRemainingInviteCount(this._loxId)
       : null;
     if (numInvites === this._remainingInvites) {
       return;
@@ -1251,7 +1275,7 @@ const gLoxStatus = {
    * Update the shown value.
    */
   _updateHaveExistingInvites() {
-    const haveInvites = this._loxId ? !!Lox.getInvites().length : null;
+    const haveInvites = this._loxId ? !!lazy.Lox.getInvites().length : null;
     if (haveInvites === this._haveExistingInvites) {
       return;
     }
@@ -1286,7 +1310,7 @@ const gLoxStatus = {
       this._nextUnlock = null;
     }
     const nextUnlock = this._loxId
-      ? await Lox.getNextUnlock(this._loxId)
+      ? await lazy.Lox.getNextUnlock(this._loxId)
       : null;
     if (callId !== this._nextUnlockCallId) {
       // Replaced by another update.
@@ -1310,7 +1334,9 @@ const gLoxStatus = {
    */
   _updatePendingEvents() {
     // Should be safe to trigger the update, even when the value hasn't changed.
-    this._pendingEvents = this._loxId ? Lox.getEventData(this._loxId) : null;
+    this._pendingEvents = this._loxId
+      ? lazy.Lox.getEventData(this._loxId)
+      : null;
     this._updateUnlockArea();
   },
 
@@ -1496,17 +1522,11 @@ const gLoxStatus = {
  */
 const gBridgeSettings = {
   /**
-   * The preferences <groupbox> for bridges
+   * The display area.
    *
    * @type {Element?}
    */
-  _groupEl: null,
-  /**
-   * The button for controlling whether bridges are enabled.
-   *
-   * @type {Element?}
-   */
-  _toggleButton: null,
+  _displayEl: null,
   /**
    * The area for showing current bridges.
    *
@@ -1520,41 +1540,11 @@ const gBridgeSettings = {
    */
   _shareEl: null,
   /**
-   * The two headings for the bridge settings.
-   *
-   * One heading is shown during a search, the other is shown otherwise.
-   *
-   * @type {?Element[]}
-   */
-  _bridgesSettingsHeadings: null,
-  /**
-   * The two headings for the current bridges, at the start of the area.
-   *
-   * One heading is shown during a search, the other is shown otherwise.
-   *
-   * @type {Element?}
-   */
-  _currentBridgesHeadings: null,
-  /**
    * The area for showing no bridges.
    *
    * @type {Element?}
    */
   _noBridgesEl: null,
-  /**
-   * The heading elements for changing bridges.
-   *
-   * One heading is shown during a search, the other is shown otherwise.
-   *
-   * @type {?Element[]}
-   */
-  _changeHeadingEls: null,
-  /**
-   * The button for user to provide a bridge address or share code.
-   *
-   * @type {Element?}
-   */
-  _userProvideButton: null,
   /**
    * A map from the bridge source to its corresponding label.
    *
@@ -1563,146 +1553,98 @@ const gBridgeSettings = {
   _sourceLabels: null,
 
   /**
-   * Initialize the bridge settings.
+   * Whether we have been initialized.
+   *
+   * @type {boolean}
    */
-  init() {
-    gBridgesNotification.init();
+  _initialized: false,
 
-    this._bridgesSettingsHeadings = Array.from(
-      document.querySelectorAll(".tor-bridges-subcategory-heading")
-    );
-    this._currentBridgesHeadings = Array.from(
-      document.querySelectorAll(".tor-bridges-current-heading")
-    );
+  /**
+   * Initialize the bridge settings.
+   *
+   * @param {Element} displayEl - The widget element we are controlling.
+   */
+  init(displayEl) {
+    if (this._initialized) {
+      return;
+    }
+
+    this._displayEl = displayEl;
     this._bridgesEl = document.getElementById("tor-bridges-current");
     this._noBridgesEl = document.getElementById("tor-bridges-none");
-    this._groupEl = document.getElementById("torPreferences-bridges-group");
 
     this._sourceLabels = new Map([
       [
-        TorBridgeSource.BuiltIn,
+        lazy.TorBridgeSource.BuiltIn,
         document.getElementById("tor-bridges-built-in-label"),
       ],
       [
-        TorBridgeSource.UserProvided,
+        lazy.TorBridgeSource.UserProvided,
         document.getElementById("tor-bridges-user-label"),
       ],
       [
-        TorBridgeSource.BridgeDB,
+        lazy.TorBridgeSource.BridgeDB,
         document.getElementById("tor-bridges-requested-label"),
       ],
-      [TorBridgeSource.Lox, document.getElementById("tor-bridges-lox-label")],
+      [
+        lazy.TorBridgeSource.Lox,
+        document.getElementById("tor-bridges-lox-label"),
+      ],
     ]);
     this._shareEl = document.getElementById("tor-bridges-share");
-
-    this._toggleButton = document.getElementById("tor-bridges-enabled-toggle");
-    // Initially disabled whilst TorSettings may not be initialized.
-    this._toggleButton.disabled = true;
-
-    this._toggleButton.addEventListener("toggle", () => {
-      if (!this._haveBridges) {
-        return;
-      }
-      TorSettings.changeSettings({
-        bridges: { enabled: this._toggleButton.pressed },
-      });
-    });
-
-    this._changeHeadingEls = Array.from(
-      document.querySelectorAll(".tor-bridges-change-heading")
-    );
-    this._userProvideButton = document.getElementById(
-      "tor-bridges-open-user-provide-dialog-button"
-    );
-
-    document.l10n.setAttributes(
-      document.getElementById("tor-bridges-user-provide-description"),
-      // TODO: Set a different string if we have Lox enabled.
-      "tor-bridges-add-addresses-description"
-    );
-
-    // TODO: Change to GetLoxBridges if Lox enabled, and the account is set up.
-    const telegramUserName = "GetBridgesBot";
-    const telegramInstruction = document.getElementById(
-      "tor-bridges-provider-instruction-telegram"
-    );
-    telegramInstruction.querySelector("a").href =
-      `https://t.me/${telegramUserName}`;
-    document.l10n.setAttributes(
-      telegramInstruction,
-      "tor-bridges-provider-telegram-instruction",
-      { telegramUserName }
-    );
-
-    document
-      .getElementById("tor-bridges-open-built-in-dialog-button")
-      .addEventListener("click", () => {
-        this._openBuiltinDialog();
-      });
-    this._userProvideButton.addEventListener("click", () => {
-      this._openUserProvideDialog(this._haveBridges ? "replace" : "add");
-    });
-    document
-      .getElementById("tor-bridges-open-request-dialog-button")
-      .addEventListener("click", () => {
-        this._openRequestDialog();
-      });
-
-    Services.obs.addObserver(this, TorSettingsTopics.SettingsChanged);
-
-    gBridgeGrid.init();
-    gBuiltinBridgesArea.init();
-    gLoxStatus.init();
 
     this._initBridgesMenu();
     this._initShareArea();
 
-    // NOTE: Before initializedPromise completes, the current bridges sections
-    // should be hidden.
-    // And gBridgeGrid and gBuiltinBridgesArea are not active.
-    TorSettings.initializedPromise.then(() => {
-      this._updateEnabled();
-      this._updateBridgeStrings();
-      this._updateSource();
-    });
+    gBridgeGrid.init();
+    gBuiltinBridgesArea.init();
+    gLoxStatus.init();
+    this._initialized = true;
+    // Re-trigger our current bridges value to pass on to any descendants.
+    this.bridges = this._bridgesVal;
+    this.connectedBridgeId = this._connectedBridgeId;
   },
 
   /**
-   * Un-initialize the bridge settings.
+   * The bridges value, set by the setting-control element.
+   *
+   * @type {object}
    */
-  uninit() {
-    gBridgeGrid.uninit();
-    gBuiltinBridgesArea.uninit();
-    gLoxStatus.uninit();
+  _bridgesVal: null,
 
-    Services.obs.removeObserver(this, TorSettingsTopics.SettingsChanged);
-  },
-
-  observe(subject, topic) {
-    switch (topic) {
-      case TorSettingsTopics.SettingsChanged: {
-        const { changes } = subject.wrappedJSObject;
-        if (changes.includes("bridges.enabled")) {
-          this._updateEnabled();
-        }
-        if (changes.includes("bridges.source")) {
-          this._updateSource();
-        }
-        if (changes.includes("bridges.bridge_strings")) {
-          this._updateBridgeStrings();
-        }
-        break;
-      }
+  set bridges(val) {
+    if (val === null) {
+      // Corresponds to pending TorSettings initialization, wait for a non-null
+      // value.
+      return;
     }
+    this._bridgesVal = val;
+    if (!this._initialized) {
+      return;
+    }
+    this._updateSource();
+    this._updateBridgeStrings();
+    // Pass on to descendants.
+    gBridgeGrid.bridges = val;
+    gBuiltinBridgesArea.bridges = val;
+    gLoxStatus.bridges = val;
   },
 
   /**
-   * Update whether the bridges should be shown as enabled.
+   * The ID of the currently connected bridge, or `null` if there is none.
+   *
+   * @type {string?}
    */
-  _updateEnabled() {
-    // Changing the pressed property on moz-toggle should not trigger its
-    // "toggle" event.
-    this._toggleButton.pressed = TorSettings.bridges.enabled;
+  _connectedBridgeId: null,
+
+  set connectedBridgeId(val) {
+    this._connectedBridgeId = val;
+    if (!this._initialized) {
+      return;
+    }
+    // NOTE: This should be safe to call, even when _bridgesVal is still null.
+    gBridgeGrid.connectedBridgeId = val;
+    gBuiltinBridgesArea.connectedBridgeId = val;
   },
 
   /**
@@ -1727,7 +1669,7 @@ const gBridgeSettings = {
   _updateSource() {
     // NOTE: This should only ever be called after TorSettings is already
     // initialized.
-    const bridgeSource = TorSettings.bridges.source;
+    const bridgeSource = this._bridgesVal.source;
     if (bridgeSource === this._bridgeSource) {
       // Avoid re-activating an area if the source has not changed.
       return;
@@ -1746,8 +1688,8 @@ const gBridgeSettings = {
     }
 
     this._canShare =
-      bridgeSource === TorBridgeSource.UserProvided ||
-      bridgeSource === TorBridgeSource.BridgeDB;
+      bridgeSource === lazy.TorBridgeSource.UserProvided ||
+      bridgeSource === lazy.TorBridgeSource.BridgeDB;
 
     this._shareEl.hidden = !this._canShare;
 
@@ -1762,10 +1704,7 @@ const gBridgeSettings = {
     if (hadFocus) {
       // Always reset the focus to the start of the area whenever the source
       // changes.
-      // NOTE: gBuiltinBridges._updateBridgeType and gBridgeGrid._updateRows
-      // may have already called takeFocus in response to them being
-      // de-activated. The re-call should be safe.
-      this.takeFocus();
+      lazy.moveFocusToBridgeHeading(window);
     }
   },
 
@@ -1780,10 +1719,7 @@ const gBridgeSettings = {
    * Update the _haveBridges value.
    */
   _updateHaveBridges() {
-    // NOTE: We use the TorSettings.bridges.source value, rather than
-    // this._bridgeSource because _updateHaveBridges can be called just before
-    // _updateSource (via takeFocus).
-    const haveBridges = TorSettings.bridges.source !== TorBridgeSource.Invalid;
+    const haveBridges = this._bridgesVal.haveBridges;
 
     if (haveBridges === this._haveBridges) {
       return;
@@ -1791,62 +1727,11 @@ const gBridgeSettings = {
 
     this._haveBridges = haveBridges;
 
-    this._toggleButton.disabled = !haveBridges;
     // Add classes to show or hide the "no bridges" and "Your bridges" sections.
-    // NOTE: Before haveBridges is set, neither class is added, so both sections
-    // and hidden.
-    this._groupEl.classList.add("bridges-initialized");
     this._bridgesEl.hidden = !haveBridges;
     this._noBridgesEl.hidden = haveBridges;
 
-    for (const headingEl of this._changeHeadingEls) {
-      document.l10n.setAttributes(
-        headingEl,
-        haveBridges
-          ? "tor-bridges-replace-bridges-heading"
-          : "tor-bridges-add-bridges-heading"
-      );
-    }
-    document.l10n.setAttributes(
-      this._userProvideButton,
-      haveBridges ? "tor-bridges-replace-button" : "tor-bridges-add-new-button"
-    );
-  },
-
-  /**
-   * Force the focus to move to the bridge area.
-   */
-  takeFocus() {
-    if (this._haveBridges === null) {
-      // The bridges area has not been initialized yet, which means that
-      // TorSettings may not be initialized.
-      // Unexpected to receive a call before then, so just return early.
-      return;
-    }
-
-    // Make sure we have the latest value for _haveBridges.
-    // We also ensure that the _currentBridgesHeadings element is visible before
-    // we focus it.
-    this._updateHaveBridges();
-
-    // Move focus to the start of the relevant section, which is a heading.
-    // They have tabindex="-1" so should be focusable, even though they are not
-    // part of the usual tab navigation.
-    // NOTE: We have two headings: one shown during a search and one shown
-    // otherwise. We focus the heading that is currently visible.
-    // See tor-browser#43320.
-    // TODO: It might be better if we could use the # named anchor to
-    // re-orient the screen reader position instead of using tabIndex=-1, but
-    // about:preferences currently uses the anchor for showing categories
-    // only. See bugzilla bug 1799153.
-    const focusHeadings = this._haveBridges
-      ? this._currentBridgesHeadings // The heading above the new bridges.
-      : this._bridgesSettingsHeadings; // The top of the bridge settings.
-    if (focusHeadings[0].checkVisibility({ visibilityProperty: true })) {
-      focusHeadings[0].focus();
-    } else {
-      focusHeadings[1].focus();
-    }
+    this._displayEl.classList.toggle("has-tor-bridges", haveBridges);
   },
 
   /**
@@ -1866,7 +1751,7 @@ const gBridgeSettings = {
    * Update the stored bridge strings.
    */
   _updateBridgeStrings() {
-    const bridges = TorSettings.bridges.bridge_strings;
+    const bridges = this._bridgesVal.bridgeStrings;
 
     this._bridgeStrings = bridges.join("\n");
     // TODO: Determine what logic we want.
@@ -1948,7 +1833,7 @@ const gBridgeSettings = {
       "tor-bridges-options-edit-all-menu-item"
     );
     editItem.addEventListener("click", () => {
-      this._openUserProvideDialog("edit");
+      lazy.openUserProvideBridgeDialog(window, "edit");
     });
 
     // TODO: Do we want a different item for built-in bridges, rather than
@@ -1990,16 +1875,17 @@ const gBridgeSettings = {
           return;
         }
 
-        TorSettings.changeSettings({
+        lazy.TorSettings.changeSettings({
           // This should always have the side effect of disabling bridges as
           // well.
-          bridges: { source: TorBridgeSource.Invalid },
+          bridges: { source: lazy.TorBridgeSource.Invalid },
         });
       });
 
     this._bridgesMenu.addEventListener("showing", () => {
       qrItem.hidden = !this._canShare || !this._canQRBridges;
-      editItem.hidden = this._bridgeSource !== TorBridgeSource.UserProvided;
+      editItem.hidden =
+        this._bridgeSource !== lazy.TorBridgeSource.UserProvided;
     });
 
     const bridgesMenuButton = document.getElementById(
@@ -2024,136 +1910,46 @@ const gBridgeSettings = {
   _forceCloseBridgesMenu() {
     this._bridgesMenu.hide(null, { force: true });
   },
-
-  /**
-   * Open a bridge dialog that will change the users bridges.
-   *
-   * @param {string} url - The url of the dialog to open.
-   * @param {object?} inputData - The input data to send to the dialog window.
-   * @param {Function} onAccept - The method to call if the bridge dialog was
-   *   accepted by the user. This will be passed a "result" object containing
-   *   data set by the dialog. This should return a promise that resolves once
-   *   the bridge settings have been set, or null if the settings have not
-   *   been applied.
-   */
-  _openDialog(url, inputData, onAccept) {
-    const result = { accepted: false, connect: false };
-    let savedSettings = null;
-    gSubDialog.open(
-      url,
-      {
-        features: "resizable=yes",
-        closingCallback: () => {
-          if (!result.accepted) {
-            return;
-          }
-          savedSettings = onAccept(result);
-          if (!savedSettings) {
-            // No change in settings.
-            return;
-          }
-          if (!result.connect) {
-            // Do not open about:torconnect.
-            return;
-          }
-
-          // Wait until the settings are applied before bootstrapping.
-          // NOTE: Saving the settings should also cancel any existing bootstrap
-          // attempt first. See tor-browser#41921.
-          savedSettings.then(() => {
-            // The bridge dialog button is "connect" when Tor is not
-            // bootstrapped, so do the connect.
-
-            // Start Bootstrapping, which should use the configured bridges.
-            // NOTE: We do this regardless of any previous TorConnect Error.
-            TorConnectParent.open({ beginBootstrapping: "hard" });
-          });
-        },
-        // closedCallback should be called after gSubDialog has already
-        // re-assigned focus back to the document.
-        closedCallback: () => {
-          if (!savedSettings) {
-            return;
-          }
-          // Wait until the settings have changed, so that the UI could
-          // respond, then move focus.
-          savedSettings.then(() => gBridgeSettings.takeFocus());
-        },
-      },
-      result,
-      inputData
-    );
-  },
-
-  /**
-   * Open the built-in bridge dialog.
-   */
-  _openBuiltinDialog() {
-    this._openDialog(
-      "chrome://browser/content/torpreferences/builtinBridgeDialog.xhtml",
-      null,
-      result => {
-        if (!result.type) {
-          return null;
-        }
-        return TorSettings.changeSettings({
-          bridges: {
-            enabled: true,
-            source: TorBridgeSource.BuiltIn,
-            builtin_type: result.type,
-          },
-        });
-      }
-    );
-  },
-
-  /*
-   * Open the request bridge dialog.
-   */
-  _openRequestDialog() {
-    this._openDialog(
-      "chrome://browser/content/torpreferences/requestBridgeDialog.xhtml",
-      null,
-      result => {
-        if (!result.bridges?.length) {
-          return null;
-        }
-        return TorSettings.changeSettings({
-          bridges: {
-            enabled: true,
-            source: TorBridgeSource.BridgeDB,
-            bridge_strings: result.bridges,
-          },
-        });
-      }
-    );
-  },
-
-  /**
-   * Open the user provide dialog.
-   *
-   * @param {string} mode - The mode to open the dialog in: "add", "replace" or
-   *   "edit".
-   */
-  _openUserProvideDialog(mode) {
-    this._openDialog(
-      "chrome://browser/content/torpreferences/provideBridgeDialog.xhtml",
-      { mode },
-      result => {
-        const loxId = result.loxId;
-        if (!loxId && !result.addresses?.length) {
-          return null;
-        }
-        const bridges = { enabled: true };
-        if (loxId) {
-          bridges.source = TorBridgeSource.Lox;
-          bridges.lox_id = loxId;
-        } else {
-          bridges.source = TorBridgeSource.UserProvided;
-          bridges.bridge_strings = result.addresses;
-        }
-        return TorSettings.changeSettings({ bridges });
-      }
-    );
-  },
 };
+
+// TODO: Replace gBridgeSettings and #tor-bridges-display-template with proper
+// widgets (using MozLitElement).
+/**
+ * Show the current bridges.
+ */
+class TorBridgesDisplay extends HTMLElement {
+  connectedCallback() {
+    if (this.children.length) {
+      return;
+    }
+    // Take the template children since we only expect one instance of this.
+    this.replaceChildren(
+      ...document.getElementById("tor-bridges-display-template").content
+        .childNodes
+    );
+    gBridgeSettings.init(this);
+  }
+
+  set connectedBridgeId(val) {
+    gBridgeSettings.connectedBridgeId = val;
+  }
+
+  set bridges(val) {
+    gBridgeSettings.bridges = val;
+  }
+
+  /**
+   * Focus the "Your bridges" heading, if it is visible.
+   *
+   * @returns {boolean} - `true` if the heading was visible and focused.
+   */
+  focusHeading() {
+    if (!gBridgeSettings._haveBridges) {
+      // Heading is hidden.
+      return false;
+    }
+    document.getElementById("tor-bridges-current-heading-non-search").focus();
+    return true;
+  }
+}
+customElements.define("tor-bridges-display", TorBridgesDisplay);
