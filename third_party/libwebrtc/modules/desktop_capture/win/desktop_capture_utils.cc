@@ -11,9 +11,9 @@
 #include "modules/desktop_capture/win/desktop_capture_utils.h"
 
 #include <string>
+#include <vector>
 
-#include <cstdio>
-#include <cstdlib>
+#include "rtc_base/strings/string_builder.h"
 #include "stringapiset.h"
 
 namespace webrtc {
@@ -25,14 +25,18 @@ std::string ComErrorToString(const _com_error& error) {
   webrtc::StringBuilder string_builder;
   string_builder.AppendFormat("HRESULT: 0x%08X, Message: ", error.Error());
 #ifdef _UNICODE
-  WideCharToMultiByte(CP_UTF8, 0, error.ErrorMessage(), -1,
-                      buffer + string_builder.size(),
-                      sizeof(buffer) - string_builder.size(), nullptr, nullptr);
-  buffer[sizeof(buffer) - 1] = 0;
+  int size = WideCharToMultiByte(CP_UTF8, 0, error.ErrorMessage(), -1, nullptr,
+                                 0, nullptr, nullptr);
+  if (size > 0) {
+    std::vector<char> buffer(static_cast<size_t>(size));
+    WideCharToMultiByte(CP_UTF8, 0, error.ErrorMessage(), -1, buffer.data(),
+                        size, nullptr, nullptr);
+    string_builder << buffer.data();
+  }
 #else
   string_builder << error.ErrorMessage();
 #endif
-  return buffer;
+  return string_builder.str();
 }
 
 }  // namespace utils
