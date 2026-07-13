@@ -152,6 +152,9 @@ tor-connection-status-connect-button =
 tor-bridges-heading = Bridges
 tor-bridges-overview = Bridges help you securely access the Tor network in places where Tor is blocked. Depending on where you are, one bridge may work better than another.
 tor-bridges-learn-more-link = Learn more
+tor-bridges-group =
+    .label = Bridges
+    .description = Bridges help you securely access the Tor network in places where Tor is blocked. Depending on where you are, one bridge may work better than another.
 
 # Toggle button for enabling and disabling the use of bridges.
 tor-bridges-use-bridges =
@@ -310,12 +313,23 @@ tor-bridges-lox-got-it-button = Got it
 tor-bridges-add-bridges-heading = Add bridges
 # Shown as a heading when the user has existing bridges that can be replaced.
 tor-bridges-replace-bridges-heading = Replace your bridges
+# Shown as a heading when the user has no current bridges.
+tor-bridges-add-bridges-group =
+    .label = Add bridges
+# Shown as a heading when the user has existing bridges that can be replaced.
+tor-bridges-replace-bridges-group =
+    .label = Replace your bridges
 
 # -brand-short-name refers to 'Tor Browser', localized.
 tor-bridges-select-built-in-description = Choose from one of { -brand-short-name }’s built-in bridges
+# -brand-short-name refers to 'Tor Browser', localized.
+tor-bridges-choose-built-in-button =
+    .label = Choose from one of { -brand-short-name }’s built-in bridges
 tor-bridges-select-built-in-button = Select a built-in bridge…
 
 tor-bridges-add-addresses-description = Enter bridge addresses you already know
+tor-bridges-enter-bridges-button =
+    .label = Enter bridge addresses you already know
 # Shown when the user has no current bridges.
 # Opens a dialog where the user can provide a new bridge address or share code.
 tor-bridges-add-new-button = Add new bridges…
@@ -326,6 +340,10 @@ tor-bridges-replace-button = Replace bridges…
 tor-bridges-find-more-heading = Find more bridges
 # "Tor Project" is the organisation name.
 tor-bridges-find-more-description = Since many bridge addresses aren’t public, you may need to request some from the Tor Project.
+# "Tor Project" is the organisation name.
+tor-bridges-find-more-group =
+    .label = Find more bridges
+    .description = Since many bridge addresses aren’t public, you may need to request some from the Tor Project.
 
 # "Telegram" is the common brand name of the Telegram Messenger application
 tor-bridges-provider-telegram-name = Telegram
@@ -333,6 +351,12 @@ tor-bridges-provider-telegram-name = Telegram
 # $telegramUserName (String) - The Telegram Messenger user name that should receive messages. Should be wrapped in '<a data-l10n-name="user">' and '</a>'.
 # E.g. in English, "Message GetBridgesBot".
 tor-bridges-provider-telegram-instruction = Message <a data-l10n-name="user">{ $telegramUserName }</a>
+# "Telegram" is the common brand name of the Telegram Messenger application.
+# Here "Message" is a verb, short for "Send a message to". This is an instruction to send a message to the given Telegram Messenger user to receive a new bridge.
+# $telegramUserName (String) - The Telegram Messenger user name that should receive messages.
+tor-bridges-source-telegram-link =
+    .label = Telegram
+    .description = Message { $telegramUserName }
 
 # "Web" is the proper noun for the "World Wide Web".
 tor-bridges-provider-web-name = Web
@@ -340,15 +364,31 @@ tor-bridges-provider-web-name = Web
 # $url (String) - The URL for Tor Project bridges. Should be wrapped in '<a data-l10n-name"url">' and '</a>'.
 tor-bridges-provider-web-instruction = Visit <a data-l10n-name="url">{ $url }</a>
 
+# "Web" is the proper noun for the "World Wide Web".
+# $url (String) - The URL for Tor Project bridges.
+tor-bridges-source-web-link =
+    .label = Web
+    .description = Visit { $url }
+
 # "Gmail" is the Google brand name. "Riseup" refers to the Riseup organisation at riseup.net.
 tor-bridges-provider-email-name = Gmail or Riseup
 # Here "Email" is a verb, short for "Send an email to". This is an instruction to send an email to the given address to receive a new bridge.
 # $address (String) - The email address that should receive the email.
 # E.g. in English, "Email bridges@torproject.org".
 tor-bridges-provider-email-instruction = Email { $address }
+# "Gmail" is the Google brand name. "Riseup" refers to the Riseup organisation at riseup.net.
+# Here "Email" is a verb, short for "Send an email to". This is an instruction to send an email to the given address to receive a new bridge.
+# $address (String) - The email address that should receive the email.
+# E.g. in English, "Email bridges@torproject.org".
+tor-bridges-source-email-link =
+    .label = Gmail or Riseup
+    .description = Email { $address }
 
 tor-bridges-request-from-browser = You can also get bridges from the bridge bot without leaving { -brand-short-name }.
 tor-bridges-request-button = Request bridges…
+tor-bridges-request-from-browser2 = Get bridges from the bridge bot without leaving { -brand-short-name }.
+tor-bridges-request-button2 =
+    .label = Request bridges…
 
 ## Warning dialog when removing all bridges.
 
