@@ -201,20 +201,27 @@ button.spoof-button-disabled {
 
 #tor-bridges-none,
 #tor-bridges-current {
-  margin-inline: 0;
-  margin-block: var(--space-xxlarge);
+  @media not -moz-pref("browser.settings-redesign.enabled") {
+    margin-inline: 0;
+    margin-block: var(--space-xxlarge);
+  }
 }
 
 #tor-bridges-none:not([hidden]) {
   display: grid;
   justify-items: center;
   text-align: center;
-  padding-block: 64px;
+  padding-block: 54px;
   padding-inline: var(--space-xxlarge);
-  gap: var(--space-large);
+  gap: var(--space-small);
   border-radius: var(--border-radius-small);
   color: var(--text-color-deemphasized);
   border: 2px dashed var(--border-color-deemphasized);
+
+  @media not -moz-pref("browser.settings-redesign.enabled") {
+    padding-block: 64px;
+    gap: var(--space-large);
+  }
 }
 
 #tor-bridges-none-icon {
@@ -228,9 +235,13 @@ button.spoof-button-disabled {
 .tor-bridges-box,
 .tor-bridges-details-box {
   padding: var(--space-large);
-  border-radius: var(--border-radius-small);
-  background: var(--background-color-box-info);
+  border-radius: var(--border-radius-medium);
   border: var(--border-width) solid var(--border-color);
+
+  @media not -moz-pref("browser.settings-redesign.enabled") {
+    border-radius: var(--border-radius-small);
+    background: var(--background-color-box-info);
+  }
 }
 
 @media not forced-colors {
@@ -248,6 +259,56 @@ button.spoof-button-disabled {
   padding-block-end: var(--space-large);
   margin-block-end: var(--space-large);
   white-space: nowrap;
+}
+
+tor-bridges-display {
+  display: block;
+  margin-block: var(--space-small);
+
+  &.has-tor-bridges {
+    display: grid;
+    grid-template:
+      "heading source button" min-content
+      "bridges bridges bridges" auto
+      "extra extra extra" auto
+      / max-content 1fr max-content;
+    align-items: center;
+    border: var(--card-border);
+    border-radius: var(--border-radius-medium);
+    background-color: var(--card-background-color);
+    padding: var(--space-large);
+  }
+
+  & p {
+    margin: 0;
+  }
+
+  & #tor-bridges-current:not([hidden]) {
+    /* Avoid the special display logic for <fieldset> and <legend>. */
+    display: contents;
+  }
+
+  & legend {
+    grid-area: heading;
+    white-space: nowrap;
+  }
+
+  & .tor-bridges-source-label {
+    white-space: nowrap;
+    padding-inline-end: var(--space-small);
+    border-inline-end: var(--border-width) solid var(--border-color);
+  }
+
+  & :is(#tor-bridges-built-in-display, #tor-bridges-grid-display) {
+    grid-area: bridges;
+    margin-block-start: var(--space-large);
+    border-block-start: var(--border-width) solid var(--border-color);
+    padding-block-start: var(--space-large);
+  }
+
+  & :is(#tor-bridges-share, #tor-bridges-lox-status) {
+    grid-area: extra;
+  }
 }
 
 .tor-bridges-current-heading {
@@ -679,6 +740,24 @@ button.spoof-button-disabled {
 
 .tor-bridges-provider-instruction {
   grid-column: 2 / 3;
+}
+
+#torBridgesRequestBanner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  text-wrap-style: balance;
+  gap: var(--space-large);
+
+  & > * {
+    margin: 0;
+    flex: 0 0 auto;
+  }
+
+  & > p {
+    max-width: var(--size-layout-medium);
+  }
 }
 
 #tor-bridges-request-box {

@@ -296,7 +296,7 @@ const CONFIG_PANES = Object.freeze({
   connection: {
     l10nId: "tor-connection-settings-pane",
     iconSrc: "chrome://browser/content/torconnect/tor-connect.svg",
-    groupIds: ["connectionStatus"],
+    groupIds: ["connectionStatus", "torBridges"],
     module: "chrome://browser/content/torpreferences/config/connection.mjs",
     visible: () => {
       return TorConnect.enabled;
