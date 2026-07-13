@@ -25,6 +25,8 @@ browser.jar:
     content/browser/torpreferences/torLogDialog.js                   (content/torLogDialog.js)
     content/browser/torpreferences/torLogDialog.xhtml                (content/torLogDialog.xhtml)
     content/browser/torpreferences/config/connection.mjs             (config/connection.mjs)
+    content/browser/torpreferences/config/helpers.mjs                (config/helpers.mjs)
+    content/browser/torpreferences/widgets/tor-bridges-display.mjs   (widgets/tor-bridges-display.mjs)
     content/browser/torpreferences/widgets/tor-connection-status.mjs (widgets/tor-connection-status.mjs)
     content/browser/torpreferences/widgets/tor-connection-status.css (widgets/tor-connection-status.css)
     content/browser/torpreferences/connectionPane.js                 (content/connectionPane.js)
