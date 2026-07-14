@@ -947,8 +947,8 @@ groupbox#torPreferences-bridges-group textarea {
 }
 
 #user-provide-bridge-textarea.invalid-input {
-  border-color: var(--outline-color-error);
-  outline-color: var(--outline-color-error);
+  border-color: var(--border-color-error);
+  outline-color: var(--border-color-error);
 }
 
 #user-provide-bridge-error-message {
