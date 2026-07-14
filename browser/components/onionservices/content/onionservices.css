@@ -16,7 +16,7 @@
  * use the same rules).
  */
 #tor-clientauth-notification-key.invalid {
-  border: var(--border-width) solid var(--outline-color-error);
+  border: var(--border-width) solid var(--border-color-error);
 }
 
 #tor-clientauth-warning {
