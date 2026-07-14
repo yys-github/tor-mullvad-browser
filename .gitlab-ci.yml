@@ -6,7 +6,7 @@ stages:
   - update-translations
 
 variables:
-  IMAGE_PATH: containers.torproject.org/tpo/applications/tor-browser/base:latest
+  IMAGE_PATH: containers.torproject.org/tpo/applications/tor-browser/desktop:latest
   LOCAL_REPO_PATH: /srv/apps-repos/tor-browser.git
 
 include:
