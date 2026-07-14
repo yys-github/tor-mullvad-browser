@@ -897,7 +897,7 @@ class _RFPHelper {
         urlbarBackgroundRGBA
       );
       // Separator between the urlbar container #nav-bar and the tabbox.
-      // For the default theme, this can be set to --border-color-card, which
+      // For the default theme, this can be set to --card-border-color, which
       // can use "currentColor".
       const tabboxStyle = win.getComputedStyle(win.gBrowser.tabbox);
       contentSeparatorRGBA = this._composeRGBA(
