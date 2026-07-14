@@ -3960,9 +3960,9 @@ include("../build/moz.configure/update-programs.configure")
 
 # Per-format extra args passed to mozbuild.action.package
 # ==============================================================
-option(env="MOZ_DMG_DSSTORE", nargs=1, help="Path to the .dsstore file for DMG packaging")
-option(env="MOZ_DMG_BACKGROUND", nargs=1, help="Path to the background image for DMG packaging")
-option(env="MOZ_DMG_ICON", nargs=1, help="Path to the disk icon for DMG packaging")
+option(env="MOZ_PKG_MAC_DSSTORE", nargs=1, help="Path to the .dsstore file for DMG packaging")
+option(env="MOZ_PKG_MAC_BACKGROUND", nargs=1, help="Path to the background image for DMG packaging")
+option(env="MOZ_PKG_MAC_ICON", nargs=1, help="Path to the disk icon for DMG packaging")
 
 @depends(
     moz_pkg_format,
@@ -3972,9 +3972,9 @@ option(env="MOZ_DMG_ICON", nargs=1, help="Path to the disk icon for DMG packagin
     moz_branding_directory,
     moz_app_displayname,
     build_environment.topsrcdir,
-    "MOZ_DMG_DSSTORE",
-    "MOZ_DMG_BACKGROUND",
-    "MOZ_DMG_ICON",
+    "MOZ_PKG_MAC_DSSTORE",
+    "MOZ_PKG_MAC_BACKGROUND",
+    "MOZ_PKG_MAC_ICON",
 )
 @imports(_from="os.path", _import="join")
 @imports("shlex")
