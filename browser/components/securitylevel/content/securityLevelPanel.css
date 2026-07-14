@@ -29,7 +29,7 @@
   pointer-events: none;
   -moz-context-properties: fill, fill-opacity;
   fill-opacity: 1;
-  fill: var(--border-color-card);
+  fill: var(--card-border-color);
 }
 
 /* NOTE: Use ":dir" instead of ":-moz-locale-dir" when panel switches to HTML. */
