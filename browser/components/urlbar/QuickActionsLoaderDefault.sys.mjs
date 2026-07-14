@@ -318,6 +318,12 @@ const DEFAULT_ACTIONS = {
         )
       );
     },
+    // Remove the translate action. Bugzilla bug 1989252 means that the actions
+    // still appears in the full list, despite isVisible being `false`. So we
+    // explicitly remove it from the list instead. tor-browser#43864.
+    disabled() {
+      return !this.isVisible();
+    },
     onPick: async (_queryContext, controller) => {
       await lazy.TranslationsParent.openAboutTranslationsPage({
         browserWindow: controller.browserWindow,
