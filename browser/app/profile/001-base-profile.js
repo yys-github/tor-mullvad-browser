@@ -202,8 +202,6 @@ pref("browser.urlbar.weather.featureGate", false);
 // tor-browser#42886: Disable trending results.
 pref("browser.urlbar.suggest.trending", false);
 pref("browser.urlbar.trending.featureGate", false);
-// tor-browser#42792: Explicitly turn off Pocket suggestions in the URL bar.
-pref("browser.urlbar.pocket.featureGate", false);
 // tor-browser#41691: Hide "Firefox Suggest" in the UI
 pref("browser.urlbar.groupLabels.enabled", false);
 pref("browser.safebrowsing.malware.enabled", false);
@@ -309,9 +307,6 @@ pref("privacy.annotate_channels.strict_list.enabled", false);
 // Notice that it should not apply to RFP anyway...
 pref("privacy.fingerprintingProtection.remoteOverrides.enabled", false);
 
-// Disable the Pocket extension (Bug #18886 and #31602)
-pref("extensions.pocket.enabled", false);
-
 // Disable Privacy-Preserving-Attribution (Bug #42687)
 pref("dom.private-attribution.submission.enabled", false);
 
@@ -319,7 +314,7 @@ pref("dom.private-attribution.submission.enabled", false);
 pref("extensions.hideNoScript", true);
 pref("extensions.hideUnifiedWhenEmpty", true);
 
-// Disable activity stream/"Recommended by Pocket" in about:home (Bug #41029)
+// Disable activity stream in about:home (Bug #41029)
 pref("browser.newtabpage.activity-stream.discoverystream.enabled", false);
 pref("browser.newtabpage.activity-stream.feeds.section.topstories", false);
 pref("browser.newtabpage.activity-stream.showSponsored", false);
