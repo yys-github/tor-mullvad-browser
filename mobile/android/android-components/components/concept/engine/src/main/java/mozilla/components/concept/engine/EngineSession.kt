@@ -574,7 +574,7 @@ abstract class EngineSession(
                 useForPrivateSessions = false,
                 useForRegularSessions = false,
                 cookiePolicy = ACCEPT_ONLY_FIRST_PARTY,
-                bounceTrackingProtectionMode = BounceTrackingProtectionMode.ENABLED_STANDBY,
+                bounceTrackingProtectionMode = BounceTrackingProtectionMode.DISABLED,
             )
 
             /**
