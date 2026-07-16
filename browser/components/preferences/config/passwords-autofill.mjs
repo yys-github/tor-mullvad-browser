@@ -853,7 +853,7 @@ SettingGroupManager.registerGroups({
   onionSiteAuthentication: {
     l10nId: "onion-site-authentication-group",
     headingLevel: 2,
-    supportPage: "tor-manual:onion-services_onion-service-authentication",
+    supportPage: "tor-manual:features__onion-services___onion-service-auth",
     items: [
       {
         id: "onionSiteSavedKeys",
