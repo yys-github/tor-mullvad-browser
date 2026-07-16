@@ -13,7 +13,7 @@ SettingGroupManager.registerGroups({
   connectionStatus: {
     inProgress: true,
     l10nId: "tor-connection-internet-status-group",
-    supportPage: "tor-manual:about",
+    supportPage: "tor-manual:getting-started__about-tor-browser",
     headingLevel: 2,
     items: [
       {
