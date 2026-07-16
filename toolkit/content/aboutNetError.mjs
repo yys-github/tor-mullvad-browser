@@ -372,7 +372,7 @@ function initOnionError() {
   const learnMore = document.getElementById("learnMoreContainer");
   learnMore.hidden = false;
   const learnMoreLink = document.getElementById("learnMoreLink");
-  learnMoreLink.href = "about:manual#onion-services";
+  learnMoreLink.href = "about:manual#features__onion-services";
 
   setFocus("#netErrorButtonContainer > .try-again");
 
