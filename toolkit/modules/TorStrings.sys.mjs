@@ -243,7 +243,7 @@ const Loader = {
     );
     return {
       ...tsb.getStrings(strings),
-      learnMoreURL: "about:manual#onion-services",
+      learnMoreURL: "about:manual#features__onion-services",
       // XUL popups cannot open about: URLs, but we are online when showing the notification, so just use the online version
       learnMoreURLNotification: `https://tb-manual.torproject.org/${getLocale()}/onion-services/`,
     };
