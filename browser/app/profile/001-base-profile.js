@@ -227,6 +227,10 @@ pref("browser.urlbar.update2.engineAliasRefresh", false);
 // https://bugzilla.mozilla.org/show_bug.cgi?id=1915280
 pref("browser.uitour.enabled", false);
 
+// tor-browser#45110: Disable unified settings until we have migrated all our
+// settings and have applied our desired changes to upstream new designs.
+pref("browser.settings-redesign.enabled", false);
+
 // Make sure Unified Telemetry is really disabled, see: #18738.
 pref("toolkit.telemetry.unified", false);
 // This needs to be locked, or nightly builds will automatically lock it to true
