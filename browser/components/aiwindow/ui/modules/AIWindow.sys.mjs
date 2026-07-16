@@ -131,7 +131,11 @@ export const AIWindow = {
     Services.obs.addObserver(this, lazy.ONLOGOUT_NOTIFICATION);
     Services.obs.addObserver(this, "tabstrip-orientation-change");
     lazy.SmartWindowTelemetry.init();
-    lazy.getAllModelsData(); // loads model data into cache for about:preferences
+    if (this.isAIWindowEnabled()) {
+      // Depends on the ml component, which tor-browser#44045 excludes from
+      // the build, so only touch it when AI Window is actually enabled.
+      lazy.getAllModelsData(); // loads model data into cache for about:preferences
+    }
     lazy.NimbusFeatures.smartWindow.onUpdate(this.onNimbusUpdate);
     this._initialized = true;
 
