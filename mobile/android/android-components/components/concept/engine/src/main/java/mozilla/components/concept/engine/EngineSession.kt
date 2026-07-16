@@ -514,7 +514,7 @@ abstract class EngineSession(private val delegate: Observable<Observer> = Observ
                     useForPrivateSessions = false,
                 useForRegularSessions = false,
                 cookiePolicy = ACCEPT_ONLY_FIRST_PARTY,
-                    bounceTrackingProtectionMode = BounceTrackingProtectionMode.ENABLED_STANDBY,
+                    bounceTrackingProtectionMode = BounceTrackingProtectionMode.DISABLED,
                 )
 
             /**
