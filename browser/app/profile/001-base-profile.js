@@ -570,10 +570,6 @@ pref("network.http.microsoft-entra-sso.enabled", false);
 pref("network.microsoft-sso-authority-list", "");
 // tor-browser#40424
 pref("pdfjs.enableScripting", false);
-#if MOZ_UPDATE_CHANNEL == release
-// tor-browser#42255: pdfjs.disabled used to be part of RFP until Bug 1838415; lock pref to false in stable
-pref("pdfjs.disabled", false, locked);
-#endif
 // tor-browser#43850. Keep forced colors off by default for all platforms.
 // Upstream sets a value of "0" for Windows.
 pref("browser.display.document_color_use", 1);
