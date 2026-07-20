@@ -2,6 +2,7 @@ package org.mozilla.fenix.tor
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -20,29 +21,34 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.BrushPainter
 import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import mozilla.components.compose.base.annotation.FlexibleWindowLightDarkPreview
 import org.mozilla.fenix.R
 
+class PaddingValuesParameterProvider : PreviewParameterProvider<PaddingValues> {
+    override val values = sequenceOf(
+        PaddingValues(top = 60.dp),
+        PaddingValues(bottom = 60.dp),
+    )
+}
+
 @Composable
 @FlexibleWindowLightDarkPreview
 fun TorHomePage(
-    toolBarAtTop: Boolean = true,
+    @PreviewParameter(PaddingValuesParameterProvider::class) innerPadding: PaddingValues,
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(
-                top = if (toolBarAtTop) dimensionResource(R.dimen.browser_navbar_height) else 0.dp,
-                bottom = if (!toolBarAtTop) dimensionResource(R.dimen.browser_navbar_height) else 0.dp,
-            )
+            .padding(innerPadding)
             .paint(
                 BrushPainter(
                     Brush.linearGradient(
