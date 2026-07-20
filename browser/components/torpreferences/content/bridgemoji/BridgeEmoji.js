@@ -5,59 +5,89 @@
    * Element to display a single bridge emoji, with a localized name.
    */
   class BridgeEmoji extends HTMLElement {
+    /**
+     * The instances that are active (in the DOM).
+     *
+     * @type {Set<BridgeEmoji>}
+     */
     static #activeInstances = new Set();
-    static #observer(subject, topic) {
-      if (topic === "intl:app-locales-changed") {
-        BridgeEmoji.#updateEmojiLangCode();
+
+    /**
+     * A promise that resolves with a list of emoji strings, in a specific
+     * order. Each BridgeEmoji instance has an `#index` in this list, which
+     * points to its corresponding emoji.
+     *
+     * @type {Promise<string[]>}
+     */
+    static #emojiListPromise = fetch(
+      "chrome://browser/content/torpreferences/bridgemoji/bridge-emojis.json"
+    ).then(response => response.json());
+
+    /**
+     * @typedef {{[key: string]: string}} EmojiAnnotations
+     *
+     * A map from an emoji's codepoint to a locale's annotation.
+     */
+    /**
+     * A promise that resolves with a map from locales to their annotations.
+     *
+     * @type {Promise<{[key: string]: EmojiAnnotattions}>}
+     */
+    static #annotationsPromise = fetch(
+      "chrome://browser/content/torpreferences/bridgemoji/annotations.json"
+    ).then(response => response.json());
+
+    /**
+     * @typedef {object} EmojiLocaleDetails
+     *
+     * @property {string[]} [emojiList] - A list of emojis as strings, in a
+     *   specific order.
+     * @property {EmojiAnnotations} [annotations] - The annotations for the
+     *   locale.
+     * @property {string} [unknownString] - The string to use for emojis with
+     *   undefined annotations.
+     */
+    /**
+     * The cached locale details.
+     *
+     * @type {EmojiLocaleDetails}
+     */
+    static #emojiLocaleDetails = {};
+
+    /**
+     * A promise that resolves when the previous call to appLocalesChanged
+     * completes.
+     *
+     * @type {Promise?}
+     */
+    static #prevAppLocalesChangedCall = null;
+
+    /**
+     * Update the locale used for bridge emoji widget.
+     */
+    static async appLocalesChanged() {
+      // Introduce a queue to ensure calls apply in the order they are invoked,
+      // so the last seen locale will eventually be the applied one.
+      const { promise, resolve } = Promise.withResolvers();
+      const prevAppLocalesChangedCall = this.#prevAppLocalesChangedCall;
+      this.#prevAppLocalesChangedCall = promise;
+      try {
+        await prevAppLocalesChangedCall;
+        await this.#appLocalesChangedInternal();
+      } finally {
+        resolve();
       }
     }
 
-    static #addActiveInstance(inst) {
-      if (this.#activeInstances.size === 0) {
-        Services.obs.addObserver(this.#observer, "intl:app-locales-changed");
-        this.#updateEmojiLangCode();
-      }
-      this.#activeInstances.add(inst);
-    }
+    static async #appLocalesChangedInternal() {
+      let [emojiAnnotations, emojiList, unknownString] = await Promise.all([
+        this.#annotationsPromise,
+        this.#emojiListPromise,
+        // Grab the string for the new locale.
+        document.l10n.formatValue("tor-bridges-emoji-unknown"),
+      ]);
 
-    static #removeActiveInstance(inst) {
-      this.#activeInstances.delete(inst);
-      if (this.#activeInstances.size === 0) {
-        Services.obs.removeObserver(this.#observer, "intl:app-locales-changed");
-      }
-    }
-
-    /**
-     * The language code for emoji annotations.
-     *
-     * null if unset.
-     *
-     * @type {string?}
-     */
-    static #emojiLangCode = null;
-    /**
-     * A promise that resolves to two JSON structures for bridge-emojis.json and
-     * annotations.json, respectively.
-     *
-     * @type {Promise}
-     */
-    static #emojiPromise = Promise.all([
-      fetch(
-        "chrome://browser/content/torpreferences/bridgemoji/bridge-emojis.json"
-      ).then(response => response.json()),
-      fetch(
-        "chrome://browser/content/torpreferences/bridgemoji/annotations.json"
-      ).then(response => response.json()),
-    ]);
-
-    static #unknownStringPromise = null;
-
-    /**
-     * Update #emojiLangCode.
-     */
-    static async #updateEmojiLangCode() {
       let langCode;
-      const emojiAnnotations = (await BridgeEmoji.#emojiPromise)[1];
       // Find the first desired locale we have annotations for.
       // Add "en" as a fallback.
       for (const bcp47 of [...Services.locale.appLocalesAsBCP47, "en"]) {
@@ -71,14 +101,14 @@
           break;
         }
       }
-      if (langCode !== this.#emojiLangCode) {
-        this.#emojiLangCode = langCode;
-        this.#unknownStringPromise = document.l10n.formatValue(
-          "tor-bridges-emoji-unknown"
-        );
-        for (const inst of this.#activeInstances) {
-          inst.update();
-        }
+
+      this.#emojiLocaleDetails = {
+        emojiList,
+        annotations: emojiAnnotations[langCode],
+        unknownString,
+      };
+      for (const inst of this.#activeInstances) {
+        inst.update();
       }
     }
 
@@ -86,22 +116,15 @@
      * Update the bridge emoji to show their corresponding emoji with an
      * annotation that matches the current locale.
      */
-    async update() {
-      if (!this.#active) {
-        return;
-      }
+    update() {
+      const { emojiList, annotations, unknownString } =
+        BridgeEmoji.#emojiLocaleDetails;
 
-      if (!BridgeEmoji.#emojiLangCode) {
-        // No lang code yet, wait until it is updated.
+      if (!this.#active || !emojiList || !annotations || !unknownString) {
         return;
       }
 
       const doc = this.ownerDocument;
-      const [unknownString, [emojiList, emojiAnnotations]] = await Promise.all([
-        BridgeEmoji.#unknownStringPromise,
-        BridgeEmoji.#emojiPromise,
-      ]);
-
       const emoji = emojiList[this.#index];
       let emojiName;
       if (!emoji) {
@@ -113,7 +136,7 @@
           "src",
           `chrome://browser/content/torpreferences/bridgemoji/svgs/${cp}.svg`
         );
-        emojiName = emojiAnnotations[BridgeEmoji.#emojiLangCode][cp];
+        emojiName = annotations[cp];
       }
       if (!emojiName) {
         doc.defaultView.console.error(`No emoji for index ${this.#index}`);
@@ -157,13 +180,13 @@
       }
 
       this.#active = true;
-      BridgeEmoji.#addActiveInstance(this);
+      BridgeEmoji.#activeInstances.add(this);
       this.update();
     }
 
     disconnectedCallback() {
       this.#active = false;
-      BridgeEmoji.#removeActiveInstance(this);
+      BridgeEmoji.#activeInstances.delete(this);
     }
 
     /**
@@ -196,4 +219,20 @@
   }
 
   customElements.define("tor-bridge-emoji", BridgeEmoji);
+
+  {
+    const appLocalesChanged = BridgeEmoji.appLocalesChanged.bind(BridgeEmoji);
+    Services.obs.addObserver(appLocalesChanged, "intl:app-locales-changed");
+    window.addEventListener(
+      "unload",
+      () => {
+        Services.obs.removeObserver(
+          appLocalesChanged,
+          "intl:app-locales-changed"
+        );
+      },
+      { once: true }
+    );
+    appLocalesChanged();
+  }
 }
