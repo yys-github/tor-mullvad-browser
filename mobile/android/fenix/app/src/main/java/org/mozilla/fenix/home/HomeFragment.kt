@@ -567,7 +567,7 @@ class HomeFragment : Fragment() {
     private fun initComposeTorHomePageView(view: ComposeView) {
         view.setContent {
             FirefoxTheme {
-                val isToolbarAtTop = requireComponents.settings.toolbarPosition == ToolbarPosition.TOP
+                val isToolbarAtTop = components.settings.toolbarPosition == ToolbarPosition.TOP
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize()
@@ -583,8 +583,8 @@ class HomeFragment : Fragment() {
                         }
                     },
                     containerColor = Color.Transparent,
-                ) { _ ->
-                    TorHomePage(toolBarAtTop = isToolbarAtTop)
+                ) { innerPadding ->
+                    TorHomePage(innerPadding = innerPadding)
                 }
             }
         }
