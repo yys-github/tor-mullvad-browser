@@ -628,7 +628,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
             summarizeToolbarHighlightBinding,
             components.core.summarizationSettingsBinding,
             translationsAIControllableFeatureRegistrar,
-            ipProtectionPrompter,
         )
 
         addAboutHomeBinding(lifecycle)
