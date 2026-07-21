@@ -257,7 +257,7 @@ fun MainMenu(
             )
         }
 
-        if (showIPProtection) {
+        if (false) {
             MenuGroup {
                 IPProtectionMenuItem(
                     state = ipProtectionMenuState,
@@ -736,7 +736,7 @@ private fun MenuDialogPreview(@PreviewParameter(PreviewThemeProvider::class) the
                 showBanner = true,
                 isDownloadHighlighted = true,
                 webExtensionMenuCount = 1,
-                showIPProtection = true,
+                showIPProtection = false,
                 ipProtectionMenuState = IPProtectionMenuState(),
                 onMoreMenuClick = {},
                 onCustomizeReaderViewMenuClick = {},
