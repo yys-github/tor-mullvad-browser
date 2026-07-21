@@ -559,7 +559,6 @@ class HomeFragment : Fragment() {
         initReviewPromptBinding(view = view)
         initTabsCleanupFeature(view = view)
         initSnackbarBinding(view = view)
-        initIpProtectionBindings(view = view)
         initContinuousOnboardingFeature()
 
         privacyNoticeBannerStore = PrivacyNoticeBannerStore(
