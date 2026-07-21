@@ -454,13 +454,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment,
                 SettingsFragmentDirections.actionSettingsFragmentToHttpsOnlyFragment()
             }
 
-            resources.getString(R.string.pref_key_ip_protection_settings) -> {
-                Vpn.settingsPageTapped.record(Vpn.SettingsPageTappedExtra(entrypoint = "Settings"))
-                SettingsFragmentDirections.actionSettingsFragmentToIpProtectionFragment(
-                    entrypoint = FenixFxAEntryPoint.IPProtectionSettings,
-                )
-            }
-
             resources.getString(R.string.pref_key_tracking_protection_settings) -> {
                 TrackingProtection.etpSettings.record(NoExtras())
                 SettingsFragmentDirections.actionSettingsFragmentToTrackingProtectionFragment()
@@ -675,7 +668,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment,
         setupGeckoLogsPreference(settings)
         setupSecurityLevelPreference()
         setupHttpsOnlyPreferences(settings)
-        setupIPProtectionPreferences(components.ipProtection.store)
         setupNotificationPreference(
             NotificationManagerCompat.from(requireContext()).areNotificationsEnabled(),
         )

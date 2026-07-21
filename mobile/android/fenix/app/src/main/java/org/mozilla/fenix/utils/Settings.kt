@@ -2803,19 +2803,15 @@ class Settings(
      * Persists IPProtection state set through Secret Settings.
      *
      * `true` makes the IPProtection UI elements visible across the app, while `false` hides them.
+     *  TOR Note: This is "Mozilla VPN" and should always be disabled for the tor browser
      */
-    var isIPProtectionEnabled by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_enable_ip_protection),
-        default = false,
-    )
+    var isIPProtectionEnabled = false
 
     /**
      * Indicates if the user has already toggled the VPN on.
+     * TOR Note: This is "Mozilla VPN" and should always be disabled for the tor browser
      */
-    var hasAlreadyUsedVpn by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_has_used_ip_protection),
-        default = false,
-    )
+    var hasAlreadyUsedVpn = false
 
     /**
      * Indicates if the IPProtection onboarding bottom sheet has been already shown to the user.
@@ -2823,19 +2819,17 @@ class Settings(
      * `true` makes the IPProtection bottom sheet appear, while `false` ensures the user does not see
      * the bottom sheet again. This is only shown to the user once and
      * if they dismiss it in anyway (e.g. tap on "Not now" or "Get started") then they will never see it again.
+     * TOR Note: This is "Mozilla VPN" and should always be disabled for the tor browser
      */
-    var hasShownIPProtectionPrompt by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_has_shown_ip_protection_prompt),
-        default = false,
-    )
+    var hasShownIPProtectionPrompt = false
 
     /**
      * Indicates if the IPProtection feature is available for the user.
      *
      * The flag is backed by a Nimbus `ip-protection` feature, with an option to override it through secret settings.
+     * TOR Note: This is "Mozilla VPN" and should always be disabled for the tor browser
      */
-    val isIPProtectionAvailable: Boolean
-        get() = FxNimbus.features.ipProtection.value().enabled || isIPProtectionEnabled
+    val isIPProtectionAvailable: Boolean = false
 
     /**
      * Tracks how many times the summarize menu item has been shown.

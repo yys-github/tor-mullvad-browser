@@ -126,12 +126,6 @@
             app:isPreferenceVisible="false"
             android:title="@string/preferences_private_browsing_options" />
 
-        <org.mozilla.fenix.settings.IPProtectionPreference
-            android:key="@string/pref_key_ip_protection_settings"
-            app:iconSpaceReserved="false"
-            app:isPreferenceVisible="false"
-            app:allowDividerAbove="false"/>
-
         <androidx.preference.Preference
             android:key="@string/pref_key_https_only_settings"
             app:iconSpaceReserved="false"

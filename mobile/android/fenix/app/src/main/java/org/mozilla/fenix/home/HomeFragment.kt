@@ -529,7 +529,6 @@ class HomeFragment : Fragment(), UserInteractionHandler {
         initReviewPromptBinding(view = view)
         initTabsCleanupFeature(view = view)
         initSnackbarBinding(view = view)
-        initIpProtectionBindings(view = view)
 
         privacyNoticeBannerStore = PrivacyNoticeBannerStore(
             initialState = PrivacyNoticeBannerState(
