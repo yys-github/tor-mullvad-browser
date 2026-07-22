@@ -8,9 +8,9 @@
 #include "mozilla/Maybe.h"
 #include "mozilla/StaticPrefs_widget.h"
 #include "mozilla/gfx/Helpers.h"
+#include "nsContentUtils.h"
 #include "nsLayoutUtils.h"
 #include "nsNativeTheme.h"
-#include "nsContentUtils.h"
 
 using mozilla::gfx::sRGBColor;
 
