@@ -348,14 +348,22 @@ var read_setting_from_prefs = function (prefNames) {
     // For the given settingIndex, check if all current pref values
     // match the setting.
     for (const prefName of prefNames) {
-      const wanted = kSecuritySettings[prefName][settingIndex];
-      const actual = Services.prefs.getBoolPref(prefName);
-      if (wanted !== actual) {
-        possibleSetting = false;
-        logger.debug(
-          `${prefName} does not match level ${settingIndex}: ${actual}, should be ${wanted}!`
-        );
-        break;
+      try {
+        const wanted = kSecuritySettings[prefName][settingIndex];
+        const actual = Services.prefs.getBoolPref(prefName);
+        if (wanted !== actual) {
+          possibleSetting = false;
+          logger.debug(
+            `${prefName} does not match level ${settingIndex}: ${actual}, should be ${wanted}!`
+          );
+          break;
+        }
+      } catch (e) {
+        // All the relevant prefs must have a defined default.
+        // If we get here, a preference might have been dropped upstream,
+        // therefore it makes sense to ignore it to determine the security
+        // level, but warn so that we have a look at what went wrong.
+        logger.warn(`Cannot get the value for ${prefName}`, e);
       }
     }
     if (possibleSetting) {
