@@ -2727,14 +2727,14 @@ class Settings(
     var isEmailMaskSuggestionEnabled by
         booleanPreference(
             key = appContext.getPreferenceKey(R.string.pref_key_email_mask_suggestion),
-            default = true,
+            default = false,
         )
 
     /** Indicates if the email mask CFR should be shown. */
     var shouldShowEmailMaskCfr by
         booleanPreference(
             key = appContext.getPreferenceKey(R.string.pref_key_should_show_email_mask_cfr),
-            default = true,
+            default = false,
         )
 
     /** Indicates if the feature to close synced tabs is enabled. */
