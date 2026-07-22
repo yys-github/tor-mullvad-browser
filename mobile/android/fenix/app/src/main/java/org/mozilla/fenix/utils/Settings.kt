@@ -2719,7 +2719,7 @@ class Settings(
      */
     var isEmailMaskSuggestionEnabled by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_email_mask_suggestion),
-        default = true,
+        default = false,
     )
 
     /**
@@ -2727,7 +2727,7 @@ class Settings(
      */
     var shouldShowEmailMaskCfr by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_should_show_email_mask_cfr),
-        default = true,
+        default = false,
     )
 
     /**
