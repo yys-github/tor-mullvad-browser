@@ -14,6 +14,7 @@
 #include "nsSimpleEnumerator.h"
 #include "nsString.h"
 #include "nsXREDirProvider.h"
+#include "nsXULAppAPI.h"
 #include "prenv.h"
 #if defined(MOZ_WIDGET_COCOA)
 #  include <Carbon/Carbon.h>
