@@ -629,7 +629,7 @@ class Settings(
     )
 
     /**
-     * Remove in 15.0 release.
+     * Remove after 16.0 release (i.e. 17.0 release cycle) tor-browser#45139
      */
     private fun migrateTorSecurityLevel(): Int? {
         return when {
