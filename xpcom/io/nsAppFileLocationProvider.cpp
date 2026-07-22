@@ -12,6 +12,7 @@
 #include "nsString.h"
 #include "nsSimpleEnumerator.h"
 #include "nsXREDirProvider.h"
+#include "nsXULAppAPI.h"
 #include "prenv.h"
 #include "nsCRT.h"
 #if defined(MOZ_WIDGET_COCOA)
