@@ -424,7 +424,9 @@ mod tests {
         assert!(!factory.has_pending_data());
 
         assert_eq!(
-            factory.build(&Bytes::from_static(b"250 OK\r\nA\r\n")).unwrap_err(),
+            factory
+                .build(&Bytes::from_static(b"250 OK\r\nA\r\n"))
+                .unwrap_err(),
             ReplyError::LineTooShort,
         );
         assert!(!factory.has_pending_data());
