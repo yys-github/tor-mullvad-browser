@@ -1095,7 +1095,7 @@ features:
       enabled:
         description: If true, Email Mask feature is enabled.
         type: Boolean
-        default: true
+        default: false
 
   ip-protection:
     description: Feature to enable IP Protection (VPN) for users on Firefox on Android.
