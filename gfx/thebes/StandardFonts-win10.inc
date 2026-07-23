@@ -278,7 +278,7 @@ static const FontSubstitute kFontSubstitutes[] = {
 
 #endif
 
-#ifdef FontInclusionByLocaleRules
+#if defined(FontInclusionByLocaleRules) && !defined(BASE_BROWSER_VERSION)
 
 FONT_RULE("arabic typesetting", {"ar", MatchSetting::StartsWith},
           {"fa", MatchSetting::StartsWith})
