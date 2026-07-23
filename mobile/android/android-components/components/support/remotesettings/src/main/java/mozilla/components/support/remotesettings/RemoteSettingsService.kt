@@ -28,7 +28,7 @@ class RemoteSettingsService(
     isLargeScreenSize: Boolean = false,
 ) {
     val remoteSettingsService: AppServicesRemoteSettingsService by lazy {
-        RemoteSettingsService() /* no-op */
+        AppServicesRemoteSettingsService() /* no-op */
     }
 }
 
