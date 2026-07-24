@@ -15,7 +15,8 @@ import java.util.concurrent.TimeUnit
 import kotlinx.coroutines.CoroutineScope
 import mozilla.components.concept.ai.controls.AIFeatureBlock
 import mozilla.components.concept.ai.controls.AIFeatureRegistry
-import mozilla.components.concept.integrity.RequestHashProvider
+import mozilla.components.concept.integrity.IntegrityClient
+import mozilla.components.concept.integrity.IntegrityToken
 import mozilla.components.feature.addons.AddonManager
 import mozilla.components.feature.addons.amo.AMOAddonsProvider
 import mozilla.components.feature.addons.migration.DefaultSupportedAddonsChecker
@@ -30,8 +31,6 @@ import mozilla.components.lib.ai.controls.dataStore
 import mozilla.components.lib.ai.controls.default
 import mozilla.components.lib.crash.store.CrashAction
 import mozilla.components.lib.crash.store.CrashMiddleware
-import mozilla.components.lib.integrity.googleplay.GooglePlayIntegrityClient
-import mozilla.components.lib.integrity.googleplay.IntegrityConsumer
 import mozilla.components.lib.llm.mlpa.MlpaTokenStorage
 import mozilla.components.lib.publicsuffixlist.PublicSuffixList
 import mozilla.components.service.fxrelay.eligibility.RelayEligibilityStore
@@ -422,12 +421,14 @@ class Components(
         )
     }
 
-    val integrityClient by lazyMonitored {
-        GooglePlayIntegrityClient.create(
-            context = context,
-            projectNumberToken = BuildConfig.GPS_INTEGRITY_TOKEN,
-            requestHashProvider = RequestHashProvider { clientUUID.generateHash() },
-        )
+    // tor-browser#45085: Disable Google Play Integrity
+    val integrityClient: IntegrityClient by lazyMonitored {
+        object : IntegrityClient {
+            override suspend fun warmUp() = false
+
+            override suspend fun request(): Result<IntegrityToken> =
+                Result.failure(IllegalStateException("Google Play Integrity is disabled"))
+        }
     }
 
     val termsOfUsePromptRepository by lazyMonitored {
@@ -519,7 +520,7 @@ class Components(
             client = core.client,
             storage = MlpaTokenStorage.sharedPrefs(context),
             fxaTokenProvider = backgroundServices.accountManager.accessTokenProvider,
-            integrityClient = integrityClient.forConsumer(IntegrityConsumer.Summarize),
+            integrityClient = integrityClient,
             userIdProvider = clientUUID,
         )
     }
