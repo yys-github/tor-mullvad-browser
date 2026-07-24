@@ -550,7 +550,6 @@ dependencies {
     implementation project(':components:lib-push-firebase')
     implementation project(':components:lib-state')
     implementation project(':components:lib-accelerometer-sensormanager')
-    implementation project(':components:lib-integrity-googleplay')
     implementation project(':components:lib-llm-mlpa')
     implementation project(':components:lib-shake')
     implementation project(':components:lib-ai-controls')
