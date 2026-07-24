@@ -30,9 +30,6 @@ import mozilla.components.lib.ai.controls.dataStore
 import mozilla.components.lib.ai.controls.default
 import mozilla.components.lib.crash.store.CrashAction
 import mozilla.components.lib.crash.store.CrashMiddleware
-import mozilla.components.lib.integrity.googleplay.GooglePlayIntegrityClient
-import mozilla.components.lib.integrity.googleplay.IntegrityConsumer
-import mozilla.components.lib.integrity.googleplay.RequestHashProvider
 import mozilla.components.lib.llm.mlpa.MlpaTokenStorage
 import mozilla.components.lib.publicsuffixlist.PublicSuffixList
 import mozilla.components.service.fxrelay.eligibility.RelayEligibilityStore
@@ -393,16 +390,9 @@ class Components(
         )
     }
 
-    private val googlePlayIntegrityClient by lazyMonitored {
-        GooglePlayIntegrityClient.create(
-            context = context,
-            projectNumberToken = BuildConfig.GPS_INTEGRITY_TOKEN,
-            requestHashProvider = RequestHashProvider { clientUUID.generateHash() },
-        )
-    }
-
+    // tor-browser#45085: Disable Google Play Integrity
     val integrityClient: IntegrityClient by lazyMonitored {
-        googlePlayIntegrityClient.forConsumer(IntegrityConsumer.Summarize)
+        IntegrityClient { Result.failure(IllegalStateException("Google Play Integrity is disabled")) }
     }
 
     /**
@@ -410,7 +400,7 @@ class Components(
      * separately from [integrityClient] because warm-up is specific to the Google
      * Play-backed implementation and isn't part of the [IntegrityClient] concept.
      */
-    suspend fun warmUpIntegrityClient(): Boolean = googlePlayIntegrityClient.warmUp()
+    suspend fun warmUpIntegrityClient(): Boolean = false // tor-browser#45085: no-op
 
     val termsOfUsePromptRepository by lazyMonitored {
         DefaultTermsOfUsePromptRepository(settings)
