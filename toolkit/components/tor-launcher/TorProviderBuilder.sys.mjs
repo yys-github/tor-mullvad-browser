@@ -81,9 +81,9 @@ export const TorProviders = Object.freeze({
 
 /**
  * @typedef {object} LogEntry An object with a log message
- * @property {string} timestamp The local date-time stamp at which we received the message
- * @property {string} type The message level
- * @property {string} msg The message
+ * @property {string} timestamp The UTC date-time stamp at which we received the message
+ * @property {string} severity The message severity
+ * @property {string} message The message
  */
 
 /**
@@ -182,7 +182,18 @@ export class TorProviderBuilder {
       1000
     );
     this.#logObserver = subject => {
-      this.#addLogEntry(subject.wrappedJSObject);
+      let entry;
+      try {
+        entry = subject.QueryInterface(Ci.torITorLogEntry);
+      } catch (e) {
+        lazy.logger.warn("TorLog with invalid subject", e, subject);
+        return;
+      }
+      this.#addLogEntry({
+        severity: entry.severity,
+        message: entry.message,
+        timestamp: entry.timestamp,
+      });
     };
     Services.obs.addObserver(this.#logObserver, TorProviderTopics.TorLog);
 

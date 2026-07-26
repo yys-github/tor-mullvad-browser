@@ -1,0 +1,55 @@
+/* This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
+
+#include "nsISupports.idl"
+
+/**
+ * The information about the bootstrap status.
+ * The values are extracted from C-tor's STATUS_CLIENT events, except for
+ * shouldWarn, which is derived from the RECOMMENDATION value.
+ */
+[scriptable, uuid(64b3197d-0b1e-46a1-aa18-8cea11bacf97)]
+interface torITorBootstrapStatus : nsISupports {
+  readonly attribute octet progress;
+  readonly attribute ACString severity;
+  readonly attribute ACString tag;
+  readonly attribute ACString summary;
+  readonly attribute ACString reason;
+  readonly attribute boolean shouldWarn;
+};
+
+/**
+ * A tor log message.
+ * The severity might be also something not used by C-tor.
+ */
+[scriptable, uuid(f6d18f7d-c29c-4bf3-bf70-7d6bed3b427e)]
+interface torITorLogEntry : nsISupports {
+  readonly attribute ACString severity;
+  readonly attribute ACString message;
+  readonly attribute ACString timestamp;
+};
+
+/**
+ * A tor node information.
+ * The bridgeType and regionCode should be used only when isBridge is true.
+ */
+[scriptable, uuid(7547d8e5-a93e-4a0c-9876-a7a2cc44e80f)]
+interface torITorNodeInfo : nsISupports {
+  readonly attribute ACString fingerprint;
+  readonly attribute Array<ACString> ipAddrs;
+  readonly attribute boolean isBridge;
+  readonly attribute ACString bridgeType;
+  readonly attribute ACString regionCode;
+};
+
+/**
+ * The information to associate a SOCKS isolation credential (the combination
+ * of SOCKS username and password) to one or more circuits.
+ */
+[scriptable, uuid(a85269dc-1aca-4aec-87a6-88ff035f0eaa)]
+interface torITorStreamInfo : nsISupports {
+  readonly attribute ACString socksUsername;
+  readonly attribute ACString socksPassword;
+  readonly attribute Array<Array<torITorNodeInfo> > circuits;
+};

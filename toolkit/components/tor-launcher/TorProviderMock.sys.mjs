@@ -3,19 +3,19 @@ import { TorProviderBase } from "moz-src:///toolkit/components/tor-launcher/TorP
 import { TorProviderTopics } from "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs";
 
 const kBootstrapSteps = [
-  { PROGRESS: 5, TAG: "starting", SUMMARY: "Starting" },
-  { PROGRESS: 14, TAG: "handshake", SUMMARY: "Handshaking with a relay" },
+  { progress: 5, tag: "starting", summary: "Starting" },
+  { progress: 14, tag: "handshake", summary: "Handshaking with a relay" },
   {
-    PROGRESS: 45,
-    TAG: "requesting_descriptors",
-    SUMMARY: "Asking for relay descriptors",
+    progress: 45,
+    tag: "requesting_descriptors",
+    summary: "Asking for relay descriptors",
   },
   {
-    PROGRESS: 75,
-    TAG: "loading_descriptors",
-    SUMMARY: "Loading relay descriptors",
+    progress: 75,
+    tag: "loading_descriptors",
+    summary: "Loading relay descriptors",
   },
-  { PROGRESS: 100, TAG: "done", SUMMARY: "Done" },
+  { progress: 100, tag: "done", summary: "Done" },
 ];
 
 const kBootstrapStepDelayMs = 500;
@@ -48,7 +48,15 @@ export class TorProviderMock extends TorProviderBase {
       const id = setTimeout(
         () => {
           Services.obs.notifyObservers(
-            { ...step, TYPE: "NOTICE" },
+            {
+              ...step,
+              severity: "NOTICE",
+              reason: "",
+              shouldWarn: false,
+              QueryInterface: ChromeUtils.generateQI([
+                Ci.torITorBootstrapStatus,
+              ]),
+            },
             TorProviderTopics.BootstrapStatus
           );
         },

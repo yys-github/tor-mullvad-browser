@@ -644,17 +644,22 @@ export const TorLauncherUtil = {
    * Therefore, the messages should avoid containing any information that might
    * identify information about the user.
    *
-   * @param {string} type The log type (ERR, WARN, etc...)
-   * @param {string} msg The log message
+   * @param {string} severity The log severity (ERR, WARN, etc...)
+   * @param {string} message The log message
    */
-  log(type, msg) {
+  log(severity, message) {
     const timestamp =
       new Date().toISOString().replace("T", " ").replace("Z", "") + " UTC";
     Services.obs.notifyObservers(
-      { type, msg, timestamp },
+      {
+        severity,
+        message,
+        timestamp,
+        QueryInterface: ChromeUtils.generateQI([Ci.torITorLogEntry]),
+      },
       lazy.TorProviderTopics.TorLog
     );
-    if (type === "WARN" || type === "ERR") {
+    if (severity === "WARN" || severity === "ERR") {
       // Notify so that Copy Log can be enabled.
       Services.obs.notifyObservers(null, lazy.TorProviderTopics.HasWarnOrErr);
     }

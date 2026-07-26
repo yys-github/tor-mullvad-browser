@@ -1,3 +1,6 @@
+XPIDL_MODULE = "torlauncher"
+XPIDL_SOURCES += ["tor-launcher.idl"]
+
 MOZ_SRC_FILES += [
     "TorBootstrapRequest.sys.mjs",
     "TorControlPort.sys.mjs",
