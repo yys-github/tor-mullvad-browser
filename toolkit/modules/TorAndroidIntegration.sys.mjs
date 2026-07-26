@@ -130,13 +130,19 @@ class TorAndroidIntegrationImpl {
           {}
         );
         break;
-      case lazy.TorProviderTopics.TorLog:
-        lazy.EventDispatcher.instance.sendRequest(EmittedEvents.torLogs, {
-          logType: subj.wrappedJSObject.type ?? "",
-          message: subj.wrappedJSObject.msg ?? "",
-          timestamp: subj.wrappedJSObject.timestamp ?? "",
-        });
+      case lazy.TorProviderTopics.TorLog: {
+        try {
+          const entry = subj.QueryInterface(Ci.torITorLogEntry);
+          lazy.EventDispatcher.instance.sendRequest(EmittedEvents.torLogs, {
+            logType: entry.severity,
+            message: entry.message,
+            timestamp: entry.timestamp,
+          });
+        } catch (e) {
+          logger.warn("Failed to dispatch a log event", e, subj);
+        }
         break;
+      }
       case lazy.TorSettingsTopics.Ready:
         lazy.EventDispatcher.instance.sendRequest(EmittedEvents.settingsReady, {
           settings: lazy.TorSettings.getSettings(),
