@@ -7,10 +7,7 @@ import { clearTimeout, setTimeout } from "resource://gre/modules/Timer.sys.mjs";
 import { TorLauncherUtil } from "moz-src:///toolkit/components/tor-launcher/TorLauncherUtil.sys.mjs";
 import { TorParsers } from "moz-src:///toolkit/components/tor-launcher/TorParsers.sys.mjs";
 import { TorProviderBase } from "moz-src:///toolkit/components/tor-launcher/TorProviderBase.sys.mjs";
-import {
-  TorBootstrapError,
-  TorProviderTopics,
-} from "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs";
+import { TorProviderTopics } from "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs";
 
 const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
@@ -57,12 +54,12 @@ const logger = console.createInstance({
  * @typedef NodeData
  * @property {NodeFingerprint} fingerprint The node fingerprint
  * @property {string[]} ipAddrs The ip addresses associated with this node
- * @property {string?} bridgeType The bridge type for this node, or "" if the
- *   node is a bridge but the type is unknown, or null if this is not a bridge
- *   node
- * @property {string?} regionCode An upper case 2-letter ISO3166-1 code for the
- *   first ip address, or null if there is no region. This should also be a
- *   valid BCP47 Region subtag
+ * @property {boolean} isBridge Whether the node is a bridge.
+ * @property {string} bridgeType The bridge type for this node, or an empty
+ *   string if the type is unknown or the node is not a bridge.
+ * @property {string} regionCode An upper case 2-letter ISO3166-1 code for the
+ *   first ip address. This should also be a valid BCP47 Region subtag.
+ *   It will be an empty string if the node is not a bridge.
  */
 
 const Preferences = Object.freeze({
@@ -929,14 +926,16 @@ export class TorProvider extends TorProviderBase {
       const node = {
         fingerprint: id,
         ipAddrs: [],
-        bridgeType: null,
-        regionCode: null,
+        isBridge: false,
+        bridgeType: "",
+        regionCode: "",
       };
 
       const bridge = (await this.#controller.getBridges())?.find(
         foundBridge => foundBridge.id?.toUpperCase() === id.toUpperCase()
       );
       if (bridge) {
+        node.isBridge = true;
         node.bridgeType = bridge.transport ?? "";
         // Attempt to get an IP address from bridge address string.
         const ip = bridge.addr.match(/^\[?([^\]]+)\]?:\d+$/)?.[1];
@@ -1006,7 +1005,10 @@ export class TorProvider extends TorProviderBase {
    */
   #processBootstrapStatus(statusObj, isNotification) {
     // Notify observers
-    Services.obs.notifyObservers(statusObj, TorProviderTopics.BootstrapStatus);
+    Services.obs.notifyObservers(
+      new TorBootstrapStatus(statusObj),
+      TorProviderTopics.BootstrapStatus
+    );
 
     if (statusObj.PROGRESS === 100) {
       return;
@@ -1044,11 +1046,7 @@ export class TorProvider extends TorProviderBase {
       // anymore, since the first error eligible for notification will as a
       // matter of fact cancel the bootstrap.
       Services.obs.notifyObservers(
-        new TorBootstrapError({
-          phase: statusObj.TAG,
-          reason: statusObj.REASON,
-          summary: statusObj.SUMMARY,
-        }),
+        new TorBootstrapStatus(statusObj),
         TorProviderTopics.BootstrapError
       );
     }
@@ -1147,14 +1145,24 @@ export class TorProvider extends TorProviderBase {
    * @param {StreamID} _streamId The ID of the stream that switched to the
    * sentconnect status.
    * @param {CircuitID} circuitId The ID of the circuit used by the stream
-   * @param {string} username The SOCKS username
-   * @param {string} password The SOCKS password
+   * @param {string} socksUsername The SOCKS username
+   * @param {string} socksPassword The SOCKS password
    */
-  async onStreamSentConnect(_streamId, circuitId, username, password) {
-    if (!username || !password) {
+  async onStreamSentConnect(
+    _streamId,
+    circuitId,
+    socksUsername,
+    socksPassword
+  ) {
+    if (!socksUsername || !socksPassword) {
       return;
     }
-    logger.debug("Stream sentconnect event", username, password, circuitId);
+    logger.debug(
+      "Stream sentconnect event",
+      socksUsername,
+      socksPassword,
+      circuitId
+    );
     if (!this.#circuits.has(circuitId)) {
       // tor-browser#42132: When using onion-grater (e.g., in Tails), we might
       // not receive the CIRC BUILT event, as it is impossible to know whether
@@ -1194,13 +1202,33 @@ export class TorProvider extends TorProviderBase {
     );
     Services.obs.notifyObservers(
       {
-        wrappedJSObject: {
-          username,
-          password,
-          circuits,
-        },
+        socksUsername,
+        socksPassword,
+        circuits,
+        QueryInterface: ChromeUtils.generateQI([Ci.torITorStreamInfo]),
       },
       TorProviderTopics.CircuitCredentialsMatched
     );
   }
+}
+
+/**
+ * A JavaScript implementation of torITorBootstrapStatus.
+ */
+class TorBootstrapStatus {
+  /**
+   * Construct a typed status object from a status object sent by TorController.
+   *
+   * @param {object} statusObj The status object parsed by the controller
+   */
+  constructor(statusObj) {
+    this.progress = statusObj.PROGRESS;
+    this.severity = statusObj.TYPE;
+    this.tag = statusObj.TAG;
+    this.summary = statusObj.SUMMARY;
+    this.reason = statusObj.REASON ?? "";
+    this.shouldWarn = statusObj.RECOMMENDATION !== "ignore";
+  }
+
+  QueryInterface = ChromeUtils.generateQI([Ci.torITorBootstrapStatus]);
 }
