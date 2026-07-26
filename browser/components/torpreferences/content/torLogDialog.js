@@ -87,7 +87,13 @@ const gTorLogDialog = {
 
   observe(subject, topic) {
     if (topic === TorProviderTopics.TorLog) {
-      this.addLogEntry(subject.wrappedJSObject, false);
+      let entry;
+      try {
+        entry = subject.QueryInterface(Ci.torITorLogEntry);
+      } catch {
+        return;
+      }
+      this.addLogEntry(entry, false);
     }
   },
 
@@ -96,7 +102,7 @@ const gTorLogDialog = {
     timeEl.textContent = logEntry.timestamp;
     timeEl.classList.add("time");
     const messageEl = document.createElement("td");
-    messageEl.textContent = `[${logEntry.type}] ${logEntry.msg}`;
+    messageEl.textContent = `[${logEntry.severity}] ${logEntry.message}`;
     messageEl.classList.add("message");
 
     const row = document.createElement("tr");
