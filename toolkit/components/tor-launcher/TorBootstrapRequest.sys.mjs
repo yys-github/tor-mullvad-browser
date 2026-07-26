@@ -7,6 +7,8 @@ ChromeUtils.defineESModuleGetters(lazy, {
     "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
   TorProviderTopics:
     "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
+  TorBootstrapError:
+    "moz-src:///toolkit/components/tor-launcher/TorProviderBuilder.sys.mjs",
 });
 
 const log = console.createInstance({
@@ -35,12 +37,18 @@ export class TorBootstrapRequest {
   #timeoutID = null;
 
   observe(subject, topic) {
-    const obj = subject?.wrappedJSObject;
     switch (topic) {
       case lazy.TorProviderTopics.BootstrapStatus: {
-        const progress = obj.PROGRESS;
+        let obj;
+        try {
+          obj = subject.QueryInterface(Ci.torITorBootstrapStatus);
+        } catch (e) {
+          log.warn("BootstrapStatus with an unexpected subject", e, subject);
+          break;
+        }
+        const progress = obj.progress;
         if (this.onbootstrapstatus) {
-          const status = obj.TAG;
+          const status = obj.tag;
           this.onbootstrapstatus(progress, status);
         }
         if (progress === 100) {
@@ -55,8 +63,21 @@ export class TorBootstrapRequest {
         break;
       }
       case lazy.TorProviderTopics.BootstrapError: {
+        let obj;
+        try {
+          obj = subject.QueryInterface(Ci.torITorBootstrapStatus);
+        } catch (e) {
+          log.warn("TorBootstrapError with an unexpected subject", e, subject);
+          break;
+        }
         log.info("TorBootstrapRequest: observerd TorBootstrapError", obj);
-        this.#stop(obj);
+        this.#stop(
+          new lazy.TorBootstrapError({
+            phase: obj.tag,
+            summary: obj.summary,
+            reason: obj.reason,
+          })
+        );
         break;
       }
     }
