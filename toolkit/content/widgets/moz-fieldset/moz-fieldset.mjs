@@ -11,12 +11,24 @@ import { MozLitElement } from "../lit-utils.mjs";
  * @type {Record<number, (label: string) => ReturnType<typeof html>>}
  */
 const HEADING_LEVEL_TEMPLATES = {
-  1: label => html`<h1 class="text-box-trim-start">${label}</h1>`,
-  2: label => html`<h2 class="text-box-trim-start">${label}</h2>`,
-  3: label => html`<h3 class="text-box-trim-start">${label}</h3>`,
-  4: label => html`<h4>${label}</h4>`,
-  5: label => html`<h5>${label}</h5>`,
-  6: label => html`<h6>${label}</h6>`,
+  1: (label, tabindex) =>
+    html`<h1 class="text-box-trim-start" tabindex=${ifDefined(tabindex)}>
+      ${label}
+    </h1>`,
+  2: (label, tabindex) =>
+    html`<h2 class="text-box-trim-start" tabindex=${ifDefined(tabindex)}>
+      ${label}
+    </h2>`,
+  3: (label, tabindex) =>
+    html`<h3 class="text-box-trim-start" tabindex=${ifDefined(tabindex)}>
+      ${label}
+    </h3>`,
+  4: (label, tabindex) =>
+    html`<h4 tabindex=${ifDefined(tabindex)}>${label}</h4>`,
+  5: (label, tabindex) =>
+    html`<h5 tabindex=${ifDefined(tabindex)}>${label}</h5>`,
+  6: (label, tabindex) =>
+    html`<h6 tabindex=${ifDefined(tabindex)}>${label}</h6>`,
 };
 
 /**
@@ -42,6 +54,9 @@ export default class MozFieldset extends MozLitElement {
     disabled: { type: Boolean, reflect: true },
     iconSrc: { type: String },
     badge: { type: String },
+    // Allows the heading to be focusable, but not part of the Tab focus cycle.
+    // See tor-browser#45143.
+    focusableHeading: { type: Boolean, attribute: "focusable-heading" },
   };
 
   constructor() {
@@ -132,10 +147,23 @@ export default class MozFieldset extends MozLitElement {
 
   legendTemplate() {
     let label =
-      HEADING_LEVEL_TEMPLATES[this.headingLevel]?.(this.label) || this.label;
+      HEADING_LEVEL_TEMPLATES[this.headingLevel]?.(
+        this.label,
+        this.focusableHeading ? "-1" : undefined
+      ) || this.label;
     return html`<legend part="label">
       ${this.iconTemplate()}${label}${this.badgeTemplate()}
     </legend>`;
+  }
+
+  /**
+   * Move the user's focus to the heading, if it is focusable.
+   */
+  focusHeading() {
+    if (!this.focusableHeading) {
+      return;
+    }
+    this.shadowRoot.querySelector("h1,h2,h3,h4,h5,h6")?.focus();
   }
 
   iconTemplate() {
