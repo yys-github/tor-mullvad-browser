@@ -6,7 +6,6 @@ package org.mozilla.fenix.components
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.core.content.edit
 import java.security.MessageDigest
 import java.util.UUID
 import mozilla.components.lib.llm.mlpa.UserIdProvider
@@ -62,13 +61,9 @@ internal class PrefsBackedClientUUID(
     private val generateUUID: () -> String = { UUID.randomUUID().toString() },
     private val hasher: Hasher = Hasher.sha256,
 ) : ClientUUID {
+    // tor-browser#45134: never expose a unique, trackable per-install identifier.
     private val uuid: String by lazy {
-        getPrefs().let { prefs ->
-            prefs.getString(KEY, null)
-                ?: generateUUID().also {
-                    prefs.edit { putString(KEY, it) }
-                }
-        }
+        NIL_UUID
     }
 
     override fun getUserId() = UserId(uuid)
@@ -77,5 +72,6 @@ internal class PrefsBackedClientUUID(
 
     companion object {
         private const val KEY = "uuid"
+        private const val NIL_UUID = "00000000-0000-0000-0000-000000000000"
     }
 }
