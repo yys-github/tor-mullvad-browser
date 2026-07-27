@@ -105,7 +105,7 @@ class TabManagerCfrControllerTest {
     @Test
     fun `GIVEN an adjacent tab WHEN maybeMarkTabSwipeCfrReady is called THEN shouldShowTabSwipeCfr is set`() {
         settings.hasShownTabSwipeCFR = false
-        settings.isTabStripEnabled = false
+        // settings.isTabStripEnabled = false
         settings.isSwipeToolbarToSwitchTabsEnabled = true
         settings.shouldShowTabSwipeCFR = false
         val adjacentTab = createTab(id = "tab2", url = "")
