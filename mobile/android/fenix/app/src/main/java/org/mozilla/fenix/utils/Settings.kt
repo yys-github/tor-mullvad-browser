@@ -17,7 +17,6 @@ import androidx.annotation.VisibleForTesting.Companion.PRIVATE
 import androidx.core.content.edit
 import androidx.lifecycle.LifecycleOwner
 import androidx.preference.PreferenceManager
-import mozilla.components.browser.engine.gecko.cookiebanners.ReportSiteDomainsRepository.Companion.REPORT_SITE_DOMAINS_REPOSITORY_NAME
 import mozilla.components.concept.engine.Engine
 import mozilla.components.concept.engine.Engine.HttpsOnlyMode
 import mozilla.components.concept.engine.EngineSession.CookieBannerHandlingMode
@@ -1995,10 +1994,7 @@ class Settings(
      * application after the legacy cookie banner feature was removed.
      */
     fun deleteReportSiteDomainsDataStoreIfNeeded() {
-        if (!hasDeletedReportSiteDomainsDataStore) {
-            File(appContext.filesDir, "datastore/$REPORT_SITE_DOMAINS_REPOSITORY_NAME.preferences_pb").delete()
-            hasDeletedReportSiteDomainsDataStore = true
-        }
+        // tor-browser#45146: Audit, and restore if we could actually use this cleanup.
     }
 
     fun incrementNumTimesPrivateModeOpened() = numTimesPrivateModeOpened.increment()
