@@ -156,6 +156,11 @@ tor-bridges-group =
     .label = Bridges
     .description = Bridges help you securely access the Tor network in places where Tor is blocked. Depending on where you are, one bridge may work better than another.
 
+# "{ -brand-product-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
+# "Connection Assist" is the name of a Tor Browser feature, and is therefore capitalised in English. For translations, it should similarly be treated as a feature/product name. It should also be wrapped by the tags '<a data-l10n-name="link">' and '</a>'.
+tor-bridges-connection-assist-message = { -brand-short-name } could not connect to the Tor network. You may want to change your bridge settings below, or use <a data-l10n-name="link">Connection Assist</a> to find bridges for you.
+
+
 # Toggle button for enabling and disabling the use of bridges.
 tor-bridges-use-bridges =
     .label = Use bridges
