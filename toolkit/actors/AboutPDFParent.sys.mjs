@@ -106,7 +106,10 @@ export class AboutPDFParent extends JSWindowActorParent {
   }
 
   #canSetDefaultPDFHandler() {
-    if (!ShellService) {
+    const xreDirProvider = Cc[
+      "@mozilla.org/xre/directory-provider;1"
+    ].getService(Ci.nsIXREDirProvider);
+    if (!ShellService || xreDirProvider.isPortableMode) {
       return false;
     }
 
