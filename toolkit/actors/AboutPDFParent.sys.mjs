@@ -29,7 +29,14 @@ export class AboutPDFParent extends JSWindowActorParent {
   }
 
   #canSetDefaultPDFHandler() {
-    if (!ShellService || AppConstants.platform != "win") {
+    const xreDirProvider = Cc[
+      "@mozilla.org/xre/directory-provider;1"
+    ].getService(Ci.nsIXREDirProvider);
+    if (
+      !ShellService ||
+      AppConstants.platform != "win" ||
+      xreDirProvider.isPortableMode
+    ) {
       return false;
     }
 
