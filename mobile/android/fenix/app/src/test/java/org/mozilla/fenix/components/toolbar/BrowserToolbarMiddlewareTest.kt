@@ -234,7 +234,7 @@ class BrowserToolbarMiddlewareTest {
         every { summarizationFeatureSettings.canShowFeature } returns false
         settings.shouldUseBottomToolbar = false
         settings.shouldUseExpandedToolbar = false
-        settings.isTabStripEnabled = false
+        // settings.isTabStripEnabled = false
     }
 
     @Test
@@ -1287,7 +1287,7 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `GIVEN on a small screen with tabstrip is disabled and not using the extended layout THEN don't show a share button as page end action`() {
-        settings.isTabStripEnabled = false
+        // settings.isTabStripEnabled = false
         settings.shouldUseExpandedToolbar = false
 
         val browserScreenStore = buildBrowserScreenStore()
@@ -1299,7 +1299,7 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `GIVEN on a wide screen with tabstrip is disabled THEN show a share button as page end action`() {
-        settings.isTabStripEnabled = false
+        // settings.isTabStripEnabled = false
         val browserScreenStore = buildBrowserScreenStore()
         val middleware = buildMiddleware(
             browserScreenStore = browserScreenStore,
@@ -1313,7 +1313,7 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `GIVEN on a large screen with tabstrip is enabled THEN don't show a share button as page end action`() {
-        settings.isTabStripEnabled = true
+        // settings.isTabStripEnabled = true
         val browserScreenStore = buildBrowserScreenStore()
         val middleware = buildMiddleware(appStore, browserScreenStore)
         val toolbarStore = buildStore(middleware)
@@ -1323,7 +1323,7 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `GIVEN the current tab shows a content page WHEN the share shortcut is clicked THEN record telemetry and start sharing the local resource`() = runTest(testDispatcher) {
-        settings.isTabStripEnabled = true
+        // settings.isTabStripEnabled = true
         settings.shouldUseExpandedToolbar = false
         settings.toolbarSimpleShortcutKey = ShortcutType.SHARE.value
         val browserScreenStore = buildBrowserScreenStore()
@@ -1358,7 +1358,7 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `GIVEN the current tab shows a remote PDF WHEN the share shortcut is clicked THEN record telemetry and start sharing the remote resource`() {
-        settings.isTabStripEnabled = true
+        // settings.isTabStripEnabled = true
         settings.shouldUseExpandedToolbar = false
         settings.toolbarSimpleShortcutKey = ShortcutType.SHARE.value
         val browserScreenStore = buildBrowserScreenStore()
@@ -1403,7 +1403,7 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `GIVEN the current tab shows a normal webpage WHEN the share shortcut is clicked THEN record telemetry and open the share dialog`() {
-        settings.isTabStripEnabled = true
+        // settings.isTabStripEnabled = true
         settings.shouldUseExpandedToolbar = false
         settings.toolbarSimpleShortcutKey = ShortcutType.SHARE.value
         settings.nativeShareSheetEnabled = false
@@ -1451,7 +1451,7 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `WHEN the share shortcut is clicked THEN the share use case is invoked with the current tab's details`() {
-        settings.isTabStripEnabled = true
+        // settings.isTabStripEnabled = true
         settings.shouldUseExpandedToolbar = false
         settings.toolbarSimpleShortcutKey = ShortcutType.SHARE.value
 
@@ -1492,7 +1492,7 @@ class BrowserToolbarMiddlewareTest {
     @Test
     fun `GIVEN on a small width with tabstrip is enabled and not using the extended layout THEN show the tab strip shortcut, tab counter and menu as browser end actions`() {
         settings.shouldUseExpandedToolbar = false
-        settings.isTabStripEnabled = true
+        // settings.isTabStripEnabled = true
         settings.toolbarTabStripShortcutKey = ShortcutType.SHARE.value
         val browserScreenStore = buildBrowserScreenStore()
         val middleware = buildMiddleware(
@@ -1514,7 +1514,7 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `GIVEN expanded toolbar with tabstrip and tall window WHEN changing to short window THEN show the tab strip shortcut, tab counter and menu`() = runTest(testDispatcher) {
-        settings.isTabStripEnabled = true
+        // settings.isTabStripEnabled = true
         settings.shouldUseExpandedToolbar = true
         settings.toolbarTabStripShortcutKey = ShortcutType.SHARE.value
         val browserScreenStore = buildBrowserScreenStore()
@@ -1551,7 +1551,7 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `GIVEN on a wide window with tabstrip and extended layout enabled THEN don't show a share button as browser end action`() {
-        settings.isTabStripEnabled = true
+        // settings.isTabStripEnabled = true
         settings.shouldUseExpandedToolbar = true
 
         val browserScreenStore = buildBrowserScreenStore()
@@ -1564,7 +1564,7 @@ class BrowserToolbarMiddlewareTest {
     @Test
     fun `WHEN cycling through tall window and wide window THEN update what end page actions should be shown`() {
         val appStore = AppStore()
-        settings.isTabStripEnabled = false
+        // settings.isTabStripEnabled = false
         settings.shouldUseExpandedToolbar = false
         val readerModeStatus: ReaderModeStatus = mockk(relaxed = true) {
             every { isAvailable } returns true
@@ -3261,7 +3261,7 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `GIVEN share shortcut is selected THEN update end page actions without share action`() = runTest(testDispatcher) {
-        settings.isTabStripEnabled = false
+        // settings.isTabStripEnabled = false
         settings.toolbarSimpleShortcutKey = ShortcutType.SHARE.value
         val browserScreenStore = buildBrowserScreenStore()
         val middleware = buildMiddleware(
@@ -3511,7 +3511,7 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `GIVEN simple toolbar use share shortcut AND wide window with tabstrip enabled WHEN initializing toolbar THEN only show one Share in end browser actions`() {
-        settings.isTabStripEnabled = true
+        // settings.isTabStripEnabled = true
         settings.toolbarTabStripShortcutKey = ShortcutType.SHARE.value
 
         val middleware = buildMiddleware(
@@ -3532,7 +3532,7 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `GIVEN tab strip enabled WHEN building end browser actions THEN use tab strip shortcut instead of simple shortcut`() = runTest(testDispatcher) {
-        settings.isTabStripEnabled = true
+        // settings.isTabStripEnabled = true
         settings.toolbarSimpleShortcutKey = ShortcutType.NEW_TAB.value
         settings.toolbarTabStripShortcutKey = ShortcutType.BOOKMARK.value
 
@@ -3545,7 +3545,7 @@ class BrowserToolbarMiddlewareTest {
 
     @Test
     fun `GIVEN tab strip disabled WHEN building end browser actions THEN use simple shortcut`() = runTest(testDispatcher) {
-        settings.isTabStripEnabled = false
+        // settings.isTabStripEnabled = false
         settings.toolbarSimpleShortcutKey = ShortcutType.NEW_TAB.value
 
         val toolbarStore = buildStore()
