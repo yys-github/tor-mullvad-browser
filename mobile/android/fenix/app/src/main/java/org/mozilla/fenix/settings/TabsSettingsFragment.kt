@@ -28,7 +28,7 @@ import androidx.preference.Preference
 import org.mozilla.fenix.ext.registerForActivityResult
 import org.mozilla.fenix.settings.biometric.DefaultBiometricUtils
 import org.mozilla.fenix.settings.biometric.ext.isAuthenticatorAvailable
-import org.mozilla.fenix.settings.biometric.ext.isHardwareAvailable
+import org.mozilla.fenix.settings.biometric.ext.isDeviceLockCapable
 
 /**
  * Lets the user customize auto closing tabs.
@@ -152,7 +152,7 @@ class TabsSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
 
     private fun setUpHideBrowsingSessionPreference() {
         val biometricManager = BiometricManager.from(requireContext())
-        val deviceCapable = biometricManager.isHardwareAvailable()
+        val deviceCapable = biometricManager.isDeviceLockCapable()
         val userHasEnabledCapability = biometricManager.isAuthenticatorAvailable()
 
         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_private_browsing_locked_enabled).apply {
