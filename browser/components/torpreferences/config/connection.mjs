@@ -4,6 +4,8 @@ import { Preferences } from "chrome://global/content/preferences/Preferences.mjs
 const lazy = {};
 ChromeUtils.defineESModuleGetters(lazy, {
   InternetStatus: "moz-src:///toolkit/modules/TorConnect.sys.mjs",
+  moveFocusToBridgeHeading:
+    "chrome://browser/content/torpreferences/config/helpers.mjs",
   openBridgeDialog:
     "chrome://browser/content/torpreferences/config/helpers.mjs",
   openUserProvideBridgeDialog:
@@ -68,6 +70,18 @@ SettingGroupManager.registerGroups({
     headingLevel: 2,
     controlAttrs: { "focusable-heading": true },
     items: [
+      {
+        id: "connectionAssistBanner",
+        // NOTE: Instead of using a custom widget for this one banner, we could
+        // use moz-message-bar and populate it's children. However, we want to
+        // intercept the "click" event for the "Connection Assist" link within
+        // the banner text. As of ESR 153, onUserClick would not allow us to
+        // intercept the event because the `<a>` would need to be wrapped in a
+        // `<setting-control>`. But Fluent would not allow wrapping the
+        // `<setting-control>` element as part of a wider string (unlike
+        // `<a data-l10n-name="link">`, which is allowed). tor-browser#43939.
+        control: "tor-connection-assist-banner",
+      },
       {
         id: "bridgesEnabled",
         l10nId: "tor-bridges-use-bridges",
@@ -250,6 +264,27 @@ Preferences.addSetting({
   },
   set(val) {
     lazy.TorConnect.quickstart = val;
+  },
+});
+
+Preferences.addSetting({
+  id: "connectionAssistBanner",
+  deps: ["torStatus"],
+  _wasVisible: false,
+  visible({ torStatus }) {
+    const visible = torStatus.value === "potentially-blocked";
+    if (
+      !visible &&
+      this._wasVisible &&
+      document
+        .getElementById("connectionAssistBanner")
+        ?.contains(document.activeElement)
+    ) {
+      // About to loose focus, move focus to the bridge heading.
+      lazy.moveFocusToBridgeHeading(window, true);
+    }
+    this._wasVisible = visible;
+    return visible;
   },
 });
 
