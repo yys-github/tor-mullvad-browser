@@ -95,6 +95,8 @@ Preferences.addSetting({
 
 Preferences.addSetting({
   id: "related-settings-home-link",
+  // Hide the "Customize Firefox Home" link. tor-browser#45156.
+  visible: () => false,
   onUserClick: e => {
     e.preventDefault();
     window.gotoPref("paneHome");
