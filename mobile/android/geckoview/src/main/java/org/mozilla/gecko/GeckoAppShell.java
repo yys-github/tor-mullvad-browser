@@ -1426,6 +1426,11 @@ public class GeckoAppShell {
     }
   }
 
+  @WrapForJNI
+  public static String getPackageResourcePath() {
+    return getApplicationContext().getPackageResourcePath();
+  }
+
   @WrapForJNI(calledFrom = "any")
   public static int getAudioOutputFramesPerBuffer() {
     if (BuildConfig.DEBUG_BUILD && isIsolatedProcess()) {
