@@ -64,6 +64,7 @@ category browser-window-delayed-startup resource:///modules/HomePage.sys.mjs Hom
 category browser-window-delayed-startup moz-src:///browser/components/reportbrokensite/ReportBrokenSite.sys.mjs ReportBrokenSite.init
 category browser-window-delayed-startup moz-src:///browser/components/search/SearchUIUtils.sys.mjs SearchUIUtils.init
 category browser-window-delayed-startup resource:///modules/taskbartabs/TaskbarTabsPageAction.sys.mjs TaskbarTabsPageAction.init
+category browser-window-delayed-startup moz-src:///browser/modules/TorProviderExternalNotification.sys.mjs TorProviderExternalNotification.delayedStartup
 
 category browser-window-location-change chrome://browser/content/browser-places.js BookmarkingUI.onLocationChange
 category browser-window-location-change chrome://browser/content/browser-sitePermissionPanel.js gPermissionPanel.onLocationChange
@@ -93,6 +94,7 @@ category browser-window-unload chrome://browser/content/browser.js#CombinedStopR
 category browser-window-unload chrome://browser/content/browser-addons.js gUnifiedExtensions.uninit
 category browser-window-unload chrome://browser/content/browser.js#FirefoxViewHandler FirefoxViewHandler.uninit
 category browser-window-unload moz-src:///browser/components/tabbrowser/NewTabPagePreloading.sys.mjs NewTabPagePreloading.removePreloadedBrowser
+category browser-window-unload moz-src:///browser/modules/TorProviderExternalNotification.sys.mjs TorProviderExternalNotification.unload
 
 # The category below is specific to Tabbrowser destruction. For consumers that need to uninitialize during
 # window unload, use 'browser-window-unload' instead.
