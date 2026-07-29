@@ -46,6 +46,15 @@ tor-connect-tor-not-working-restarting-button =
     .label = Restarting Tor process…
 tor-connect-tor-not-working-restarting-failed = Restarting failed
 
+## External Tor process error.
+
+# "{ -brand-short-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
+tor-external-process-error-message = { -brand-short-name } can’t communicate with your external Tor application, which may cause some browser features to malfunction. Check that the external application is running, or reconfigure its communication with { -brand-short-name }.
+tor-external-process-error-retry-button =
+    .label = Retry communication
+tor-external-process-error-retry-button-retrying =
+    .label = Retrying communication…
+
 ## Tor Browser home page.
 
 tor-browser-home-heading-stable = Explore. Privately.
