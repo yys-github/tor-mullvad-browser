@@ -4366,12 +4366,14 @@ export class Extension extends ExtensionData {
     }
 
     // tor-browser#40253: Explicitly allow NoScript in Private Browsing mode.
+    // tor-browser#45157: Grant "access local files" permission to NoScript.
     if (this.isNoScript) {
       lazy.ExtensionPermissions.add(this.id, {
-        permissions: [PRIVATE_ALLOWED_PERMISSION],
+        permissions: [PRIVATE_ALLOWED_PERMISSION, "internal:fileSchemeAllowed"],
         origins: [],
       });
       this.permissions.add(PRIVATE_ALLOWED_PERMISSION);
+      this.permissions.add("internal:fileSchemeAllowed");
     }
 
     // We only want to update the SVG_CONTEXT_PROPERTIES_PERMISSION during
