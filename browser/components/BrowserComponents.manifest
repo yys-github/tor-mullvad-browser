@@ -99,6 +99,7 @@ category browser-window-delayed-startup chrome://browser/content/browser-develop
 #endif
 category browser-window-delayed-startup chrome://browser/content/browser-addons.js gExtensionsNotifications.init
 category browser-window-delayed-startup chrome://browser/content/browser-captivePortal.js CaptivePortalWatcher.delayedStartup
+category browser-window-delayed-startup moz-src:///browser/modules/TorProviderExternalNotification.sys.mjs TorProviderExternalNotification.delayedStartup
 
 # browser-window-sessionstore-initialized is fired from the window's delayed startup once SessionStore is initialized.
 category browser-window-sessionstore-initialized chrome://browser/content/browser.js#gRestoreLastSessionObserver gRestoreLastSessionObserver.init
@@ -154,6 +155,7 @@ category browser-window-unload chrome://browser/content/browser-places.js#Bookma
 category browser-window-unload chrome://browser/content/browser-gestureSupport.js#gGestureSupport gGestureSupport.uninit
 category browser-window-unload chrome://browser/content/browser-gestureSupport.js#gHistorySwipeAnimation gHistorySwipeAnimation.uninit
 category browser-window-unload chrome://browser/content/browser-sync.js gSync.uninit
+category browser-window-unload moz-src:///browser/modules/TorProviderExternalNotification.sys.mjs TorProviderExternalNotification.unload
 
 # Teardown for `browser-window-delayed-startup` consumers. Fired only when the
 # window's delayed startup actually ran.
