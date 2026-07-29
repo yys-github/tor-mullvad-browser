@@ -772,7 +772,7 @@ addon-page-header .main-search {
   visibility: hidden;
 }
 
-#help-button,
+[support-page="addons-help"],
 #empty-addons-message {
   display: none;
 }
