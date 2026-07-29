@@ -227,7 +227,7 @@ nsXREDirProvider::Release() { return 0; }
 nsresult nsXREDirProvider::GetUserProfilesRootDir(nsIFile** aResult) {
   nsCOMPtr<nsIFile> file;
   nsresult rv = NS_OK;
-#if !defined(TOR_BROWSER) && defined(XP_MACOSX) && defined(NIGHTLY_BUILD)
+#if defined(XP_MACOSX) && defined(NIGHTLY_BUILD)
   const char* appGroup = PR_GetEnv("MOZ_APP_GROUP");
   if (appGroup && *appGroup && strcmp(appGroup, "0") != 0) {
     nsCOMPtr<nsIFile> group;
