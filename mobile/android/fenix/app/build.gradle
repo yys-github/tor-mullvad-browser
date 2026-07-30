@@ -291,18 +291,12 @@ androidComponents {
     onVariants(selector().all()) { variant ->
         def buildType = variant.buildType
 
-        // When this is set, a-s doesn't attempt to download NIMBUS_FML.
-        if (gradle.mozconfig.substs.NIMBUS_FML) {
-            System.setProperty("nimbusFml",  gradle.mozconfig.substs.NIMBUS_FML)
-        }
-
         def disableTor = providers.gradleProperty("disableTor").getOrElse(false)
 
         project.logger.debug("----------------------------------------------")
         project.logger.debug("Variant name:      " + variant.name)
         project.logger.debug("Build type:        " + buildType)
         project.logger.debug("Flavor:            " + variant.flavorName)
-        project.logger.debug("nimbusFml:         " + providers.gradleProperty("nimbusFml").getOrNull())
         project.logger.debug("Tor is disabled:   " + disableTor)
 
         variant.buildConfigFields.put("DISABLE_TOR", new BuildConfigField("boolean", "$disableTor", null))
