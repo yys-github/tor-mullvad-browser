@@ -19,6 +19,7 @@ ChromeUtils.defineESModuleGetters(lazy, {
   BrowserUtils: "resource://gre/modules/BrowserUtils.sys.mjs",
   OpenSearchManager:
     "moz-src:///browser/components/search/OpenSearchManager.sys.mjs",
+  PrivateBrowsingUtils: "resource://gre/modules/PrivateBrowsingUtils.sys.mjs",
   SearchUIUtils: "moz-src:///browser/components/search/SearchUIUtils.sys.mjs",
 });
 
@@ -458,9 +459,18 @@ export class SearchModeSwitcher {
       // search modes. Hence when the settings redesign is enabled we show
       // all local search modes regardless of the prefs.
       this.#engines = searchEngines.concat(
-        UrlbarShared.LOCAL_SEARCH_MODES.filter(
-          engine => lazy.settingsRedesignEnabled || UrlbarPrefs.get(engine.pref)
-        )
+        UrlbarShared.LOCAL_SEARCH_MODES.filter(engine => {
+          // Do not show the search history option in PBM. tor-browser#43864.
+          // Although, it can still be triggered with "^" restrict keyword or
+          // through an app menu item. See also mozilla bug 1980928.
+          if (
+            engine.source === UrlbarShared.RESULT_SOURCE.HISTORY &&
+            lazy.PrivateBrowsingUtils.permanentPrivateBrowsing
+          ) {
+            return false;
+          }
+          return lazy.settingsRedesignEnabled || UrlbarPrefs.get(engine.pref);
+        })
       );
     }
   }
