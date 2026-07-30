@@ -2056,30 +2056,11 @@ class Settings(
         default = true,
     )
 
-    var isSearchOptimizationEnabled by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_search_optimization_feature),
-        default = { FxNimbus.features.searchOptimizationOption.value().enabled },
-    )
-
-    var shouldShowSearchOptimizationCards by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_search_optimization_cards),
-        default = { isSearchOptimizationEnabled },
-    )
-
-    var shouldShowSearchOptimizationStockCard by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_search_optimization_stocks),
-        default = { FxNimbus.features.searchOptimizationOption.value().showStocksCard },
-    )
-
-    var shouldShowSearchOptimizationFlightCard by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_search_optimization_flights),
-        default = { FxNimbus.features.searchOptimizationOption.value().showFlightsCard },
-    )
-
-    var shouldShowSearchOptimizationSportCard by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_search_optimization_sports),
-        default = { FxNimbus.features.searchOptimizationOption.value().showSportsCard },
-    )
+    var isSearchOptimizationEnabled = false
+    var shouldShowSearchOptimizationCards = false
+    var shouldShowSearchOptimizationStockCard = false
+    var shouldShowSearchOptimizationFlightCard = false
+    var shouldShowSearchOptimizationSportCard = false
 
     var isTabStripEnabled by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_tab_strip_show),
