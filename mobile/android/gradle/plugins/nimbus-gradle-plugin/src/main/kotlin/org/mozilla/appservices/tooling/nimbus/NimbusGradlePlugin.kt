@@ -118,20 +118,20 @@ class NimbusPlugin : Plugin<Project> {
         @Suppress("UNCHECKED_CAST")
         val mozconfigSubsts = mozconfig?.get("substs") as? Map<String, Any>
 
-        if (mozconfigSubsts?.get("MOZ_APPSERVICES_IN_TREE").isTruthy()) {
-            // This is subtle.  We capture `NIMBUS_FML` in the configuration cache as a `String`.
-            // If we access `project.gradle...` in the `provider` `Callable` below, we capture the
-            // `Project` in the configuration cache, which is not desirable.
-            //
-            // We can't produce a `File` immediately, because in some configurations, namely
-            // `android-gradle-dependencies` tasks, `NIMBUS_FML` is legitimately unset (`null`).  So
-            // we pass strings around and map to `File` types lazily "by hand".
-            //
-            // Finally: if this process fails, including with an exception, the framework swallows
-            // the details and says something like `MissingValueException`, which can be hard to
-            // interpret.  Hence, this explanation of the details.
-            val nimbusFmlPath = mozconfigSubsts?.get("NIMBUS_FML") as? String
+        // This is subtle.  We capture `NIMBUS_FML` in the configuration cache as a `String`.
+        // If we access `project.gradle...` in the `provider` `Callable` below, we capture the
+        // `Project` in the configuration cache, which is not desirable.
+        //
+        // We can't produce a `File` immediately, because in some configurations, namely
+        // `android-gradle-dependencies` tasks, `NIMBUS_FML` is legitimately unset (`null`).  So
+        // we pass strings around and map to `File` types lazily "by hand".
+        //
+        // Finally: if this process fails, including with an exception, the framework swallows
+        // the details and says something like `MissingValueException`, which can be hard to
+        // interpret.  Hence, this explanation of the details.
+        val nimbusFmlPath = mozconfigSubsts?.get("NIMBUS_FML") as? String
 
+        if (nimbusFmlPath != null) {
             val fmlBinaryString = project.providers.provider {
                 nimbusFmlPath
             }
