@@ -130,6 +130,9 @@ pref("browser.pagethumbnails.capturing_disabled", true);
 // Users can still opt-in if they wish.
 pref("browser.backup.enabled", false);
 pref("browser.backup.scheduled.enabled", false);
+// tor-browser#45123: Disable the profile automated backup and restore service.
+pref("browser.backup.archive.enabled", false);
+pref("browser.backup.restore.enabled", false);
 
 // Empty clipboard content from private windows on exit (tor-browser#42154)
 pref("browser.privatebrowsing.preserveClipboard", false);
