@@ -1117,3 +1117,6 @@ pref("browser.laterrun.enabled", false, locked);
 
 // tor-browser#44123: Never trim the protocol off of URLs.
 pref("browser.urlbar.trimURLs", false);
+
+// tor-browser#45171: Disabled split view which is janky.
+pref("browser.tabs.splitView.enabled", false);
