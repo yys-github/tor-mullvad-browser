@@ -91,7 +91,7 @@ body:not(.no-update) #mullvad-browser-intro {
     /* Dark background. */
     background: linear-gradient(to bottom, var(--branding-gradient-start) 0%, var(--branding-gradient-middle) 55%, var(--branding-gradient-end) 100%);
     /* Same as --text-color when "prefers-color-scheme: dark" */
-    --text-color-dark: var(--color-gray-05);
+    --text-color-dark: var(--color-gray-0);
     color: var(--text-color-dark);
 
     --link-color: var(--branding-link-color);
