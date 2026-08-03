@@ -899,7 +899,9 @@ SettingGroupManager.registerGroups({
   },
   websiteLanguage: {
     inProgress: true,
-    l10nId: "website-language-heading",
+    // Modify the description to remove any mention of choosing the order of
+    // languages. tor-browser#45176.
+    l10nId: "website-language-heading-no-preferred-order",
     headingLevel: 2,
     iconSrc: "chrome://global/skin/icons/defaultFavicon.svg",
     items: [
@@ -942,9 +944,14 @@ SettingGroupManager.registerGroups({
           },
         ],
       },
+      {
+        id: "websiteSpoofEnglish",
+        l10nId: "languages-customize-spoof-english",
+      },
     ],
   },
-  websiteSpoofEnglish: {
+  // TODO: Remove once we switch to the new settings redesign. tor-browser#45177
+  websiteSpoofEnglishControl: {
     items: [
       {
         id: "websiteSpoofEnglish",
