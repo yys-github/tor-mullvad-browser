@@ -110,6 +110,11 @@ browser-layout-show-sidebar-limited =
     .label = Show sidebar
     .description = Quickly access bookmarks and more without leaving your main view.
 
+## Preferences - Search suggestions.
+
+search-suggestions-warning-banner =
+    .message = Turning this on reduces your privacy by sharing your queries with the search engine as you type.
+
 ## Preferences - Contrast Control.
 
 preferences-contrast-control-fixed-color2 =
