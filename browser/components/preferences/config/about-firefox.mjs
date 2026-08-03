@@ -573,7 +573,8 @@ SettingGroupManager.registerGroups({
             l10nId: "support-share-ideas",
             control: "moz-box-link",
             controlAttrs: {
-              href: "https://connect.mozilla.org/",
+              // Update the URL for Tor Browser. tor-browser#45178.
+              href: "https://forum.torproject.org",
             },
           },
         ],
