@@ -256,8 +256,8 @@ void EndSubmitClick(EventChainVisitor& aVisitor) {
 }
 
 void HTMLButtonElement::ActivationBehavior(EventChainPostVisitor& aVisitor) {
+  auto endSubmit = MakeScopeExit([&] { EndSubmitClick(aVisitor); });
   if (!aVisitor.mPresContext) {
-    // Should check whether EndSubmitClick is needed here.
     return;
   }
 
