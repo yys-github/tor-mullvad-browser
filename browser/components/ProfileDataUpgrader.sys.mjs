@@ -1040,7 +1040,8 @@ export let ProfileDataUpgrader = {
     // Version 4: 15.0a2: Drop ML components. tor-browser#44045.
     // Version 5: 15.0a3: Disable LaterRun using prefs. tor-browser#42630.
     // Version 6: 15.0a4: Reset browser colors. tor-browser#43850.
-    const MIGRATION_VERSION = 6;
+    // Version 7: 16.0a10: Reset safe browsing preferences. tor-browser#44802.
+    const MIGRATION_VERSION = 7;
     const MIGRATION_PREF = "basebrowser.migration.version";
 
     if (isNewProfile) {
@@ -1136,6 +1137,21 @@ export let ProfileDataUpgrader = {
         ]) {
           Services.prefs.clearUserPref(prefName);
         }
+      }
+    }
+    if (currentVersion < 7) {
+      // Clear these preferences since:
+      // + They aren't expected to work.
+      // + We are hiding the UI to change these. tor-browser#44802.
+      for (const prefName of [
+        "browser.safebrowsing.phishing.enabled",
+        "browser.safebrowsing.malware.enabled",
+        "browser.safebrowsing.downloads.enabled",
+        "browser.safebrowsing.downloads.remote.block_uncommon",
+        "browser.safebrowsing.downloads.remote.block_potentially_unwanted",
+        "urlclassifier.malwareTable",
+      ]) {
+        Services.prefs.clearUserPref(prefName);
       }
     }
     Services.prefs.setIntPref(MIGRATION_PREF, MIGRATION_VERSION);
