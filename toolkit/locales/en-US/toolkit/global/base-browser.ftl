@@ -122,6 +122,14 @@ preferences-contrast-control-fixed-color2 =
     .accesskey = F
     .description = This will be detectable by websites and will make you appear more unique to web trackers.
 
+## Preferences - Language.
+
+# "{ -brand-short-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
+# This is modified from the "website-language-heading" string from Firefox. See Firefox's translation on Pontoon using the "LOCALES" tab: https://pontoon.mozilla.org/ar/firefox/browser/browser/preferences/preferences.ftl/?string=328899 .
+website-language-heading-no-preferred-order =
+    .label = Website language
+    .description = Some web pages are displayed in multiple languages. Choose how { -brand-short-name } should request them.
+
 ## Security level toolbar button.
 ## Uses sentence case in English (US).
 ## ".label" is the accessible name, and shown in the overflow menu and when customizing the toolbar.
