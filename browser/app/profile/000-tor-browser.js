@@ -3,7 +3,7 @@
 pref("app.update.notifyDuringDownload", true);
 pref("app.update.badgeWaitTime", 0);
 // point to our feedback url rather than Mozilla's
-pref("app.feedback.baseURL", "https://support.torproject.org/%LOCALE%/misc/bug-or-feedback/");
+pref("app.feedback.baseURL", "https://support.torproject.org/%LOCALE/get-in-touch/bug-or-feedback");
 
 pref("browser.shell.checkDefaultBrowser", false);
 
@@ -49,7 +49,7 @@ pref("extensions.torbutton.use_nontor_proxy", false);
 pref("browser.startup.homepage", "about:tor");
 
 // General browser support url. tor-browser#43864 and tor-browser#40899.
-pref("browser.base-browser-support-url", "https://support.torproject.org/tbb");
+pref("browser.base-browser-support-url", "https://support.torproject.org/tor-browser");
 
 // tor-browser#40701: Add new download warning
 pref("browser.download.showTorWarning", true);
