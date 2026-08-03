@@ -2470,6 +2470,8 @@ Preferences.addSetting({
 Preferences.addSetting({
   id: "enableSafeBrowsing",
   deps: ["enableSafeBrowsingPhishing", "enableSafeBrowsingMalware"],
+  // Does not work in Tor Browser. tor-browser#44802.
+  visible: () => false,
   get: (_value, deps) => {
     return (
       deps.enableSafeBrowsingPhishing.value &&
@@ -2499,12 +2501,8 @@ Preferences.addSetting(
       uncommonDownloads:
         "browser.safebrowsing.downloads.remote.block_potentially_unwanted",
     },
-    ({ malware, phishing, downloads, unwantedDownloads, uncommonDownloads }) =>
-      (!malware.value && !malware.locked) ||
-      (!phishing.value && !phishing.locked) ||
-      (!downloads.value && !downloads.locked) ||
-      (!unwantedDownloads.value && !unwantedDownloads.locked) ||
-      (!uncommonDownloads.value && !uncommonDownloads.locked),
+    // Does not work in Tor Browser. tor-browser#44802.
+    () => false,
     true
   )
 );
