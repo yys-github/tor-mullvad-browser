@@ -492,6 +492,20 @@
         this.control.removeNotification(this);
       }
 
+      setAlertRole() {
+        // Wait a little for this to render before setting the role for more
+        // consistent alerts to screen readers.
+        // tor-browser#45186: "role" is a mapped attribute, so `removeAttribute`
+        // will go undetected by the moz-message-bar widget. Instead we set the
+        // role property directly.
+        this.role = undefined;
+        window.requestAnimationFrame(() => {
+          window.requestAnimationFrame(() => {
+            this.role = "alert";
+          });
+        });
+      }
+
       handleEvent(e) {
         // If clickjacking delay is active, prevent any "click"/"command" from
         // going through. Also restart the delay if the user tries to click too early.
