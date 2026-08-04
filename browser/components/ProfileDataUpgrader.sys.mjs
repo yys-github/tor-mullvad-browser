@@ -1074,6 +1074,8 @@ export let ProfileDataUpgrader = {
     // Version 5: 15.0a3: Disable LaterRun using prefs. tor-browser#42630.
     // Version 6: 15.0a4: Reset browser colors. tor-browser#43850.
     // Version 7: 16.0a10: Reset safe browsing preferences. tor-browser#44802.
+    //                     Also reset delete downloads preferences.
+    //                     tor-browser#45187.
     const MIGRATION_VERSION = 7;
     const MIGRATION_PREF = "basebrowser.migration.version";
 
@@ -1173,16 +1175,20 @@ export let ProfileDataUpgrader = {
       }
     }
     if (currentVersion < 7) {
-      // Clear these preferences since:
-      // + They aren't expected to work.
-      // + We are hiding the UI to change these. tor-browser#44802.
       for (const prefName of [
+        // Clear these preferences since:
+        // + They aren't expected to work.
+        // + We are hiding the UI to change these. tor-browser#44802.
         "browser.safebrowsing.phishing.enabled",
         "browser.safebrowsing.malware.enabled",
         "browser.safebrowsing.downloads.enabled",
         "browser.safebrowsing.downloads.remote.block_uncommon",
         "browser.safebrowsing.downloads.remote.block_potentially_unwanted",
         "urlclassifier.malwareTable",
+        // Clear the downloads preferences for alpha profiles in case we want to
+        // re-offer this feature again in the future. tor-browser#45187.
+        "browser.download.deletePrivate",
+        "browser.download.deletePrivate.chosen",
       ]) {
         Services.prefs.clearUserPref(prefName);
       }
