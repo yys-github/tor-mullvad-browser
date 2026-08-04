@@ -37,6 +37,8 @@ import mozilla.components.compose.browser.toolbar.ui.TabCounter
 import mozilla.components.compose.browser.toolbar.ui.ActionButton as ActionButtonComposable
 import mozilla.components.ui.icons.R as iconsR
 
+import mozilla.components.compose.browser.toolbar.concept.NoopAction
+
 /**
  * A container for displaying [Action]s.
  *
@@ -125,6 +127,8 @@ fun ActionContainer(
                         )
                     }
                 }
+
+                else -> NoopAction()
             }
         }
     }

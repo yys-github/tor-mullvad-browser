@@ -152,6 +152,8 @@ import mozilla.components.lib.state.Action as MVIAction
 import mozilla.components.ui.icons.R as iconsR
 import mozilla.components.ui.tabcounter.R as tabcounterR
 
+import mozilla.components.compose.browser.toolbar.concept.NoopAction
+
 @VisibleForTesting
 internal sealed class DisplayActions(override val source: Source) : BrowserToolbarEvent {
     data class MenuClicked(override val source: Source) : DisplayActions(source)
@@ -1333,12 +1335,6 @@ class BrowserToolbarMiddleware(
             )
         }
 
-        ToolbarAction.Share -> ActionButtonRes(
-            drawableResId = iconsR.drawable.mozac_ic_share_android_24,
-            contentDescription = R.string.browser_menu_share,
-            onClick = ShareClicked(source),
-        )
-
         ToolbarAction.Homepage -> ActionButtonRes(
             drawableResId = iconsR.drawable.mozac_ic_home_24,
             contentDescription = R.string.browser_menu_homepage,
@@ -1354,6 +1350,8 @@ class BrowserToolbarMiddleware(
             },
             onClick = SummarizeClicked(source),
         )
+
+        else -> NoopAction()
     }
 
     private fun buildSiteInfoAction(

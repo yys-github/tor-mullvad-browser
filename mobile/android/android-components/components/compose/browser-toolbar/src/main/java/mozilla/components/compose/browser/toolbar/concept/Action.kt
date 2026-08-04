@@ -195,3 +195,5 @@ sealed class Action {
         val testTag: String? = null,
     ) : Action()
 }
+
+class NoopAction : Action()
