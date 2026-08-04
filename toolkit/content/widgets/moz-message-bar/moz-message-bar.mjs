@@ -65,8 +65,9 @@ export default class MozMessageBar extends MozLitElement {
     supportPage: { type: String },
     messageL10nId: { type: String },
     messageL10nArgs: { type: String },
-    role: { type: String, reflect: true },
-    useAlertRole: { type: Boolean },
+    // Move the role from the widget to its shadow root, where we can apply
+    // aria-labelledby and aria-describedby. tor-browser#45186.
+    role: { type: String, mapped: true },
   };
 
   constructor() {
@@ -127,8 +128,6 @@ export default class MozMessageBar extends MozLitElement {
      * @type {string}
      */
     this.role = "alert";
-
-    this.useAlertRole = true;
   }
 
   onActionSlotchange() {
@@ -168,17 +167,6 @@ export default class MozMessageBar extends MozLitElement {
       name="support-link"
       @slotchange=${this.onLinkSlotChange}
     ></slot>`;
-  }
-
-  setAlertRole() {
-    // Wait a little for this to render before setting the role for more
-    // consistent alerts to screen readers.
-    this.useAlertRole = false;
-    window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
-        this.useAlertRole = true;
-      });
-    });
   }
 
   iconTemplate() {
@@ -224,6 +212,16 @@ export default class MozMessageBar extends MozLitElement {
   }
 
   render() {
+    let ariaLabelledBy;
+    let ariaDescribedBy;
+    if (this.role === "alert") {
+      if (this.heading) {
+        ariaLabelledBy = "heading";
+        ariaDescribedBy = "content";
+      } else {
+        ariaLabelledBy = "content";
+      }
+    }
     return html`
       <link
         rel="stylesheet"
@@ -231,9 +229,9 @@ export default class MozMessageBar extends MozLitElement {
       />
       <div
         class="container"
-        role=${ifDefined(this.useAlertRole ? "alert" : undefined)}
-        aria-labelledby=${this.heading ? "heading" : "content"}
-        aria-describedby=${ifDefined(this.heading ? "content" : undefined)}
+        role=${ifDefined(this.role || undefined)}
+        aria-labelledby=${ifDefined(ariaLabelledBy)}
+        aria-describedby=${ifDefined(ariaDescribedBy)}
       >
         ${this.iconTemplate()}
         <div class="content">
