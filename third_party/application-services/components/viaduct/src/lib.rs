@@ -98,7 +98,8 @@ impl Request {
     /// Note: newer code is encouraged to construct a `Client` instance and use that to send
     /// requests.
     pub fn send(self) -> Result<Response, ViaductError> {
-        Client::default().send_sync(self)
+        // tor-browser#44576: Force an error as a defense-in-depth.
+        Err(ViaductError::NetworkError("Viaduct requests are disabled.".into()))
     }
 
     /// Alias for `Request::new(Method::Get, url)`, for convenience.
