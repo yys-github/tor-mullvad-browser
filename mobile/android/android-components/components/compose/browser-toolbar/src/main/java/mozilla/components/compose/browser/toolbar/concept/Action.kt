@@ -197,3 +197,5 @@ sealed class Action {
         val onAnimationStarted: (() -> Unit)? = null,
     ) : Action()
 }
+
+class NoopAction : Action()
