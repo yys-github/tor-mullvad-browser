@@ -160,6 +160,8 @@ import org.mozilla.fenix.utils.Settings
 import org.mozilla.fenix.utils.Stories.hasUrlOfAHomeScreenStory
 import org.mozilla.fenix.utils.Stories.hasUrlOfAStoriesScreenStory
 
+import mozilla.components.compose.browser.toolbar.concept.NoopAction
+
 @VisibleForTesting
 internal sealed class DisplayActions(override val source: Source) : BrowserToolbarEvent {
     data class MenuClicked(override val source: Source) : DisplayActions(source)
@@ -1427,13 +1429,6 @@ class BrowserToolbarMiddleware(
                 )
             }
 
-            ToolbarAction.Share ->
-                ActionButtonRes(
-                    drawableResId = iconsR.drawable.mozac_ic_share_android_24,
-                    contentDescription = R.string.browser_menu_share,
-                    onClick = ShareClicked(source),
-                )
-
             ToolbarAction.Homepage ->
                 ActionButtonRes(
                     drawableResId = iconsR.drawable.mozac_ic_home_24,
@@ -1452,6 +1447,8 @@ class BrowserToolbarMiddleware(
                         },
                     onClick = SummarizeClicked(source),
                 )
+
+            else -> NoopAction()
         }.run {
             when {
                 isShortcut && this is ActionButtonRes -> copy(onLongClick = buildShortcutLongPressMenu(source))
