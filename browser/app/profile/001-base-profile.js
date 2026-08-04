@@ -72,6 +72,10 @@ pref("browser.helperApps.deleteTempFileOnExit", true);
 // Prevent download stuffing / DOS (tor-browser#41764)
 pref("browser.download.enable_spam_prevention", true);
 
+// tor-browser#45187: Disable offering to delete downloaded files when closing
+// private browsing windows because it does not work as expected in 16.0.
+pref("browser.download.enableDeletePrivate", false);
+
 // tor-browser#41131: This is normally gated on
 // privacy.sanitize.sanitizeOnShutdown, which is false by default. But in case
 // users enable it, make sure background tasks are not used for this, since we
