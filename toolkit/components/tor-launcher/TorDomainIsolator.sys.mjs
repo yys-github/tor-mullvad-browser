@@ -288,8 +288,34 @@ class TorDomainIsolatorImpl {
         // TODO: What UX to use here? See tor-browser#41708
       }
     } else if (topic === lazy.TorProviderTopics.CircuitCredentialsMatched) {
-      const { username, password, circuits } = subject.wrappedJSObject;
-      this.#updateCircuits(username, password, circuits);
+      let streamInfo;
+      try {
+        streamInfo = subject?.QueryInterface(Ci.torITorStreamInfo);
+      } catch (e) {
+        logger.warn(
+          "CircuitCredentialsMatched with invalid stream info",
+          e,
+          subject
+        );
+      }
+      if (streamInfo) {
+        const circuits = streamInfo.circuits?.map(circuit =>
+          circuit.map(node => {
+            return {
+              fingerprint: node.fingerprint,
+              ipAddrs: node.ipAddrs,
+              isBridge: node.isBridge,
+              bridgeType: node.bridgeType,
+              regionCode: node.regionCode,
+            };
+          })
+        );
+        this.#updateCircuits(
+          streamInfo.socksUsername,
+          streamInfo.socksPassword,
+          circuits
+        );
+      }
     }
   }
 
