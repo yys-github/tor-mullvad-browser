@@ -1384,23 +1384,23 @@ async function ensureCertErrorCode() {
     i++;
     errorCode = await retryCertErrorCode();
   }
+}
 
-  if (!errorCode) {
-    errorCode = gErrorCode;
+async function maybeRedirectToBootstrap() {
+  if (gErrorCode !== "proxyConnectFailure") {
+    return;
   }
-  if (errorCode === "proxyConnectFailure") {
-    let inIframe;
-    try {
-      inIframe = window.self !== window.top;
-    } catch {
-      // Assume a frame if access to top is blocked.
-      inIframe = true;
-    }
-    if (!inIframe && (await RPMSendQuery("ShouldShowTorConnect"))) {
-      // pass orginal destination as redirect param
-      const encodedRedirect = encodeURIComponent(document.location.href);
-      document.location.replace(`about:torconnect?redirect=${encodedRedirect}`);
-    }
+  let inIframe;
+  try {
+    inIframe = window.self !== window.top;
+  } catch {
+    // Assume a frame if access to top is blocked.
+    inIframe = true;
+  }
+  if (!inIframe && (await RPMSendQuery("ShouldShowTorConnect"))) {
+    // pass orginal destination as redirect param
+    const encodedRedirect = encodeURIComponent(document.location.href);
+    document.location.replace(`about:torconnect?redirect=${encodedRedirect}`);
   }
 }
 
@@ -1416,6 +1416,7 @@ function maybeShowSSLKeyLoggingWarning() {
 
 async function main() {
   await ensureCertErrorCode();
+  await maybeRedirectToBootstrap();
   if (!NetErrorCard.isSupported()) {
     // Initialize the error registry for legacy path
     initializeRegistry();
