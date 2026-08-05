@@ -51,6 +51,11 @@ export class TorProcessAndroid {
    * it failed to start tor.
    */
   #startReject = null;
+  /**
+   * Tells whether we ever registered ourself as the listener to the various
+   * process events.
+   */
+  #registeredListeners = false;
 
   onExit = () => {};
 
@@ -74,6 +79,7 @@ export class TorProcessAndroid {
       this,
       Object.values(TorIncomingEvents)
     );
+    this.#registeredListeners = true;
     let config;
     try {
       config = await lazy.EventDispatcher.instance.sendRequestForResult(
@@ -103,10 +109,13 @@ export class TorProcessAndroid {
     });
     logger.debug("Sent the stop event.");
     this.#processHandle = null;
-    lazy.EventDispatcher.instance.unregisterListener(
-      this,
-      Object.values(TorIncomingEvents)
-    );
+    if (this.#registeredListeners) {
+      lazy.EventDispatcher.instance.unregisterListener(
+        this,
+        Object.values(TorIncomingEvents)
+      );
+      this.#registeredListeners = false;
+    }
   }
 
   onEvent(event, data, _callback) {
