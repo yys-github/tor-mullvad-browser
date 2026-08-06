@@ -1207,7 +1207,15 @@ export let ProfileDataUpgrader = {
     Services.prefs.setIntPref(MIGRATION_PREF, MIGRATION_VERSION);
   },
 
-  async upgradeTB(isNewProfile) {
+  /**
+   * Run the profile data migration for Tor Browser if needed.
+   *
+   * @param {boolean} isNewProfile When true, just set the migration version
+   * without actually changing anything.
+   * @param {number} [currentVersion] The version to migrating from. To be used
+   * only by tests.
+   */
+  async upgradeTB(isNewProfile, currentVersion) {
     // Version 1: Tor Browser 12.0. We use it to remove langpacks, after the
     //            migration to packaged locales.
     // Version 2: Tor Browser 13.0/13.0a1: tor-browser#41845. Also, removed some
@@ -1243,7 +1251,10 @@ export let ProfileDataUpgrader = {
       console.error("upgradeTB: isNewProfile is undefined.");
     }
 
-    const currentVersion = Services.prefs.getIntPref(MIGRATION_PREF, 0);
+    if (currentVersion === undefined) {
+      currentVersion = Services.prefs.getIntPref(MIGRATION_PREF, 0);
+    }
+
     const removeLangpacks = async () => {
       for (const addon of await AddonManager.getAddonsByTypes(["locale"])) {
         await addon.uninstall();
