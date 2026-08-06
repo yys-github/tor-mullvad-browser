@@ -35,7 +35,6 @@ const TOR_BRIDGES_EMAIL = "bridges@torproject.org";
 
 SettingGroupManager.registerGroups({
   connectionStatus: {
-    inProgress: true,
     l10nId: "tor-connection-internet-status-group",
     supportPage: "tor-manual:getting-started__about-tor-browser",
     headingLevel: 2,
@@ -64,7 +63,6 @@ SettingGroupManager.registerGroups({
     ],
   },
   torBridges: {
-    inProgress: true,
     l10nId: "tor-bridges-group",
     supportPage: "tor-manual:bridges",
     headingLevel: 2,
@@ -193,7 +191,6 @@ SettingGroupManager.registerGroups({
     ],
   },
   torAdvanced: {
-    inProgress: true,
     l10nId: "tor-advanced-group",
     headingLevel: 2,
     items: [
