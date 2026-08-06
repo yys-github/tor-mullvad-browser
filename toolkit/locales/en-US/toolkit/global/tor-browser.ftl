@@ -101,11 +101,6 @@ tor-connection-settings-pane =
 # "Connection" refers to the Tor Browser's connection to the Tor network.
 tor-connection-settings-nav-button = Connection
     .title = Connection
-# -brand-short-name refers to 'Tor Browser', localized.
-tor-connection-overview = { -brand-short-name } routes your traffic over the Tor network, run by thousands of volunteers around the world.
-tor-connection-browser-learn-more-link = Learn more
-tor-connection-automatic-heading = Connect automatically
-tor-connection-automatic-description = Automatically connect to the Tor network at launch using your current connection settings.
 tor-connection-quickstart-checkbox =
     .label = Always connect automatically
 
@@ -138,10 +133,6 @@ tor-connection-network-status-not-connected = Not connected
 # Shown when the user's Tor connection may be blocked.
 # Uses sentence case in English (US).
 tor-connection-network-status-blocked = Potentially blocked
-# Button shown when we are not yet connected to the Tor network.
-# It will open a page to start connecting to the Tor network.
-# Uses sentence case in English (US).
-tor-connection-network-status-connect-button = Connect
 # Here "Connect" refers to connecting to the Tor network.
 # Uses sentence case in English (US).
 tor-connection-status-connect-button =
@@ -149,9 +140,6 @@ tor-connection-status-connect-button =
 
 ## Tor Bridges Settings.
 
-tor-bridges-heading = Bridges
-tor-bridges-overview = Bridges help you securely access the Tor network in places where Tor is blocked. Depending on where you are, one bridge may work better than another.
-tor-bridges-learn-more-link = Learn more
 tor-bridges-group =
     .label = Bridges
     .description = Bridges help you securely access the Tor network in places where Tor is blocked. Depending on where you are, one bridge may work better than another.
@@ -232,10 +220,6 @@ tor-bridges-menu-item-copy-address = Copy bridge address
 tor-bridges-menu-item-remove-bridge = Remove bridge
     .accesskey = R
 
-# Text shown just before a description of the most recent change to the list of user's bridges. Some white space will separate this text from the change description.
-# This text is not visible, but is instead used for screen reader users.
-# E.g. in English this could be "Recent update: One of your Tor bridges has been removed."
-tor-bridges-update-area-intro = Recent update:
 # Update text for screen reader users when only one of their bridges has been removed.
 tor-bridges-update-removed-one-bridge = One of your Tor bridges has been removed.
 # Update text for screen reader users when all of their bridges have been removed.
@@ -313,74 +297,33 @@ tor-bridges-lox-new-invites =
 # Button for the user to acknowledge a change in their "bridge pass".
 tor-bridges-lox-got-it-button = Got it
 
-
-# Shown as a heading when the user has no current bridges.
-tor-bridges-add-bridges-heading = Add bridges
-# Shown as a heading when the user has existing bridges that can be replaced.
-tor-bridges-replace-bridges-heading = Replace your bridges
 # Shown as a heading when the user has no current bridges.
 tor-bridges-add-bridges-group =
     .label = Add bridges
 # Shown as a heading when the user has existing bridges that can be replaced.
 tor-bridges-replace-bridges-group =
     .label = Replace your bridges
-
-# -brand-short-name refers to 'Tor Browser', localized.
-tor-bridges-select-built-in-description = Choose from one of { -brand-short-name }’s built-in bridges
 # -brand-short-name refers to 'Tor Browser', localized.
 tor-bridges-choose-built-in-button =
     .label = Choose from one of { -brand-short-name }’s built-in bridges
-tor-bridges-select-built-in-button = Select a built-in bridge…
-
-tor-bridges-add-addresses-description = Enter bridge addresses you already know
 tor-bridges-enter-bridges-button =
     .label = Enter bridge addresses you already know
-# Shown when the user has no current bridges.
-# Opens a dialog where the user can provide a new bridge address or share code.
-tor-bridges-add-new-button = Add new bridges…
-# Shown when the user has existing bridges.
-# Opens a dialog where the user can provide a new bridge address or share code to replace their current bridges.
-tor-bridges-replace-button = Replace bridges…
 
-tor-bridges-find-more-heading = Find more bridges
-# "Tor Project" is the organisation name.
-tor-bridges-find-more-description = Since many bridge addresses aren’t public, you may need to request some from the Tor Project.
 # "Tor Project" is the organisation name.
 tor-bridges-find-more-group =
     .label = Find more bridges
     .description = Since many bridge addresses aren’t public, you may need to request some from the Tor Project.
-
-# "Telegram" is the common brand name of the Telegram Messenger application
-tor-bridges-provider-telegram-name = Telegram
-# Here "Message" is a verb, short for "Send a message to". This is an instruction to send a message to the given Telegram Messenger user to receive a new bridge.
-# $telegramUserName (String) - The Telegram Messenger user name that should receive messages. Should be wrapped in '<a data-l10n-name="user">' and '</a>'.
-# E.g. in English, "Message GetBridgesBot".
-tor-bridges-provider-telegram-instruction = Message <a data-l10n-name="user">{ $telegramUserName }</a>
 # "Telegram" is the common brand name of the Telegram Messenger application.
 # Here "Message" is a verb, short for "Send a message to". This is an instruction to send a message to the given Telegram Messenger user to receive a new bridge.
 # $telegramUserName (String) - The Telegram Messenger user name that should receive messages.
 tor-bridges-source-telegram-link =
     .label = Telegram
     .description = Message { $telegramUserName }
-
-# "Web" is the proper noun for the "World Wide Web".
-tor-bridges-provider-web-name = Web
-# Instructions to visit the given website.
-# $url (String) - The URL for Tor Project bridges. Should be wrapped in '<a data-l10n-name"url">' and '</a>'.
-tor-bridges-provider-web-instruction = Visit <a data-l10n-name="url">{ $url }</a>
-
 # "Web" is the proper noun for the "World Wide Web".
 # $url (String) - The URL for Tor Project bridges.
 tor-bridges-source-web-link =
     .label = Web
     .description = Visit { $url }
-
-# "Gmail" is the Google brand name. "Riseup" refers to the Riseup organisation at riseup.net.
-tor-bridges-provider-email-name = Gmail or Riseup
-# Here "Email" is a verb, short for "Send an email to". This is an instruction to send an email to the given address to receive a new bridge.
-# $address (String) - The email address that should receive the email.
-# E.g. in English, "Email bridges@torproject.org".
-tor-bridges-provider-email-instruction = Email { $address }
 # "Gmail" is the Google brand name. "Riseup" refers to the Riseup organisation at riseup.net.
 # Here "Email" is a verb, short for "Send an email to". This is an instruction to send an email to the given address to receive a new bridge.
 # $address (String) - The email address that should receive the email.
@@ -514,16 +457,6 @@ tor-advanced-configure-button =
     .label = Configure how { -brand-short-name } connects to the internet
 tor-view-log-button2 =
     .label = View the Tor log
-tor-advanced-settings-heading = Advanced
-tor-advanced-settings-description = Configure how { -brand-short-name } connects to the internet.
-# Button that opens the advanced connection settings dialog.
-# Uses sentence case in English (US).
-tor-advanced-settings-button = Settings…
-# "log" is a noun, referring to the recorded text output of the Tor process.
-tor-view-log-description = View the Tor log.
-# "log" is a noun, referring to the recorded text output of the Tor process.
-# Uses sentence case in English (US).
-tor-view-log-button = View log…
 
 ## Tor log dialog.
 
