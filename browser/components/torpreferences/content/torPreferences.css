@@ -28,106 +28,12 @@ button.spoof-button-disabled {
   }
 }
 
-.tor-toggle {
-  margin-block: var(--space-large);
-  width: max-content;
-}
-
-/* Status */
-
-#network-status-internet-area {
-  margin-block: var(--space-large);
-}
-
-#network-status-tor-area {
-  margin-block: 0 var(--space-xxlarge);
-}
-
-.network-status-area {
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-}
-
-.network-status-area > * {
-  flex: 0 0 auto;
-}
-
-.network-status-icon {
-  width: var(--icon-size);
-  height: var(--icon-size);
-  margin-inline-end: var(--space-small);
-  -moz-context-properties: fill, stroke;
-  fill: var(--icon-color);
-  stroke: var(--icon-color);
-}
-
-#network-status-internet-area .network-status-icon {
-  content: url("chrome://browser/content/torconnect/network.svg");
-}
-
-#network-status-internet-area.status-offline .network-status-icon {
-  content: url("chrome://browser/content/torconnect/network-broken.svg");
-}
-
-#network-status-tor-area .network-status-icon {
-  content: url("chrome://browser/content/torconnect/tor-connect.svg");
-}
-
-#network-status-tor-area:not(.status-connected) .network-status-icon {
-  content: url("chrome://browser/content/torconnect/tor-connect-broken.svg");
-}
-
-#network-status-tor-area.status-blocked .network-status-icon {
-  /* Same as .tor-connect-status-potentially-blocked. */
-  stroke: var(--icon-color-critical);
-}
-
-.network-status-label {
-  font-weight: var(--font-weight-bold);
-  margin-inline-end: var(--space-medium);
-}
-
-.network-status-result {
-  margin-inline-end: var(--space-medium);
-}
-
-#network-status-tor-area.status-connected #network-status-tor-connect-button {
-  /* Hide button when already connected. */
-  display: none;
-}
-
 /* Bridge settings */
-
-.tor-medium-heading {
-  /* Same font size as mozilla preferences h2. */
-  font-size: var(--font-size-large);
-  font-weight: var(--font-weight-bold);
-  margin: 0;
-}
 
 .tor-small-heading {
   font-size: inherit;
   font-weight: var(--font-weight-bold);
   margin: 0;
-}
-
-/* Hide the tor-search-heading elements when the group's search header is
- * hidden. These only appear in search results.
- * See tor-browser#43320.
- * NOTE: `.search-header[hidden] ~ :is(* .tor-search-heading)` will not match
- * (possibly because the `~` selector is unsure how to integrate with the
- * non-compound `* .tor-search-heading` selector). So we need to duplicate the
- * `.search-header[hidden]` rule. */
-#torPreferences-bridges-group :is(.search-header[hidden] ~ * .tor-search-heading, .search-header[hidden] ~ .tor-search-heading) {
-  display: none;
-}
-
-/* Hide the tor-non-search-heading elements when the group's search header is
- * not hidden. These only appear outside of search results.
- * See tor-browser#43320. */
-#torPreferences-bridges-group :is(.search-header:not([hidden]) ~ * .tor-non-search-heading, .search-header:not([hidden]) ~ .tor-non-search-heading) {
-  display: none;
 }
 
 .tor-focusable-heading {
@@ -188,25 +94,6 @@ button.spoof-button-disabled {
   display: none;
 }
 
-#tor-bridges-update-area {
-  /* Still accessible to screen reader, but not visual. */
-  position: absolute;
-  clip-path: inset(50%);
-}
-
-#torPreferences-bridges-group:not(.bridges-initialized) {
-  /* Hide bridge settings whilst not initialized. */
-  display: none;
-}
-
-#tor-bridges-none,
-#tor-bridges-current {
-  @media not -moz-pref("browser.settings-redesign.enabled") {
-    margin-inline: 0;
-    margin-block: var(--space-xxlarge);
-  }
-}
-
 #tor-bridges-none:not([hidden]) {
   display: grid;
   justify-items: center;
@@ -217,11 +104,6 @@ button.spoof-button-disabled {
   border-radius: var(--border-radius-small);
   color: var(--text-color-deemphasized);
   border: 2px dashed var(--border-color-deemphasized);
-
-  @media not -moz-pref("browser.settings-redesign.enabled") {
-    padding-block: 64px;
-    gap: var(--space-large);
-  }
 }
 
 #tor-bridges-none-icon {
@@ -232,33 +114,10 @@ button.spoof-button-disabled {
   fill: currentColor;
 }
 
-.tor-bridges-box,
 .tor-bridges-details-box {
   padding: var(--space-large);
   border-radius: var(--border-radius-medium);
   border: var(--border-width) solid var(--border-color);
-
-  @media not -moz-pref("browser.settings-redesign.enabled") {
-    border-radius: var(--border-radius-small);
-    background: var(--background-color-box-info);
-  }
-}
-
-@media not forced-colors {
-  .tor-bridges-box {
-    border-color: transparent;
-  }
-}
-
-#tor-bridges-current-header-bar {
-  display: grid;
-  min-width: max-content;
-  grid-template: "heading source button" min-content / max-content 1fr max-content;
-  align-items: center;
-  border-block-end: var(--border-width) solid var(--border-color);
-  padding-block-end: var(--space-large);
-  margin-block-end: var(--space-large);
-  white-space: nowrap;
 }
 
 tor-bridges-display {
@@ -685,63 +544,6 @@ tor-bridges-display {
   align-self: center;
 }
 
-.tor-bridges-provider-heading {
-  margin-block: var(--space-xxlarge) var(--space-small);
-}
-
-#tor-bridges-provider-area {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-large);
-  align-items: start;
-  margin-block-start: var(--space-xlarge);
-}
-
-#tor-bridges-provider-list {
-  display: grid;
-  grid-template-columns: max-content max-content;
-  gap: var(--space-xlarge) var(--space-medium);
-  margin-block: var(--space-large);
-  padding: 0;
-}
-
-.tor-bridges-provider-item {
-  grid-column: 1 / -1;
-  display: grid;
-  grid-template-columns: subgrid;
-  align-items: center;
-  justify-items: start;
-  gap: var(--space-small) var(--space-medium);
-}
-
-.tor-bridges-provider-icon {
-  width: var(--icon-size);
-  height: var(--icon-size);
-  -moz-context-properties: fill;
-  fill: var(--icon-color);
-}
-
-#tor-bridges-provider-icon-telegram {
-  content: url("chrome://browser/content/torpreferences/telegram-logo.svg");
-}
-
-#tor-bridges-provider-icon-web {
-  content: url("chrome://browser/content/torconnect/network.svg");
-}
-
-#tor-bridges-provider-icon-email {
-  content: url("chrome://browser/content/torpreferences/mail.svg");
-}
-
-.tor-bridges-provider-name {
-  font-weight: var(--font-weight-bold);
-  font-size: var(--font-size-small);
-}
-
-.tor-bridges-provider-instruction {
-  grid-column: 2 / 3;
-}
-
 #torBridgesRequestBanner {
   display: flex;
   flex-direction: column;
@@ -758,37 +560,6 @@ tor-bridges-display {
   & > p {
     max-width: var(--size-layout-medium);
   }
-}
-
-#tor-bridges-request-box {
-  /* Take up the full height in the container. */
-  align-self: stretch;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  justify-content: center;
-}
-
-#tor-bridges-request-box > * {
-  flex: 0 0 auto;
-}
-
-#tor-bridges-request-description {
-  margin-block: var(--space-medium) var(--space-large);
-}
-
-#tor-bridges-open-request-dialog-button {
-  margin: 0;
-}
-
-#torPreferences-bridges-location {
-  width: 280px;
-}
-
-#torPreferences-bridges-location menuitem[disabled="true"] {
-  color: var(--button-text-color, inherit);
-  font-weight: var(--font-weight-bold);
 }
 
 /* Request bridges */
@@ -971,11 +742,6 @@ image#torPreferences-requestBridge-errorIcon {
   list-style-image: url("chrome://global/skin/icons/warning.svg");
   -moz-context-properties: fill;
   fill: var(--icon-color-warning);
-}
-
-groupbox#torPreferences-bridges-group textarea {
-  white-space: pre;
-  overflow: auto;
 }
 
 /* Provide bridge dialog */
