@@ -192,6 +192,29 @@ SettingGroupManager.registerGroups({
       },
     ],
   },
+  torAdvanced: {
+    inProgress: true,
+    l10nId: "tor-advanced-group",
+    headingLevel: 2,
+    items: [
+      {
+        id: "torAdvancedGroup",
+        control: "moz-box-group",
+        items: [
+          {
+            id: "torAdvancedConfigure",
+            l10nId: "tor-advanced-configure-button",
+            control: "moz-box-button",
+          },
+          {
+            id: "torViewLog",
+            l10nId: "tor-view-log-button2",
+            control: "moz-box-button",
+          },
+        ],
+      },
+    ],
+  },
 });
 
 Preferences.addSetting({
@@ -558,6 +581,36 @@ Preferences.addSetting({
           },
         });
       }
+    );
+  },
+});
+
+Preferences.addSetting({
+  id: "torAdvancedGroup",
+});
+
+Preferences.addSetting({
+  id: "torAdvancedConfigure",
+  deps: ["torSettingsReady"],
+  visible({ torSettingsReady }) {
+    // The dialog needs to be able to read TorSettings, so we keep this hidden
+    // until it is ready.
+    return torSettingsReady.value;
+  },
+  onUserClick() {
+    window.gSubDialog.open(
+      "chrome://browser/content/torpreferences/connectionSettingsDialog.xhtml",
+      { features: "resizable=yes" }
+    );
+  },
+});
+
+Preferences.addSetting({
+  id: "torViewLog",
+  onUserClick() {
+    window.gSubDialog.open(
+      "chrome://browser/content/torpreferences/torLogDialog.xhtml",
+      { features: "resizable=yes" }
     );
   },
 });
