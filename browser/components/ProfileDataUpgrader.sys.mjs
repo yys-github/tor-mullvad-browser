@@ -1191,7 +1191,15 @@ export let ProfileDataUpgrader = {
     Services.prefs.setIntPref(MIGRATION_PREF, MIGRATION_VERSION);
   },
 
-  async upgradeMB(isNewProfile) {
+  /**
+   * Run the profile data migration for Tor Browser if needed.
+   *
+   * @param {boolean} isNewProfile When true, just set the migration version
+   * without actually changing anything.
+   * @param {number} [currentVersion] The version to migrating from. To be used
+   * only by tests.
+   */
+  async upgradeMB(isNewProfile, currentVersion) {
     // Version 1: Mullvad Browser 14.5a6: Clear home page update url preference
     //            (mullvad-browser#411).
     // Version 2: Mullvad Browser 15.0a2: Remove legacy search addons
@@ -1209,7 +1217,9 @@ export let ProfileDataUpgrader = {
       console.error("upgradeTB: isNewProfile is undefined.");
     }
 
-    const currentVersion = Services.prefs.getIntPref(MIGRATION_PREF, 0);
+    if (currentVersion === undefined) {
+      currentVersion = Services.prefs.getIntPref(MIGRATION_PREF, 0);
+    }
 
     if (currentVersion < 1) {
       Services.prefs.clearUserPref("mullvadbrowser.post_update.url");
