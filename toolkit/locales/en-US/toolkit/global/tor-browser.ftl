@@ -507,6 +507,13 @@ request-bridge-dialog-captcha-failed = The solution is not correct. Please try a
 
 ## Tor advanced settings.
 
+tor-advanced-group =
+    .label = Advanced
+# "{ -brand-short-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
+tor-advanced-configure-button =
+    .label = Configure how { -brand-short-name } connects to the internet
+tor-view-log-button2 =
+    .label = View the Tor log
 tor-advanced-settings-heading = Advanced
 tor-advanced-settings-description = Configure how { -brand-short-name } connects to the internet.
 # Button that opens the advanced connection settings dialog.
