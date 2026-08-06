@@ -70,13 +70,7 @@ const Loader = {
       // Message box
       torPreferencesDescription:
         "Tor Browser routes your traffic over the Tor network, run by thousands of volunteers around the world.",
-      // Quickstart
       quickstartCheckbox: "Always connect automatically",
-      bridgeLocation: "Your location",
-      bridgeLocationAutomatic: "Automatic",
-      bridgeLocationFrequent: "Frequently selected locations",
-      bridgeLocationOther: "Other locations",
-      bridgeChooseForMe: "Choose a Bridge For Me…",
     };
 
     const tsb = new TorPropertyStringBundle(
