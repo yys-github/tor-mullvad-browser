@@ -8,9 +8,7 @@ window.addEventListener("load", () => {
     AppConstants.platform === "linux" &&
     Services.appinfo.XPCOMABI === "x86-gcc3"
   ) {
-    labelId = "dropped-support-notification-linux-32-bit";
-    // TODO: switch to the expired label for the final version 15 release.
-    // labelId = "dropped-support-notification-linux-32-bit-expired";
+    labelId = "dropped-support-notification-linux-32-bit-expired";
   }
 
   const dismissedPref =
