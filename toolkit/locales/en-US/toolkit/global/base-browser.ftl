@@ -76,13 +76,6 @@ new-identity-blocked-home-ignore-button = Load it anyway
 
 # The word "Letterboxing" is the proper noun for the Tor Browser feature, and is therefore capitalised.
 # "Letterboxing" should be treated as a feature/product name, and likely not changed in other languages.
-letterboxing-header = Letterboxing
-# The word "Letterboxing" is the proper noun for the Tor Browser feature, and is therefore capitalised.
-# "Letterboxing" should be treated as a feature/product name, and likely not changed in other languages.
-letterboxing-overview = { -brand-short-name }'s Letterboxing feature restricts websites to display at specific sizes, making it harder to single out users on the basis of their window or screen size.
-letterboxing-learn-more = Learn more
-# The word "Letterboxing" is the proper noun for the Tor Browser feature, and is therefore capitalised.
-# "Letterboxing" should be treated as a feature/product name, and likely not changed in other languages.
 # "{ -brand-short-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
 letterboxing-settings-group =
     .label = Letterboxing
