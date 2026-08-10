@@ -746,8 +746,8 @@ onion-site-authentication-group =
     .label = Onion site authentication
     .description = Some onion sites require that you identify yourself with a key (a kind of password) before you can access them.
 # Here "key" is a noun, and refers to a special code that gives the user access to a website.
-onion-site-authentication-saved-keys-button =
-    .label = Saved keys…
+onion-site-authentication-saved-keys-button2 =
+    .label = Manage saved keys
 
 ## Onion site saved keys dialog.
 ## "Onion site" is an abbreviation of "onion website": a website whose domain URL ends in ".onion", which is reachable through the Tor network.
