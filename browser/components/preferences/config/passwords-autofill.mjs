@@ -257,6 +257,7 @@ Preferences.addAll([
   { id: "signon.autofillForms", type: "bool" },
   { id: "signon.management.page.breach-alerts.enabled", type: "bool" },
   { id: "signon.firefoxRelay.feature", type: "string" },
+  { id: "security.nocertdb", type: "bool" },
 ]);
 
 Preferences.addSetting({
@@ -523,11 +524,46 @@ Preferences.addSetting(
 );
 
 Preferences.addSetting({
+  id: "canSavePasswords",
+  pref: "security.nocertdb",
+  get: pref => {
+    return !pref;
+  },
+});
+
+Preferences.addSetting({
   id: "savePasswords",
   pref: "signon.rememberSignons",
+  deps: ["canSavePasswords"],
+  visible: ({ canSavePasswords }, savePasswords) => {
+    // Only show this option if the user has explicitly disabled "nocertdb", or
+    // they have somehow switched this option on. tor-browser#45197.
+    return canSavePasswords.value || savePasswords.value;
+  },
   controllingExtensionInfo: {
     storeId: "services.passwordSavingEnabled",
     l10nId: "extension-controlling-password-saving",
+  },
+});
+
+Preferences.addSetting({
+  id: "showPasswordControls",
+  deps: ["canSavePasswords", "savePasswords"],
+  get: (_pref, { canSavePasswords, savePasswords }) => {
+    // Only show other password controls if the user has explicitly disabled
+    // "nocertdb", or they have somehow switched on save passwords.
+    // tor-browser#45197.
+    return canSavePasswords.value || savePasswords.value;
+  },
+});
+
+Preferences.addSetting({
+  id: "passwordsUnsupportedBanner",
+  deps: ["canSavePasswords"],
+  visible: ({ canSavePasswords }) => {
+    // NOTE: We show the banner even if disabling the password controls are
+    // visible because "savePasswords" is true.
+    return !canSavePasswords.value;
   },
 });
 
@@ -551,7 +587,10 @@ Preferences.addSetting({
 
 Preferences.addSetting({
   id: "requireOSAuthForPasswords",
-  visible: () => lazy.OSKeyStore.canReauth(),
+  deps: ["showPasswordControls"],
+  visible: ({ showPasswordControls }) => {
+    return showPasswordControls.value && lazy.OSKeyStore.canReauth();
+  },
   get: () => lazy.LoginHelper.getOSAuthEnabled(),
   async set(checked) {
     const [messageText, captionText] = await Promise.all([
@@ -585,10 +624,14 @@ Preferences.addSetting({
 
 Preferences.addSetting({
   id: "manageSavedPasswords",
+  deps: ["showPasswordControls"],
   onUserClick: () => {
     PasswordSettingHelpers.showPasswords();
   },
-  visible: () => {
+  visible: ({ showPasswordControls }) => {
+    if (!showPasswordControls.value) {
+      return false;
+    }
     let policy = Services.policies.getActivePolicies();
     return policy?.PasswordManagerEnabled !== false;
   },
@@ -596,6 +639,10 @@ Preferences.addSetting({
 
 Preferences.addSetting({
   id: "additionalProtectionsGroup",
+  deps: ["showPasswordControls"],
+  visible: ({ showPasswordControls }) => {
+    return showPasswordControls.value;
+  },
 });
 
 Preferences.addSetting({
@@ -668,6 +715,10 @@ Preferences.addSetting({
 Preferences.addSetting({
   id: "breachAlerts",
   pref: "signon.management.page.breach-alerts.enabled",
+  // Even for users who force passwords to be enabled, we hide this because
+  // login breach requires "fxmonitor-breaches" remote settings, which has no
+  // local JSON dumps in Base Browser. tor-browser#45197.
+  visible: () => false,
 });
 
 Preferences.addSetting({
@@ -687,6 +738,16 @@ SettingGroupManager.registerGroups({
     l10nId: "forms-passwords-header",
     headingLevel: 2,
     items: [
+      // Add a banner to explain that passwords are unsupported.
+      // tor-browser#45197.
+      {
+        id: "passwordsUnsupportedBanner",
+        l10nId: "passwords-settings-unsupported-banner",
+        control: "moz-message-bar",
+        controlAttr: {
+          role: "status",
+        },
+      },
       {
         id: "savePasswords",
         l10nId: "forms-ask-to-save-passwords",
