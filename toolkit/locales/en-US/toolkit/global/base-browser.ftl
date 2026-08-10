@@ -114,6 +114,13 @@ browser-layout-show-sidebar-limited =
 search-suggestions-warning-banner =
     .message = Turning this on reduces your privacy by sharing your queries with the search engine as you type.
 
+## Preferences - Passwords.
+
+# "{ -brand-short-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
+passwords-settings-unsupported-banner =
+    .heading = Built-in password manager isn’t supported.
+    .message = { -brand-short-name }’s built-in password manager is disabled by default. This prevents your anonymous browsing from being linked to your regular identity.
+
 ## Preferences - Contrast Control.
 
 preferences-contrast-control-fixed-color2 =
