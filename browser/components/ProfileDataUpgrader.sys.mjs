@@ -1084,6 +1084,8 @@ export let ProfileDataUpgrader = {
     // Version 7: 16.0a10: Reset safe browsing preferences. tor-browser#44802.
     //                     Also reset delete downloads preferences.
     //                     tor-browser#45187.
+    //                     Also reset password manager preferences.
+    //                     tor-browser#45197.
     const MIGRATION_VERSION = 7;
     const MIGRATION_PREF = "basebrowser.migration.version";
 
@@ -1200,8 +1202,23 @@ export let ProfileDataUpgrader = {
         // re-offer this feature again in the future. tor-browser#45187.
         "browser.download.deletePrivate",
         "browser.download.deletePrivate.chosen",
+        // Clear the password breach alert preference since it does not work.
+        // tor-browser#45197.
+        "signon.management.page.breach-alerts.enabled",
       ]) {
         Services.prefs.clearUserPref(prefName);
+      }
+      if (Services.prefs.getBoolPref("security.nocertdb", true)) {
+        // Password manager does not read or write passwords from the database.
+        // We want to clear the preferences that no longer have any visible
+        // controls in the settings UI. tor-browser#45197.
+        for (const prefName of [
+          "signon.rememberSignons",
+          "signon.autofillForms",
+          "signon.generation.enabled",
+        ]) {
+          Services.prefs.clearUserPref(prefName);
+        }
       }
     }
     Services.prefs.setIntPref(MIGRATION_PREF, MIGRATION_VERSION);
