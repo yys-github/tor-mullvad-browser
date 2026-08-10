@@ -33,6 +33,21 @@ home-mode-choice-mullvad =
 telemetry-title = Telemetry Information
 telemetry-description = Telemetry is disabled in { -brand-short-name }.
 
+## DNS over HTTPS settings customization.
+
+mullvad-preferences-doh-overview-always-on =
+    .label = Always on
+    .description = Always use secure DNS.
+mullvad-preferences-doh-overview-off =
+    .label = Off
+    .description = Use your default DNS resolver.
+mullvad-preferences-doh-radio-always-on =
+    .label = Always on
+    .description = Always use secure DNS
+mullvad-preferences-doh-radio-off =
+    .label = Off (recommended when using a VPN)
+    .description = Use your default DNS resolver
+
 ## DNS over HTTPS provider changed notification.
 
 # The first sentence should be wrapped in '<strong>' and '</strong>'.
