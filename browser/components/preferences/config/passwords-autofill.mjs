@@ -797,7 +797,7 @@ SettingGroupManager.registerGroups({
       {
         id: "onionSiteSavedKeys",
         control: "moz-box-button",
-        l10nId: "onion-site-authentication-saved-keys-button",
+        l10nId: "onion-site-authentication-saved-keys-button2",
       },
     ],
   },
