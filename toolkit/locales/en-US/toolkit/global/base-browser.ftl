@@ -185,13 +185,11 @@ security-level-panel-open-settings-button = Settings…
 
 ## Security level settings.
 
-security-level-preferences-heading = Security Level
-security-level-preferences-overview = Disable certain web features that can be used to attack your security and anonymity.
-security-level-preferences-learn-more-link = Learn more
-# Text for a badge that labels the currently active security level.
-# The text in between '<span>' and '</span>' should contain some kind of bracket, like '(' and ')', or other punctuation used in your language to separate out text from its surrounding context. This will not be visible, but will be use for screen readers to make it clear that the text is not part of the same sentence. For example, in US English this would be read as "(Current level)", and the full line of text would be read as "Safest (Current level)".
-security-level-preferences-current-badge = <span>(</span>Current level<span>)</span>
-security-level-preferences-change-button = Change…
+security-level-settings-group =
+    .label = Security level
+    .description = Disable certain web features that can be used to attack your security and anonymity.
+security-level-settings-change-button =
+    .label = Change security level
 
 ## Security level settings dialog.
 
@@ -201,13 +199,12 @@ security-level-dialog-window =
 # '-brand-short-name' is the localized browser name, like "Tor Browser".
 security-level-dialog-restart-description = You will need to restart { -brand-short-name } to apply any changes. This will close all windows and tabs.
 
-security-level-preferences-level-standard =
-    .label = Standard
-security-level-preferences-level-safer =
-    .label = Safer
-security-level-preferences-level-safest =
-    .label = Safest
-
+# Text for a badge that labels the currently active security level.
+# The text in between '<span>' and '</span>' should contain some kind of bracket, like '(' and ')', or other punctuation used in your language to separate out text from its surrounding context. This will not be visible, but will be use for screen readers to make it clear that the text is not part of the same sentence. For example, in US English this would be read as "(Current level)", and the full line of text would be read as "Safest (Current level)".
+security-level-preferences-current-badge = <span>(</span>Current level<span>)</span>
+# The "aria-label" provides a name for the group of radio options. This is not visibly shown, but it is useful for screen reader users.
+security-level-dialog-radio-group =
+    .aria-label = Security level
 security-level-dialog-save-restart =
     .label = Save and restart
 
