@@ -397,6 +397,7 @@ const CONFIG_PANES = Object.freeze({
       "ipprotection",
       "cookiesAndSiteData2",
       "history2",
+      "securityLevelGroup",
       "nonTechnicalPrivacy2",
       "dnsOverHttps",
       "connectionLink",

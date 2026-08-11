@@ -3,9 +3,6 @@
 const { SecurityLevelPrefs } = ChromeUtils.importESModule(
   "moz-src:///toolkit/components/securitylevel/SecurityLevel.sys.mjs"
 );
-const { SecurityLevelUIUtils } = ChromeUtils.importESModule(
-  "moz-src:///browser/components/securitylevel/SecurityLevelUIUtils.sys.mjs"
-);
 
 const gSecurityLevelDialog = {
   /**
@@ -27,9 +24,9 @@ const gSecurityLevelDialog = {
    */
   _radiogroup: null,
   /**
-   * A list of radio options and their containers.
+   * A list of radio options and their descriptions.
    *
-   * @type {?Array<{ container: Element, radio: Element }>}
+   * @type {?Array<{ description: Element, radio: Element }>}
    */
   _radioOptions: null,
 
@@ -56,85 +53,42 @@ const gSecurityLevelDialog = {
     this._radiogroup = document.getElementById("security-level-radiogroup");
 
     this._radioOptions = Array.from(
-      this._radiogroup.querySelectorAll(".security-level-radio-container"),
-      container => {
-        return {
-          container,
-          radio: container.querySelector(".security-level-radio"),
-        };
+      this._radiogroup.querySelectorAll("moz-radio"),
+      radio => {
+        const description = radio.querySelector("security-level-description");
+        // Hide bullets by default.
+        description.hideBullets = true;
+        return { radio, description };
       }
     );
 
-    for (const { container, radio } of this._radioOptions) {
-      const level = radio.value;
-      radio.id = `security-level-radio-${level}`;
-      const currentEl = container.querySelector(
-        ".security-level-current-badge"
-      );
-      currentEl.id = `security-level-current-badge-${level}`;
-      const descriptionEl = SecurityLevelUIUtils.createDescriptionElement(
-        level,
-        document
-      );
-      descriptionEl.classList.add("indent");
-      descriptionEl.id = `security-level-description-${level}`;
-
-      // Wait for the full translation of the element before adding it to the
-      // DOM. In particular, we want to make sure the elements have text before
-      // we measure the maxHeight below.
-      await document.l10n.translateFragment(descriptionEl);
-      document.l10n.pauseObserving();
-      container.append(descriptionEl);
-      document.l10n.resumeObserving();
-
-      if (level === this._prevLevel) {
-        currentEl.hidden = false;
-        // When the currentEl is visible, include it in the accessible name for
-        // the radio option.
-        // NOTE: The currentEl has an accessible name which includes punctuation
-        // to help separate it's content from the security level name.
-        // E.g. "Standard (Current level)".
-        radio.setAttribute("aria-labelledby", `${radio.id} ${currentEl.id}`);
-      } else {
-        currentEl.hidden = true;
-      }
-      // We point the accessible description to the wrapping
-      // .security-level-description element, rather than its children
-      // that define the actual text content. This means that when the
-      // privacy-extra-information is shown or hidden, its text content is
-      // included or excluded from the accessible description, respectively.
-      radio.setAttribute("aria-describedby", descriptionEl.id);
+    for (const { radio } of this._radioOptions) {
+      radio.querySelector(".moz-badge").hidden =
+        radio.value !== this._prevLevel;
     }
 
-    // We want to reserve the maximum height of the radiogroup so that the
+    // We want to reserve the maximum height of the moz-radio-group so that the
     // dialog has enough height when the user switches options. So we cycle
     // through the options and measure the height when they are selected to set
     // a minimum height that fits all of them.
-    // NOTE: At the time of implementation, at this point the dialog may not
-    // yet have the "subdialog" attribute, which means it is missing the
-    // common.css stylesheet from its shadow root, which effects the size of the
-    // .radio-check element and the font. Therefore, we have duplicated the
-    // import of common.css in SecurityLevelDialog.xhtml to ensure it is applied
-    // at this earlier stage.
     let maxHeight = 0;
-    for (const { container } of this._radioOptions) {
-      container.classList.add("selected");
+    for (const { description } of this._radioOptions) {
+      description.hideBullets = false;
+      await this._settled();
       maxHeight = Math.max(
         maxHeight,
         this._radiogroup.getBoundingClientRect().height
       );
-      container.classList.remove("selected");
+      description.hideBullets = true;
     }
     this._radiogroup.style.minHeight = `${maxHeight}px`;
 
     if (this._prevLevel !== "custom") {
       this._selectedLevel = this._prevLevel;
       this._radiogroup.value = this._prevLevel;
-    } else {
-      this._radiogroup.selectedItem = null;
     }
 
-    this._radiogroup.addEventListener("select", () => {
+    this._radiogroup.addEventListener("change", () => {
       this._selectedLevel = this._radiogroup.value;
       this._updateSelected();
     });
@@ -143,15 +97,30 @@ const gSecurityLevelDialog = {
   },
 
   /**
+   * Wait for the DOM to be settled after some change.
+   */
+  async _settled() {
+    // Wait for the widgets to react to some change.
+    await Promise.all([
+      this._radiogroup.updateComplete,
+      ...this._radioOptions.map(({ radio }) => radio.updateComplete),
+    ]);
+    // Also wait for any string population.
+    if (document.hasPendingL10nMutations) {
+      await new Promise(r =>
+        document.addEventListener("L10nMutationsFinished", r, { once: true })
+      );
+    }
+  },
+
+  /**
    * Update the UI in response to a change in selection.
    */
   _updateSelected() {
     this._acceptButton.disabled =
       !this._selectedLevel || this._selectedLevel === this._prevLevel;
-    // Have the container's `selected` CSS class match the selection state of
-    // the radio elements.
-    for (const { container, radio } of this._radioOptions) {
-      container.classList.toggle("selected", radio.selected);
+    for (const { description, radio } of this._radioOptions) {
+      description.hideBullets = !radio.checked;
     }
   },
 
