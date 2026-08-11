@@ -10,18 +10,6 @@
   <dialog id="security-level-dialog" buttons="accept,cancel">
     <linkset>
       <html:link rel="stylesheet" href="chrome://global/skin/global.css" />
-      <!-- NOTE: We include common.css explicitly, rather than relying on
-         - the dialog's shadowroot importing it, which is late loaded in
-         - response to the dialog's "subdialog" attribute, which is set
-         - in response to DOMFrameContentLoaded.
-         - In particular, we need the .radio-check rule and font rules from
-         - common-shared.css to be in place when gSecurityLevelDialog.init is
-         - called, which will help ensure that the radio element has the correct
-         - size when we measure its bounding box. -->
-      <html:link
-        rel="stylesheet"
-        href="chrome://global/skin/in-content/common.css"
-      />
       <html:link
         rel="stylesheet"
         href="chrome://browser/skin/preferences/preferences.css"
@@ -32,57 +20,77 @@
       />
       <html:link
         rel="stylesheet"
-        href="chrome://browser/content/securitylevel/securityLevelPreferences.css"
+        href="chrome://browser/content/securitylevel/securityLevelDialog.css"
       />
 
       <html:link rel="localization" href="branding/brand.ftl" />
       <html:link rel="localization" href="toolkit/global/base-browser.ftl" />
     </linkset>
 
+    <html:script
+      type="module"
+      src="chrome://global/content/elements/moz-radio-group.mjs"
+    ></html:script>
+    <html:script
+      type="module"
+      src="chrome://browser/content/securitylevel/widgets/security-level-description.mjs"
+    ></html:script>
     <script src="chrome://browser/content/securitylevel/securityLevelDialog.js" />
 
     <description data-l10n-id="security-level-dialog-restart-description" />
 
-    <radiogroup id="security-level-radiogroup" class="highlighting-group">
-      <html:div
-        class="security-level-radio-container security-level-grid privacy-detailedoption info-box-container"
-      >
-        <radio
-          class="security-level-radio security-level-name"
+    <moz-radio-group
+      xmlns="http://www.w3.org/1999/xhtml"
+      id="security-level-radiogroup"
+      data-l10n-id="security-level-dialog-radio-group"
+    >
+      <moz-radio value="standard" use-label-slot="">
+        <span class="security-level-radio-label" slot="label">
+          <span data-l10n-id="security-level-panel-level-standard"></span>
+          <!-- TODO: Use <moz-badge> widget once bugzilla bug 2065204 is
+             - resolved. See tor-browser#45229. -->
+          <span class="moz-badge" hidden="hidden">
+            <span
+              class="moz-badge-label"
+              data-l10n-id="security-level-preferences-current-badge"
+            ></span>
+          </span>
+        </span>
+        <security-level-description
+          slot="description"
           value="standard"
-          data-l10n-id="security-level-preferences-level-standard"
-        />
-        <html:div
-          class="security-level-current-badge"
-          data-l10n-id="security-level-preferences-current-badge"
-        ></html:div>
-      </html:div>
-      <html:div
-        class="security-level-radio-container security-level-grid privacy-detailedoption info-box-container"
-      >
-        <radio
-          class="security-level-radio security-level-name"
+        ></security-level-description>
+      </moz-radio>
+      <moz-radio value="safer" use-label-slot="">
+        <span class="security-level-radio-label" slot="label">
+          <span data-l10n-id="security-level-panel-level-safer"></span>
+          <span class="moz-badge" hidden="hidden">
+            <span
+              class="moz-badge-label"
+              data-l10n-id="security-level-preferences-current-badge"
+            ></span>
+          </span>
+        </span>
+        <security-level-description
+          slot="description"
           value="safer"
-          data-l10n-id="security-level-preferences-level-safer"
-        />
-        <html:div
-          class="security-level-current-badge"
-          data-l10n-id="security-level-preferences-current-badge"
-        ></html:div>
-      </html:div>
-      <html:div
-        class="security-level-radio-container security-level-grid privacy-detailedoption info-box-container"
-      >
-        <radio
-          class="security-level-radio security-level-name"
+        ></security-level-description>
+      </moz-radio>
+      <moz-radio value="safest" use-label-slot="">
+        <span class="security-level-radio-label" slot="label">
+          <span data-l10n-id="security-level-panel-level-safest"></span>
+          <span class="moz-badge" hidden="hidden">
+            <span
+              class="moz-badge-label"
+              data-l10n-id="security-level-preferences-current-badge"
+            ></span>
+          </span>
+        </span>
+        <security-level-description
+          slot="description"
           value="safest"
-          data-l10n-id="security-level-preferences-level-safest"
-        />
-        <html:div
-          class="security-level-current-badge"
-          data-l10n-id="security-level-preferences-current-badge"
-        ></html:div>
-      </html:div>
-    </radiogroup>
+        ></security-level-description>
+      </moz-radio>
+    </moz-radio-group>
   </dialog>
 </window>
