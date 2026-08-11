@@ -148,7 +148,7 @@ class DownloadsFeature(
     private val promptsStyling: PromptsStyling? = null,
     private val onDownloadStartedListener: ((String) -> Unit) = {},
     private val dismissCustomFirstPartyDownloadDialog: () -> Unit = {},
-    private val shouldForwardToThirdParties: () -> Boolean = { false },
+    private var shouldForwardToThirdParties: () -> Boolean = { false },
     private val customFirstPartyDownloadDialog: (
         (
         CurrentDownloadState,
@@ -173,6 +173,9 @@ class DownloadsFeature(
 
     init {
         this.onDownloadStopped = onDownloadStopped
+        // TB#44054 adding second override along with tb#40002 adding `&& false` to caught instantiations
+        // of this class, so that we still disable this when new instantiations are added
+        this.shouldForwardToThirdParties = { false }
     }
 
     private var scope: CoroutineScope? = null
