@@ -9,8 +9,3 @@
   --about-dialog-background-color-bottom: hsla(235, 43%, 10%, 0.5);
   --about-dialog-text-color-trademark: #999999;
 }
-
-#leftBox {
-  background-image: url("chrome://branding/content/icon256.png");
-  background-position-y: 0;
-}
