@@ -101,6 +101,16 @@ letterboxing-disabled-message =
 letterboxing-enable-button =
     .label = Enable Letterboxing
 
+## Preferences - Profiles.
+
+# "Profiles" is a noun, referring to the user's browser profiles (settings, bookmarks, etc).
+pane-profiles-no-account-sync = Profiles
+    .title = Profiles
+
+# "Profiles" is a noun, referring to the user's browser profiles (settings, bookmarks, etc).
+profiles-no-account-sync-section =
+    .heading = Profiles
+
 ## Preferences - Sidebar.
 
 # Here "sidebar" is a term inherited from Firefox. It refers to the panel that is either side of the main browser window, containing the bookmarks and vertical tabs, if they are enabled.
