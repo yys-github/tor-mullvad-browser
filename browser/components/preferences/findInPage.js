@@ -78,7 +78,11 @@ var gSearchResultsPane = {
         .addEventListener("click", () => this.handleSearchResultsBack());
       window.addEventListener("DOMContentLoaded", () => {
         this.searchInput.updateComplete.then(() => {
-          this.searchInput.focus();
+          // To avoid a race with `scrollAndHighlight`, we only move the focus
+          // if it remains at the top of the document. tor-browser#43640.
+          if (document.activeElement === document.body) {
+            this.searchInput.focus();
+          }
         });
         // Initialize other panes in an idle callback.
         window.requestIdleCallback(() => this.initializeCategories());
