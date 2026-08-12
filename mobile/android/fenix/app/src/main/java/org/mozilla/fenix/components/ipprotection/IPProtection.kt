@@ -8,11 +8,11 @@ import android.content.Context
 import androidx.lifecycle.ProcessLifecycleOwner
 import mozilla.components.browser.state.store.BrowserStore
 import mozilla.components.concept.engine.Engine
+import mozilla.components.concept.integrity.IntegrityClient
 import mozilla.components.feature.ipprotection.IPProtectionFeature
 import mozilla.components.feature.ipprotection.IPProtectionStorageSynchronizer
 import mozilla.components.feature.ipprotection.auth.gpi.IPProtectionGpiProvider
 import mozilla.components.feature.ipprotection.store.IPProtectionStore
-import mozilla.components.lib.integrity.googleplay.GooglePlayIntegrityClient
 import mozilla.components.service.fxa.manager.FxaAccountManager
 import mozilla.components.service.fxa.store.SyncStore
 import mozilla.components.support.base.log.logger.Logger
@@ -28,7 +28,7 @@ import org.mozilla.fenix.utils.Settings
  */
 data class IPProtectionAuthSources(
     val fxaAccountManager: Lazy<FxaAccountManager>,
-    val integrityClient: Lazy<GooglePlayIntegrityClient>,
+    val integrityClient: Lazy<IntegrityClient>,
 )
 
 /**
@@ -75,7 +75,7 @@ class IPProtection(
             store = store,
             engine = engine,
             accountManager = authSources.fxaAccountManager.value,
-            extraAuthProvider = IPProtectionGpiProvider(authSources.integrityClient.value),
+            extraAuthProvider = null,
         )
     }
 
