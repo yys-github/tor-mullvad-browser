@@ -1336,7 +1336,7 @@ class BrowserToolbarMiddleware(
                 )
             } else if (!selectedTab.content.securityInfo.isSecure) {
                 buildSiteInfoAction(
-                    drawableResId = iconsR.drawable.mozac_ic_lock_slash_critical_24,
+                    drawableResId = iconsR.drawable.mozac_ic_lock_slash_multicolor_24,
                     contentDescription = toolbarR.string.mozac_browser_toolbar_content_description_site_info,
                     highlighted = highlight,
                     onClick = StartPageActions.SiteInfoClicked,
