@@ -46,7 +46,7 @@ window.addEventListener("load", () => {
     {
       "l10n-id": "language-notification-button",
       callback() {
-        openPreferences("general-language");
+        openPreferences("languages-browser-languages");
       },
     },
   ];
