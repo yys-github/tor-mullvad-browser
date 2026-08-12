@@ -205,6 +205,7 @@ SettingGroupManager.registerGroups({
           },
           {
             id: "torViewLog",
+            subcategory: "viewlogs",
             l10nId: "tor-view-log-button2",
             control: "moz-box-button",
           },
