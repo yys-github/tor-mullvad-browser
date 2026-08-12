@@ -418,7 +418,9 @@ const CONFIG_PANES = Object.freeze({
     replaces: "search",
   },
   sync: {
-    l10nId: "account-sync-section",
+    // Switch the category name to remove mention of "Account and sync".
+    // tor-browser#45209.
+    l10nId: "profiles-no-account-sync-section",
     iconSrc: "chrome://browser/skin/fxa/avatar-empty.svg",
     groupIds: [
       "defaultBrowserSync",
@@ -555,7 +557,9 @@ function init_all() {
   );
   let categorySync = document.getElementById("category-sync");
   if (redesignEnabled) {
-    categorySync.setAttribute("data-l10n-id", "pane-account-sync-title2");
+    // Switch the category name to remove mention of "Account and sync".
+    // tor-browser#45209.
+    categorySync.setAttribute("data-l10n-id", "pane-profiles-no-account-sync");
     categorySync.iconSrc = "chrome://browser/skin/fxa/avatar-empty.svg";
     categorySync.hidden = false;
   } else if (accountsEnabled) {
