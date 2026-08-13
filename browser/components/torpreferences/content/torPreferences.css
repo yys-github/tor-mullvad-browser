@@ -136,6 +136,10 @@ tor-bridges-display {
     border-radius: var(--border-radius-medium);
     background-color: var(--card-background-color);
     padding: var(--space-large);
+
+    @media not ((prefers-contrast) or (forced-colors)) {
+      background-color: light-dark(var(--color-gray-0), var(--color-gray-90));
+    }
   }
 
   & p {
