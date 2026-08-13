@@ -11,6 +11,10 @@ Preferences.addAll([
 ]);
 
 Preferences.addSetting({
+  id: "protectionsTailsBanner",
+});
+
+Preferences.addSetting({
   id: "exposeContentWindowTitle",
   pref: "privacy.exposeContentTitleInWindow",
 });
@@ -56,6 +60,30 @@ SettingGroupManager.registerGroups({
     heaidngLevel: 2,
     // TODO: supportPage: "tor-manual:",
     items: [
+      {
+        id: "protectionsTailsBanner",
+        control: "moz-message-bar",
+        controlAttrs: {
+          role: "complementary",
+        },
+        options: [
+          {
+            l10nId: "protections-from-applications-tails-banner",
+            control: "span",
+            slot: "message",
+            options: [
+              {
+                control: "a",
+                controlAttrs: {
+                  "data-l10n-name": "tails-link",
+                  href: "https://tails.net/",
+                  target: "_blank",
+                },
+              },
+            ],
+          },
+        ],
+      },
       {
         id: "genericWindowTitles",
         l10nId: "generic-window-titles-checkbox",
