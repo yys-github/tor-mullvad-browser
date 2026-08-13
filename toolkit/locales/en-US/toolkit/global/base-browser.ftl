@@ -114,6 +114,17 @@ browser-layout-show-sidebar-limited =
 search-suggestions-warning-banner =
     .message = Turning this on reduces your privacy by sharing your queries with the search engine as you type.
 
+## Preferences - Protections from third-party applications.
+
+# "{ -brand-short-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
+protections-from-applications-group =
+    .label = Protections from third-party applications
+    .description = Third-party applications may record your browsing activity. { -brand-short-name } attempts to reduce this risk.
+# Here "title" refers to the displayed name of the browser's windows in the operating system. As in "title bar". For example, the name shown in some taskbars, or desktop window overviews.
+generic-window-titles-checkbox =
+    .label = Use generic window titles
+    .description = Do not include the name of your current tab in the application window title.
+
 ## Preferences - Passwords.
 
 # "{ -brand-short-name }" will be replaced with the localized name of the browser, e.g. "Tor Browser".
