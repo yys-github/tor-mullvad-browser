@@ -55,6 +55,9 @@ pref("permissions.memory_only", true);
 pref("security.nocertdb", true);
 pref("media.aboutwebrtc.hist.enabled", false);
 
+// tor-browser#45214: Disable the megalist (contextual password manager).
+pref("browser.contextual-password-manager.enabled", false);
+
 // Disk Activity
 
 // Disable auto-downloading to ~/Downloads and other download tweaks to minimize
