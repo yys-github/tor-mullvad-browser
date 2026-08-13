@@ -557,8 +557,9 @@
             android:theme="@style/Theme.Transparent"
             android:relinquishTaskIdentity="true"
             android:taskAffinity=""
-            android:exported="true"
-            android:excludeFromRecents="true" >
+            android:exported="false"
+            android:excludeFromRecents="true"
+            tools:ignore="AppLinkUrlError">
 
 
             <intent-filter>
@@ -586,7 +587,7 @@
                 <data android:scheme="https" />
             </intent-filter>
 
-            <intent-filter>
+            <intent-filter tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
