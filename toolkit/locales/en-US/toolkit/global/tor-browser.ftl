@@ -631,6 +631,11 @@ downloads-tor-warning-tails-link= Learn more about Tails
 # Button to dismiss the warning forever.
 downloads-tor-warning-dismiss-button = Got it
 
+## Preferences - Protections from third-party applications.
+
+# "Tails" is the brand name for the Tails operating system and should be localized appropriately. It should be wrapped in '<a data-l10n-name="tails-link">' and '</a>', which will link to the Tails operating system website.
+protections-from-applications-tails-banner = For comprehensive protection from other applications on your system, use a portable operating system like <a data-l10n-name="tails-link">Tails</a>.
+
 ## Initial warning page in about:rulesets. In Tor Browser, each ruleset is a set of rules for converting a ".tor.onion" address to a normal ".onion" address (used by SecureDrop). The feature is taken from the discontinued "HTTPS Everywhere".
 
 rulesets-warning-heading = Proceed with Caution
