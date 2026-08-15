@@ -6,9 +6,18 @@
 use bytes::Bytes;
 
 use super::{
+    factory::ReplyFactory,
     line::{DetailReplyLine, EndReplyLine},
     reply::Reply,
 };
+
+pub(crate) fn make_reply(data: &'static [u8]) -> Reply {
+    let mut factory = ReplyFactory::default();
+    let mut replies = factory.build(&Bytes::from_static(data)).unwrap();
+    assert_eq!(replies.len(), 1);
+    assert!(!factory.has_pending_data());
+    replies.pop_front().unwrap()
+}
 
 pub(super) fn check_250_ok(reply: &Reply, has_details: bool) {
     assert_eq!(reply.has_details(), has_details);
