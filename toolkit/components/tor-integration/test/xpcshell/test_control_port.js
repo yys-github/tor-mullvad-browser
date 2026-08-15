@@ -67,17 +67,26 @@ add_task(async function test_invalidSyntax() {
 class ControlPortClientAsyncNotification extends ControlPortClient {
   notificationPromise;
   #resolve;
+  closedPromise;
+  #closedResolve;
 
   constructor(server) {
     super(server);
-    const { promise, resolve } = Promise.withResolvers();
-    this.notificationPromise = promise;
-    this.#resolve = resolve;
+    this.notificationPromise = new Promise(
+      resolve => (this.#resolve = resolve)
+    );
+    this.closedPromise = new Promise(
+      resolve => (this.#closedResolve = resolve)
+    );
   }
 
   onAsyncMessage(message) {
     Assert.equal(message, "650-Test\r\n650 notification");
     this.#resolve();
+  }
+
+  onClosed() {
+    this.#closedResolve();
   }
 }
 
@@ -91,6 +100,7 @@ add_task(async function test_asyncNotification() {
     await cp.notificationPromise;
     cp.close();
     server.close();
+    await cp.closedPromise;
   });
 });
 

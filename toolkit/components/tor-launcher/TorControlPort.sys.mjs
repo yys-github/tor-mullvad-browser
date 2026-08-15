@@ -565,6 +565,9 @@ export class TorController {
         onAsyncMessage(message) {
           self.#handleNotification(message);
         },
+        onClosed() {
+          self.onClosed();
+        },
       };
       this.#socket.start(receiver);
       return;

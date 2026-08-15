@@ -5,7 +5,7 @@
 
 use bytes::Bytes;
 use std::{
-    cell::Cell,
+    cell::{Cell, RefCell},
     rc::{Rc, Weak},
 };
 
@@ -25,6 +25,7 @@ struct ControlPortInner {
     socket: Rc<dyn ControlSocket>,
     writer: Rc<CommandWriter>,
     message_pump: Rc<MessagePump>,
+    close_handler: RefCell<Option<Box<dyn FnOnce()>>>,
     closed: Cell<bool>,
 }
 
@@ -41,6 +42,7 @@ impl ControlPortInner {
                 Self::make_data_cb(weak_self.clone()),
                 Self::make_async_failure_cb(weak_self.clone()),
             ),
+            close_handler: RefCell::new(None),
             closed: Cell::new(false),
         });
         cp.message_pump.start().inspect_err(|_| {
@@ -140,7 +142,22 @@ impl ControlPortInner {
         }
         self.reply_dispatcher.fail_all(ReplyError::ConnectionClosed);
         self.reply_dispatcher.set_async_handler(None);
-        self.socket.close()
+        let res = self.socket.close();
+        let handler = self.close_handler.borrow_mut().take();
+        if let Some(h) = handler {
+            h();
+        }
+        res
+    }
+
+    fn set_close_handler(&self, cb: Box<dyn FnOnce()>) {
+        if self.closed.get() {
+            // This should never happen in reality, but let's just call the
+            // callback if it does to make sure the callback is always called.
+            cb();
+            return;
+        }
+        *self.close_handler.borrow_mut() = Some(cb);
     }
 }
 
@@ -182,5 +199,10 @@ impl ControlPort {
     #[inline]
     pub fn close(&self) -> Result<(), ControlSocketError> {
         self.0.close()
+    }
+
+    #[inline]
+    pub fn set_close_handler(&self, cb: Box<dyn FnOnce()>) {
+        self.0.set_close_handler(cb);
     }
 }
