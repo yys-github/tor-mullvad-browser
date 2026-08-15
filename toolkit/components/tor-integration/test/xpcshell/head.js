@@ -190,10 +190,7 @@ class ControlPortClient {
     } else {
       throw new Error("Unknown server protocol");
     }
-    const receiver = {
-      onAsyncMessage: message => this.onAsyncMessage(message),
-    };
-    this.#controlPort.start(receiver);
+    this.#controlPort.start(this);
   }
 
   sendCommand(command) {
@@ -216,4 +213,6 @@ class ControlPortClient {
   onAsyncMessage(_message) {
     Assert.ok(false, "This test does not use async notifications.");
   }
+
+  onClosed() {}
 }

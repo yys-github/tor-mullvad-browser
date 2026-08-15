@@ -8,6 +8,7 @@
 [scriptable, uuid(4b250614-968a-412f-9191-9ffd9d4bd001)]
 interface torITorControlPortReceiver : nsISupports {
   void onAsyncMessage(in ACString message);
+  void onClosed();
 };
 
 [scriptable, uuid(1389d157-4695-43a2-a7d8-538aaa350766)]

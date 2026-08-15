@@ -37,6 +37,7 @@ impl ControlPortXpcom {
     xpcom_method!(start => Start(receiver: *const torITorControlPortReceiver));
     pub fn start(&self, receiver: &torITorControlPortReceiver) -> Result<(), nsresult> {
         let receiver = RefPtr::new(receiver);
+        let receiver2 = receiver.clone();
         self.control_port
             .set_async_handler(Some(Box::new(move |reply| {
                 let mut buf = Vec::new();
@@ -58,6 +59,11 @@ impl ControlPortXpcom {
                 // pass nsCStrings created in Rust to C++.
                 unsafe { receiver.OnAsyncMessage(&*as_str) };
             })));
+        self.control_port.set_close_handler(Box::new(move || {
+            // Safety: call to an XPCOM method of our interface that we crafted
+            // to make sure it was exposed on Rust bindings.
+            unsafe { receiver2.OnClosed() };
+        }));
         Ok(())
     }
 
