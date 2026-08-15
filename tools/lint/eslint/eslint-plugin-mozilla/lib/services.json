@@ -58,5 +58,5 @@
   "nsIXULAppInfo": "appinfo",
   "nsIXULRuntime": "appinfo",
   "nsIXULStore": "xulStore",
-  "ITorService": "tor"
+  "torITorService": "tor"
 }
