@@ -2,7 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-use bytes::Bytes;
 use nserror::nsresult;
 use nserror::{NS_ERROR_NOT_CONNECTED, NS_OK};
 use nsstring::{nsACString, nsCString};
@@ -68,10 +67,13 @@ impl ControlPortXpcom {
         command: &nsACString,
         handler: &torITorMessageHandler,
     ) -> Result<(), nsresult> {
-        let command = Bytes::copy_from_slice(&command[..]);
+        let mut command = command.to_vec();
+        if !command.ends_with(b"\r\n") {
+            command.extend_from_slice(b"\r\n");
+        }
         let handler = RefPtr::new(handler);
         self.control_port.send_command(
-            command,
+            command.into(),
             Box::new(move |reply| {
                 let mut buf = Vec::new();
                 let reply = match reply {

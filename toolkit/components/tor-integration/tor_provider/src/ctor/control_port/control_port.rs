@@ -3,7 +3,7 @@
 // <http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use bytes::{BufMut, Bytes, BytesMut};
+use bytes::Bytes;
 use std::{
     cell::Cell,
     rc::{Rc, Weak},
@@ -94,7 +94,7 @@ impl ControlPortInner {
 
     fn send_command(
         self: &Rc<Self>,
-        mut command: Bytes,
+        command: Bytes,
         handler: Box<dyn FnOnce(Result<Reply, ControlPortError>)>,
     ) {
         if self.closed.get() {
@@ -104,11 +104,10 @@ impl ControlPortInner {
             return;
         }
 
-        if !command.ends_with(b"\r\n") {
-            let mut buf = BytesMut::from(command);
-            buf.put(&b"\r\n"[..]);
-            command = buf.freeze();
-        }
+        debug_assert!(
+            command.ends_with(b"\r\n"),
+            "Commands are expected to end with CRLF."
+        );
 
         // The callback is going to be called before other commands are sent,
         // therefore it is safe to queue the callback at this point, as next
