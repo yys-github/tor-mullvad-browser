@@ -56,9 +56,9 @@ impl ReplyDispatcher {
     }
 
     /// Register the handler for async notifications.
-    pub fn set_async_handler(&self, cb: Box<dyn Fn(Reply)>) {
+    pub fn set_async_handler(&self, cb: Option<Box<dyn Fn(Reply)>>) {
         // Reentrancy safety: we do not use the handler yet.
-        *self.async_handler.borrow_mut() = Some(Rc::from(cb))
+        *self.async_handler.borrow_mut() = cb.map(|cb| Rc::from(cb));
     }
 
     /// Feed data to parse.
@@ -290,7 +290,7 @@ mod tests {
         let dispatcher = ReplyDispatcher::new();
         let notification_called = Rc::new(Cell::new(false));
         let notification_called2 = notification_called.clone();
-        dispatcher.set_async_handler(Box::new(move |r| {
+        dispatcher.set_async_handler(Some(Box::new(move |r| {
             assert_eq!(
                 *r.end_line(),
                 EndReplyLine {
@@ -299,7 +299,7 @@ mod tests {
                 }
             );
             notification_called2.set(true);
-        }));
+        })));
         let reply_called = Rc::new(Cell::new(false));
         let reply_called2 = reply_called.clone();
         dispatcher.push_callback(Box::new(move |_| {
@@ -323,12 +323,12 @@ mod tests {
     #[test]
     fn async_replace_handler() {
         let dispatcher = ReplyDispatcher::new();
-        dispatcher.set_async_handler(Box::new(move |_| {
+        dispatcher.set_async_handler(Some(Box::new(move |_| {
             unreachable!("This handler should never be called, as it has been replaced.");
-        }));
+        })));
         let called = Rc::new(Cell::new(false));
         let c = called.clone();
-        dispatcher.set_async_handler(Box::new(move |r| {
+        dispatcher.set_async_handler(Some(Box::new(move |r| {
             assert_eq!(
                 *r.end_line(),
                 EndReplyLine {
@@ -337,12 +337,24 @@ mod tests {
                 }
             );
             c.set(true);
-        }));
+        })));
         assert!(!called.get());
         dispatcher
             .feed(&Bytes::from_static(b"650 Notification\r\n"))
             .unwrap();
         assert!(called.get());
+    }
+
+    #[test]
+    fn async_remove_handler() {
+        let dispatcher = ReplyDispatcher::new();
+        dispatcher.set_async_handler(Some(Box::new(move |_| {
+            unreachable!("This handler should never be called, as it has been replaced.");
+        })));
+        dispatcher.set_async_handler(None);
+        dispatcher
+            .feed(&Bytes::from_static(b"650 Notification\r\n"))
+            .unwrap();
     }
 
     #[test]
@@ -356,7 +368,7 @@ mod tests {
         }));
         let async_called = Rc::new(Cell::new(false));
         let ac = async_called.clone();
-        dispatcher.set_async_handler(Box::new(move |r| {
+        dispatcher.set_async_handler(Some(Box::new(move |r| {
             assert_eq!(
                 *r.end_line(),
                 EndReplyLine {
@@ -365,7 +377,7 @@ mod tests {
                 }
             );
             ac.set(true);
-        }));
+        })));
         dispatcher
             .feed(&Bytes::from_static(b"250 OK\r\n650 Notification\r\n"))
             .unwrap();
@@ -450,13 +462,13 @@ mod tests {
         let notifications = Rc::new(Cell::new(0));
         let n = notifications.clone();
         let d = dispatcher.clone();
-        dispatcher.set_async_handler(Box::new(move |_| {
+        dispatcher.set_async_handler(Some(Box::new(move |_| {
             n.set(n.get() + 1);
             if n.get() < 2 {
                 d.feed(&Bytes::from_static(b"650 Notification 2\r\n"))
                     .unwrap();
             }
-        }));
+        })));
         dispatcher
             .feed(&Bytes::from_static(b"650 Notification 1\r\n"))
             .unwrap();
@@ -514,9 +526,9 @@ mod tests {
     #[test]
     fn error_propagation() {
         let dispatcher = ReplyDispatcher::new();
-        dispatcher.set_async_handler(Box::new(|_| {
+        dispatcher.set_async_handler(Some(Box::new(|_| {
             unreachable!("Errors should not be propagated to the async handler.");
-        }));
+        })));
         let first = Rc::new(Cell::new(false));
         let f = first.clone();
         let second = Rc::new(Cell::new(false));
