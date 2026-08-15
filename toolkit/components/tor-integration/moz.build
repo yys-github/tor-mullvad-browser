@@ -3,7 +3,7 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 XPIDL_MODULE = "tor"
-XPIDL_SOURCES += ["ITorService.idl"]
+XPIDL_SOURCES += ["torITorService.idl"]
 XPCOM_MANIFESTS += [
     "components.conf",
 ]

@@ -6,14 +6,17 @@ use bytes::Bytes;
 use nserror::nsresult;
 use nserror::{NS_ERROR_NOT_CONNECTED, NS_OK};
 use nsstring::{nsACString, nsCString};
-use tor_provider::ctor::ControlPort;
-use tor_provider::ctor::ControlSocketError;
-use xpcom::interfaces::{nsIFile, ITorControlPort, ITorControlPortReceiver, ITorMessageHandler};
+use tor_provider::ctor::{ControlPort, ControlSocketError};
+use xpcom::interfaces::{nsIFile, torITorControlPortReceiver, torITorMessageHandler};
 use xpcom::RefPtr;
+
+// Actually used, but the compiler does not detect it.
+#[allow(unused)]
+use xpcom::interfaces::torITorControlPort;
 
 use super::control_socket::ControlSocketXpcom;
 
-#[xpcom(implement(ITorControlPort), atomic)]
+#[xpcom(implement(torITorControlPort), atomic)]
 pub struct ControlPortXpcom {
     control_port: ControlPort,
 }
@@ -32,8 +35,8 @@ impl ControlPortXpcom {
         Ok(Self::allocate(InitControlPortXpcom { control_port }))
     }
 
-    xpcom_method!(start => Start(receiver: *const ITorControlPortReceiver));
-    pub fn start(&self, receiver: &ITorControlPortReceiver) -> Result<(), nsresult> {
+    xpcom_method!(start => Start(receiver: *const torITorControlPortReceiver));
+    pub fn start(&self, receiver: &torITorControlPortReceiver) -> Result<(), nsresult> {
         let receiver = RefPtr::new(receiver);
         self.control_port.set_async_handler(Box::new(move |reply| {
             let mut buf = Vec::new();
@@ -58,11 +61,11 @@ impl ControlPortXpcom {
         Ok(())
     }
 
-    xpcom_method!(send_command => SendCommand(command: *const nsACString, handler: *const ITorMessageHandler));
+    xpcom_method!(send_command => SendCommand(command: *const nsACString, handler: *const torITorMessageHandler));
     pub fn send_command(
         &self,
         command: &nsACString,
-        handler: &ITorMessageHandler,
+        handler: &torITorMessageHandler,
     ) -> Result<(), nsresult> {
         let command = Bytes::copy_from_slice(&command[..]);
         let handler = RefPtr::new(handler);

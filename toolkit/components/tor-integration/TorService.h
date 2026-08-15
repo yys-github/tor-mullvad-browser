@@ -7,17 +7,17 @@
 
 #include "nsCOMPtr.h"
 
-#include "ITorService.h"
+#include "torITorService.h"
 
 // Inspired by
 // toolkit/components/extensions/storage/ExtensionStorageComponents.h.
 
 // Implemented in Rust
-extern "C" nsresult NewTorServiceImpl(ITorService** aResult);
+extern "C" nsresult NewTorServiceImpl(torITorService** aResult);
 
 namespace torproject {
-already_AddRefed<ITorService> NewTorService() {
-  nsCOMPtr<ITorService> service;
+already_AddRefed<torITorService> NewTorService() {
+  nsCOMPtr<torITorService> service;
   nsresult rv = NewTorServiceImpl(getter_AddRefs(service));
   if (NS_WARN_IF(NS_FAILED(rv))) {
     return nullptr;
