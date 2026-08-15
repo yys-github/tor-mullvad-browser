@@ -79,19 +79,6 @@ impl ControlPortInner {
         }
     }
 
-    fn close(&self) -> Result<(), ControlSocketError> {
-        if self.closed.replace(true) {
-            return Ok(());
-        }
-        self.reply_dispatcher.fail_all(ReplyError::ConnectionClosed);
-        self.reply_dispatcher.set_async_handler(None);
-        self.socket.close()
-    }
-
-    fn set_async_handler(&self, cb: Option<Box<dyn Fn(Reply)>>) {
-        self.reply_dispatcher.set_async_handler(cb);
-    }
-
     fn send_command(
         self: &Rc<Self>,
         command: Bytes,
@@ -136,6 +123,19 @@ impl ControlPortInner {
             }),
         );
     }
+
+    fn set_async_handler(&self, cb: Option<Box<dyn Fn(Reply)>>) {
+        self.reply_dispatcher.set_async_handler(cb);
+    }
+
+    fn close(&self) -> Result<(), ControlSocketError> {
+        if self.closed.replace(true) {
+            return Ok(());
+        }
+        self.reply_dispatcher.fail_all(ReplyError::ConnectionClosed);
+        self.reply_dispatcher.set_async_handler(None);
+        self.socket.close()
+    }
 }
 
 impl Drop for ControlPortInner {
@@ -157,11 +157,6 @@ impl ControlPort {
         Ok(Self(ControlPortInner::new(Rc::from(socket))?))
     }
 
-    #[inline]
-    pub fn close(&self) -> Result<(), ControlSocketError> {
-        self.0.close()
-    }
-
     // TODO: Keep only the methods speicifc to commands and remove this one
     // (tor-browser#44930).
     #[inline]
@@ -176,5 +171,10 @@ impl ControlPort {
     #[inline]
     pub fn set_async_handler(&self, cb: Option<Box<dyn Fn(Reply)>>) {
         self.0.set_async_handler(cb);
+    }
+
+    #[inline]
+    pub fn close(&self) -> Result<(), ControlSocketError> {
+        self.0.close()
     }
 }
