@@ -85,8 +85,8 @@ impl ControlPortInner {
         handler: Box<dyn FnOnce(Result<Reply, ControlPortError>)>,
     ) {
         if self.closed.get() {
-            handler(Err(ControlPortError::ConnectionError(
-                ControlSocketError::ConnectionClosed,
+            handler(Err(ControlPortError::ProtocolError(
+                ReplyError::ConnectionClosed,
             )));
             return;
         }
@@ -115,8 +115,14 @@ impl ControlPortInner {
                             handler(r.map_err(|e| ControlPortError::ProtocolError(e)));
                         }));
                     }
-                    Err(e) => {
-                        handler(Err(ControlPortError::from(e)));
+                    Err(ControlSocketError::ConnectionClosed) => {
+                        handler(Err(ControlPortError::ProtocolError(
+                            ReplyError::ConnectionClosed,
+                        )));
+                        this.async_failure();
+                    }
+                    Err(ControlSocketError::ImplementationError(rv)) => {
+                        handler(Err(ControlPortError::ConnectionError(rv)));
                         this.async_failure();
                     }
                 }
