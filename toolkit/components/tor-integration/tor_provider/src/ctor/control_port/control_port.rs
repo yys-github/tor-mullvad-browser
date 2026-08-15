@@ -84,10 +84,11 @@ impl ControlPortInner {
             return Ok(());
         }
         self.reply_dispatcher.fail_all(ReplyError::ConnectionClosed);
+        self.reply_dispatcher.set_async_handler(None);
         self.socket.close()
     }
 
-    fn set_async_handler(&self, cb: Box<dyn Fn(Reply)>) {
+    fn set_async_handler(&self, cb: Option<Box<dyn Fn(Reply)>>) {
         self.reply_dispatcher.set_async_handler(cb);
     }
 
@@ -174,7 +175,7 @@ impl ControlPort {
     }
 
     #[inline]
-    pub fn set_async_handler(&self, cb: Box<dyn Fn(Reply)>) {
+    pub fn set_async_handler(&self, cb: Option<Box<dyn Fn(Reply)>>) {
         self.0.set_async_handler(cb);
     }
 }
