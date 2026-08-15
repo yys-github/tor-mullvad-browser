@@ -38,26 +38,27 @@ impl ControlPortXpcom {
     xpcom_method!(start => Start(receiver: *const torITorControlPortReceiver));
     pub fn start(&self, receiver: &torITorControlPortReceiver) -> Result<(), nsresult> {
         let receiver = RefPtr::new(receiver);
-        self.control_port.set_async_handler(Box::new(move |reply| {
-            let mut buf = Vec::new();
-            if let Err(e) = reply.write_to(&mut buf) {
-                log::error!(
-                    "Cannot convert the reply to the raw message: {}.",
-                    e.to_string()
-                );
-                return;
-            }
-            if buf.ends_with(b"\r\n") {
-                buf.truncate(buf.len() - 2);
-            }
-            // These conversions re-use the buffer, Gecko uses the same
-            // allocator for Rust and C++ (see the nsstring crate).
-            let as_str = nsCString::from(buf);
-            // Safety: call to an XPCOM method that we expect to be exposed on
-            // Rust. As per the documentation in nsstring, it is safe to pass
-            // nsCStrings created in Rust to C++.
-            unsafe { receiver.OnAsyncMessage(&*as_str) };
-        }));
+        self.control_port
+            .set_async_handler(Some(Box::new(move |reply| {
+                let mut buf = Vec::new();
+                if let Err(e) = reply.write_to(&mut buf) {
+                    log::error!(
+                        "Cannot convert the reply to the raw message: {}.",
+                        e.to_string()
+                    );
+                    return;
+                }
+                if buf.ends_with(b"\r\n") {
+                    buf.truncate(buf.len() - 2);
+                }
+                // These conversions re-use the buffer, Gecko uses the same
+                // allocator for Rust and C++ (see the nsstring crate).
+                let as_str = nsCString::from(buf);
+                // Safety: call to an XPCOM method that we expect to be exposed
+                // on Rust. As per the documentation in nsstring, it is safe to
+                // pass nsCStrings created in Rust to C++.
+                unsafe { receiver.OnAsyncMessage(&*as_str) };
+            })));
         Ok(())
     }
 
