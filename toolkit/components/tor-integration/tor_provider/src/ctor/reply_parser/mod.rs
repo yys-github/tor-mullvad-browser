@@ -15,6 +15,8 @@ mod test_utils;
 
 pub use dispatcher::ReplyDispatcher;
 pub use error::ReplyError;
-pub(crate) use factory::ReplyFactory;
 pub use line::{DetailReplyLine, EndReplyLine};
 pub use reply::Reply;
+
+#[cfg(test)]
+pub(crate) use test_utils::make_reply;
