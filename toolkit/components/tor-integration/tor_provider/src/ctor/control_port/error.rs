@@ -5,14 +5,12 @@
 
 use thiserror::Error;
 
-use super::super::{ControlSocketError, ReplyError};
+use crate::ctor::ReplyError;
 
 #[derive(Error, Debug, Clone, PartialEq, Eq)]
 pub enum ControlPortError {
-    #[error("connection error")]
-    ConnectionError(#[from] ControlSocketError),
-    #[error("protocol violation")]
+    #[error("connection error: {0:#x}")]
+    ConnectionError(u32),
+    #[error("protocol violation: {0}")]
     ProtocolError(#[from] ReplyError),
-    #[error("unsuccessful command ({code}): {message}")]
-    TorError { code: u16, message: String },
 }
