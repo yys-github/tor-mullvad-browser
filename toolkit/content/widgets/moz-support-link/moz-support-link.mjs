@@ -115,7 +115,7 @@ export default class MozSupportLink extends StylesMixin(
     const torManualPrefix = "tor-manual:";
     if (supportPage.startsWith(torManualPrefix)) {
       const torManualPage = supportPage.substring(torManualPrefix.length);
-      const [page, anchor] = torManualPage.split("_", 2);
+      const [pages, anchor] = torManualPage.split("___", 2);
 
       let locale = Services.locale.appLocaleAsBCP47;
       if (locale === "ja-JP-macos") {
@@ -123,7 +123,7 @@ export default class MozSupportLink extends StylesMixin(
         locale = "ja";
       }
 
-      let href = `https://tb-manual.torproject.org/${locale}/${page}/`;
+      let href = `https://support.torproject.org/${locale}/tor-browser/${pages.replace("__", "/")}/`;
       if (anchor) {
         href = `${href}#${anchor}`;
       }
