@@ -140,9 +140,6 @@ var SidebarController = {
           gleanEvent: Glean.history.sidebarToggle,
           gleanClickEvent: Glean.sidebar.historyIconClick,
           recordSidebarVersion: true,
-          // In permanent private browsing, the history panel can be opened, but
-          // we hide the sidebar button to control this. tor-browser#43902.
-          visible: !PrivateBrowsingUtils.permanentPrivateBrowsing,
         }),
       ],
       [
