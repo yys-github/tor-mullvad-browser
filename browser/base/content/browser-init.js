@@ -1163,10 +1163,10 @@ var gBrowserInit = {
         // session restore isn't about to override the homepage.
         let willOverride = SessionStartup.willOverrideHomepage;
         if (typeof willOverride == "boolean") {
-          return willOverride ? null : uri;
+          return willOverride ? null : aUri;
         }
         return willOverride.then(willOverrideHomepage =>
-          willOverrideHomepage ? null : uri
+          willOverrideHomepage ? null : aUri
         );
       })(uri);
 
