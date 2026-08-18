@@ -1269,7 +1269,7 @@ features:
           enabled: false
       - channel: nightly
         value:
-          enabled: true
+          enabled: false
 
   voice-search-in-display-mode:
     description: Controls whether the voice search entry point is shown in the display-mode browser toolbar.
