@@ -78,7 +78,8 @@ Preferences.addSetting({
 SettingGroupManager.registerGroups({
   letterboxing: {
     l10nId: "letterboxing-settings-group",
-    supportPage: "tor-manual:features__fingerprinting-protections___letterboxing",
+    supportPage:
+      "tor-manual:features__fingerprinting-protections___letterboxing",
     headingLevel: 2,
     items: [
       {
