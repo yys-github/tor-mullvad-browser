@@ -11,7 +11,11 @@ use nserror::{
     NS_ERROR_FAILURE, NS_ERROR_INVALID_ARG, NS_ERROR_NOT_AVAILABLE, NS_ERROR_UNEXPECTED, NS_OK,
 };
 use nsstring::nsACString;
-use std::{cell::{Cell, RefCell}, ffi::c_char, ptr::null};
+use std::{
+    cell::{Cell, RefCell},
+    ffi::c_char,
+    ptr::null,
+};
 use thin_vec::ThinVec;
 use tor_provider::ctor::{ControlSocket, ControlSocketError};
 use xpcom::interfaces::{
