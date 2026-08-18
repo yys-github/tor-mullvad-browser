@@ -3206,7 +3206,7 @@ class Settings(
      */
     var googleLensIntegrationUserEnabled by booleanPreference(
         key = appContext.getPreferenceKey(R.string.pref_key_google_lens_integration_user_enabled),
-        default = true,
+        default = false,
     )
 
     /**
