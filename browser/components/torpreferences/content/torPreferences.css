@@ -138,6 +138,8 @@ tor-bridges-display {
     padding: var(--space-large);
 
     @media not ((prefers-contrast) or (forced-colors)) {
+      /* Use direct colours until we get a better token. tor-browser#45194. */
+      /* stylelint-disable-next-line stylelint-plugin-mozilla/no-base-design-tokens */
       background-color: light-dark(var(--color-gray-0), var(--color-gray-90));
     }
   }
