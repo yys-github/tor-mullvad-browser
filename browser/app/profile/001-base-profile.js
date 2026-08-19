@@ -184,6 +184,37 @@ pref("security.tls.version.enable-deprecated", false, locked);
 // more similar.
 pref("security.ssl.disable_session_identifiers", true);
 
+// URL bar and (remote) suggestions
+pref("browser.search.suggest.enabled", false);
+pref("browser.search.suggest.enabled.private", false);
+pref("browser.urlbar.suggest.searches", false);
+// tor-browser#44511: Global opt-out for rich suggestions.
+// Some of them are not remote, but we do not have the needed remote settings
+// dump, so just disable all of them.
+pref("browser.urlbar.suggest.quicksuggest.all", false);
+pref("browser.urlbar.suggest.quicksuggest.nonsponsored", false);
+pref("browser.urlbar.suggest.quicksuggest.sponsored", false);
+// tor-browser#41576: Do not suggest weather and addons.
+pref("browser.urlbar.suggest.addons", false);
+pref("browser.urlbar.addons.featureGate", false);
+pref("browser.urlbar.suggest.weather", false);
+pref("browser.urlbar.weather.featureGate", false);
+// tor-browser#42886: Disable trending results.
+pref("browser.urlbar.suggest.trending", false);
+pref("browser.urlbar.trending.featureGate", false);
+pref("browser.urlbar.suggest.topsites", false);
+// tor-browser#41691: Hide "Firefox Suggest" in the UI
+pref("browser.urlbar.groupLabels.enabled", false);
+// tor-browser#42735: Disable recent search suggestions
+pref("browser.urlbar.recentsearches.featureGate", false);
+pref("browser.urlbar.suggest.recentsearches", false);
+pref("browser.urlbar.quicksuggest.enabled", false);
+pref("browser.urlbar.quicksuggest.online.available", false);
+pref("browser.urlbar.quicksuggest.online.enabled", false);
+pref("browser.urlbar.richSuggestions.featureGate", false);
+// tor-browser#44511: defense-in-depth to disable remote queries when pasting.
+pref("browser.urlbar.maxCharsForSearchSuggestions", 0);
+
 // Misc privacy: Remote
 pref("browser.send_pings", false);
 // Space separated list of URLs that are allowed to send objects (instead of
@@ -196,21 +227,7 @@ pref("geo.provider.ms-windows-location", false);
 pref("geo.provider.use_corelocation", false);
 pref("geo.provider.use_gpsd", false);
 pref("geo.provider.use_geoclue", false);
-pref("browser.search.suggest.enabled", false);
-pref("browser.search.suggest.enabled.private", false);
-pref("browser.urlbar.suggest.searches", false);
-pref("browser.urlbar.suggest.quicksuggest.nonsponsored", false);
-pref("browser.urlbar.suggest.quicksuggest.sponsored", false);
-// tor-browser#41576: Do not suggest weather and addons.
-pref("browser.urlbar.suggest.addons", false);
-pref("browser.urlbar.addons.featureGate", false);
-pref("browser.urlbar.suggest.weather", false);
-pref("browser.urlbar.weather.featureGate", false);
-// tor-browser#42886: Disable trending results.
-pref("browser.urlbar.suggest.trending", false);
-pref("browser.urlbar.trending.featureGate", false);
-// tor-browser#41691: Hide "Firefox Suggest" in the UI
-pref("browser.urlbar.groupLabels.enabled", false);
+
 pref("browser.safebrowsing.malware.enabled", false);
 pref("browser.safebrowsing.phishing.enabled", false);
 pref("browser.safebrowsing.downloads.enabled", false);
@@ -223,12 +240,6 @@ pref("browser.safebrowsing.provider.google4.updateURL", "");
 pref("browser.safebrowsing.provider.google4.gethashURL", "");
 pref("browser.safebrowsing.provider.mozilla.updateURL", "");
 pref("browser.safebrowsing.provider.mozilla.gethashURL", "");
-// tor-browser#42735: Disable recent search suggestions
-pref("browser.urlbar.recentsearches.featureGate", false);
-pref("browser.urlbar.suggest.recentsearches", false);
-
-// tor-browser#44262: Disable adding search engines from HTML forms
-pref("browser.urlbar.update2.engineAliasRefresh", false);
 
 // Disable the UITour API
 // See tor-browser#41457 and
@@ -763,14 +774,6 @@ pref("security.certerrors.mitm.auto_enable_enterprise_roots", false);
 // Disable share menus on Mac and Windows tor-browser#41117
 pref("browser.menu.share_url.allow", false, locked);
 
-// Disable special URL bar behaviors
-pref("browser.urlbar.suggest.topsites", false);
-pref("browser.urlbar.quicksuggest.enabled", false);
-pref("browser.urlbar.quicksuggest.online.available", false);
-pref("browser.urlbar.quicksuggest.online.enabled", false);
-pref("browser.urlbar.richSuggestions.featureGate", false);
-pref("browser.urlbar.yelp.featureGate", false);
-pref("browser.urlbar.mdn.featureGate", false);
 
 // tor-browser#41884: Do not start a search when clicking on the new tab button
 // with the middle mouse button (to prevent searching for anything you might
