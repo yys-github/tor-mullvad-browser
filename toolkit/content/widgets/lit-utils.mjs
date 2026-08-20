@@ -266,6 +266,9 @@ export class MozBaseInputElement extends MozLitElement {
     // label-align-before is a customisation for the moz-toggle in about:tor.
     // See tor-browser#43727.
     labelAlignBefore: { type: Boolean, attribute: "label-align-before" },
+    // Allow us to set more complex content in a label (e.g. a moz-badge).
+    // See tor-browser#45201.
+    useLabelSlot: { type: Boolean, attribute: "use-label-slot" },
   };
   /** @type {"inline" | "block" | "inline-end"} */
   static inputLayout = "inline";
@@ -465,7 +468,7 @@ export class MozBaseInputElement extends MozLitElement {
   }
 
   labelTemplate() {
-    if (!this.label) {
+    if (!this.label && !this.useLabelSlot) {
       return "";
     }
     let labelEl;
@@ -478,6 +481,12 @@ export class MozBaseInputElement extends MozLitElement {
         class="text text-box-trim-start"
         .textContent=${this.label}
       ></h3>`;
+    } else if (this.useLabelSlot) {
+      labelEl = html`<slot
+        class="text"
+        name="label"
+        @slotchange=${this.onSlotchange}
+      ></slot>`;
     } else {
       labelEl = html`<span class="text" .textContent=${this.label}></span>`;
     }
