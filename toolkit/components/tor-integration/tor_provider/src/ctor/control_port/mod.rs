@@ -9,6 +9,6 @@ mod control_socket;
 mod error;
 mod message_pump;
 
-pub use control_port::ControlPort;
+pub use control_port::*;
 pub use control_socket::*;
 pub use error::ControlPortError;
