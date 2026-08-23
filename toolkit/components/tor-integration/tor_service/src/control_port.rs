@@ -3,9 +3,9 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 use nserror::nsresult;
-use nserror::{NS_ERROR_NOT_CONNECTED, NS_OK};
+use nserror::{NS_ERROR_NOT_CONNECTED, NS_ERROR_UNEXPECTED, NS_OK};
 use nsstring::{nsACString, nsCString};
-use tor_provider::ctor::{ControlPort, ControlSocketError};
+use tor_provider::ctor::{ControlPort, ControlSocketError, ControllerError, TorController};
 use xpcom::interfaces::{nsIFile, torITorControlPortReceiver, torITorMessageHandler};
 use xpcom::RefPtr;
 
@@ -17,7 +17,7 @@ use super::control_socket::ControlSocketXpcom;
 
 #[xpcom(implement(torITorControlPort), atomic)]
 pub struct ControlPortXpcom {
-    control_port: ControlPort,
+    control_port: TorController<ControlPort>,
 }
 
 impl ControlPortXpcom {
@@ -30,7 +30,7 @@ impl ControlPortXpcom {
     }
 
     fn new(socket: Box<ControlSocketXpcom>) -> Result<RefPtr<Self>, nsresult> {
-        let control_port = ControlPort::new(socket).map_err(Self::map_err)?;
+        let control_port = TorController::new(ControlPort::new(socket).map_err(Self::map_err)?);
         Ok(Self::allocate(InitControlPortXpcom { control_port }))
     }
 
@@ -78,7 +78,7 @@ impl ControlPortXpcom {
             command.extend_from_slice(b"\r\n");
         }
         let handler = RefPtr::new(handler);
-        self.control_port.send_command(
+        self.control_port.send_raw_command(
             command.into(),
             Box::new(move |reply| {
                 let mut buf = Vec::new();
@@ -110,7 +110,10 @@ impl ControlPortXpcom {
 
     xpcom_method!(close => Close());
     pub fn close(&self) -> Result<(), nsresult> {
-        self.control_port.close().map_err(Self::map_err)
+        self.control_port.close().map_err(|e| match e {
+            ControllerError::ConnectionError(rv) => nsresult(rv),
+            _ => NS_ERROR_UNEXPECTED,
+        })
     }
 
     fn map_err(e: ControlSocketError) -> nsresult {
