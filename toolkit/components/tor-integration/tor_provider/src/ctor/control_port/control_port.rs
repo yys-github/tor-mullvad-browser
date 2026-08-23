@@ -15,7 +15,19 @@ use super::{
     error::ControlPortError,
     message_pump::{MessagePump, ReadAction},
 };
+
 use crate::ctor::reply_parser::{Reply, ReplyDispatcher, ReplyError};
+
+pub trait ControlPortInterface {
+    fn send_command(
+        &self,
+        command: Bytes,
+        handler: Box<dyn FnOnce(Result<Reply, ControlPortError>)>,
+    );
+    fn set_async_handler(&self, cb: Option<Box<dyn Fn(Reply)>>);
+    fn close(&self) -> Result<(), ControlSocketError>;
+    fn set_close_handler(&self, cb: Box<dyn FnOnce()>);
+}
 
 /// The lower-level part of the control port implementation.
 /// It contains the logic for actually sending the command, and it hides its
@@ -172,6 +184,9 @@ impl Drop for ControlPortInner {
     }
 }
 
+// Wrap the inner type to make it clearer that its ownership is not supposed to
+// be shared even though it uses an Rc, but the use of the Rc is due to the
+// callback structure.
 pub struct ControlPort(Rc<ControlPortInner>);
 
 impl ControlPort {
@@ -179,11 +194,11 @@ impl ControlPort {
     pub fn new(socket: Box<dyn ControlSocket>) -> Result<Self, ControlSocketError> {
         Ok(Self(ControlPortInner::new(Rc::from(socket))?))
     }
+}
 
-    // TODO: Keep only the methods speicifc to commands and remove this one
-    // (tor-browser#44930).
+impl ControlPortInterface for ControlPort {
     #[inline]
-    pub fn send_command(
+    fn send_command(
         &self,
         command: Bytes,
         handler: Box<dyn FnOnce(Result<Reply, ControlPortError>)>,
@@ -192,17 +207,17 @@ impl ControlPort {
     }
 
     #[inline]
-    pub fn set_async_handler(&self, cb: Option<Box<dyn Fn(Reply)>>) {
+    fn set_async_handler(&self, cb: Option<Box<dyn Fn(Reply)>>) {
         self.0.set_async_handler(cb);
     }
 
     #[inline]
-    pub fn close(&self) -> Result<(), ControlSocketError> {
+    fn close(&self) -> Result<(), ControlSocketError> {
         self.0.close()
     }
 
     #[inline]
-    pub fn set_close_handler(&self, cb: Box<dyn FnOnce()>) {
+    fn set_close_handler(&self, cb: Box<dyn FnOnce()>) {
         self.0.set_close_handler(cb);
     }
 }
