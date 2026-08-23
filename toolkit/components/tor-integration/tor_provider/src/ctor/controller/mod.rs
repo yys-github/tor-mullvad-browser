@@ -3,9 +3,13 @@
 // <http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
+mod controller;
+mod error;
 mod escape;
 mod unescape;
 
+pub use controller::*;
+pub use error::*;
 use escape::*;
 use unescape::*;
 
