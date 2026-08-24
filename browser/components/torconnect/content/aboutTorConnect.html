@@ -38,28 +38,30 @@
       <div id="progressBackground"></div>
       <div id="progressBarBackground"></div>
     </div>
-    <div id="breadcrumbs" class="hidden">
-      <span id="connect-to-tor" class="breadcrumb-item">
-        <span id="connect-to-tor-icon" class="breadcrumb-icon"></span>
-        <span class="breadcrumb-label"></span>
-      </span>
-      <span
-        id="connection-assist-separator"
-        class="breadcrumb-separator breadcrumb-icon"
-      ></span>
-      <span id="connection-assist" class="breadcrumb-item">
-        <span id="connection-assist-icon" class="breadcrumb-icon"></span>
-        <span class="breadcrumb-label"></span>
-      </span>
-      <span
-        id="try-bridge-separator"
-        class="breadcrumb-separator breadcrumb-icon"
-      ></span>
-      <span id="try-bridge" class="breadcrumb-item">
-        <span id="try-bridge-icon" class="breadcrumb-icon"></span>
-        <span class="breadcrumb-label"></span>
-      </span>
-    </div>
+    <nav id="breadcrumbs">
+      <ol>
+        <li id="connect-to-tor">
+          <div class="breadcrumb-item" role="link" tabindex="0">
+            <span id="connect-to-tor-icon" class="breadcrumb-icon"></span>
+            <span class="breadcrumb-label"></span>
+          </div>
+        </li>
+        <li id="connection-assist">
+          <div class="breadcrumb-separator breadcrumb-icon"></div>
+          <div class="breadcrumb-item" role="link" tabindex="0">
+            <span id="connection-assist-icon" class="breadcrumb-icon"></span>
+            <span class="breadcrumb-label"></span>
+          </div>
+        </li>
+        <li id="try-bridge">
+          <div class="breadcrumb-separator breadcrumb-icon"></div>
+          <div class="breadcrumb-item" role="link" tabindex="0">
+            <span id="try-bridge-icon" class="breadcrumb-icon"></span>
+            <span class="breadcrumb-label"></span>
+          </div>
+        </li>
+      </ol>
+    </nav>
     <div class="torconnect-stage-content" data-stage-name="ProviderStopped">
       <img class="torconnect-icon assist-icon" alt="" />
       <h1
