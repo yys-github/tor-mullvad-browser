@@ -39,11 +39,11 @@ class TabsSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
         setPreferencesFromResource(R.xml.tabs_preferences, rootKey)
 
         findPreference<RadioButtonPreference>(getString(R.string.pref_key_close_tabs_manually))?.parent?.apply {
-            isVisible = !context.components.settings.shouldDisableNormalMode
+            isVisible = false
         }
 
         findPreference<PreferenceCategory>(getString(R.string.pref_key_inactive_tabs_category))?.apply {
-            isVisible = !context.components.settings.shouldDisableNormalMode
+            isVisible = false
         }
     }
 

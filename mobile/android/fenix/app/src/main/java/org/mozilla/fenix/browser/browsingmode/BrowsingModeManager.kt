@@ -74,17 +74,7 @@ class DefaultBrowsingModeManager(
      * Returns the [BrowsingMode] set by the [intent] or the last known [BrowsingMode].
      */
     private fun getModeFromIntentOrLastKnown(intent: Intent?): BrowsingMode {
-        if (settings.shouldDisableNormalMode) {
-            return BrowsingMode.Private
-        }
-
-        intent?.toSafeIntent()?.let {
-            if (it.hasExtra(PRIVATE_BROWSING_MODE)) {
-                val startPrivateMode = it.getBooleanExtra(PRIVATE_BROWSING_MODE, false)
-                return BrowsingMode.fromBoolean(isPrivate = startPrivateMode)
-            }
-        }
-
-        return settings.lastKnownMode
+        // tor-browser#44210: Hard-code always on PBM.
+        return BrowsingMode.Private
     }
 }
