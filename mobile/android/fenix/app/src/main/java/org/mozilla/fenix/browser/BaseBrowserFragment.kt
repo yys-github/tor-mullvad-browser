@@ -433,33 +433,6 @@ abstract class BaseBrowserFragment :
 
         initializeUI(view)
 
-        appLinksFeature.set(
-            feature = AppLinksFeature(
-                context = requireContext(),
-                store = requireComponents.core.store,
-                fragmentManager = parentFragmentManager,
-                sessionId = customTabSessionId,
-                dialog = appLinksPromptDialog(),
-                launchInApp = { requireComponents.settings.shouldOpenLinksInApp(customTabSessionId != null) },
-                loadUrlUseCase = requireComponents.useCases.sessionUseCases.loadUrl,
-                shouldPrompt = { requireComponents.settings.shouldPromptOpenLinksInApp() },
-                alwaysOpenCheckboxAction = {
-                    requireComponents.settings.openLinksInExternalApp =
-                        requireContext().getString(R.string.pref_key_open_links_in_apps_always)
-                },
-                failedToLaunchAction = { fallbackUrl ->
-                    fallbackUrl?.let {
-                        val appLinksUseCases = requireComponents.useCases.appLinksUseCases
-                        val getRedirect = appLinksUseCases.appLinkRedirect
-                        val redirect = getRedirect.invoke(fallbackUrl)
-                        appLinksUseCases.openAppLink.invoke(redirect.appIntent)
-                    }
-                },
-            ),
-            owner = this,
-            view = binding.root,
-        )
-
         if (customTabSessionId == null) {
             // We currently only need this observer to navigate to home
             // in case all tabs have been removed on startup. No need to
