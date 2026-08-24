@@ -326,15 +326,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
                 getString(R.string.delete_browsing_data_quit_off)
             }
         // Hide "Delete browsing data on quit" when in Private Browsing-only mode
-        deleteBrowsingDataPreference.isVisible =
-            !deleteBrowsingDataPreference.context.components.settings.shouldDisableNormalMode
-
-
-        if (!settings.shouldDisableNormalMode) {
-            val tabSettingsPreference =
-                requirePreference<Preference>(R.string.pref_key_tabs)
-            tabSettingsPreference.summary = context?.components?.settings?.getTabTimeoutString()
-        }
+        deleteBrowsingDataPreference.isVisible = false
 
         val openLinksInAppsSettingsPreference = requirePreference<Preference>(R.string.pref_key_open_links_in_apps)
         openLinksInAppsSettingsPreference.summary = settings.getOpenLinksInAppsString()
