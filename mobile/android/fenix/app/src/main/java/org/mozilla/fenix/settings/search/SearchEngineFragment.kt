@@ -49,7 +49,7 @@ class SearchEngineFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
         }
 
         findPreference<CheckBoxPreference>(getString(R.string.pref_key_show_search_suggestions_in_private))?.apply {
-            isVisible = !context.components.settings.shouldDisableNormalMode
+            isVisible = false
         }
 
         view?.hideKeyboard()
