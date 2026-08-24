@@ -819,7 +819,8 @@ class AboutTorConnect {
     const pieces = text.split("%S");
     const link = document.createElement("a");
     link.textContent = TorStrings.torConnect.configureConnection;
-    link.setAttribute("href", "#");
+    link.setAttribute("href", "about:preferences#connection");
+    link.setAttribute("target", "_blank");
     link.addEventListener("click", e => {
       e.preventDefault();
       RPMSendAsyncMessage("torconnect:open-tor-preferences");
