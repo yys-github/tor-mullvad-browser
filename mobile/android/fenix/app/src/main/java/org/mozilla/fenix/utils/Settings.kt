@@ -931,15 +931,10 @@ class Settings(
             default = 1f,
         )
 
-    val shouldDisableNormalMode by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_disable_normal_mode),
-        true
-    )
-
     val shouldShowHistorySuggestions by
         booleanPreference(
             appContext.getPreferenceKey(R.string.pref_key_search_browsing_history),
-            default = !shouldDisableNormalMode,
+            default = false,
         )
 
     val shouldShowBookmarkSuggestions by
@@ -1500,7 +1495,7 @@ class Settings(
             val lastKnownModeWasPrivate =
                 preferences.getBoolean(
                     appContext.getPreferenceKey(R.string.pref_key_last_known_mode_private),
-                    shouldDisableNormalMode,
+                    true,
                 )
 
             return if (lastKnownModeWasPrivate) {

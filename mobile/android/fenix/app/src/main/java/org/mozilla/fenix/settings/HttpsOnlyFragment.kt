@@ -61,7 +61,7 @@ class HttpsOnlyFragment : Fragment(), SystemInsetsPaddedFragment {
             updateEngineHttpsOnlyMode()
         }
 
-        binding.httpsOnlyModes.isGone = requireContext().components.settings.shouldDisableNormalMode
+        binding.httpsOnlyModes.isGone = true
 
         return binding.root
     }
