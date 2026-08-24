@@ -42,12 +42,10 @@ class AboutTorConnect {
         label: "#connect-to-tor .breadcrumb-label",
       },
       connectionAssist: {
-        separator: "#connection-assist-separator",
         link: "#connection-assist",
         label: "#connection-assist .breadcrumb-label",
       },
       tryBridge: {
-        separator: "#try-bridge-separator",
         link: "#try-bridge",
         label: "#try-bridge .breadcrumb-label",
       },
@@ -90,17 +88,11 @@ class AboutTorConnect {
     connectToTorLabel: document.querySelector(
       this.selectors.breadcrumbs.connectToTor.label
     ),
-    connectionAssistSeparator: document.querySelector(
-      this.selectors.breadcrumbs.connectionAssist.separator
-    ),
     connectionAssistLink: document.querySelector(
       this.selectors.breadcrumbs.connectionAssist.link
     ),
     connectionAssistLabel: document.querySelector(
       this.selectors.breadcrumbs.connectionAssist.label
-    ),
-    tryBridgeSeparator: document.querySelector(
-      this.selectors.breadcrumbs.tryBridge.separator
     ),
     tryBridgeLink: document.querySelector(
       this.selectors.breadcrumbs.tryBridge.link
@@ -239,33 +231,49 @@ class AboutTorConnect {
   }
 
   setBreadcrumbsStatus(connectToTor, connectionAssist, tryBridge) {
-    this.elements.breadcrumbContainer.classList.remove("hidden");
-    const elems = [
-      [this.elements.connectToTorLink, connectToTor, null],
-      [
-        this.elements.connectionAssistLink,
-        connectionAssist,
-        this.elements.connectionAssistSeparator,
-      ],
-      [
-        this.elements.tryBridgeLink,
-        tryBridge,
-        this.elements.tryBridgeSeparator,
-      ],
-    ];
-    elems.forEach(([elem, status, separator]) => {
-      elem.classList.remove(BreadcrumbStatus.Hidden);
-      elem.classList.remove(BreadcrumbStatus.Disabled);
-      elem.classList.remove(BreadcrumbStatus.Active);
-      if (status !== "") {
-        elem.classList.add(status);
+    this.elements.breadcrumbContainer.classList.remove("hide-breadcrumbs");
+    for (const { listEl, status } of [
+      { listEl: this.elements.connectToTorLink, status: connectToTor },
+      { listEl: this.elements.connectionAssistLink, status: connectionAssist },
+      { listEl: this.elements.tryBridgeLink, status: tryBridge },
+    ]) {
+      let hidden = false;
+      let disabled = false;
+      let active = false;
+      switch (status) {
+        case BreadcrumbStatus.Hidden:
+          hidden = true;
+          break;
+        case BreadcrumbStatus.Disabled:
+          disabled = true;
+          break;
+        case BreadcrumbStatus.Active:
+          active = true;
+          break;
       }
-      separator?.classList.toggle("hidden", status === BreadcrumbStatus.Hidden);
-    });
+      // NOTE: Hiding or disabling elements can cause them to loose focus.
+      // However, with each stage change the focus should already be moved.
+      listEl.hidden = hidden;
+      const linkEl = listEl.querySelector(".breadcrumb-item");
+      linkEl.classList.toggle("breadcrumb-disabled", disabled);
+      linkEl.classList.toggle("breadcrumb-active", active);
+      if (disabled) {
+        linkEl.removeAttribute("tabindex");
+        linkEl.setAttribute("aria-disabled", "true");
+      } else {
+        linkEl.setAttribute("tabindex", "0");
+        linkEl.removeAttribute("aria-disabled", "true");
+      }
+      if (active) {
+        linkEl.setAttribute("aria-current", "step");
+      } else {
+        linkEl.removeAttribute("aria-current");
+      }
+    }
   }
 
   hideBreadcrumbs() {
-    this.elements.breadcrumbContainer.classList.add("hidden");
+    this.elements.breadcrumbContainer.classList.add("hide-breadcrumbs");
   }
 
   getLocalizedStatus(status) {
@@ -432,7 +440,11 @@ class AboutTorConnect {
         break;
       case "Bootstrapping":
         showProgress = true;
-        this.showBootstrapping(stage.bootstrapTrigger, stage.tryAgain);
+        this.showBootstrapping(
+          stage.bootstrapTrigger,
+          stage.tryAgain,
+          stage.potentiallyBlocked
+        );
         // Always focus the cancel button.
         moveFocus = this.elements.cancelButton;
         break;
@@ -676,16 +688,18 @@ class AboutTorConnect {
         BreadcrumbStatus.Default,
         BreadcrumbStatus.Disabled
       );
+    } else {
+      this.hideBreadcrumbs();
     }
   }
 
-  showBootstrapping(trigger, tryAgain) {
+  showBootstrapping(trigger, tryAgain, potentiallyBlocked) {
     let title = "";
     let description = "";
     const breadcrumbs = [
-      BreadcrumbStatus.Disabled,
-      BreadcrumbStatus.Disabled,
-      BreadcrumbStatus.Disabled,
+      BreadcrumbStatus.Default,
+      potentiallyBlocked ? BreadcrumbStatus.Default : BreadcrumbStatus.Hidden,
+      potentiallyBlocked ? BreadcrumbStatus.Disabled : BreadcrumbStatus.Hidden,
     ];
     switch (trigger) {
       case "Start":
@@ -718,7 +732,7 @@ class AboutTorConnect {
     this.setTitle(title, "");
     this.showConfigureConnectionLink(description);
     this.elements.progressDescription.textContent = "";
-    if (tryAgain) {
+    if (tryAgain || potentiallyBlocked) {
       this.setBreadcrumbsStatus(...breadcrumbs);
     } else {
       this.hideBreadcrumbs();
@@ -780,8 +794,8 @@ class AboutTorConnect {
       this.getMaybeLocalizedError(error);
     this.setBreadcrumbsStatus(
       BreadcrumbStatus.Default,
-      BreadcrumbStatus.Default,
-      BreadcrumbStatus.Active
+      BreadcrumbStatus.Active,
+      BreadcrumbStatus.Disabled
     );
     this.showLocationForm(false, TorStrings.torConnect.tryAgain);
   }
@@ -929,24 +943,38 @@ class AboutTorConnect {
   initElements(direction) {
     document.documentElement.setAttribute("dir", direction);
 
-    this.elements.connectToTorLink.addEventListener("click", () => {
-      RPMSendAsyncMessage("torconnect:start-again");
-    });
+    for (const [linkEl, command] of [
+      [
+        this.elements.connectToTorLink,
+        () => {
+          RPMSendAsyncMessage("torconnect:start-again");
+        },
+      ],
+      [
+        this.elements.connectionAssistLink,
+        () => {
+          RPMSendAsyncMessage("torconnect:choose-region");
+        },
+      ],
+      // Final link does nothing.
+    ]) {
+      // NOTE: These link should never be both visible and disabled.
+      // NOTE: We allow re-selecting this link when it is already the
+      // "aria-current" item, to allow the user to reset to the beginning of
+      // Connection Assist.
+      linkEl.addEventListener("click", () => {
+        command();
+      });
+      linkEl.addEventListener("keydown", event => {
+        if (event.key !== "Enter") {
+          return;
+        }
+        command();
+      });
+    }
+
     this.elements.connectToTorLabel.textContent =
       TorStrings.torConnect.torConnect;
-    this.elements.connectionAssistLink.addEventListener("click", () => {
-      if (
-        this.elements.connectionAssistLink.classList.contains(
-          BreadcrumbStatus.Active
-        ) ||
-        this.elements.connectionAssistLink.classList.contains(
-          BreadcrumbStatus.Disabled
-        )
-      ) {
-        return;
-      }
-      RPMSendAsyncMessage("torconnect:choose-region");
-    });
     this.elements.connectionAssistLabel.textContent =
       TorStrings.torConnect.breadcrumbAssist;
     this.elements.tryBridgeLabel.textContent =

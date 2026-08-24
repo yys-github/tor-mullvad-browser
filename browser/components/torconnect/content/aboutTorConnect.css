@@ -25,42 +25,59 @@ body {
 #breadcrumbs {
   grid-area: breadcrumbs;
   display: flex;
-  align-items: center;
+  gap: var(--space-large);
   margin: 0 0 var(--space-xlarge) 0;
-}
 
-#breadcrumbs.hidden {
-  visibility: hidden;
+  &.hide-breadcrumbs {
+    visibility: hidden;
+  }
+
+  & :is(ol, li:not([hidden])) {
+    display: contents;
+  }
 }
 
 .breadcrumb-item,
 .breadcrumb-separator {
-  display: flex;
-  margin: 0;
-  margin-inline-start: var(--space-large);
+  flex: 0 0 auto;
   padding: var(--space-small);
 }
 
 .breadcrumb-item {
+  display: flex;
+  gap: var(--space-xsmall);
   align-items: center;
   cursor: pointer;
   color: var(--text-color);
   border-radius: var(--border-radius-small);
-}
 
-.breadcrumb-item:hover {
-  color: var(--color-accent-primary);
-  background-color: var(--button-background-color-hover);
-}
+  & > * {
+    flex: 0 0 auto;
+  }
 
-.breadcrumb-item:active {
-  color: var(--color-accent-primary-active);
-  background-color: var(--button-background-color-active);
+  &:not(.breadcrumb-disabled):hover {
+    color: var(--color-accent-primary);
+    background-color: var(--button-background-color-hover);
+  }
+
+  &:not(.breadcrumb-disabled):active {
+    color: var(--color-accent-primary-active);
+    background-color: var(--button-background-color-active);
+  }
+
+  &.breadcrumb-active {
+    color: var(--color-accent-primary);
+  }
+
+  &.breadcrumb-disabled {
+    color: var(--text-color);
+    opacity: 0.4;
+    cursor: unset;
+  }
 }
 
 .breadcrumb-separator {
-  width: var(--icon-size);
-  list-style-image: url("chrome://browser/content/torconnect/arrow-right.svg");
+  content: url("chrome://browser/content/torconnect/arrow-right.svg");
 }
 
 .breadcrumb-separator:dir(rtl) {
@@ -68,29 +85,11 @@ body {
 }
 
 .breadcrumb-icon {
-  display: inline list-item;
+  width: var(--icon-size);
   height: var(--icon-size);
-  list-style-position: inside;
   -moz-context-properties: fill, stroke;
   fill: currentColor;
   stroke: currentColor;
-}
-
-.breadcrumb-item.active {
-  color: var(--color-accent-primary);
-}
-
-.breadcrumb-item.disabled,
-.breadcrumb-item.disabled:hover,
-.breadcrumb-item.disabled:active {
-  color: var(--text-color);
-  opacity: 0.4;
-  cursor: default;
-}
-
-.breadcrumb-item.hidden,
-.breadcrumb-separator.hidden {
-  display: none;
 }
 
 #connect-to-tor {
@@ -98,19 +97,15 @@ body {
 }
 
 #connect-to-tor-icon {
-  list-style-image: url("chrome://browser/content/torconnect/tor-connect.svg");
+  content: url("chrome://browser/content/torconnect/tor-connect.svg");
 }
 
 #connection-assist-icon {
-  list-style-image: url("chrome://browser/content/torconnect/tor-connect-broken.svg");
-}
-
-#try-bridge {
-  cursor: default;
+  content: url("chrome://browser/content/torconnect/tor-connect-broken.svg");
 }
 
 #try-bridge-icon {
-  list-style-image: url("chrome://browser/content/torconnect/bridge.svg");
+  content: url("chrome://browser/content/torconnect/bridge.svg");
 }
 
 #locationDropdownLabel.error {
