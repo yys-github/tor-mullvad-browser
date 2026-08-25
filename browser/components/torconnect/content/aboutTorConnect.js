@@ -64,7 +64,6 @@ class AboutTorConnect {
       connect: "button#connectButton",
       tryBridge: "button#tryBridgeButton",
       locationDropdownLabel: "#locationDropdownLabel",
-      locationDropdown: "form#locationDropdown",
       locationDropdownSelect: "#regions-select",
     },
   });
@@ -111,9 +110,6 @@ class AboutTorConnect {
     connectButton: document.querySelector(this.selectors.buttons.connect),
     locationDropdownLabel: document.querySelector(
       this.selectors.buttons.locationDropdownLabel
-    ),
-    locationDropdown: document.querySelector(
-      this.selectors.buttons.locationDropdown
     ),
     locationDropdownSelect: document.querySelector(
       this.selectors.buttons.locationDropdownSelect
@@ -213,7 +209,7 @@ class AboutTorConnect {
     this.hide(this.elements.cancelButton);
     this.hide(this.elements.connectButton);
     this.hide(this.elements.locationDropdownLabel);
-    this.hide(this.elements.locationDropdown);
+    this.hide(this.elements.locationDropdownSelect);
     this.hide(this.elements.tryBridgeButton);
   }
 
@@ -933,7 +929,7 @@ class AboutTorConnect {
     this.populateDelayedRegionOptions();
 
     this.show(this.elements.locationDropdownLabel);
-    this.show(this.elements.locationDropdown);
+    this.show(this.elements.locationDropdownSelect);
     this.elements.locationDropdownLabel.classList.toggle("error", !isChoose);
     this.show(this.elements.tryBridgeButton, true);
     if (buttonLabel !== undefined) {
@@ -1102,7 +1098,7 @@ class AboutTorConnect {
     RPMAddMessageListener("torconnect:region-names-change", () => {
       // Reset the regions list.
       this.regions = null;
-      if (!this.elements.locationDropdown.hidden) {
+      if (!this.elements.locationDropdownSelect.hidden) {
         // Re-populate immediately.
         this.populateDelayedRegionOptions();
       }
