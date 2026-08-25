@@ -112,12 +112,8 @@ body {
   color: var(--text-color-error);
 }
 
-form#locationDropdown {
+#regions-select {
   width: 240px;
-}
-
-form#locationDropdown select {
-  width: 100%;
   margin: 0;
   font-weight: var(--font-weight-bold);
 }
