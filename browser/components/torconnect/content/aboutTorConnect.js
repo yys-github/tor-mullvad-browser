@@ -645,10 +645,13 @@ class AboutTorConnect {
   }
 
   updateBootstrappingStatus(data) {
+    let { progress } = data;
+    progress = Math.max(0, Math.min(progress, 100));
     this.elements.progressMeter.style.setProperty(
       "--progress-percent",
-      `${data.progress}%`
+      `${progress}%`
     );
+    this.elements.progressMeter.setAttribute("aria-valuenow", String(progress));
     if (this.shownStage === "Bootstrapping" && data.hasWarning) {
       // When bootstrapping starts, we hide the log button, but we re-show it if
       // we get a warning.
