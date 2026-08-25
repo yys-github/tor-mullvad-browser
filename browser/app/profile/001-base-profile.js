@@ -790,6 +790,9 @@ pref("privacy.globalprivacycontrol.pbmode.enabled", true);
 // Disable platform text recognition functionality (tor-browser#42057)
 pref("dom.text-recognition.enabled", false);
 
+// tor-browser#45243: Disable taskbar tabs, as they need more polish from us.
+pref("browser.taskbarTabs.enabled", false);
+
 #ifdef XP_WIN
 pref("browser.taskbar.lists.enabled", false);
 pref("browser.taskbar.lists.frequent.enabled", false);
