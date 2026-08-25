@@ -458,6 +458,7 @@ class AutoBootstrapAttempt {
             : TorConnectError.NoSettingsForCountry
         ),
       });
+      return;
     }
 
     // Apply each of our settings and try to bootstrap with each.
