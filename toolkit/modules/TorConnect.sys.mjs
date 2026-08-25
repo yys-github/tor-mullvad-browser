@@ -2,8 +2,6 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-import { setTimeout, clearTimeout } from "resource://gre/modules/Timer.sys.mjs";
-
 const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
@@ -24,6 +22,10 @@ ChromeUtils.defineESModuleGetters(lazy, {
     "moz-src:///toolkit/components/tor-launcher/TorLauncherUtil.sys.mjs",
   TorSettings: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
   TorSettingsTopics: "moz-src:///toolkit/modules/TorSettings.sys.mjs",
+  clearInterval: "resource://gre/modules/Timer.sys.mjs",
+  clearTimeout: "resource://gre/modules/Timer.sys.mjs",
+  setInterval: "resource://gre/modules/Timer.sys.mjs",
+  setTimeout: "resource://gre/modules/Timer.sys.mjs",
 });
 
 ChromeUtils.defineLazyGetter(lazy, "NetworkLinkService", () => {
@@ -122,12 +124,17 @@ export const TorConnectTopics = Object.freeze({
  *   bootstrap.
  * @property {integer} [simulateDelay] - The delay in microseconds to apply to
  *   simulated bootstraps.
+ * @property {number} [simulateProgress] - The progress percent to reach before
+ *   the simulated bootstrap fails.
  * @property {MoatSettings} [simulateMoatResponse] - Simulate a Moat response
  *   for circumvention settings. Should include a "bridgesList" property, and
  *   optionally a "country" property. The "bridgesList" property should be an
  *   Array of MoatBridges objects that match the bridge settings accepted by
- *   TorSettings.bridges, plus you may add a "simulateCensorship" property to
- *   make only their bootstrap attempts fail.
+ *   TorSettings.bridges. For each MoatBridges object, you may also add a
+ *   "simulateCensorship" property, with an optional "simulateProgress"
+ *   property, to make the bootstrap attempt fail for this set of bridges
+ *   (whilst still allowing it to pass for other sets of bridges in the
+ *   simulated Moat response).
  * @property {string} [regionCode] - The region code to use to fetch
  *   auto-bootstrap settings, or "automatic" to automatically choose the region.
  */
@@ -232,7 +239,7 @@ class BootstrapAttempt {
       this.#bootstrap = {
         _timeout: 0,
         bootstrap() {
-          this._timeout = setTimeout(() => {
+          this._timeout = lazy.setTimeout(() => {
             const err = new lazy.TorBootstrapError({
               summary: "Censorship simulation",
               phase: "conn",
@@ -240,9 +247,32 @@ class BootstrapAttempt {
             });
             this.onbootstraperror(err);
           }, options.simulateDelay || 0);
+          this.onbootstrapstatus(0);
+          if (options.simulateDelay && options.simulateProgress) {
+            let progress = 0;
+            const step = 5;
+            const delay = Math.floor(
+              // We want the last step to last for 10 delay periods to emulate a
+              // short "hang" at this stage.
+              (step * options.simulateDelay) /
+                (options.simulateProgress + 10 * step)
+            );
+            this._progress = lazy.setInterval(() => {
+              progress += step;
+              if (progress >= options.simulateProgress) {
+                progress = options.simulateProgress;
+                lazy.clearInterval(this._progress);
+                delete this._progress;
+              }
+              this.onbootstrapstatus(progress);
+            }, delay);
+          }
         },
         cancel() {
-          clearTimeout(this._timeout);
+          lazy.clearTimeout(this._timeout);
+          if (this._progress) {
+            lazy.clearInterval(this._progress);
+          }
         },
       };
     } else {
@@ -490,7 +520,7 @@ class AutoBootstrapAttempt {
   async #fetchBridges(options) {
     if (options.simulateMoatResponse) {
       await Promise.race([
-        new Promise(res => setTimeout(res, options.simulateDelay || 0)),
+        new Promise(res => lazy.setTimeout(res, options.simulateDelay || 0)),
         this.#cancelledPromise,
       ]);
 
@@ -589,8 +619,13 @@ class AutoBootstrapAttempt {
       // Move the simulateCensorship option to the options for the next
       // BootstrapAttempt.
       bridges = structuredClone(bridges);
+      const simulateProgress = bridges.simulateProgress;
       delete bridges.simulateCensorship;
+      delete bridges.simulateProgress;
       options = { ...options, simulateCensorship: true };
+      if (simulateProgress) {
+        options.simulateProgress = simulateProgress;
+      }
     }
 
     // Send the new settings directly to the provider. We will save them only
@@ -1272,6 +1307,10 @@ export const TorConnect = {
       bootstrapOptions.simulateDelay =
         this.simulateBootstrapOptions.simulateDelay;
     }
+    if (this.simulateBootstrapOptions.simulateProgress) {
+      bootstrapOptions.simulateProgress =
+        this.simulateBootstrapOptions.simulateProgress;
+    }
     if (this.simulateBootstrapOptions.simulateMoatResponse) {
       bootstrapOptions.simulateMoatResponse =
         this.simulateBootstrapOptions.simulateMoatResponse;
@@ -1281,8 +1320,9 @@ export const TorConnect = {
       TorConnectPrefs.censorship_level,
       0
     );
-    if (censorshipLevel > 0 && !bootstrapOptions.simulateDelay) {
-      bootstrapOptions.simulateDelay = 1500;
+    if (censorshipLevel > 0) {
+      bootstrapOptions.simulateDelay ||= 1500;
+      bootstrapOptions.simulateProgress ||= 20;
     }
     if (censorshipLevel === 1) {
       // Bootstrap fails, but auto-bootstrap does not.
