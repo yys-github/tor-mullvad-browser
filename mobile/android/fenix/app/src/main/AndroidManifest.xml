@@ -482,13 +482,13 @@
         <activity-alias
             android:name="org.mozilla.gecko.BrowserApp"
             android:targetActivity=".IntentReceiverActivity"
-            android:exported="true">
+            android:exported="false">
         </activity-alias>
 
         <!-- Activity alias from Fennec used by PWA launchers on the home screen -->
         <activity-alias
             android:name="org.mozilla.gecko.LauncherActivity"
-            android:exported="true"
+            android:exported="false"
             android:targetActivity=".IntentReceiverActivity">
             <intent-filter>
                 <action android:name="org.mozilla.gecko.WEBAPP" />
