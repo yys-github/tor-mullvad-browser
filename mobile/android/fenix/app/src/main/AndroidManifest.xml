@@ -505,7 +505,7 @@
         <activity
             android:name=".HomeActivity"
             android:theme="@style/SplashScreenThemeBase"
-            android:exported="true"
+            android:exported="false"
             android:configChanges="keyboard|keyboardHidden|mcc|mnc|orientation|screenSize|layoutDirection|smallestScreenSize|screenLayout"
             android:launchMode="singleTask"
             android:taskAffinity=""
@@ -672,7 +672,7 @@
 
         <service
             android:name=".customtabs.CustomTabsService"
-            android:exported="true"
+            android:exported="false"
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.support.customtabs.action.CustomTabsService" />
@@ -686,7 +686,7 @@
 
         <receiver
             android:name="org.mozilla.gecko.search.SearchWidgetProvider"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -696,7 +696,7 @@
         </receiver>
 
         <receiver android:name=".onboarding.WidgetPinnedReceiver"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="org.mozilla.fenix.onboarding.WidgetPinnedReceiver.widgetPinned"/>
             </intent-filter>
@@ -802,7 +802,7 @@
         <!-- https://dev.adjust.com/en/sdk/android/setup/preinstalled#system-installer-receiver-->
         <receiver
             android:name="com.adjust.sdk.AdjustPreinstallReferrerReceiver"
-            android:exported="true"
+            android:exported="false"
             tools:ignore="ExportedReceiver">
             <intent-filter>
                 <action android:name="com.attribution.SYSTEM_INSTALLER_REFERRER" />
@@ -825,7 +825,7 @@
 
         <receiver
           android:name="org.mozilla.fenix.messaging.QAMessageNotificationWorkerReceiver"
-          android:exported="true"
+          android:exported="false"
           android:enabled="true"
           android:permission="android.permission.DUMP">
           <intent-filter>
@@ -835,7 +835,7 @@
 
         <receiver
           android:name="org.mozilla.fenix.experiments.QANimbusToolingReceiver"
-          android:exported="true"
+          android:exported="false"
           android:enabled="true"
           android:permission="android.permission.DUMP">
           <intent-filter>
