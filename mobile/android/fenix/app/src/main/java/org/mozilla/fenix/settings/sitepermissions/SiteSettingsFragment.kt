@@ -92,7 +92,9 @@ class SiteSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
             // not need to be bound
             .filter { it != PhoneFeature.AUTOPLAY_INAUDIBLE }
             .excludeFeatures(
-                condition = { !requireComponents.settings.isLnaFeatureEnabled },
+                // tor-browser#44155: Don't show local network / device toggles.
+                //  We want it always in the same state: blocked.
+                condition = { true },
                 features = setOf(
                     PhoneFeature.LOCAL_DEVICE_ACCESS,
                     PhoneFeature.LOCAL_NETWORK_ACCESS,
