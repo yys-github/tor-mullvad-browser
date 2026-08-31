@@ -141,6 +141,26 @@ mod tests {
     }
 
     #[test]
+    fn lone_quote() {
+        // A single quote character is not a valid empty quoted string: there
+        // is no closing quote.
+        assert_eq!(
+            tor_unescape(b"\"").unwrap_err(),
+            UnescapeError::Unterminated
+        );
+    }
+
+    #[test]
+    fn quoted_spaces() {
+        // Spaces are only rejected in unquoted strings, so they must be
+        // preserved as-is once inside quotes.
+        assert_eq!(&*tor_unescape(b"\"test test\"").unwrap(), b"test test");
+        assert_eq!(&*tor_unescape(b"\" test\"").unwrap(), b" test");
+        assert_eq!(&*tor_unescape(b"\"test \"").unwrap(), b"test ");
+        assert_eq!(&*tor_unescape(b"\"t e s t\"").unwrap(), b"t e s t");
+    }
+
+    #[test]
     fn unescape_simple() {
         assert_eq!(&*tor_unescape(b"\"\\n\"").unwrap(), b"\n");
         assert_eq!(&*tor_unescape(b"\"\\r\"").unwrap(), b"\r");
@@ -188,6 +208,23 @@ mod tests {
         assert_eq!(&*tor_unescape(b"\"\\40test\"").unwrap(), b" test");
         assert_eq!(&*tor_unescape(b"\"\\040test\"").unwrap(), b" test");
         assert_eq!(&*tor_unescape(b"\"\\40test\\0\"").unwrap(), b" test\0");
+    }
+
+    #[test]
+    fn unescape_octal_max_digits() {
+        // Only up to 3 octal digits are consumed per escape, even if a 4th
+        // digit-looking byte follows.
+        assert_eq!(&*tor_unescape(b"\"\\0004\"").unwrap(), b"\x004");
+        assert_eq!(&*tor_unescape(b"\"\\0007\"").unwrap(), b"\x007");
+    }
+
+    #[test]
+    fn unescape_octal_ambiguous_digit() {
+        // '8' and '9' are not valid octal digits, so they end the escape
+        // early and are then treated as literal characters, even though at
+        // a glance "\048" looks like it could mean octal 048.
+        assert_eq!(&*tor_unescape(b"\"\\048\"").unwrap(), b"\x048");
+        assert_eq!(&*tor_unescape(b"\"\\09\"").unwrap(), b"\x009");
     }
 
     #[test]
@@ -285,6 +322,15 @@ mod tests {
         assert_eq!(
             tor_unescape(b"\"\\777\"").unwrap_err(),
             UnescapeError::OctalOverflow,
+        );
+    }
+
+    #[test]
+    fn stress() {
+        // A mix of literals, spaces, and every kind of escape back to back.
+        assert_eq!(
+            &*tor_unescape(b"\"a \\n b\\tc\\r\\\\d\\'e\\\"f\\x20g\\040h\\048\"").unwrap(),
+            b"a \n b\tc\r\\d'e\"f g h\x048"
         );
     }
 }
