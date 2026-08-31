@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity
+            android:name=".IntentReceiverActivity"
+            android:exported="false">
+        </activity>
+
+        <!-- No intent-filter at all. Mirrors the original tor-browser#45145
+             regression (org.mozilla.gecko.BrowserApp). -->
+        <activity-alias
+            android:name="org.mozilla.gecko.BrowserApp"
+            android:targetActivity=".IntentReceiverActivity"
+            android:exported="true">
+        </activity-alias>
+
+        <!-- Has its own "open this link" intent-filter, but that's VIEW,
+             not MAIN+LAUNCHER, so it still doesn't need to be exported. -->
+        <activity-alias
+            android:name="org.mozilla.gecko.PermissiveApp"
+            android:targetActivity=".IntentReceiverActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="http" />
+                <data android:scheme="https" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Has LAUNCHER without MAIN: still not a real launcher entry
+             point, so this should be flagged too since both are required. -->
+        <activity-alias
+            android:name="org.mozilla.gecko.LauncherCategoryOnlyApp"
+            android:targetActivity=".IntentReceiverActivity"
+            android:exported="true">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Not an activity at all: the check covers every exportable
+             component type, not just activities/aliases. -->
+        <receiver
+            android:name="com.example.evil.UnlistedReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.example.evil.SOME_ACTION" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>
