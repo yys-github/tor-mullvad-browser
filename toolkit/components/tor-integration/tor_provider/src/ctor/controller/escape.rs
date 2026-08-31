@@ -58,9 +58,56 @@ mod tests {
     }
 
     #[test]
-    fn escaped() {
+    fn escaped_special_chars() {
+        assert_eq!(tor_escape("'"), "\"\\'\"");
+        assert_eq!(tor_escape("\""), "\"\\\"\"");
+        assert_eq!(tor_escape("\\"), "\"\\\\\"");
         assert_eq!(tor_escape("'\"\\\r\n\t"), "\"\\'\\\"\\\\\\r\\n\\t\"");
+    }
+
+    #[test]
+    fn escaped_control_chars() {
+        assert_eq!(tor_escape("\n"), "\"\\n\"");
+        assert_eq!(tor_escape("\t"), "\"\\t\"");
+        assert_eq!(tor_escape("\r"), "\"\\r\"");
+    }
+
+    #[test]
+    fn ascii_printable_boundaries() {
+        // 0x1F is just below the printable range and must be hex-escaped.
+        assert_eq!(tor_escape(b"\x1F"), "\"\\x1F\"");
+        // 0x20 (space) is the first byte of the printable range.
+        assert_eq!(tor_escape(b"\x20"), "\" \"");
+        // 0x7E ('~') is the last byte of the printable range.
+        assert_eq!(tor_escape(b"\x7E"), "\"~\"");
+        // 0x7F (DEL) is just above the printable range and must be hex-escaped.
+        assert_eq!(tor_escape(b"\x7F"), "\"\\x7F\"");
+    }
+
+    #[test]
+    fn hex_zero_padding() {
         assert_eq!(tor_escape("\0"), "\"\\x00\"");
+        assert_eq!(tor_escape(b"\x0B"), "\"\\x0B\"");
+        assert_eq!(tor_escape(b"\x01"), "\"\\x01\"");
+    }
+
+    #[test]
+    fn hex_uppercase() {
+        assert_eq!(tor_escape(b"\xAB"), "\"\\xAB\"");
+        assert_eq!(tor_escape(b"\xFF"), "\"\\xFF\"");
+    }
+
+    #[test]
+    fn non_utf8_bytes() {
+        // Raw invalid UTF-8 bytes are escaped byte-by-byte, same as any
+        // other non-printable byte.
+        assert_eq!(tor_escape(b"\xF5"), "\"\\xF5\"");
+        assert_eq!(tor_escape(b"\xFF\xFE"), "\"\\xFF\\xFE\"");
+        assert_eq!(tor_escape(b"te\xF5st"), "\"te\\xF5st\"");
+    }
+
+    #[test]
+    fn unicode() {
         assert_eq!(tor_escape("\u{1F9C5}"), "\"\\xF0\\x9F\\xA7\\x85\"");
     }
 }
