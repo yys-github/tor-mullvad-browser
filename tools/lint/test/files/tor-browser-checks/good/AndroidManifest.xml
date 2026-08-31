@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <application>
+        <activity
+            android:name=".IntentReceiverActivity"
+            android:exported="false">
+        </activity>
+
+        <activity-alias
+            android:name="org.mozilla.gecko.BrowserApp"
+            android:targetActivity=".IntentReceiverActivity"
+            android:exported="false">
+        </activity-alias>
+
+        <!-- Exported, but has a MAIN+LAUNCHER intent-filter: the one case
+             Android itself requires exported="true" for. -->
+        <activity-alias
+            android:name="${applicationId}.App"
+            android:exported="true"
+            android:targetActivity="HomeActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <!-- Exported and not a MAIN+LAUNCHER entry point, but it doesn't
+             matter since exported="false" is always fine to flag as good. -->
+        <receiver
+            android:name="onboarding.WidgetPinnedReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="org.mozilla.fenix.onboarding.WidgetPinnedReceiver.widgetPinned" />
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>
