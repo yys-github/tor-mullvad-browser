@@ -69,6 +69,10 @@ skip-if = ["os == 'win'"]
 ["test_shellcheck.py"]
 
 ["test_stylelint.py"]
+
+["test_tor_browser_checks.py"]
+tags = "base-browser"
+
 skip-if = ["os == 'win'"]  # busts the tree for subsequent tasks on the same worker (bug 1708591)
 # Setup conflicts with eslint setup so this should run sequentially.
 sequential = true
