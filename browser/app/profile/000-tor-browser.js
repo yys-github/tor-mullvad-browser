@@ -23,6 +23,10 @@ pref("network.http.max-persistent-connections-per-proxy", 256);
 // Disable DNS over HTTPS. Set to explicitly off MODE_TRROFF = 5.
 // See tor-browser#41906.
 pref("network.trr.mode", 5, locked);
+// tor-browser#44155: Block Local Network Access (LNA)
+pref("network.lna.enabled", true);
+pref("network.lna.blocking", true);
+pref("network.lna.block_trackers", true);
 
 // Treat .onions as secure
 pref("dom.securecontext.allowlist_onions", true);
