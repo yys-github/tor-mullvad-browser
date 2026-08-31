@@ -1009,18 +1009,12 @@ class Settings(
     /**
      * Indicates if the request blocking feature for Local Network / Local Device Access blocking is enabled.
      */
-    var isLnaBlockingEnabled by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_enable_lna_blocking_enabled),
-        default = { FxNimbus.features.lnaBlocking.value().blocking || Config.channel.isNightlyOrDebug },
-    )
+    var isLnaBlockingEnabled: Boolean = true
 
     /**
      * Indicates if the Local Network / Local Device Access tracker blocking feature is enabled.
      */
-    var isLnaTrackerBlockingEnabled by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_enable_lna_tracker_blocking_enabled),
-        default = { FxNimbus.features.lnaBlocking.value().blockTrackers },
-    )
+    var isLnaTrackerBlockingEnabled: Boolean = true
 
     /**
      * Indicates if the overall Local Network / Local Device Access feature is enabled.
@@ -1029,10 +1023,7 @@ class Settings(
      * allowing requests that originate from remote origins targeting either localhost addresses or
      * local network addresses.
      */
-    var isLnaFeatureEnabled by booleanPreference(
-        key = appContext.getPreferenceKey(R.string.pref_key_enable_lna_feature_enabled),
-        default = { FxNimbus.features.lnaBlocking.value().enabled || Config.channel.isNightlyOrDebug },
-    )
+    val isLnaFeatureEnabled: Boolean = true
 
     /**
      * Indicates whether isolated content processes are enabled or not.
