@@ -1,0 +1,16 @@
+---
+tor-browser-checks:
+    description: >-
+        Tor Browser specific static checks (one linter, several
+        independent checks -- see tools/lint/tor-browser-checks/__init__.py)
+    include:
+        - 'mobile/android/fenix/app/src/main/AndroidManifest.xml'
+        - 'mobile/android/fenix/app/src/debug/AndroidManifest.xml'
+        - 'mobile/android/fenix/app/src/beta/AndroidManifest.xml'
+        - 'mobile/android/fenix/app/src/release/AndroidManifest.xml'
+        - 'mobile/android/fenix/app/src/nightly/AndroidManifest.xml'
+        - 'mobile/android/fenix/app/src/benchmark/AndroidManifest.xml'
+    support-files:
+        - 'tools/lint/tor-browser-checks/**'
+    type: external
+    payload: tor-browser-checks:lint
