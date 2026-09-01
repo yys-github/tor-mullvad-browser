@@ -1822,7 +1822,9 @@ class Settings(
             default = false,
         )
 
-    var showSearchSuggestionsInPrivateOnboardingFinished = false
+    var showSearchSuggestionsInPrivateOnboardingFinished
+        get() = false
+        set(value) {}
 
     var shouldShowOpenInAppBanner by
         booleanPreference(
