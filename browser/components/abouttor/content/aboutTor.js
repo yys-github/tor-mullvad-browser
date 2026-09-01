@@ -431,14 +431,14 @@ const YecArea = {
    *
    * @type {?integer}
    */
-  _startDate: null, // No YEC is active.
+  _startDate: Date.UTC(2026, 9, 13, 8), // 2026 October 13th 8:00 UTC.
 
   /**
    * The epoch time to stop showing the banner, if at all.
    *
    * @type {?integer}
    */
-  _endDate: null, // No YEC is active.
+  _endDate: Date.UTC(2027, 0, 5, 0), // 2027 January 5th 0:00 UTC.
 
   /**
    * Whether the area has been initialised.
@@ -527,8 +527,9 @@ const YecArea = {
     }
 
     const donateLink = document.getElementById("yec-donate-link");
-    const base = "https://www.torproject.org/donate";
-    donateLink.href = base;
+    const locale = this._locale;
+    const url = `https://www.torproject.org/donate/yec2026-tor-browser-desktop-${locale}`;
+    donateLink.href = url;
 
     document.body.classList.add("show-yec");
   },
