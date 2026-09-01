@@ -69,10 +69,6 @@ class SearchEngineFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
         initialiseVoiceSearchPreference(showVoiceSearchPreference)
         updateDefaultSearchEnginePreference()
 
-        val searchSuggestionsPreference =
-            requirePreference<SwitchPreferenceCompat>(R.string.pref_key_show_search_suggestions).apply {
-                isChecked = context.components.settings.shouldShowSearchSuggestions
-            }
 
         val searchWidgetPreference =
             requirePreference<SwitchPreferenceCompat>(R.string.pref_key_search_widget_installed_2).apply {
@@ -101,7 +97,6 @@ class SearchEngineFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
                 return false
             }
         }
-        searchSuggestionsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
         showBookmarkSuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
         showClipboardSuggestions.onPreferenceChangeListener = SharedPreferenceUpdater()
         autocompleteURLsPreference.onPreferenceChangeListener = SharedPreferenceUpdater()
