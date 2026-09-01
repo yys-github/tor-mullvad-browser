@@ -112,6 +112,16 @@ export class TorConnectParent extends JSWindowActorParent {
         return Promise.resolve(
           TorConnectParent.fixupURIs(lazy.HomePage.get())[0]
         );
+      case "torconnect:redirect":
+        this.browsingContext.top.embedderElement.loadURI(
+          Services.io.newURI(message.data),
+          {
+            triggeringPrincipal:
+              Services.scriptSecurityManager.getSystemPrincipal(),
+            loadFlags: Ci.nsIWebNavigation.LOAD_FLAGS_REPLACE_HISTORY,
+          }
+        );
+        break;
       case "torconnect:set-quickstart":
         TorConnect.quickstart = message.data;
         break;
