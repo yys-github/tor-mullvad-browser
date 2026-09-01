@@ -58,6 +58,8 @@ pref("browser.base-browser-support-url", "https://support.torproject.org/tor-bro
 // tor-browser#40701: Add new download warning
 pref("browser.download.showTorWarning", true);
 
+// tor-browser#45262: Hide "reset PBM" burn/fire button.
+pref("browser.privatebrowsing.resetPBM.enabled", false);
 
 // Tor connection setting preferences.
 
