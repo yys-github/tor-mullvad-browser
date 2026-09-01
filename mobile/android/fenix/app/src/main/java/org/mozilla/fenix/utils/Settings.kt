@@ -1701,7 +1701,9 @@ class Settings(
         get() = false
         set(value) {}
 
-    var showSearchSuggestionsInPrivateOnboardingFinished = false
+    var showSearchSuggestionsInPrivateOnboardingFinished
+        get() = false
+        set(value) {}
 
     fun incrementVisitedInstallableCount() = pwaInstallableVisitCount.increment()
 
