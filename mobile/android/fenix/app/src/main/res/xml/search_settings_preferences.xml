@@ -25,18 +25,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/preferences_search_engines_suggestions"
-        android:selectable="false"
-        app:iconSpaceReserved="false"
-        android:layout="@layout/preference_category_no_icon_style">
-         <SwitchPreferenceCompat
-            app:iconSpaceReserved="false"
-            android:defaultValue="true"
-            android:key="@string/pref_key_show_search_suggestions"
-            android:title="@string/preferences_show_search_suggestions" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
         android:title="@string/preferences_settings_address_bar"
         android:selectable="false"
         app:iconSpaceReserved="false"
