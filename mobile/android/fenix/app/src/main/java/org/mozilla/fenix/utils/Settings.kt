@@ -1674,10 +1674,7 @@ class Settings(
 
     fun incrementShowLoginsSecureWarningSyncCount() = loginsSecureWarningSyncCount.increment()
 
-    val shouldShowSearchSuggestions by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_show_search_suggestions),
-        default = false,
-    )
+    val shouldShowSearchSuggestions = false
 
     val shouldAutocompleteInAwesomebar by booleanPreference(
         appContext.getPreferenceKey(R.string.pref_key_enable_autocomplete_urls),
@@ -1689,26 +1686,23 @@ class Settings(
         default = false,
     )
 
-    var shouldShowSearchSuggestionsInPrivate by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_show_search_suggestions_in_private),
-        default = true,
-    )
+    var shouldShowSearchSuggestionsInPrivate
+        get() = false
+        set(value) {}
 
     /**
      * Indicates if the user have enabled trending search in search suggestions.
      */
-    internal var trendingSearchSuggestionsEnabled by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_show_trending_search_suggestions),
-        default = false,
-    )
+    internal var trendingSearchSuggestionsEnabled
+        get() = false
+        set(value) {}
 
     /**
      * Indicates if the user have enabled recent search in the search suggestions setting preference.
      */
-    internal var shouldShowRecentSearchSuggestions by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_show_recent_search_suggestions),
-        default = false,
-    )
+    internal var shouldShowRecentSearchSuggestions
+        get() = false
+        set(value) {}
 
     var showSearchSuggestionsInPrivateOnboardingFinished = false
 
