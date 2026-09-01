@@ -60,12 +60,7 @@ export class TorConnectChild extends RemotePageChild {
       console.error(`Invalid redirect URL "${redirect}"`);
     }
 
-    // Replace the destination to prevent "about:torconnect" entering the
-    // history.
-    // NOTE: This is done here, in the window actor, rather than in content
-    // because we have the privilege to redirect to a "chrome:" uri here (for
-    // when the HomePage is set to be blank).
-    this.contentWindow.location.replace(replaceURI);
+    this.sendQuery("torconnect:redirect", replaceURI);
   }
 
   actorCreated() {
