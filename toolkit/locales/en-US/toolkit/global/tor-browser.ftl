@@ -771,6 +771,11 @@ onion-site-saved-keys-dialog-remove-all-button = Remove all
 onion-site-saved-keys-dialog-fetch-keys-error-message = Unable to retrieve keys from Tor
 onion-site-saved-keys-dialog-remove-keys-error-message = Unable to remove key
 
+## Year end campaign 2026.
+
+yec-2026-heading = Tor: powered by you
+yec-2026-body = Unlike Big Tech, Tor doesn’t sell your data to make money. Instead, 6,490 donors every year keep Tor strong. Join the movement with a donation today!
+
 ## Year end campaign.
 
 yec-donate-button = Donate now
