@@ -78,7 +78,7 @@ const NoScriptId = "_73a6fe31-595d-460b-a920-fcc0f8843232_-browser-action";
 /**
  * The current version for tor browser.
  */
-var kVersionTorBrowser = 1;
+var kVersionTorBrowser = 2;
 
 /**
  * Buttons removed from built-ins by version they were removed. kVersion must be
@@ -213,13 +213,6 @@ XPCOMUtils.defineLazyPreferenceGetter(
       lazy.log.maxLogLevel = newVal ? "all" : "log";
     }
   }
-);
-
-XPCOMUtils.defineLazyPreferenceGetter(
-  lazy,
-  "resetPBMToolbarButtonEnabled",
-  "browser.privatebrowsing.resetPBM.enabled",
-  false
 );
 
 XPCOMUtils.defineLazyPreferenceGetter(
@@ -387,7 +380,11 @@ var CustomizableUIInternal = {
       AppConstants.MOZ_DEV_EDITION ? "developer-button" : null,
       lazy.ippEnabled ? "ipprotection-button" : null,
       "fxa-toolbar-menu-button",
-      lazy.resetPBMToolbarButtonEnabled ? "reset-pbm-toolbar-button" : null,
+      // Remove reset-pbm-toolbar-button unconditionally.
+      // NOTE: If we want to re-show this button, we may want to position it
+      // elsewhere (just after security-level-button), and we will likely want
+      // to migrate existing users so that it takes the place of the
+      // new-identity-button. tor-browser#45262.
     ].filter(name => name);
 
     this.registerArea(
@@ -1121,6 +1118,17 @@ var CustomizableUIInternal = {
       // Remove torbutton-button, which no longer exists.
       for (const placements of Object.values(gSavedState.placements)) {
         let buttonIndex = placements.indexOf("torbutton-button");
+        if (buttonIndex != -1) {
+          placements.splice(buttonIndex, 1);
+        }
+      }
+    }
+
+    if (currentVersion < 2) {
+      // Remove the reset-pbm button that was added in version 24 in
+      // `updateForNewVersion`. tor-browser#45262.
+      for (const placements of Object.values(gSavedState.placements)) {
+        let buttonIndex = placements.indexOf("reset-pbm-toolbar-button");
         if (buttonIndex != -1) {
           placements.splice(buttonIndex, 1);
         }
