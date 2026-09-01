@@ -784,6 +784,11 @@ dropped-support-notification-linux-32-bit = The next major version of { -brand-p
 dropped-support-notification-linux-32-bit-expired = { -brand-product-name } no longer supports 32-bit Linux. Please install { -brand-product-name } on a 64-bit Linux operating system to continue receiving important security updates.
 dropped-support-notification-dismiss-button = Got it
 
+## Year end campaign 2026.
+
+yec-2026-heading = Tor: powered by you
+yec-2026-body = Unlike Big Tech, Tor doesn’t sell your data to make money. Instead, 6,490 donors every year keep Tor strong. Join the movement with a donation today!
+
 ## Year end campaign.
 
 yec-donate-button = Donate now
