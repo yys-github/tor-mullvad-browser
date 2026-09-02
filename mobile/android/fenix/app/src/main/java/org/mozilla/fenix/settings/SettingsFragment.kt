@@ -94,6 +94,7 @@ import org.mozilla.fenix.snackbar.SnackbarBinding
 import org.mozilla.fenix.utils.Settings
 
 import android.view.WindowManager
+import org.mozilla.fenix.ext.openToBrowser
 
 /** Main settings screen. */
 @Suppress("LargeClass", "TooManyFunctions")
@@ -555,15 +556,16 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
                     SettingsFragmentDirections.actionSettingsFragmentToAboutFragment()
                 }
 
-                resources.getString(R.string.pref_key_donate) -> {
-                    @Suppress("DEPRECATION")
-                    (activity as HomeActivity).openToBrowserAndLoad(
-                        searchTermOrURL = SupportUtils.DONATE_URL,
-                        newTab = true,
-                        from = BrowserDirection.FromSettings
-                    )
-                    null
-                }
+                resources.getString(R.string.pref_key_donate) ->
+                    if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(SupportUtils.DONATE_URL)) null
+                    else {
+                        findNavController().openToBrowser()
+                        requireContext().components.useCases.fenixBrowserUseCases.loadUrlOrSearch(
+                            searchTermOrURL = SupportUtils.DONATE_URL,
+                            newTab = true,
+                        )
+                        null
+                    }
 
                 // Only displayed when secret settings are enabled
                 resources.getString(R.string.pref_key_debug_settings) -> {
