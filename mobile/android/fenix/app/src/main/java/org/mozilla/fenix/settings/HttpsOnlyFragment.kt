@@ -25,6 +25,8 @@ import org.mozilla.fenix.ext.components
 import org.mozilla.fenix.ext.openToBrowser
 import org.mozilla.fenix.ext.requireComponents
 
+import org.mozilla.fenix.HomeActivity
+
 /** Lets the user customize HTTPS-only mode. */
 class HttpsOnlyFragment : Fragment(), SystemInsetsPaddedFragment {
     override fun onCreateView(
@@ -103,6 +105,7 @@ class HttpsOnlyFragment : Fragment(), SystemInsetsPaddedFragment {
             object : ClickableSpan() {
                 override fun onClick(view: View) {
                     view.setOnClickListener {
+                        if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(SupportUtils.DONATE_URL)) return@setOnClickListener
                         findNavController().openToBrowser()
                         requireComponents.useCases.fenixBrowserUseCases.loadUrlOrSearch(
                             searchTermOrURL =

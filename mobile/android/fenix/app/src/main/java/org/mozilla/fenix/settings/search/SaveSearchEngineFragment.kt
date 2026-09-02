@@ -25,6 +25,8 @@ import org.mozilla.fenix.ext.requireComponents
 import org.mozilla.fenix.ext.showToolbar
 import org.mozilla.fenix.settings.SupportUtils
 
+import org.mozilla.fenix.HomeActivity
+
 /** A [Fragment] that allows user to add a new search engine. */
 @SuppressWarnings("LargeClass", "TooManyFunctions")
 class SaveSearchEngineFragment : Fragment(R.layout.fragment_save_search_engine), SystemInsetsPaddedFragment {
@@ -85,15 +87,17 @@ class SaveSearchEngineFragment : Fragment(R.layout.fragment_save_search_engine),
         }
 
         val learnMoreListener: (View) -> Unit = {
-            findNavController().openToBrowser()
-            requireComponents.useCases.fenixBrowserUseCases.loadUrlOrSearch(
-                searchTermOrURL =
-                    SupportUtils.getSumoURLForTopic(
-                        requireContext(),
-                        SupportUtils.SumoTopic.CUSTOM_SEARCH_ENGINES,
-                    ),
-                newTab = true,
+            val url = SupportUtils.getSumoURLForTopic(
+                requireContext(),
+                SupportUtils.SumoTopic.CUSTOM_SEARCH_ENGINES,
             )
+            if (!(requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(url)) {
+                findNavController().openToBrowser()
+                requireComponents.useCases.fenixBrowserUseCases.loadUrlOrSearch(
+                    searchTermOrURL = url,
+                    newTab = true,
+                )
+            }
         }
         binding.customSearchEnginesLearnMoreWrapper.setOnClickListener(learnMoreListener)
         binding.customSearchSuggestionsLearnMoreWrapper.setOnClickListener(learnMoreListener)
