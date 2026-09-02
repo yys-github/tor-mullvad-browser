@@ -842,12 +842,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment 
         requirePreference<Preference>(R.string.pref_key_about_config_shortcut).apply {
             isVisible = requireContext().components.settings.showSecretDebugMenuThisSession || Config.channel == ReleaseChannel.Debug
             setOnPreferenceClickListener {
-                @Suppress("DEPRECATION")
-                (requireActivity() as HomeActivity).openToBrowserAndLoad(
-                    searchTermOrURL = "about:config",
-                    from = BrowserDirection.FromSettings,
-                    newTab = true,
-                )
+                if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt("about:config")) return@setOnPreferenceClickListener true
+                findNavController().openToBrowser()
+                components.useCases.fenixBrowserUseCases.loadUrlOrSearch("about:config", newTab = true)
                 true
             }
         }
