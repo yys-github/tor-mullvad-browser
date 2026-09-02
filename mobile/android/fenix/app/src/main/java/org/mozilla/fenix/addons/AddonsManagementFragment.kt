@@ -26,6 +26,7 @@ import mozilla.components.feature.addons.Addon
 import mozilla.components.feature.addons.AddonManager
 import mozilla.components.feature.addons.AddonManagerException
 import mozilla.components.feature.addons.ui.AddonsManagerAdapter
+import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.databinding.FragmentAddOnsManagementBinding
 import org.mozilla.fenix.e2e.SystemInsetsPaddedFragment
@@ -76,6 +77,7 @@ class AddonsManagementFragment : Fragment(R.layout.fragment_add_ons_management),
             onInstallButtonClicked = ::installAddon,
             onMoreAddonsButtonClicked = ::openAMO,
             onLearnMoreClicked = { link, addon ->
+                if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(resolveLearnMoreUrl(link, addon) ?: return@AddonsManagementView)) return@AddonsManagementView
                 binding?.root?.openLearnMoreLink(link, addon)
             },
         )
@@ -204,6 +206,7 @@ class AddonsManagementFragment : Fragment(R.layout.fragment_add_ons_management),
     }
 
     private fun openAMO() {
+        if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(AMO_HOMEPAGE_FOR_ANDROID)) return
         findNavController().openToBrowser()
         requireComponents.useCases.fenixBrowserUseCases.loadUrlOrSearch(
             searchTermOrURL = AMO_HOMEPAGE_FOR_ANDROID,

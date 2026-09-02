@@ -1475,30 +1475,7 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
         historyMetadata: HistoryMetadataKey? = null,
         additionalHeaders: Map<String, String>? = null,
     ) {
-        if (!components.torController.isBootstrapped && !searchTermOrURL.startsWith("about:")) {
-            Snackbar.make(
-                snackBarParentView = binding.root,
-                snackbarState = SnackbarState(
-                    message = getString(R.string.connection_assist_connect_to_tor_before_opening_links),
-                    duration = SnackbarState.Duration.Preset.Long,
-                    action = Action(
-                        label = getString(R.string.connection_assist_connect_to_tor_before_opening_links_confirmation),
-                        onClick = {
-                            urlQuickLoadViewModel.urlToLoadAfterConnecting.value = searchTermOrURL
-                            urlQuickLoadViewModel.maybeBeginBootstrap()
-                            if (navHost.navController.previousBackStackEntry?.destination?.id == R.id.torConnectionAssistFragment) {
-                                supportFragmentManager.popBackStack()
-                            } else {
-                                navHost.navController.navigate(
-                                    TorConnectionAssistFragmentDirections.actionConnectToTorBeforeOpeningLinks(),
-                                )
-                            }
-                        },
-                    ),
-                ),
-            ).show()
-            return
-        }
+        if (maybeShowConnectToTorPrompt(url = searchTermOrURL)) return
         openToBrowser(from, customTabSessionId)
 
         components.useCases.fenixBrowserUseCases.loadUrlOrSearch(
@@ -1811,6 +1788,39 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
             )
         } catch (e: ActivityNotFoundException) {
             e.printStackTrace()
+        }
+    }
+
+    /**
+     * @return `true` if not connected to tor and the prompt attempted to be shown.
+     * `false` if connected to tor and prompt does not need to be shown
+     */
+    fun maybeShowConnectToTorPrompt(url: String) : Boolean {
+        if (!components.torController.isBootstrapped && !url.startsWith("about:")) {
+            Snackbar.make(
+                snackBarParentView = binding.root,
+                snackbarState = SnackbarState(
+                    message = getString(R.string.connection_assist_connect_to_tor_before_opening_links),
+                    duration = SnackbarState.Duration.Preset.Long,
+                    action = Action(
+                        label = getString(R.string.connection_assist_connect_to_tor_before_opening_links_confirmation),
+                        onClick = {
+                            urlQuickLoadViewModel.urlToLoadAfterConnecting.value = url
+                            urlQuickLoadViewModel.maybeBeginBootstrap()
+                            if (navHost.navController.previousBackStackEntry?.destination?.id == R.id.torConnectionAssistFragment) {
+                                supportFragmentManager.popBackStack()
+                            } else {
+                                navHost.navController.navigate(
+                                    TorConnectionAssistFragmentDirections.actionConnectToTorBeforeOpeningLinks(),
+                                )
+                            }
+                        },
+                    ),
+                ),
+            ).show()
+            return true
+        } else {
+            return false
         }
     }
 }
