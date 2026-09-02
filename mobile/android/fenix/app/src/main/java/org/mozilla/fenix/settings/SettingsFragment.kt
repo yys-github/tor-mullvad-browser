@@ -96,6 +96,7 @@ import mozilla.components.ui.icons.R as iconsR
 import org.mozilla.fenix.GleanMetrics.Settings as SettingsMetrics
 
 import android.view.WindowManager
+import org.mozilla.fenix.ext.openToBrowser
 
 /**
  * Main settings screen.
@@ -560,15 +561,16 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment,
                 SettingsFragmentDirections.actionSettingsFragmentToAboutFragment()
             }
 
-            resources.getString(R.string.pref_key_donate) -> {
-                @Suppress("DEPRECATION")
-                (activity as HomeActivity).openToBrowserAndLoad(
-                    searchTermOrURL = SupportUtils.DONATE_URL,
-                    newTab = true,
-                    from = BrowserDirection.FromSettings
-                )
-                null
-            }
+            resources.getString(R.string.pref_key_donate) ->
+                if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(SupportUtils.DONATE_URL)) null
+                else {
+                    findNavController().openToBrowser()
+                    requireContext().components.useCases.fenixBrowserUseCases.loadUrlOrSearch(
+                        searchTermOrURL = SupportUtils.DONATE_URL,
+                        newTab = true,
+                    )
+                    null
+                }
 
             // Only displayed when secret settings are enabled
             resources.getString(R.string.pref_key_debug_settings) -> {
@@ -825,12 +827,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragment,
         requirePreference<Preference>(R.string.pref_key_about_config_shortcut).apply {
             isVisible = requireContext().components.settings.showSecretDebugMenuThisSession || Config.channel == ReleaseChannel.Debug
             setOnPreferenceClickListener {
-                @Suppress("DEPRECATION")
-                (requireActivity() as HomeActivity).openToBrowserAndLoad(
-                    searchTermOrURL = "about:config",
-                    from = BrowserDirection.FromSettings,
-                    newTab = true,
-                )
+                if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt("about:config")) return@setOnPreferenceClickListener true
+                findNavController().openToBrowser()
+                components.useCases.fenixBrowserUseCases.loadUrlOrSearch("about:config", newTab = true)
                 true
             }
         }
