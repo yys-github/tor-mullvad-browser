@@ -552,11 +552,13 @@ class HomeFragment : Fragment(), UserInteractionHandler {
 
         urlQuickLoadViewModel.urlToLoadAfterConnecting.observe(viewLifecycleOwner) {
             if (!it.isNullOrBlank()) {
-                @Suppress("DEPRECATION")
-                (requireActivity() as HomeActivity).openToBrowserAndLoad(
+                if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(it)) return@observe
+                (requireActivity() as HomeActivity).openToBrowser(
+                    from = BrowserDirection.FromHome,
+                )
+                requireContext().components.useCases.fenixBrowserUseCases.loadUrlOrSearch(
                     searchTermOrURL = it,
                     newTab = true,
-                    from = BrowserDirection.FromHome,
                 )
                 // Only load this url once
                 urlQuickLoadViewModel.urlToLoadAfterConnecting.value = null

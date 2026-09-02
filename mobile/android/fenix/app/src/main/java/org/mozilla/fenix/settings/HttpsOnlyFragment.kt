@@ -18,6 +18,7 @@ import androidx.core.view.children
 import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import org.mozilla.fenix.HomeActivity
 import org.mozilla.fenix.R
 import org.mozilla.fenix.databinding.SettingsHttpsOnlyBinding
 import org.mozilla.fenix.e2e.SystemInsetsPaddedFragment
@@ -105,6 +106,7 @@ class HttpsOnlyFragment : Fragment(), SystemInsetsPaddedFragment {
         val linkClickListener: ClickableSpan = object : ClickableSpan() {
             override fun onClick(view: View) {
                 view.setOnClickListener {
+                    if ((requireActivity() as HomeActivity).maybeShowConnectToTorPrompt(SupportUtils.DONATE_URL)) return@setOnClickListener
                     findNavController().openToBrowser()
                     requireComponents.useCases.fenixBrowserUseCases.loadUrlOrSearch(
                         searchTermOrURL = SupportUtils.getGenericSumoURLForTopic(
