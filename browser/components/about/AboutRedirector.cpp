@@ -125,9 +125,12 @@ static const RedirEntry kRedirMap[] = {
          nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::HIDE_FROM_ABOUTABOUT},
     {"newtab", "chrome://browser/content/blanktab.html",
      BASE_BROWSER_HOME_PAGE_FLAGS},
+// Drop about:opentabs. tor-browser#44431.
+#ifndef BASE_BROWSER_VERSION
     {"opentabs", "chrome://browser/content/tabbrowser/opentabs.html",
      nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::IS_SECURE_CHROME_UI |
          nsIAboutModule::HIDE_FROM_ABOUTABOUT},
+#endif
     {"policies", "chrome://browser/content/policies/aboutPolicies.html",
      nsIAboutModule::ALLOW_SCRIPT | nsIAboutModule::IS_SECURE_CHROME_UI},
     {"preferences", "chrome://browser/content/preferences/preferences.xhtml",
