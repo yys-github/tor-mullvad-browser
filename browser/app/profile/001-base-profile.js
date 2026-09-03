@@ -552,6 +552,8 @@ pref("media.devices.enumerate.legacy.enabled", false);
 pref("apz.overscroll.enabled", false);
 #endif
 pref("dom.vr.enabled", false); // Bug 21607: Disable WebVR for now
+// tor-browser#45278: Disable WebXR as a defense-in-depth
+pref("dom.vr.webxr.enabled", false);
 pref("security.webauth.webauthn", false); // Bug 26614: Disable Web Authentication API for now
 // Disable SAB, no matter if the sites are cross-origin isolated.
 pref("dom.postMessage.sharedArrayBuffer.withCOOP_COEP", false);
