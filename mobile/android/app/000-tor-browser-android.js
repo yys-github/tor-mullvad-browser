@@ -9,17 +9,6 @@
 pref("app.update.auto", false);
 pref("browser.startup.homepage_override.mstone", "ignore");
 
-// Clear data on quit
-pref("privacy.clearOnShutdown.cache", true);
-pref("privacy.clearOnShutdown.cookies", true);
-pref("privacy.clearOnShutdown.downloads", true);
-pref("privacy.clearOnShutdown.formdata", true);
-pref("privacy.clearOnShutdown.history", true);
-pref("privacy.clearOnShutdown.offlineApps", true);
-pref("privacy.clearOnShutdown.passwords", true);
-pref("privacy.clearOnShutdown.sessions", true);
-pref("privacy.clearOnShutdown.siteSettings", true);
-
 // controls if we want camera support
 pref("media.realtime_decoder.enabled", false);
 
