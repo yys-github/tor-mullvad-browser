@@ -305,14 +305,6 @@ fun MainMenu(
         )
 
         MenuGroup {
-            if (accessPoint == MenuAccessPoint.Home) {
-                MenuItem(
-                    label = stringResource(id = R.string.browser_menu_customize_homepage),
-                    beforeIconPainter = painterResource(id = iconsR.drawable.mozac_ic_home_24),
-                    onClick = onCustomizeHomepageButtonClick,
-                )
-            }
-
             MenuItem(
                 label = stringResource(id = R.string.browser_menu_settings),
                 beforeIconPainter = painterResource(id = iconsR.drawable.mozac_ic_settings_24),
