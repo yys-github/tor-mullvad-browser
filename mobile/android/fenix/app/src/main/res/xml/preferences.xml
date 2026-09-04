@@ -59,11 +59,6 @@
             android:title="@string/preferences_customize" />
 
         <androidx.preference.Preference
-            android:key="@string/pref_key_passwords"
-            app:iconSpaceReserved="false"
-            android:title="@string/preferences_passwords_logins_and_passwords_2" />
-
-        <androidx.preference.Preference
             android:key="@string/pref_key_email_masks"
             android:title="@string/preferences_email_masks"
             app:iconSpaceReserved="false"
