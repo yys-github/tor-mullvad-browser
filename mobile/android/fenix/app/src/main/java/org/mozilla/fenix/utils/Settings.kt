@@ -283,10 +283,7 @@ class Settings(
     /**
      * Indicates whether or not the privacy report should be shown in the tab manager.
      */
-    var showPrivacyReportInTabManager by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_privacy_report_tab_manager),
-        default = true,
-    )
+    var showPrivacyReportInTabManager = false
 
     private val homescreenSections: Map<HomeScreenSection, Boolean>
         get() = FxNimbus.features.homescreen.value().sectionsEnabled
