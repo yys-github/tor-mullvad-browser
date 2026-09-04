@@ -1848,15 +1848,9 @@ class Settings(
         default = true,
     )
 
-    var shouldPromptToSaveLogins by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_save_logins),
-        default = true,
-    )
+    var shouldPromptToSaveLogins = false
 
-    var shouldAutofillLogins by booleanPreference(
-        appContext.getPreferenceKey(R.string.pref_key_autofill_logins),
-        default = true,
-    )
+    var shouldAutofillLogins = false
 
     /**
      * In Bug 1853113, we changed the type of [searchWidgetInstalled] from int to boolean without
