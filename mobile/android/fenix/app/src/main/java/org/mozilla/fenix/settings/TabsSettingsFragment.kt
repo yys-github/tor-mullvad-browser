@@ -116,13 +116,6 @@ class TabsSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
             it.onPreferenceChangeListener = SharedPreferenceUpdater()
         }
 
-        privacyReport = requirePreference<SwitchPreferenceCompat>(
-            R.string.pref_key_privacy_report_tab_manager,
-        ).also {
-            it.isChecked = requireComponents.settings.showPrivacyReportInTabManager
-            it.onPreferenceChangeListener = SharedPreferenceUpdater()
-        }
-
         inactiveTabsCategory = requirePreference<PreferenceCategory>(R.string.pref_key_inactive_tabs_category).also {
             it.isEnabled =
                 !(
