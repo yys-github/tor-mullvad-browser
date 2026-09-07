@@ -288,7 +288,9 @@
   skin/classic/browser/search-indicator-badge-add.svg          (../shared/search/search-indicator-badge-add.svg)
   skin/classic/browser/searchbar.css                           (../shared/search/searchbar.css)
 
-  skin/classic/browser/sidebar/firefox.svg                     (../shared/sidebar/firefox.svg)
+# Swap out firefox.svg, which is a monochrome browser icon, with our own
+# simplified tor browser icon. tor-browser#45277.
+  skin/classic/browser/sidebar/firefox.svg                     (../shared/sidebar/tor-browser.svg)
   skin/classic/browser/sidebar/foxy.svg                        (../shared/sidebar/foxy.svg)
   skin/classic/browser/sidebar/gmail.svg                       (../shared/sidebar/gmail.svg)
   skin/classic/browser/sidebar/slack.svg                       (../shared/sidebar/slack.svg)
