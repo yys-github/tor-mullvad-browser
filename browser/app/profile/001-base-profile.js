@@ -26,11 +26,13 @@ pref("browser.aboutwelcome.enabled", false);
 pref("browser.privatebrowsing.resetPBM.enabled", false, locked);
 #endif
 
+#ifndef ANDROID
 // Bug 41668: allow users to apply updates. This is set also in firefox.js for
 // all platforms, except for Windows. As explained on firefox.js, Firefox uses a
 // per-installation preference on Windows. However, we patch this behavior, and
 // we set this preference also for Windows.
 pref("app.update.auto", true);
+#endif
 
 // Try to nag a bit more about updates: Pop up a restart dialog an hour after the initial dialog
 pref("app.update.promptWaitTime", 3600);
@@ -697,6 +699,11 @@ pref("media.gmp-widevinecdm.visible", false);
 pref("media.gmp-widevinecdm.enabled", false);
 pref("media.eme.enabled", false);
 pref("media.mediadrm-widevinecdm.visible", false);
+#ifdef ANDROID
+// tor-browser#29859: no HLS (HTTP Live Streaming) support for now due to
+// browser freezing. Notice that HLS is enabled only on Android on Firefox.
+pref("media.hls.enabled", false);
+#endif
 // The in-browser debugger for debugging chrome code is not coping with our
 // restrictive DNS look-up policy. We use "127.0.0.1" instead of "localhost" as
 // a workaround. See bug 16523 for more details.
