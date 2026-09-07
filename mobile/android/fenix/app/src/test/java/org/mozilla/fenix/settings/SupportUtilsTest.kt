@@ -33,10 +33,10 @@ class SupportUtilsTest {
                 Locale.forLanguageTag("fr"),
             ),
         )
-        // assertEquals(
-        //     "https://www.mozilla.org/firefox/android/notes",
-        //     SupportUtils.WHATS_NEW_URL,
-        // )
+        assertEquals(
+            "https://www.mozilla.org/firefox/android/notes",
+            SupportUtils.WHATS_NEW_URL,
+        )
     }
 
     @Test
