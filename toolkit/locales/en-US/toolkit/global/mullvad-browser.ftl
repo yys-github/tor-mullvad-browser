@@ -52,6 +52,6 @@ mullvad-preferences-doh-radio-off =
 
 # The first sentence should be wrapped in '<strong>' and '</strong>'.
 # "Mullvad" is an organization name.
-mullvad-doh-notification-body = <strong>You default DNS Over HTTPS settings have been changed.</strong> Mullvad secure DNS service is being discontinued.
+mullvad-doh-notification-body = <strong>Your default DNS Over HTTPS settings have been changed.</strong> Mullvad secure DNS service is being discontinued.
 mullvad-doh-notification-settings-button =
     .label = Review settings
