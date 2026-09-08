@@ -1,44 +1,49 @@
 #include 001-base-profile.js
 
-pref("app.update.notifyDuringDownload", true);
-pref("app.update.badgeWaitTime", 0);
-// point to our feedback url rather than Mozilla's
-pref("app.feedback.baseURL", "https://support.torproject.org/%LOCALE/get-in-touch/bug-or-feedback");
-
-pref("browser.shell.checkDefaultBrowser", false);
-
 // Proxy and proxy security
+pref("network.proxy.type", 1);
 pref("network.proxy.socks", "127.0.0.1");
 pref("network.proxy.socks_port", 9150);
 pref("network.proxy.socks_remote_dns", true);
-pref("network.proxy.no_proxies_on", ""); // For fingerprinting and local service vulns (#10419)
-pref("network.proxy.allow_hijacking_localhost", true); // Allow proxies for localhost (#31065)
-pref("network.proxy.type", 1);
-// localhost is already blocked by setting `network.proxy.allow_hijacking_localhost` to
-// true, allowing users to explicitly block ports makes them fingerprintable; for details, see
-// Bug 41317: Tor Browser leaks banned ports in network.security.ports.banned
-pref("network.security.ports.banned", "", locked);
-pref("network.dns.disabled", true); // This should cover the #5741 patch for DNS leaks
 pref("network.http.max-persistent-connections-per-proxy", 256);
-// Disable DNS over HTTPS. Set to explicitly off MODE_TRROFF = 5.
-// See tor-browser#41906.
-pref("network.trr.mode", 5, locked);
+// https://gitlab.torproject.org/legacy/trac/-/work_items/10419: prevent
+// fingerprinting and exploiting of local services vulnerabilities.
+pref("network.proxy.no_proxies_on", "");
+// tor-browser#31065: Force proxies also for localhost
+pref("network.proxy.allow_hijacking_localhost", true);
+// tor-browser#41317: banned port can be fingerprinted and is not necessary,
+// since there are multiple protections that prevent localhost access.
+// Lock ratoinale: prevent fingerprinting of old configurations.
+pref("network.security.ports.banned", "", locked);
 // tor-browser#44155: Block Local Network Access (LNA)
 pref("network.lna.enabled", true);
 pref("network.lna.blocking", true);
 pref("network.lna.block_trackers", true);
+// https://gitlab.torproject.org/legacy/trac/-/work_items/5741 and
+// tor-browser#33962: disable DNS resolution to avoid potential proxy bypasses.
+// In our setup, the proxy is going to do DNS resolution.
+pref("network.dns.disabled", true);
+// tor-browser#41906: disable DNS over HTTPS to prevent linkability thorugh use
+// of a fixed DNS server rather than the exit relay's. 5 is MODE_TRROFF.
+// Also, there are concerns about the interaction with network.dns.disabled
+// (tor-browser#40034).
+pref("network.trr.mode", 5);
 
 // Treat .onions as secure
 pref("dom.securecontext.allowlist_onions", true);
 
-// Disable HTTPS-Only mode for .onion domains (tor-browser#19850)
+// tor-browser#19850: disable HTTPS-Only mode for .onion domains.
+// This is already false in Firefox, but we set it again in case upstream
+// changes default value.
 pref("dom.security.https_only_mode.upgrade_onion", false);
 
-// Bug 40423/41137: Disable http/3
-// We should re-enable it as soon as Tor gets UDP support
+// tor-browser#40423, tor-browser#41137: Disable HTTP/3.
+// We should re-enable it if Tor gets UDP support.
 pref("network.http.http3.enable", false);
 
-// 0 = do not use a second connection, see all.js and #7656
+// https://gitlab.torproject.org/legacy/trac/-/work_items/7656: rely on tor to
+// rebuild streams rather than on browser's retry mechanisms.
+// 0 means "do not use a second HTTP connection" (see also all.js).
 pref("network.http.connection-retry-timeout", 0);
 
 // Tor Browser used to be compatible with non-Tor proxies. This feature is not
@@ -49,19 +54,24 @@ pref("network.http.connection-retry-timeout", 0);
 // be reduced to the strictly required time).
 pref("extensions.torbutton.use_nontor_proxy", false);
 
-// Browser home page:
+// Browser home page
 pref("browser.startup.homepage", "about:tor");
 
-// General browser support url. tor-browser#43864 and tor-browser#40899.
+// tor-browser#43864, tor-browser#40899: general browser support url.
 pref("browser.base-browser-support-url", "https://support.torproject.org/tor-browser");
+// Point to our feedback url rather than Mozilla's
+pref("app.feedback.baseURL", "https://support.torproject.org/%LOCALE%/get-in-touch/bug-or-feedback");
 
-// tor-browser#40701: Add new download warning
+// tor-browser#40701: add our custom download warning.
 pref("browser.download.showTorWarning", true);
 
-// tor-browser#45262: Hide "reset PBM" burn/fire button.
+// tor-browser#45262: hide "reset PBM" burn/fire button.
 pref("browser.privatebrowsing.resetPBM.enabled", false);
 
+pref("browser.shell.checkDefaultBrowser", false);
+
 // Tor connection setting preferences.
+// See TorSettings.sys.mjs for more information.
 
 pref("torbrowser.settings.quickstart.enabled", false);
 pref("torbrowser.settings.bridges.enabled", false);
@@ -84,9 +94,6 @@ pref("torbrowser.settings.firewall.enabled", false);
 // comma-delimited list of port numbers.
 pref("torbrowser.settings.firewall.allowed_ports", "");
 
-
-// This pref specifies an ad-hoc "version" for various pref update hacks we need to do
-pref("extensions.torbutton.pref_fixup_version", 0);
 
 // Formerly tor-launcher defaults
 
