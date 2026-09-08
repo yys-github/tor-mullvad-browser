@@ -34,7 +34,12 @@ pref("browser.privatebrowsing.resetPBM.enabled", false, locked);
 pref("app.update.auto", true);
 #endif
 
-// Try to nag a bit more about updates: Pop up a restart dialog an hour after the initial dialog
+pref("app.update.notifyDuringDownload", true);
+
+// Try to nag a bit more about updates.
+// Show the badge immediately on the hamburger menu...
+pref("app.update.badgeWaitTime", 0);
+// ... and pop up a restart dialog an hour after the initial dialog.
 pref("app.update.promptWaitTime", 3600);
 
 #ifndef XP_MACOSX
