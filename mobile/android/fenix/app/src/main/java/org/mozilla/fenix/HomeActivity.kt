@@ -438,8 +438,6 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
         }
     }
 
-    private var dialog: RedirectDialogFragment? = null
-
     private val providerStoppedViewModel: ProviderStoppedViewModel by viewModels()
 
     private val urlQuickLoadViewModel: UrlQuickLoadViewModel by viewModels()
@@ -991,15 +989,9 @@ open class HomeActivity : LocaleAwareAppCompatActivity(), NavHostActivity, Crash
 
     // Copied from mozac AppLinksFeature.kt
     internal fun getOrCreateDialog(): RedirectDialogFragment {
-        val existingDialog = dialog
-        if (existingDialog != null) {
-            return existingDialog
-        }
-
         SimpleRedirectDialogFragment.newInstance(
                 getString(appLinksR.string.mozac_feature_applinks_normal_confirm_dialog_title),
             ).also {
-                dialog = it
                 return it
             }
     }
