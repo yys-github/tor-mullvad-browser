@@ -10,6 +10,7 @@ import android.content.Intent
 
 object TorUtils {
     const val TORBROWSER_START_ACTIVITY_PROMPT = "torbrowser_start_activity_prompt"
+    var requestCode = 0
 
     // Delegates showing prompt and possibly starting the activity to the main app activity.
     // Highly dependant on Fenix/Tor Browser for Android.
@@ -19,7 +20,8 @@ object TorUtils {
     fun startActivityPrompt(context: Context, intent: Intent) {
         val intentContainer = Intent()
         intentContainer.setPackage(context.applicationContext.packageName)
-        intentContainer.putExtra(TORBROWSER_START_ACTIVITY_PROMPT, PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE))
+        intentContainer.putExtra(TORBROWSER_START_ACTIVITY_PROMPT, PendingIntent.getActivity(context, requestCode, intent, PendingIntent.FLAG_IMMUTABLE))
+        requestCode++
         intentContainer.flags = Intent.FLAG_ACTIVITY_NEW_TASK
         context.startActivity(intentContainer)
     }
