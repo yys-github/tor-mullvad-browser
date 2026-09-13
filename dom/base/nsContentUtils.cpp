@@ -5635,9 +5635,10 @@ void nsContentUtils::RequestFrameFocus(Element& aFrameElement, bool aCanRaise,
   RefPtr<Element> target = &aFrameElement;
   bool defaultAction = true;
   if (aCanRaise) {
-    DispatchEventOnlyToChrome(target->OwnerDoc(), target,
-                              u"framefocusrequested"_ns, CanBubble::eYes,
-                              Cancelable::eYes, &defaultAction);
+    RefPtr<Document> doc = target->OwnerDoc();
+    DispatchEventOnlyToChrome(doc, target, u"framefocusrequested"_ns,
+                              CanBubble::eYes, Cancelable::eYes,
+                              &defaultAction);
   }
   if (!defaultAction) {
     return;
