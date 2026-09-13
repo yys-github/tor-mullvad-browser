@@ -1609,7 +1609,7 @@ var PlacesControllerDragHelper = {
         if (
           !flavor.startsWith("text/x-moz-place") &&
           (validNodes.length > 1 || dropCount > 1) &&
-          validNodes.some(n => n.uri?.startsWith("javascript:"))
+          validNodes.some(n => URL.parse(n.uri)?.protocol === "javascript:")
         ) {
           return false;
         }
@@ -1686,18 +1686,14 @@ var PlacesControllerDragHelper = {
     if (
       externalDrag &&
       (nodes.length > 1 || dropCount > 1) &&
-      nodes.some(n => n.uri?.startsWith("javascript:"))
+      nodes.some(n => URL.parse(n.uri)?.protocol === "javascript:")
     ) {
       throw new Error("Javascript bookmarklet passed with uris");
     }
 
     // If a single javascript url is being dropped from the urlbar or an external source,
     // show the bookmark dialog as a speedbump protection against malicious cases.
-    if (
-      nodes.length == 1 &&
-      externalDrag &&
-      nodes[0].uri?.startsWith("javascript")
-    ) {
+    if (nodes.length == 1 && externalDrag) {
       let uri;
       try {
         uri = Services.io.newURI(nodes[0].uri);
@@ -1705,7 +1701,7 @@ var PlacesControllerDragHelper = {
         // Invalid uri, we skip this code and the entry will be discarded later.
       }
 
-      if (uri) {
+      if (uri?.scheme === "javascript") {
         let bookmarkGuid = await PlacesUIUtils.showBookmarkDialog(
           {
             action: "add",
