@@ -780,7 +780,7 @@ pref("security.certerrors.mitm.auto_enable_enterprise_roots", false);
 pref("browser.menu.share_url.allow", false, locked);
 
 // tor-browser#45133: Disable share button
-pref("browser.toolbars.share-button.enabled", false)
+pref("browser.toolbars.share-button.enabled", false);
 
 // tor-browser#41884: Do not start a search when clicking on the new tab button
 // with the middle mouse button (to prevent searching for anything you might
