@@ -336,16 +336,18 @@ body.show-yec h1 {
   border: var(--border-width) solid var(--border-color);
   display: grid;
   grid-template:
+    ". yec-image" 1fr
     "yec-heading yec-image" auto
     "yec-body yec-image" auto
     "yec-matching yec-image" auto
     "yec-donate yec-image" min-content
+    ". yec-image" 1fr
     / 1fr min-content;
   --yec-image-background: #3a1653;
-  padding-block: 56px 56px;
-  padding-inline: 48px 48px;
+  padding-inline: 48px;
+  padding-block: 48px 32px;
   box-sizing: border-box;
-  max-width: 840px;
+  max-width: 740px;
   margin-block-end: var(--space-small);
   /* Position for the close button. */
   position: relative;
@@ -362,7 +364,7 @@ body.show-yec h1 {
   background-color: var(--yec-image-background);
   border-radius: var(--border-radius-medium);
   padding: var(--space-xsmall);
-  height: 196px;
+  height: 212px;
   border: var(--border-width) solid transparent;
   /* Remove border and padding from the layout size. These parts are only
    * visible in contrast or forced color themes. */
@@ -372,25 +374,21 @@ body.show-yec h1 {
   forced-color-adjust: none;
 }
 
-#yec-image:dir(rtl) {
-  transform: scaleX(-1);
-}
-
 #yec-heading {
   grid-area: yec-heading;
-  margin-block: 0 var(--space-large);
+  margin: 0;
   font-size: var(--font-size-xxlarge);
   font-weight: var(--font-weight-semibold);
 }
 
 #yec-body {
   grid-area: yec-body;
-  margin-block: 0 var(--space-medium);
+  margin-block: var(--space-large) 0;
 }
 
 #yec-matching {
   grid-area: yec-matching;
-  margin-block: 0 var(--space-xlarge);
+  margin-block: var(--space-medium) 0;
 }
 
 #yec-banner b {
@@ -399,6 +397,7 @@ body.show-yec h1 {
 
 #yec-donate-link {
   grid-area: yec-donate;
+  margin-block-start: var(--space-xlarge);
   justify-self: start;
   /* Style like a button. */
   font-weight: var(--button-font-weight);
@@ -443,7 +442,7 @@ body.show-yec h1 {
   inset-inline-end: var(--space-large);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 550px) {
   /* Small width layout. */
   #yec-banner {
     grid-template:
@@ -461,21 +460,18 @@ body.show-yec h1 {
   }
 
   #yec-image {
-    height: 156px;
+    height: 188px;
   }
 
   #yec-heading {
-    margin-block-start: var(--space-large);
+    margin-block-start: var(--space-xlarge);
+  }
+
+  #yec-heading,
+  #yec-body,
+  #yec-matching {
     text-align: center;
     text-wrap-style: balance;
-  }
-
-  #yec-heading {
-    font-size: var(--font-size-xlarge);
-  }
-
-  #yec-matching {
-    margin-block-end: var(--space-large);
   }
 
   #yec-donate-link {
