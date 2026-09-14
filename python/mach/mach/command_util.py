@@ -296,6 +296,7 @@ MACH_COMMANDS = {
     "xpcshell-test": MachCommandReference(
         "testing/xpcshell/mach_commands.py", ["test"]
     ),
+    "yeet": MachCommandReference("tools/yeet/mach_commands.py"),
 }
 
 
