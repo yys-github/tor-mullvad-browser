@@ -65,8 +65,8 @@ class TabsSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
     private lateinit var startForResult: ActivityResultLauncher<Intent>
 
     private fun onSuccessfulAuthenticationUsingFallbackPrompt() {
-        val newValue = !requireContext().components.settings.privateBrowsingLockedFeatureEnabled
-        requireContext().components.settings.privateBrowsingLockedFeatureEnabled = newValue
+        val newValue = !requireContext().components.settings.privateBrowsingModeLocked
+        requireContext().components.settings.privateBrowsingModeLocked = newValue
         // Update switch state manually
         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_private_browsing_locked_enabled).apply {
             isChecked = !isChecked
@@ -77,7 +77,7 @@ class TabsSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
         pbmLockEnabled: Boolean,
         preference: Preference,
     ) {
-        requireContext().components.settings.privateBrowsingLockedFeatureEnabled = pbmLockEnabled
+        requireContext().components.settings.privateBrowsingModeLocked = pbmLockEnabled
         // Update switch state manually
         (preference as? SwitchPreferenceCompat)?.isChecked = pbmLockEnabled
     }
@@ -151,7 +151,7 @@ class TabsSettingsFragment : PreferenceFragmentCompat(), SystemInsetsPaddedFragm
         requirePreference<SwitchPreferenceCompat>(R.string.pref_key_private_browsing_locked_enabled).apply {
             title = getString(R.string.preferences_tor_lock_screen_title, getString(R.string.app_name))
             summary = getString(R.string.preferences_tor_lock_screen_summary, getString(R.string.app_name))
-            isChecked = context.components.settings.privateBrowsingLockedFeatureEnabled &&
+            isChecked = context.components.settings.privateBrowsingModeLocked &&
                     biometricManager.isAuthenticatorAvailable()
             isVisible = deviceCapable
             isEnabled = userHasEnabledCapability
