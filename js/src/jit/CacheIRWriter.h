@@ -523,7 +523,13 @@ class MOZ_RAII CacheIRWriter : public JS::CustomAutoRooter {
     ArgumentKind kind = ArgumentKind::Arg0;
     uint32_t argc = 1;
     CallFlags flags(CallFlags::Spread);
-    return ObjOperandId(loadArgumentFixedSlot(kind, argc, flags).id());
+    ValOperandId argId = loadArgumentFixedSlot(kind, argc, flags);
+#ifdef ENABLE_PORTABLE_BASELINE_INTERP
+    // PBL doesn't support implicit unboxing of objects.
+    return guardToObject(argId);
+#else
+    return ObjOperandId(argId.id());
+#endif
   }
 
   void callScriptedFunction(ObjOperandId callee, Int32OperandId argc,
