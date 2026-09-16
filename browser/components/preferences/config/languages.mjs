@@ -951,15 +951,6 @@ SettingGroupManager.registerGroups({
       },
     ],
   },
-  // TODO: Remove once we switch to the new settings redesign. tor-browser#45177
-  websiteSpoofEnglishControl: {
-    items: [
-      {
-        id: "websiteSpoofEnglish",
-        l10nId: "languages-customize-spoof-english",
-      },
-    ],
-  },
   translations: {
     inProgress: true,
     subcategory: "translations",
