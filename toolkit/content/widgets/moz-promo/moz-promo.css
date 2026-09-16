@@ -190,6 +190,7 @@
   word-break: break-word;
   margin: 0;
   align-items: center;
+  justify-content: space-between;
 
   /* stylelint-disable-next-line stylelint-plugin-mozilla/no-has-selector */
   &:has(slot:has-slotted) {
