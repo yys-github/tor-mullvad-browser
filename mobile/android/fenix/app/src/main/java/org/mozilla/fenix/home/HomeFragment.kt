@@ -185,6 +185,8 @@ import org.mozilla.fenix.wallpapers.Wallpaper
 import java.lang.ref.WeakReference
 import org.mozilla.fenix.ipprotection.store.Surface as IPProtectionSurface
 
+import org.mozilla.fenix.ext.openToBrowser
+import org.mozilla.fenix.tor.TorCampaignViewModel
 import org.mozilla.fenix.tor.TorHomePage
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 
@@ -200,6 +202,7 @@ class HomeFragment : Fragment(), UserInteractionHandler {
 
     private val homeViewModel: HomeScreenViewModel by activityViewModels()
     private val urlQuickLoadViewModel: UrlQuickLoadViewModel by activityViewModels()
+    private val torCampaignViewModel: TorCampaignViewModel by activityViewModels()
 
     private val snackbarHostState = SnackbarHostState()
 
@@ -593,7 +596,18 @@ class HomeFragment : Fragment(), UserInteractionHandler {
                     },
                     containerColor = Color.Transparent,
                 ) { innerPadding ->
-                    TorHomePage(innerPadding = innerPadding)
+                    TorHomePage(
+                        innerPadding = innerPadding,
+                        shouldInitiallyShowPromo = torCampaignViewModel.shouldInitiallyShowPromo,
+                        onClicked = {
+                            findNavController().openToBrowser()
+                            requireContext().components.useCases.fenixBrowserUseCases.loadUrlOrSearch(
+                                // from https://gitlab.torproject.org/tpo/applications/tor-browser/-/work_items/45217#note_3464207
+                                "https://donate.torproject.org/yec2026-tor-browser-android",
+                                newTab = true,
+                            )
+                        },
+                    )
                 }
             }
         }
