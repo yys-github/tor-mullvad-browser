@@ -60,7 +60,7 @@ pref("browser.startup.homepage", "about:tor");
 // tor-browser#43864, tor-browser#40899: general browser support url.
 pref("browser.base-browser-support-url", "https://support.torproject.org/tor-browser");
 // Point to our feedback url rather than Mozilla's
-pref("app.feedback.baseURL", "https://support.torproject.org/%LOCALE%/get-in-touch/bug-or-feedback");
+pref("app.feedback.baseURL", "about:manual#get-in-touch__bug-or-feedback");
 
 // tor-browser#40701: add our custom download warning.
 pref("browser.download.showTorWarning", true);
