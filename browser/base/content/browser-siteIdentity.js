@@ -1204,7 +1204,8 @@ var gIdentityHandler = {
 
     // Fill in the CA name if we have a valid TLS certificate.
     if (this._isSecureConnection || this._isCertUserOverridden) {
-      verifier = this._identityIconLabel.tooltipText;
+      // Remove "Verified by " from the verifier string. tor-browser#45249.
+      verifier = this.getIdentityData().caOrg;
     }
 
     // Fill in organization information if we have a valid EV certificate or
@@ -1212,7 +1213,8 @@ var gIdentityHandler = {
     if (this._isEV || this._qwac) {
       let iData = this.getIdentityData(this._qwac || this._secInfo.serverCert);
       owner = iData.subjectOrg;
-      verifier = this._identityIconLabel.tooltipText;
+      // Remove "Verified by " from the verifier string. tor-browser#45249.
+      verifier = iData.caOrg;
 
       // Build an appropriate supplemental block out of whatever location data we have
       if (iData.city) {
