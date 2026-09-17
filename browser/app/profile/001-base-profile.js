@@ -407,8 +407,10 @@ pref("pdfjs.enableAltTextModelDownload", false, locked);
 pref("browser.urlbar.quicksuggest.mlEnabled", false, locked);
 // Disable SemanticHistory search. tor-browser#44045.
 pref("places.semanticHistory.featureGate", false, locked);
-// tor-browser#45120: Disable AIWindow
-pref("browser.smartwindow.enabled", false);
+// tor-browser#45120: Disable AIWindow.
+// tor-browser#45338: Locked as a precaution against entry points that try to
+// flip this value.
+pref("browser.smartwindow.enabled", false, locked);
 
 
 // tor-browser#41945 - disable automatic cookie banners dismissal until
