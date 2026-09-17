@@ -1203,14 +1203,17 @@ var gIdentityHandler = {
     let owner = "";
 
     // Fill in the CA name if we have a valid TLS certificate.
-    if (this._isSecureConnection || this._isCertUserOverridden) {
+    if (
+      this._secInfo &&
+      (this._isSecureConnection || this._isCertUserOverridden)
+    ) {
       // Remove "Verified by " from the verifier string. tor-browser#45249.
       verifier = this.getIdentityData().caOrg;
     }
 
     // Fill in organization information if we have a valid EV certificate or
     // QWAC.
-    if (this._isEV || this._qwac) {
+    if (this._secInfo && (this._isEV || this._qwac)) {
       let iData = this.getIdentityData(this._qwac || this._secInfo.serverCert);
       owner = iData.subjectOrg;
       // Remove "Verified by " from the verifier string. tor-browser#45249.
@@ -1265,6 +1268,12 @@ var gIdentityHandler = {
     this._identityPopupContentOwner.textContent = owner;
     this._identityPopupContentSupp.textContent = supplemental;
     this._identityPopupContentVerif.textContent = verifier;
+
+    // Hide "Verified by" section if this is empty for an onion host.
+    // tor-browser#45249.
+    document
+      .getElementById("identity-popup-securityView-extended-info")
+      .toggleAttribute("noverifier", this._uriIsOnionHost && verifier === "");
   },
 
   setURI(uri) {
