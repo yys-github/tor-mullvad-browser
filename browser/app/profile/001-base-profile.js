@@ -287,6 +287,10 @@ pref("browser.preonboarding.enabled", false);
 // Disable checkbox in about:neterror that controls
 // security.xfocsp.errorReporting.automatic. See tor-browser#42653.
 pref("security.xfocsp.errorReporting.enabled", false);
+// tor-browser#45080: disable the reporting API.
+pref("dom.reporting.enabled", false);
+pref("dom.reporting.header.enabled", false);
+pref("dom.reporting.crash.enabled", false);
 // Added in tor-browser#41496 even though it shuld be already always disabled
 // since we disable MOZ_CRASHREPORTER.
 pref("breakpad.reportURL", "data:");
