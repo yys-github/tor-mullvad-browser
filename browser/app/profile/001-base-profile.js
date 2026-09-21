@@ -318,6 +318,10 @@ pref("privacy.trackingprotection.annotate_channels", false);
 pref("privacy.trackingprotection.cryptomining.enabled", false);
 pref("privacy.trackingprotection.fingerprinting.enabled", false);
 pref("privacy.trackingprotection.socialtracking.enabled", false);
+// tor-browser#44815: disable hardmful addon URL opening.
+// This is mostly for consistency, since we disable the safe browsing lists,
+// which are needed for this feature to work properly.
+pref("privacy.trackingprotection.harmfuladdon.enabled", false);
 // Hide the Unified Trust Panel until we have new designs. tor-browser#44814.
 pref("browser.urlbar.trustPanel.featureGate", false);
 // tor-browser#43986: Explicitly disable bounce tracking protection
