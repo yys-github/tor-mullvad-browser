@@ -194,5 +194,7 @@
     <string name="yec26_tor_powered_by_you">Tor: powered by you</string>
     <!-- Year End Campaign 2026. Main body text. -->
     <string name="yec26_call_to_action">Unlike Big Tech, Tor doesn’t sell your data to make money. Instead, 6,490 donors every year keep Tor strong. Join the movement with a donation today!</string>
+    <!-- Year End Campaign 2026. Main image description. -->
+    <string name="bulb_illo_yec_description">Illustration of a pink hand reaching to turn on a pink light bulb on a violet background. The light bulb vaguely resembles an onion with greens coming out of the top. There are playful bolts coming out of the bulb, and a green heart on the sleeve of the shirt.</string>
 
 </resources>
