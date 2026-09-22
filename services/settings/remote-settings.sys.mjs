@@ -149,7 +149,6 @@ export async function jexlFilterCreator(environment, collectionName) {
 function remoteSettingsFunction() {
   const _clients = new Map();
   let _invalidatePolling = false;
-  let _initialized = false;
 
   // If not explicitly specified, use the default signer.
   const defaultOptions = {
@@ -181,6 +180,8 @@ function remoteSettingsFunction() {
     }
     return _clients.get(collectionName);
   };
+
+  remoteSettings._initialized = false;
 
   /**
    * Internal helper to retrieve existing instances of clients or new instances
@@ -392,10 +393,10 @@ function remoteSettingsFunction() {
   } = {}) => {
     if (AppConstants.BASE_BROWSER_VERSION) {
       // Called multiple times on GeckoView due to bug 1730026
-      if (_initialized) {
+      if (remoteSettings._initialized) {
         return;
       }
-      _initialized = true;
+      remoteSettings._initialized = true;
       _maybeImportFromLocalDump(trigger);
       return;
     }
