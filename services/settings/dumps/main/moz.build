@@ -28,3 +28,11 @@ if not CONFIG["MOZ_BUILD_APP"].startswith("mobile/"):
         "websites-with-shared-credential-backends.json",
     ]
 
+# tor-browser#44154: This file is not required by tor-browser.
+# We keep it because it is used by tests and small enough not
+# to be problematic when shipped unconditionally.
+#
+# These collections are referenced in toolkit/ or other core code.
+FINAL_TARGET_FILES.defaults.settings.main += [
+    "password-recipes.json",
+]
