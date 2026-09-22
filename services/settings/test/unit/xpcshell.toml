@@ -12,11 +12,17 @@ support-files = ["test_attachments_downloader/**"]
 
 ["test_remote_settings.js"]
 
+["test_remote_settings_base_browser.js"]
+support-files = ["test_attachments_downloader/**"]
+tags = "base-browser"
+
 ["test_remote_settings_dump_lastmodified.js"]
+tags = "base-browser"
 
 ["test_remote_settings_jexl_filters.js"]
 
 ["test_remote_settings_offline.js"]
+tags = "base-browser"
 
 ["test_remote_settings_older_than_local.js"]
 
@@ -41,8 +47,10 @@ skip-if = [
 ]
 
 ["test_remote_settings_worker.js"]
+tags = "base-browser"
 
 ["test_shutdown_handling.js"]
+tags = "base-browser"
 
 ["test_uptake_telemetry.js"]
 skip-if = [
