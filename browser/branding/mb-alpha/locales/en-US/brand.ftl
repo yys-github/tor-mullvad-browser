@@ -10,3 +10,4 @@
 -brand-product-name = Mullvad Browser
 -vendor-short-name = Mullvad
 trademarkInfo = Mullvad Browser and the Mullvad Browser logos are trademarks of Mullvad VPN AB.
+-firefox-home-brand-name = Mullvad Home
