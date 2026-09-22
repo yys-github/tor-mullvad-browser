@@ -1192,7 +1192,11 @@ var gIdentityHandler = {
       this._updateAttribute(element, "ciphers", ciphers);
       this._updateAttribute(element, "mixedcontent", mixedcontent);
       this._updateAttribute(element, "isbroken", this._isBrokenConnection);
-      element.toggleAttribute("customroot", this._hasCustomRoot());
+      // tor-browser#45343: hide the custom root warning for Onion sites.
+      element.toggleAttribute(
+        "customroot",
+        this._hasCustomRoot() && !this._uriIsOnionHost
+      );
       this._updateAttribute(element, "httpsonlystatus", httpsOnlyStatus);
     }
 
@@ -1235,6 +1239,14 @@ var gIdentityHandler = {
         // Country only
         supplemental += iData.country;
       }
+    }
+
+    // tor-browser#45343: hide the custom root warning for Onion sites, but also
+    // empty the verifier, since it might be a lie.
+    if (this._uriIsOnionHost && this._hasCustomRoot()) {
+      owner = "";
+      supplemental = "";
+      verifier = "";
     }
 
     // Push the appropriate strings out to the UI.
