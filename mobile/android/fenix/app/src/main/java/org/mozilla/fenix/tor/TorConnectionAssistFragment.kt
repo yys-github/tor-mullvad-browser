@@ -158,11 +158,7 @@ class TorConnectionAssistFragment : Fragment(), UserInteractionHandler, SystemIn
     }
 
     private fun setProgressBarCompat(progress: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            binding.torBootstrapProgressBar.setProgress(progress, true)
-        } else {
-            binding.torBootstrapProgressBar.progress = progress
-        }
+        binding.torBootstrapProgressBar.setProgress(progress, true)
     }
 
     private fun showScreen(screen: ConnectAssistUiState) {
