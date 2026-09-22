@@ -662,25 +662,6 @@ SettingGroupManager.registerGroups({
         ],
       },
       {
-        id: "browserContainersbox",
-        control: "moz-fieldset",
-        l10nId: "tabs-containers-heading",
-        headingLevel: 3,
-        items: [
-          {
-            id: "browserContainersCheckbox",
-            l10nId: "browser-containers-enabled-2",
-            supportPage: "containers",
-          },
-          {
-            id: "browserContainersSettings",
-            loadPane: "containers",
-            l10nId: "browser-containers-settings-2",
-            control: "moz-box-button",
-          },
-        ],
-      },
-      {
         id: "tabsClosing",
         control: "moz-fieldset",
         l10nId: "tabs-closing-heading",
