@@ -47,7 +47,7 @@ window.addEventListener("load", () => {
             "l10n-id": "mullvad-doh-notification-settings-button",
             primary: true,
             callback: () => {
-              window.openPreferences("privacy-doh");
+              window.openPreferences("dnsOverHttps");
               Services.prefs.clearUserPref(this.showPref);
               // Keep the notification open in case the user wants to click
               // "Learn more".
