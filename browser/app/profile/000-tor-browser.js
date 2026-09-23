@@ -143,6 +143,6 @@ pref("extensions.torlauncher.bridgedb_targets", "https://1723079976.rsc.cdn77.or
 pref("extensions.torlauncher.moat_service", "https://bridges.torproject.org/moat");
 
 // tor-browser#45237: Disable multiple profiles feature
-pref("browser.profiles.enable", false);
+pref("browser.profiles.enabled", false);
 
 // Log levels
