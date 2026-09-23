@@ -2135,6 +2135,11 @@ toolbar#nav-bar {
         # via the commandline at your own risk.
         browserEnv["XPCOM_DEBUG_BREAK"] = "stack"
 
+        # Default to the mock Tor provider so mochitest runs
+        # don't depend on a real tor daemon/network.
+        # --setenv TOR_PROVIDER=... below can still override this.
+        browserEnv.setdefault("TOR_PROVIDER", "mock")
+
         # interpolate environment passed with options
         try:
             browserEnv.update(
