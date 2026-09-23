@@ -319,6 +319,8 @@ features:
         value:
           enabled: false
 
+# https://gitlab.torproject.org/tpo/applications/tor-browser/-/work_items/45148#note_3442224
+# Disabeling until stable upstream, so if default is turned to true, we can revisit, or allow and delete this
   import-bookmarks:
     description: A feature that lets users import bookmarks from another browser.
     variables:
@@ -329,13 +331,13 @@ features:
     defaults:
       - channel: developer
         value:
-          enabled: true
+          enabled: false
       - channel: nightly
         value:
           enabled: true
       - channel: beta
         value:
-          enabled: true
+          enabled: false
 
   setup-checklist:
     description: A feature on the home page that allows the user to track onboarding setup progress.
