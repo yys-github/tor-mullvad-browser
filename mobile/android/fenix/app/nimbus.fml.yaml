@@ -1093,14 +1093,13 @@ features:
     defaults:
       - channel: developer
         value:
-          enabled: true
-          allowed-regions: ["XX"]
+          enabled: false
       - channel: nightly
         value:
-          enabled: true
+          enabled: false
       - channel: beta
         value:
-          enabled: true
+          enabled: false
 
   native-share-sheet:
     description: Feature to enable the Native Share Sheet for users on Firefox on Android.
