@@ -1060,7 +1060,7 @@ features:
       enabled:
         description: If true, IP Protection feature is enabled.
         type: Boolean
-        default: true
+        default: false
       show-beta-badge:
         description: If true, a BETA badge is shown next to the IP Protection entry in the settings list.
         type: Boolean
@@ -1098,7 +1098,7 @@ features:
     defaults:
       - channel: developer
         value:
-          allowed-regions: ["XX"]
+          enabled: false
 
   native-share-sheet:
     description: Feature to enable the Native Share Sheet for users on Firefox on Android.
