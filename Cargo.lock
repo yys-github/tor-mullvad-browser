@@ -1726,6 +1726,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "db-crypto"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "error-support",
+ "futures",
+ "jwcrypto",
+ "nss-as",
+ "parking_lot",
+ "serde_json",
+ "thiserror 2.0.12",
+ "uniffi",
+]
+
+[[package]]
 name = "dbus"
 version = "0.9.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2772,6 +2788,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "fxcontainers"
+version = "0.1.0"
+dependencies = [
+ "error-support",
+ "idna",
+ "parking_lot",
+ "serde",
+ "serde_json",
+ "thiserror 2.0.12",
+ "uniffi",
+]
+
+[[package]]
 name = "gecko-fuzz-targets"
 version = "0.1.0"
 dependencies = [
@@ -3096,8 +3125,10 @@ dependencies = [
  "autofill",
  "breach-alerts",
  "context_id",
+ "db-crypto",
  "error-support",
  "filter_adult",
+ "fxcontainers",
  "init_rust_components",
  "logins",
  "mozilla-central-workspace-hack",
@@ -4537,6 +4568,7 @@ version = "0.1.0"
 dependencies = [
  "anyhow",
  "async-trait",
+ "db-crypto",
  "error-support",
  "futures",
  "interrupt-support",
@@ -4691,8 +4723,11 @@ dependencies = [
  "ads-client",
  "autofill",
  "crashtest",
+ "db-crypto",
  "error-support",
  "fxa-client",
+ "fxcontainers",
+ "glean-sym",
  "init_rust_components",
  "lazy_static",
  "logins",
@@ -6373,6 +6408,7 @@ dependencies = [
  "bitflags 1.999.999",
  "dogear",
  "error-support",
+ "glean",
  "glean-build",
  "glean-sym",
  "icu_casemap",
