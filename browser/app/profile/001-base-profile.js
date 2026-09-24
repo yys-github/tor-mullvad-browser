@@ -57,6 +57,7 @@ pref("browser.disableResetPrompt", true);
 pref("browser.privatebrowsing.autostart", true);
 pref("browser.cache.disk.enable", false);
 pref("permissions.memory_only", true);
+// Note: toggled for mochitests (see testing/mochitest/runtests.py).
 pref("security.nocertdb", true);
 
 // tor-browser#42094: do not collect stats about WebRTC.
@@ -168,9 +169,13 @@ pref("clipboard.imageAsFile.enabled", false);
 pref("clipboard.copyPrivateDataToClipboardCloudOrHistory", false);
 
 // Enable HTTPS-Only mode (tor-browser#19850)
+//
+// Note: toggled for mochitests (see testing/mochitest/runtests.py).
 pref("dom.security.https_only_mode", true);
 // The previous pref automatically sets this to true (see StaticPrefList.yaml),
 // but set it anyway only as a defense-in-depth.
+//
+// Note: toggled for mochitests (see testing/mochitest/runtests.py).
 pref("dom.security.https_only_mode_pbm", true);
 // tor-browser#43197, defense in depth if ever https-only got disabled
 pref("dom.security.https_first_add_exception_on_failure", false);
