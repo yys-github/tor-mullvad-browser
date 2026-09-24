@@ -164,6 +164,9 @@ import org.mozilla.fenix.components.toolbar.ToolbarPosition
 import org.mozilla.fenix.tor.TorHomePage
 import org.mozilla.fenix.tor.UrlQuickLoadViewModel
 
+import org.mozilla.fenix.tor.TorCampaignViewModel
+import java.util.Locale
+
 @Suppress("TooManyFunctions", "LargeClass")
 class HomeFragment : Fragment(), UserInteractionHandler {
     private val args by navArgs<HomeFragmentArgs>()
@@ -179,6 +182,7 @@ class HomeFragment : Fragment(), UserInteractionHandler {
 
     private val homeViewModel: HomeScreenViewModel by activityViewModels()
     private val urlQuickLoadViewModel: UrlQuickLoadViewModel by activityViewModels()
+    private val torCampaignViewModel: TorCampaignViewModel by activityViewModels()
 
     private var _bottomToolbarContainerView: BottomToolbarContainerView? = null
     private val bottomToolbarContainerView: BottomToolbarContainerView
@@ -973,9 +977,23 @@ class HomeFragment : Fragment(), UserInteractionHandler {
         binding.torHomepageView.apply {
             setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnViewTreeLifecycleDestroyed)
             setContent {
-                TorHomePage(
-                    toolBarAtTop = settings().toolbarPosition == ToolbarPosition.TOP
-                )
+                FirefoxTheme {
+                    val isToolbarAtTop = components.settings.toolbarPosition == ToolbarPosition.TOP
+                        TorHomePage(
+                            toolBarAtTop = isToolbarAtTop,
+                            shouldInitiallyShowPromo = torCampaignViewModel.shouldInitiallyShowPromo,
+                            onClicked = {
+                                val locale = Locale.getDefault().getLanguage()
+                                var url = "https://www.torproject.org/donate/yec2026-tor-browser-android-${locale}"
+                                (requireActivity() as HomeActivity).openToBrowserAndLoad(
+                                    // from https://gitlab.torproject.org/tpo/applications/tor-browser/-/work_items/45217#note_3464207
+                                    url,
+                                    newTab = true,
+                                    from = BrowserDirection.FromHome,
+                                )
+                            },
+                        )
+                }
             }
         }
     }
