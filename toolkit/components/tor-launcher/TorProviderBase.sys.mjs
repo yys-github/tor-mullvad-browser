@@ -174,10 +174,6 @@ export class TorProviderBase {
     throw new Error("newnym not implemented.");
   }
 
-  async getBridges() {
-    throw new Error("getBridges not implemented.");
-  }
-
   async getPluggableTransports() {
     throw new Error("getPluggableTransports not implemented.");
   }

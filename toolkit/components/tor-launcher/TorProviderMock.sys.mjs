@@ -79,10 +79,6 @@ export class TorProviderMock extends TorProviderBase {
 
   async newnym() {}
 
-  async getBridges() {
-    return [];
-  }
-
   async getPluggableTransports() {
     return [];
   }
