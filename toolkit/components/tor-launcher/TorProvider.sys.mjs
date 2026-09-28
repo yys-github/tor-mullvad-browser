@@ -432,21 +432,6 @@ export class TorProvider extends TorProviderBase {
   }
 
   /**
-   * Get the bridges Tor has been configured with.
-   *
-   * @returns {Bridge[]} The configured bridges
-   */
-  async getBridges() {
-    // Ideally, we would not need this function, because we should be the one
-    // setting them with TorSettings. However, TorSettings is not notified of
-    // change of settings. So, asking tor directly with the control connection
-    // is the most reliable way of getting the configured bridges, at the
-    // moment. Also, we are using this for the circuit display, which should
-    // work also when we are not configuring the tor daemon, but just using it.
-    return this.#controller.getBridges();
-  }
-
-  /**
    * Get the configured pluggable transports.
    *
    * @returns {PTInfo[]} An array with the info of all the configured pluggable
