@@ -171,10 +171,10 @@ private fun DynamicCampaignContent(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = if (alternateLayout) Alignment.Start else Alignment.CenterHorizontally,
         ) {
-            Icon(shouldShow = !alternateLayout, R.drawable.bulb_illo_yec, contentDescription = stringResource(R.string.bulb_illo_yec_description))
+            Icon(shouldShow = !alternateLayout, R.drawable.bulb_illo_yec)
             Spacer(Modifier.size (if (alternateLayout) 0.dp else 16.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(shouldShow = alternateLayout, R.drawable.circled_lighning_yec, contentDescription = stringResource(R.string.lightning_bolt_yec_description) )
+                Icon(shouldShow = alternateLayout, R.drawable.circled_lighning_yec)
                 Spacer(Modifier.size(if (alternateLayout) 8.dp else 0.dp))
                 TitleText()
             }
