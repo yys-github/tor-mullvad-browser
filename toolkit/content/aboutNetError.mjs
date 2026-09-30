@@ -374,6 +374,19 @@ function initOnionError() {
   const learnMoreLink = document.getElementById("learnMoreLink");
   learnMoreLink.href = "about:manual#features__onion-services";
 
+  for (const evType of ["click", "mousedown", "auxclick", "contextmenu"]) {
+    learnMoreLink.addEventListener(
+      evType,
+      event => {
+        event.preventDefault();
+        event.stopPropagation();
+        RPMSendAsyncMessage("OpenTorBrowserManual", {
+          fragment: "features__onion-services",
+        });
+      },
+      true
+    );
+  }
   setFocus("#netErrorButtonContainer > .try-again");
 
   return true;

@@ -123,6 +123,7 @@ export let RemotePageAccessManager = {
         "OpenTRRPreferences",
         "SearchCTA:Search",
         "SearchCTA:SearchAborted",
+        "OpenTorBrowserManual",
       ],
       RPMCheckAlternateHostAvailable: ["*"],
       RPMRecordGleanEvent: [
