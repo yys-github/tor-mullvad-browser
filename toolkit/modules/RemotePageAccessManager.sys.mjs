@@ -108,6 +108,7 @@ export let RemotePageAccessManager = {
         "Browser:ResetEnterpriseRootsPref",
         "DisplayOfflineSupportPage",
         "OpenTRRPreferences",
+        "OpenTorBrowserManual",
       ],
       RPMCheckAlternateHostAvailable: ["*"],
       RPMRecordGleanEvent: [
