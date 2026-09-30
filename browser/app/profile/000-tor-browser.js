@@ -11,6 +11,9 @@ pref("network.http.max-persistent-connections-per-proxy", 256);
 pref("network.proxy.no_proxies_on", "");
 // tor-browser#31065: Force proxies also for localhost
 pref("network.proxy.allow_hijacking_localhost", true);
+// tor-browser#45333: We are always behind a (manual) proxy, no need to enable
+// the fast path for direct connections.
+pref("network.proxy.fast_path_system_direct", false);
 // tor-browser#41317: banned port can be fingerprinted and is not necessary,
 // since there are multiple protections that prevent localhost access.
 // Lock ratoinale: prevent fingerprinting of old configurations.
