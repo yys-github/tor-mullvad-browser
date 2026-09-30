@@ -891,7 +891,7 @@ export class AboutPreferences {
           options: [
             {
               value: "home",
-              l10nId: "home-mode-choice-default-fx-srd",
+              l10nId: "home-mode-choice-mullvad",
             },
             { value: "blank", l10nId: "home-mode-choice-blank-srd" },
             { value: "custom", l10nId: "home-mode-choice-custom-srd" },
@@ -911,7 +911,7 @@ export class AboutPreferences {
           options: [
             {
               value: "home",
-              l10nId: "home-mode-choice-default-fx-srd",
+              l10nId: "home-mode-choice-mullvad",
             },
             { value: "blank", l10nId: "home-mode-choice-blank-srd" },
           ],
