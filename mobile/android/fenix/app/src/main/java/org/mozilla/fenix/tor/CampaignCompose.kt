@@ -152,11 +152,11 @@ private fun DynamicCampaignContent(
     onDonateButtonClicked: () -> Unit,
 ) {
     @Composable
-    fun Icon(shouldShow: Boolean, @DrawableRes drawable: Int, contentDescription: String? = null) {
+    fun Icon(shouldShow: Boolean, @DrawableRes drawable: Int) {
         if (shouldShow) {
             Image(
                 painterResource(drawable),
-                contentDescription = contentDescription,
+                contentDescription = null,
                 alignment = Alignment.Center,
             )
         }
