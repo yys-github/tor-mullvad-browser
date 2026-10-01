@@ -200,6 +200,8 @@ class _RFPHelper {
     Services.prefs.removeObserver(kPrefVerticalTabs, this);
     // Remove the RFP observers, swallowing exceptions if they weren't present
     this._removeLanguagePrefObservers();
+    // Added in _handleSpoofEnglishChanged.
+    Services.prefs.removeObserver("intl.accept_languages", this);
   }
 
   observe(subject, topic, data) {
