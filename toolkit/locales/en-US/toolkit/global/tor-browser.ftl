@@ -739,8 +739,6 @@ dropped-support-notification-dismiss-button = Got it
 
 yec-2026-heading = Tor: powered by you
 yec-2026-body = Unlike Big Tech, Tor doesn’t sell your data to make money. Instead, 6,490 donors every year keep Tor strong. Join the movement with a donation today!
-yec-2026-image =
-    .alt = Illustration of a light purple hand reaching to turn on a light purple light bulb on a darker purple background. The light bulb vaguely resembles an onion with greens coming out of the top. There are playful bolts coming out of the bulb, and a green heart on the sleeve of the shirt.
 
 ## Year end campaign.
 
