@@ -668,7 +668,7 @@ class _RFPHelper {
               lazy.logConsole.error(e);
             }
           }
-          if (needToShrink && win.shrinkToLetterbox()) {
+          if (needToShrink && RFPHelper.shrinkToLetterbox(win)) {
             win.addEventListener(
               "resize",
               () => {
@@ -830,17 +830,16 @@ class _RFPHelper {
     });
   }
 
-  // We will attach this method to each browser window. When called
-  // it will instantly resize the window to exactly fit the selected
-  // (possibly letterboxed) browser.
+  // Instantly resize the window to exactly fit the selected (possibly
+  // letterboxed) browser.
   // Returns true if a window resize will occur, false otherwise.
-  shrinkToLetterbox() {
-    let { selectedBrowser } = this.gBrowser;
+  shrinkToLetterbox(aWindow) {
+    let { selectedBrowser } = aWindow.gBrowser;
     let stack = selectedBrowser.closest(".browserStack");
     const outer = stack.getBoundingClientRect();
     const inner = selectedBrowser.getBoundingClientRect();
     if (inner.width !== outer.witdh || inner.height !== outer.height) {
-      this.resizeBy(inner.width - outer.width, inner.height - outer.height);
+      aWindow.resizeBy(inner.width - outer.width, inner.height - outer.height);
       return true;
     }
     return false;
@@ -848,14 +847,13 @@ class _RFPHelper {
 
   _onWindowDoubleClick(e) {
     if (e.target.classList.contains("browserStack")) {
-      e.currentTarget.shrinkToLetterbox();
+      RFPHelper.shrinkToLetterbox(e.currentTarget);
     }
   }
 
   _attachWindow(aWindow) {
     this._fixRounding(aWindow);
     aWindow.addEventListener("sizemodechange", windowResizeHandler);
-    aWindow.shrinkToLetterbox = this.shrinkToLetterbox;
     aWindow.addEventListener("dblclick", this._onWindowDoubleClick);
     aWindow.gBrowser.addTabsProgressListener(this);
     aWindow.addEventListener("TabOpen", this);
@@ -1208,7 +1206,6 @@ class _RFPHelper {
       this._resetContentSize(browser);
     }
     aWindow.removeEventListener("dblclick", this._onWindowDoubleClick);
-    delete aWindow.shrinkToLetterbox;
     aWindow.removeEventListener("sizemodechange", windowResizeHandler);
 
     aWindow.removeEventListener("nativethemechange", this);
