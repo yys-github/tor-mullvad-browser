@@ -10,6 +10,9 @@ const kPrefResistFingerprinting = "privacy.resistFingerprinting";
 const kPrefSpoofEnglish = "privacy.spoof_english";
 const kTopicHttpOnModifyRequest = "http-on-modify-request";
 
+// The original (rounded) size of each window, recorded when it was ready.
+const originalWindowSizes = new WeakMap();
+
 const kPrefLetterboxing = "privacy.resistFingerprinting.letterboxing";
 const kPrefLetterboxingDimensions =
   "privacy.resistFingerprinting.letterboxing.dimensions";
@@ -113,9 +116,9 @@ async function windowResizeHandler(aEvent) {
         // reset notification timer to work-around resize race conditions
         windowResizeHandler.timestamp = Date.now();
         // restore the original (rounded) size we had stored on window startup
-        let { _rfpOriginalSize } = window;
+        let originalSize = originalWindowSizes.get(window);
         window.setTimeout(() => {
-          window.resizeTo(_rfpOriginalSize.width, _rfpOriginalSize.height);
+          window.resizeTo(originalSize.width, originalSize.height);
         }, 0);
       },
     },
@@ -566,16 +569,17 @@ class _RFPHelper {
       ])
     );
 
+    const originalSize = originalWindowSizes.get(win);
     const isInitialSize =
-      win._rfpOriginalSize &&
-      win.outerWidth === win._rfpOriginalSize.width &&
-      win.outerHeight === win._rfpOriginalSize.height;
+      originalSize &&
+      win.outerWidth === originalSize.width &&
+      win.outerHeight === originalSize.height;
 
     // We may need to shrink this window to rounded size if the browser container
     // area is taller than the original, meaning extra chrome (like the optional
     // "Only Show on New Tab" bookmarks toobar) was present and now gone.
     const needToShrink =
-      isInitialSize && containerHeight > win._rfpOriginalSize.containerHeight;
+      isInitialSize && containerHeight > originalSize.containerHeight;
 
     log(
       `${logPrefix} contentWidth=${contentWidth} contentHeight=${contentHeight} parentWidth=${parentWidth} parentHeight=${parentHeight} containerWidth=${containerWidth} containerHeight=${containerHeight}${
@@ -778,7 +782,7 @@ class _RFPHelper {
     // maximized.
     aWindow.setTimeout(() => {
       tabBrowser.tabbox.classList.add("letterboxing-ready");
-      if (!aWindow._rfpOriginalSize) {
+      if (!originalWindowSizes.has(aWindow)) {
         this._recordWindowSize(aWindow);
       }
     });
@@ -786,12 +790,13 @@ class _RFPHelper {
 
   _recordWindowSize(aWindow) {
     aWindow.promiseDocumentFlushed(() => {
-      aWindow._rfpOriginalSize = {
+      const size = {
         width: aWindow.outerWidth,
         height: aWindow.outerHeight,
         containerHeight: aWindow.gBrowser.getBrowserContainer()?.clientHeight,
       };
-      log("Recording original window size", aWindow._rfpOriginalSize);
+      originalWindowSizes.set(aWindow, size);
+      log("Recording original window size", size);
     });
   }
 
