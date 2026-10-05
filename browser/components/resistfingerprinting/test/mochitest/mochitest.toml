@@ -1,9 +1,11 @@
 [DEFAULT]
+# These tests are written for Firefox, where RFP is disabled by default.
+prefs = ["privacy.resistFingerprinting=false"]
 skip-if = [
   "os == 'android'", # bug 1730213
   "os == 'linux' && os_version == '24.04' && arch == 'x86_64' && display == 'x11' && ccov",
 ]
-tags = "resistfingerprinting"
+tags = "base-browser resistfingerprinting"
 
 support-files = [
   "file_animation_api.html",
@@ -33,6 +35,7 @@ skip-if = [
 
 ["test_geolocation.html"]
 scheme = "https"
+disabled = "Geolocation is disabled in 001-base-profile.js"
 
 ["test_hide_gamepad_info.html"]
 scheme = "https"

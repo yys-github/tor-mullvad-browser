@@ -1,5 +1,7 @@
 [DEFAULT]
-tags = "resistfingerprinting"
+# These tests are written for Firefox, where RFP is disabled by default.
+prefs = ["privacy.resistFingerprinting=false"]
+tags = "base-browser resistfingerprinting"
 support-files = [
   "coop_header.sjs",
   "file_dummy.html",
@@ -61,6 +63,7 @@ support-files = [
 
 ["browser_bug1975753_site_specific_zoom_level.js"]
 https_first_disabled = true
+disabled = "With browser.privatebrowsing.autostart all tabs are private, so the zoom is stored in the private content pref store, which deleteDataFromHost does not clear. Not an issue for us: the private store is memory-only and is wiped on New Identity and restart"
 
 ["browser_canvas_iframes.js"]
 skip-if = [
@@ -148,6 +151,7 @@ https_first_disabled = true
 
 ["browser_navigator_iframes.js"]
 https_first_disabled = true
+disabled = "Third-party cookies and storage are rejected (network.cookie.cookieBehavior is 1 in 001-base-profile.js), so the third-party iframe cannot create a SharedWorker and the test hangs"
 
 ["browser_netInfo.js"]
 https_first_disabled = true
@@ -158,16 +162,20 @@ https_first_disabled = true
 
 ["browser_reduceTimePrecision_iframes.js"]
 https_first_disabled = true
+disabled = "Third-party cookies and storage are rejected (network.cookie.cookieBehavior is 1 in 001-base-profile.js), so the third-party iframe cannot create a SharedWorker and the test hangs"
 
 ["browser_roundedWindow_dialogWindow.js"]
 
 ["browser_roundedWindow_newWindow.js"]
 
 ["browser_roundedWindow_open_max_inner.js"]
+disabled = "Popups open in new tabs (browser.link.open_newwindow.restriction is 0 in 001-base-profile.js), so window.open does not create sized windows"
 
 ["browser_roundedWindow_open_mid_inner.js"]
+disabled = "Popups open in new tabs (browser.link.open_newwindow.restriction is 0 in 001-base-profile.js), so window.open does not create sized windows"
 
 ["browser_roundedWindow_open_min_inner.js"]
+disabled = "Popups open in new tabs (browser.link.open_newwindow.restriction is 0 in 001-base-profile.js), so window.open does not create sized windows"
 
 ["browser_spoofing_keyboard_event.js"]
 
