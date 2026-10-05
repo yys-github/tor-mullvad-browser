@@ -32,6 +32,9 @@ const kPrefVerticalTabs = "sidebar.verticalTabs";
 
 const kPrefResizeWarnings = "privacy.resistFingerprinting.resizeWarnings";
 
+// Timeouts that hide the letterboxing size status, keyed by window.
+const letterboxingStatusTimeouts = new WeakMap();
+
 const lazy = {};
 
 ChromeUtils.defineESModuleGetters(lazy, {
@@ -743,8 +746,11 @@ class _RFPHelper {
             browserParent.classList.add(clazz);
           }
           updateStatus(lastRoundedSize);
-          win.clearTimeout(win._letterboxingStatusTimeout);
-          win._letterboxingStatusTimeout = win.setTimeout(updateStatus, 1000);
+          win.clearTimeout(letterboxingStatusTimeouts.get(win));
+          letterboxingStatusTimeouts.set(
+            win,
+            win.setTimeout(updateStatus, 1000)
+          );
         } else {
           updateStatus("");
         }
