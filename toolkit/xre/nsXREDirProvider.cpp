@@ -782,6 +782,9 @@ void nsXREDirProvider::DoShutdown() {
 
   gDataDirProfileLocal = nullptr;
   gDataDirProfile = nullptr;
+#if defined(RELATIVE_DATA_DIR)
+  gDataDirPortable.reset();
+#endif
 }
 
 #ifdef XP_WIN
