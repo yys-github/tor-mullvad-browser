@@ -304,11 +304,19 @@ this.browserAction = class extends ExtensionAPIPersistent {
           const changeNoScriptVisibility = () => {
             node.hidden = Services.prefs.getBoolPref(HIDE_NO_SCRIPT_PREF, true);
           };
-          // Since we expect the NoScript widget to only be destroyed on exit,
-          // we do not set up to remove the observer.
           Services.prefs.addObserver(
             HIDE_NO_SCRIPT_PREF,
             changeNoScriptVisibility
+          );
+          document.defaultView.addEventListener(
+            "unload",
+            () => {
+              Services.prefs.removeObserver(
+                HIDE_NO_SCRIPT_PREF,
+                changeNoScriptVisibility
+              );
+            },
+            { once: true }
           );
           changeNoScriptVisibility();
         }
