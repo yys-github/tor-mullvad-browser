@@ -13,6 +13,12 @@ const TEST_PATH =
   "http://example.net/browser/browser/" +
   "components/resistfingerprinting/test/browser/";
 
+// When set, every window is private, so tests can't open normal windows.
+const PERMANENT_PRIVATE_BROWSING = Services.prefs.getBoolPref(
+  "browser.privatebrowsing.autostart",
+  false
+);
+
 const PERFORMANCE_TIMINGS = [
   "navigationStart",
   "unloadEventStart",
@@ -210,6 +216,14 @@ let setupAndRunCrossOriginIsolatedTest = async function (
 
   if (options.openPrivateWindow === undefined) {
     options.openPrivateWindow = false;
+  }
+  if (
+    PERMANENT_PRIVATE_BROWSING &&
+    options.resistFingerprintingPBMOnly &&
+    !options.openPrivateWindow
+  ) {
+    info("Skipping, there are no normal windows in permanent private browsing");
+    return;
   }
   if (options.shouldBeRounded === undefined) {
     options.shouldBeRounded = true;
@@ -679,7 +693,8 @@ async function runActualTest(uri, testFunction, expectedResults, extraData) {
   if ("noopener" in extraData) {
     var popupTabPromise = BrowserTestUtils.waitForNewTab(
       browserWin,
-      extraData.await_uri
+      extraData.await_uri,
+      true
     );
   }
 
@@ -747,15 +762,21 @@ async function defaultsTest(
   }
   extraData.testDesc = extraData.testDesc || "default";
   expectedResults.shouldRFPApply = false;
-  if (extraPrefs != undefined) {
-    await SpecialPowers.pushPrefEnv({
-      set: extraPrefs,
-    });
+  let prefs = extraPrefs || [];
+  // In permanent private browsing we can't open a normal window, so we fake
+  // one. The *.pbmode prefs are the only way being private affects whether
+  // RFP/FPP apply, so with them off this window is protected exactly like a
+  // normal one would be. They go last so they win over any value the test passed.
+  if (PERMANENT_PRIVATE_BROWSING && !extraData.private_window) {
+    prefs = [
+      ...prefs,
+      ["privacy.resistFingerprinting.pbmode", false],
+      ["privacy.fingerprintingProtection.pbmode", false],
+    ];
   }
+  await SpecialPowers.pushPrefEnv({ set: prefs });
   await runActualTest(uri, testFunction, expectedResults, extraData);
-  if (extraPrefs != undefined) {
-    await SpecialPowers.popPrefEnv();
-  }
+  await SpecialPowers.popPrefEnv();
 }
 
 async function defaultsPBMTest(
@@ -879,6 +900,10 @@ async function RFPPBMFPP_NormalMode_NoProtectionsTest(
   extraData,
   extraPrefs
 ) {
+  if (PERMANENT_PRIVATE_BROWSING) {
+    info("Skipping, there are no normal windows in permanent private browsing");
+    return;
+  }
   if (extraData == undefined) {
     extraData = {};
   }
@@ -908,6 +933,10 @@ async function RFPPBMFPP_NormalMode_ProtectionsTest(
   extraData,
   extraPrefs
 ) {
+  if (PERMANENT_PRIVATE_BROWSING) {
+    info("Skipping, there are no normal windows in permanent private browsing");
+    return;
+  }
   if (extraData == undefined) {
     extraData = {};
   }

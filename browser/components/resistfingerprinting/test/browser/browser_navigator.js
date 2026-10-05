@@ -347,6 +347,12 @@ async function testWorkerNavigator() {
 }
 
 add_task(async function setupDefaultUserAgent() {
+  if (PERMANENT_PRIVATE_BROWSING) {
+    // Emulate a normal window, where FPP is disabled by default.
+    await SpecialPowers.pushPrefEnv({
+      set: [["privacy.fingerprintingProtection.pbmode", false]],
+    });
+  }
   let defaultUserAgent = `Mozilla/5.0 (${
     DEFAULT_UA_OS[AppConstants.platform]
   }; rv:${appVersion}.0) Gecko/${
@@ -368,6 +374,10 @@ add_task(async function setupDefaultUserAgent() {
   await testUserAgentHeader();
 
   await testWorkerNavigator();
+
+  if (PERMANENT_PRIVATE_BROWSING) {
+    await SpecialPowers.popPrefEnv();
+  }
 });
 
 add_task(async function setupRFPExemptions() {

@@ -123,8 +123,13 @@ add_task(testE.bind(null, uri, testHWConcurrency, expectedResults, extraData));
 // (G) RFP is not exempted on the maker but is on the popup
 //     Ordinarily, RFP would not be exempted, however because the opener relationship is severed
 //     it is safe to exempt the popup
-expectedResults = structuredClone(allNotSpoofed);
-add_task(testG.bind(null, uri, testHWConcurrency, expectedResults, extraData));
+//
+// Disabled: with first-party isolation, the popup inherits the opener's
+// (non-exempted) cookie jar settings. Base Browser doesn't support RFP
+// exemptions anyway.
+//
+// expectedResults = structuredClone(allNotSpoofed);
+// add_task(testG.bind(null, uri, testHWConcurrency, expectedResults, extraData));
 
 // Test RFP Enabled in PBM and FPP enabled in Normal Browsing Mode
 expectedResults = structuredClone(allNotSpoofed);

@@ -375,6 +375,8 @@ async function test_findbar(aWindow) {
 add_setup(async function () {
   await SpecialPowers.pushPrefEnv({
     set: [
+      // In Tor Browser, letterboxing is only active when RFP is enabled.
+      ["privacy.resistFingerprinting", true],
       ["privacy.resistFingerprinting.letterboxing", true],
       ["privacy.resistFingerprinting.letterboxing.testing", true],
     ],
