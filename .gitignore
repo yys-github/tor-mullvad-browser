@@ -420,16 +420,5 @@ CLAUDE.local.md
 # lint-ignore-next-line: git-only
 /*.json.gz
 
-# Ignore binary base of Tor Browser
-.binaries
-
-# Other files modified at build time
-mobile/android/.experimenter.json
-
 # GitLab project and token saved by `mach yeet auth`
 /.yeet.json
-
-# Tor libraries for local builds
-mobile/android/fenix/tools/nimbus-fml
-mobile/android/fenix/app/tor-expert-bundle.aar
-mobile/android/fenix/app/src/main/assets/extensions/{73a6fe31-595d-460b-a920-fcc0f8843232}.xpi
