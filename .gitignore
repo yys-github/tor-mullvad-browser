@@ -430,8 +430,5 @@ CLAUDE.local.md
 # lint-ignore-next-line: git-only
 /*.json.gz
 
-# Ignore binary base of Tor Browser
-.binaries
-
 # GitLab project and token saved by `mach yeet auth`
 /.yeet.json
