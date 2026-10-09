@@ -720,6 +720,39 @@ protobuf {
     }
 }
 
+// Unit tests are disabled by default because most of them don't work in Tor Browser.
+// Add source path patterns here (e.g. 'org/mozilla/fenix/home/**') to re-enable them
+// as they get fixed. Only the listed tests (plus the shared helpers) are compiled and run.
+// When the list is empty, unit tests are neither compiled nor run.
+def enabledUnitTests = [
+    'org/mozilla/fenix/torbrowser/**',
+]
+def unitTestHelpers = [
+    'org/mozilla/fenix/helpers/**',
+]
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    if (name.contains("UnitTest")) {
+        if (enabledUnitTests) {
+            // The task already has default include patterns, so we can only narrow it down with excludes.
+            def allowed = new org.gradle.api.tasks.util.PatternSet()
+                .include((enabledUnitTests + unitTestHelpers).collect { "**/$it" })
+                .asSpec
+            exclude { !it.directory && !allowed.isSatisfiedBy(it) }
+        } else {
+            enabled = false
+        }
+    }
+}
+
+tasks.withType(Test).configureEach {
+    if (enabledUnitTests) {
+        include enabledUnitTests
+    } else {
+        enabled = false
+    }
+}
+
 if (project.hasProperty("coverage")) {
     tasks.withType(Test).configureEach {
         jacoco.includeNoLocationClasses = true
