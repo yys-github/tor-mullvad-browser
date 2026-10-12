@@ -279,16 +279,18 @@ class TorBrowserMigrator:
 
     def __init__(
         self,
-        en_US_dir,
+        en_US_ref_dir,
+        en_US_target_dir,
         locale_dirs,
-        migrate_module,
+        recipe_module,
         weblate_metadata,
     ):
         self.logger = logging.getLogger("tor-browser-migrator")
         self.logger.setLevel(logging.INFO)
-        self.en_US_dir = en_US_dir
+        self.en_US_ref_dir = en_US_ref_dir
+        self.en_US_target_dir = en_US_target_dir
         self.locale_dirs = locale_dirs
-        self.migrate_module = migrate_module
+        self.recipe_module = recipe_module
         self.weblate_metadata = weblate_metadata
 
     def run(self):
@@ -488,10 +490,10 @@ class TorBrowserMigrator:
     def _get_migration_context(self, locale, locale_dir):
         prev_missing_resources = set()
         while True:
-            ctx = TorBrowserMigrationContext(locale, self.en_US_dir, locale_dir)
+            ctx = TorBrowserMigrationContext(locale, self.en_US_ref_dir, locale_dir)
 
             try:
-                self.migrate_module.migrate(ctx)
+                self.recipe_module.migrate(ctx)
             except EmptyLocalizationError:
                 # This case will be handled by missing_resources below.
                 # NOTE: At the time of writing, add_transforms only throws if
@@ -550,13 +552,13 @@ class TorBrowserMigrator:
         os.remove(path)
 
     def _check_en_US_resources(self):
-        # We pass in the en-US directory as the localization directory, as well
-        # as the reference directory.
-        ctx = TorBrowserMigrationContext("en-US", self.en_US_dir, self.en_US_dir)
+        ctx = TorBrowserMigrationContext(
+            "en-US", self.en_US_ref_dir, self.en_US_target_dir
+        )
 
         have_error = False
         try:
-            self.migrate_module.migrate(ctx)
+            self.recipe_module.migrate(ctx)
         except EmptyLocalizationError:
             # Handle with localization_resources check.
             # NOTE: This throwing may have prevented further add_transforms from
@@ -566,7 +568,9 @@ class TorBrowserMigrator:
             have_error = True
         except UnreadableReferenceError:
             # Reference filename is printed before this.
-            self.logger.error("Missing an en-US reference file.")
+            self.logger.error(
+                "Missing an en-US reference file. Is --reference-directory correct?"
+            )
             return False
 
         # Check each transform would create the same entry in the target as the
@@ -602,7 +606,8 @@ class TorBrowserMigrator:
             reference_entry = ctx.tb_get_reference_entry(target_path, transform_id)
             if reference_entry is None:
                 self.logger.error(
-                    f"Missing en-US reference entry for transform {transform_name}"
+                    f"Missing en-US reference entry for transform {transform_name}. "
+                    "Is --reference-directory correct?"
                 )
                 have_error = True
                 continue
@@ -625,6 +630,45 @@ class TorBrowserMigrator:
         return not have_error
 
 
+def main(recipe_path, translation_dir, locales, ref_dir):
+    """
+    The main method.
+    :param recipe_path: The path to the recipe script.
+    :param translation_dir: The path to the translation repository directory.
+    :param locales: The locales to run the recipe for, separated by spaces.
+    :param ref_dir: The path to the reference directory.
+    """
+    if not os.path.isfile(recipe_path):
+        print(f"{in_red(recipe_path)} is not a file.", file=sys.stderr)
+        sys.exit(1)
+
+    recipe_module_spec = importlib.util.spec_from_file_location("_recipe", recipe_path)
+    recipe_module = importlib.util.module_from_spec(recipe_module_spec)
+    recipe_module_spec.loader.exec_module(recipe_module)
+
+    def check_dir(path):
+        if not os.path.isdir(path):
+            print(f"{in_red(path)} is not a directory.", file=sys.stderr)
+            sys.exit(1)
+        return path
+
+    translation_dir = check_dir(translation_dir)
+    en_US_target_dir = check_dir(os.path.join(translation_dir, "en-US"))
+    en_US_ref_dir = en_US_target_dir if ref_dir is None else check_dir(ref_dir)
+
+    TorBrowserMigrator(
+        en_US_ref_dir,
+        en_US_target_dir,
+        {
+            locale: check_dir(os.path.join(translation_dir, locale))
+            for locale in (l.strip() for l in locales.split(" "))
+            if locale
+        },
+        recipe_module,
+        WeblateMetadata(),
+    ).run()
+
+
 parser = argparse.ArgumentParser(
     description="Run a tor-browser localization migration. "
     "See documentation within migrate_l10n.py."
@@ -642,31 +686,26 @@ parser.add_argument(
     help="Set of locales to restrict the migration to, separated by space.",
 )
 parser.add_argument(
-    "migration",
-    help="Migration to run, given as a python module. "
-    'E.g. "l10n_migrations.my-migration-script".',
+    "--reference-directory",
+    metavar="<dir>",
+    help="Location of the en-US directory that contains the reference changes "
+    "that the recipe corresponds to. E.g. if the recipe constructs the string "
+    "`my-new-string` in `./tor-browser.ftl`, it should point to a directory "
+    "that contains the en-US `tor-browser.ftl` with `my-new-string` already "
+    "within it. Defaults to the `en-US/` sub-directory within the "
+    "translation-git directory.",
+)
+parser.add_argument(
+    "recipe",
+    help="The path to the migration recipe to run.",
 )
 
 
 parsed_args = parser.parse_args()
 
-
-def check_dir(path):
-    if not os.path.isdir(path):
-        print(f"{in_red(path)} is not a directory.", file=sys.stderr)
-        sys.exit(1)
-    return path
-
-
-translation_dir = check_dir(os.path.abspath(parsed_args.translation_git))
-
-TorBrowserMigrator(
-    check_dir(os.path.join(translation_dir, "en-US")),
-    {
-        locale: check_dir(os.path.join(translation_dir, locale))
-        for locale in (l.strip() for l in parsed_args.locales.split(" "))
-        if locale
-    },
-    importlib.import_module(parsed_args.migration),
-    WeblateMetadata(),
-).run()
+main(
+    parsed_args.recipe,
+    parsed_args.translation_git,
+    parsed_args.locales,
+    parsed_args.reference_directory,
+)
