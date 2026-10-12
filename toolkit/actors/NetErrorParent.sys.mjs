@@ -275,7 +275,6 @@ export class NetErrorParent extends EscapablePageParent {
         let win = browser.ownerGlobal;
         win.openPreferences("privacy-doh");
         break;
-      }
       case "OpenTorBrowserManual": {
         let browser = this.browsingContext.top.embedderElement;
         if (browser) {
