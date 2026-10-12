@@ -76,129 +76,282 @@ def in_red(string):
     return f"\x1b[1;91m{string}\x1b[0m"
 
 
-class WeblateMetadata:
+def assert_keys(
+    check_dict: dict[Any, Any], expected_keys: tuple[str, ...], url: str
+) -> None:
     """
-    Manages and fetches string metadata from weblate.
+    Verify that the dictionary contains *at least* the expected keys,
+    otherwise this throws.
+    :param check_dict: The dictionary to check.
+    :param url: The url where the dictionary was fetched from.
+    """
+    for key in expected_keys:
+        if key not in check_dict:
+            raise ValueError(f"Missing '{key}' in response for {url}")
+
+
+class WeblateUnit:
+    """
+    Represents a Weblate "unit": roughly corresponds to a translated string.
+
+    See https://docs.weblate.org/en/latest/api.html#units.
     """
 
-    def __init__(self):
+    def __init__(self, data: dict[Any, Any], url: str) -> None:
+        """
+        :param data: The Weblate data response.
+        :param url: The URL that the data came from.
+        """
+        assert_keys(data, ("context", "translated"), url)
+        string_id = data["context"]
+        translated = data["translated"]
+        if not isinstance(string_id, str):
+            raise ValueError(f"Unexpected 'context' type in response for {url}")
+        if not isinstance(translated, bool):
+            raise ValueError(f"Unexpected 'translated' type in response for {url}")
+
+        self.string_id = string_id
+        self.translated = translated
+
+
+class WeblateTranslation:
+    """
+    Represents a Weblate "translation": roughly corresponds to the translation
+    of a file for a given locale/language.
+
+    See https://docs.weblate.org/en/latest/api.html#translations.
+    """
+
+    def __init__(self, data: dict[Any, Any], url: str) -> None:
+        """
+        :param data: The Weblate data response.
+        :param url: The URL that the data came from.
+        """
+        assert_keys(data, ("filename", "units_list_url"), url)
+        locale_path = data["filename"]
+        units_url = data["units_list_url"]
+        if not isinstance(locale_path, str):
+            raise ValueError(f"Unexpected 'filename' type in response for {url}")
+        if not isinstance(units_url, str):
+            raise ValueError(f"Unexpected 'units_list_url' type in response for {url}")
+
+        self.locale_path = locale_path
+        self.units_url = units_url
+        # The units, indexed by their string ID. Lazy-loaded and `None` whilst
+        # unfilled.
+        self.units: None | dict[str, WeblateUnit] = None
+
+
+class WeblateComponent:
+    """
+    Represents a Weblate "component": roughly corresponds to a source (en-US)
+    file that can be translated.
+
+    See https://docs.weblate.org/en/latest/api.html#components.
+    And https://docs.weblate.org/en/latest/user/basic.html.
+    """
+
+    def __init__(self, data: dict[Any, Any], url: str) -> None:
+        """
+        :param data: The Weblate data response.
+        :param url: The URL that the data came from.
+        """
+        assert_keys(data, ("template", "translations_url", "branch"), url)
+        template_path = data["template"]
+        translations_url = data["translations_url"]
+        branch = data["branch"]
+        if not isinstance(template_path, str):
+            raise ValueError(f"Unexpected 'template' type in response for {url}")
+        if not isinstance(translations_url, str):
+            raise ValueError(
+                f"Unexpected 'translations_url' type in response for {url}"
+            )
+        if not isinstance(branch, str):
+            raise ValueError(f"Unexpected 'branch' type in response for {url}")
+
+        self.branch = branch
+        # The path to the source (en-US) file.
+        self.template_path = template_path
+        # The URL to fetch the component's translations from.
+        self.translations_url = translations_url
+        # The translations data, indexed by the locale file paths. Lazy-loaded
+        # and `None` whilst unfilled.
+        self.translations: None | dict[str, WeblateTranslation] = None
+
+
+class WeblateMetadata:
+    """
+    Manages and fetches string metadata from Weblate.
+    """
+
+    # The translation branches that we expect to be used for Weblate.
+    _BROWSER_BRANCHES = ["tor-browser", "base-browser", "fenix-torbrowserstringsxml"]
+    _WEBLATE_API_URL = "https://hosted.weblate.org/api/"
+    _WEBLATE_API_TOR_COMPONENTS_URL = _WEBLATE_API_URL + "projects/tor/components/"
+
+    def __init__(self) -> None:
+        """
+        Create a new instance for fetching Weblate metadata.
+        """
         self.logger = logging.getLogger("weblate-metadata")
         self.logger.setLevel(logging.INFO)
 
-        # The _components property will be lazy-loaded with weblate data.
-        #
-        # On weblate, for monolingual formats, the component will have a
-        # "template" file, which matches the en-US file path in the
-        # "translation" git repo. So we can find a component through a matching
-        # template.
-        #
-        # Each translation in that component will have a "filename" that will
-        # match the locale's file path in the "translation" git repo. So we can
-        # find a translation through a matching filename.
-        #
-        # Each translation can be queried for its units, including metadata.
-        # Each unit's "context" will match the string's id in the corresponding
-        # file.
-        #
-        # Expect the final structure to be:
-        # {
-        #   template: {
-        #     "translations-url": str,     # Used for API translations query.
-        #     "translations": {
-        #        filename: {
-        #          "units-url": str,       # Used for API units query.
-        #          "units": {
-        #            context: {
-        #              "translated": bool,
-        #            },
-        #          },
-        #        },
-        #     },
-        #   },
-        # }
-        self._components = None
+        # The _components property will be lazy-loaded with Weblate data.
+        self._components: dict[str, WeblateComponent] | None = None
 
-    def _get_weblate_response(self, url):
+    def _get_weblate_response(self, url: str) -> Any:
+        """
+        Make a single query to Weblate.
+        :param url: The URL to fetch.
+        :returns: The JSON response.
+        """
+        if not url.startswith(self._WEBLATE_API_URL):
+            raise ValueError(f"Unexpected URL request: {url}")
+
         weblate_request = urllib.request.Request(
             url,
             # NOTE: can set the request header:
             # "Authorization": "Token WEBLATE_TOKEN"
-            # to get around rate-limiting
+            # to get around rate-limiting.
+            # NOTE: We empty the User-Agent to override the default
+            # value of "Python-urllib/{major}.{minor}".
             headers={"User-Agent": ""},
         )
 
-        with urllib.request.urlopen(weblate_request, timeout=20) as response:
+        with urllib.request.urlopen(weblate_request) as response:
             return json.load(response)
 
-    def _get_from_weblate(self, url):
-        ret = []
+    def _get_from_weblate(self, url: str) -> list[dict[Any, Any]]:
+        """
+        Fetch a list of results from Weblate.
+        :param url: The initial URL to fetch a response from.
+        :returns: The returned list of results.
+        """
+        ret: list[dict[Any, Any]] = []
         while url:
             response = self._get_weblate_response(url)
+            if not isinstance(response, dict):
+                raise ValueError(f"Unexpected response type for {url}")
+            assert_keys(response, ("results", "next"), url)
+
+            res_val = response["results"]
+            if not isinstance(res_val, list):
+                raise ValueError(f"Unexpected 'results' type for {url}")
+            for res_item in res_val:
+                if not isinstance(res_item, dict):
+                    raise ValueError(f"Unexpected 'results' item type for {url}")
+                ret.append(res_item)
+
             # Continue to fetch the next page, if it is present.
-            # Expect the "next" url to be empty
+            # Expect the "next" url to be null
             # or the same url with "?page=2", etc.
-            url = response["next"]
-            ret.extend(response["results"])
+            next_val = response["next"]
+            if next_val is not None and not isinstance(next_val, str):
+                raise ValueError(f"Unexpected 'next' type in response for {url}")
+            url = "" if next_val is None else next_val
         return ret
 
-    def _get_components(self):
+    def _get_components(self) -> dict[str, WeblateComponent]:
+        """
+        Get all the Tor Browser Weblate components.
+
+        We identify each Weblate component by its template path: the en-US
+        file path in the translation repository.
+
+        NOTE: We assume that the template path uniquely identifies the
+        component, even though this is not guaranteed in general by Weblate.
+
+        :returns: A dictionary of components, indexed by their en-US template
+          path.
+        """
+        url = self._WEBLATE_API_TOR_COMPONENTS_URL
         if self._components is None:
             self._components = {
-                comp["template"]: {
-                    "translations": None,
-                    "translations-url": comp["translations_url"],
-                }
-                for comp in self._get_from_weblate(
-                    "https://hosted.weblate.org/api/projects/tor/components/"
+                comp.template_path: comp
+                for comp in (
+                    WeblateComponent(data, url) for data in self._get_from_weblate(url)
                 )
-                if comp["template"]
+                if comp.template_path and comp.branch in self._BROWSER_BRANCHES
             }
         return self._components
 
-    def _get_translations(self, template):
-        component = self._get_components().get(template, None)
-        if not component:
-            self.logger.warning(f"No component in weblate for {template}.")
-            return None
-        if component["translations"] is None:
-            component["translations"] = {
-                trans["filename"]: {
-                    "units": None,
-                    "units-url": trans["units_list_url"],
-                }
-                for trans in self._get_from_weblate(component["translations-url"])
-            }
-        return component["translations"]
+    def _get_translations(
+        self, template_path: str
+    ) -> dict[str, WeblateTranslation] | None:
+        """
+        Get the Weblate translations for a given Weblate component.
 
-    def _get_units(self, template, file):
-        translation_dict = self._get_translations(template)
+        We identify each translation by its file path: the locale-specific path
+        that the translated file is written to.
+
+        :param template_path: The component's en-US template path.
+        :returns: A dictionary of translations, indexed by their locale file
+          paths. Or `None` if no components were found.
+        """
+        component = self._get_components().get(template_path, None)
+        if not component:
+            self.logger.warning(f"No component in Weblate for {template_path}.")
+            return None
+        if component.translations is None:
+            url = component.translations_url
+            component.translations = {
+                trans.locale_path: trans
+                for trans in (
+                    WeblateTranslation(data, url)
+                    for data in self._get_from_weblate(url)
+                )
+            }
+        return component.translations
+
+    def _get_units(
+        self, template_path: str, locale_path: str
+    ) -> dict[str, WeblateUnit] | None:
+        """
+        Get the Weblate units for a given Weblate translation.
+
+        We identify each unit by its string ID.
+
+        :param template_path: The containing component's en-US template path.
+        :param locale_path: The translation's locale file path.
+        :returns: A dictionary of units, indexed by their string ID. Or `None`
+          if no translations could be found.
+        """
+        translation_dict = self._get_translations(template_path)
         if translation_dict is None:
             return None
-        translation = translation_dict.get(file, None)
+        translation = translation_dict.get(locale_path, None)
         if translation is None:
-            self.logger.warning(f"No translation in weblate for {file}.")
+            self.logger.warning(f"No translation in Weblate for {locale_path}.")
             return None
-        if translation["units"] is None:
-            translation["units"] = {
-                unit["context"]: {
-                    "translated": unit["translated"],
-                }
-                for unit in self._get_from_weblate(translation["units-url"])
+        if translation.units is None:
+            url = translation.units_url
+            translation.units = {
+                unit.string_id: unit
+                for unit in (
+                    WeblateUnit(data, url) for data in self._get_from_weblate(url)
+                )
             }
-        return translation["units"]
+        return translation.units
 
-    def is_translated(self, template_path, locale_path, string_id):
+    def is_translated(self, file_path: str, locale: str, string_id: str) -> bool:
         """
-        Whether the given string is marked as translated on weblate.
+        Test whether the given string is marked as translated on Weblate.
+
+        :param file_path: The file to check the translation of, relative to the
+          locale's directory.
+        :param locale: The locale to check for.
+        :param string_id: The ID of the string to check.
         """
+        template_path = os.path.join("en-US", file_path)
+        locale_path = os.path.join(locale, file_path)
         unit_dict = self._get_units(template_path, locale_path)
         if unit_dict is None:
             return False
         unit = unit_dict.get(string_id, None)
         if unit is None:
-            self.logger.warning(f"No unit in weblate for {locale_path}:{string_id}.")
+            self.logger.warning(f"No unit in Weblate for {locale_path}:{string_id}.")
             return False
-        return unit["translated"]
+        return unit.translated
 
 
 class TorBrowserMigrationContext(MigrationContext):
@@ -429,8 +582,8 @@ class TorBrowserMigrator:
                     if not path.endswith(
                         ".ftl"
                     ) and not self.weblate_metadata.is_translated(
-                        os.path.join("en-US", path),
-                        os.path.join(locale, path),
+                        path,
+                        locale,
                         string_id,
                     ):
                         can_transform = False
