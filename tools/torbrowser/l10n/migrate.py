@@ -1,58 +1,252 @@
 """
-Migration script for running migration recipes.
+Migration script for running Tor Browser migration recipes.
 
-Requires the mozilla fluent.migrate package (available with pip).
-
-NOTE: This will likely send queries to the weblate API as part of the run.
-Weblate may have a query limit of 100 requests per day for unauthorised users.
-
-
-Based on the firefox migration script, adapted for tor browser. See
+Based on the Firefox migration script, adapted for Tor Browser. See
 https://firefox-source-docs.mozilla.org/l10n/migrations/ for more context and
 information on how to write the migration recipes.
 
 
-Usage with an example:
+## Concepts
 
-We have some en-US file "updated.ftl" in the tor-browser repository that we have
-added new strings to. Some of these strings are copies or concatenations of some
-already existing strings in a `.dtd`, `.properties` or `.ftl` file (including
-strings within "updated.ftl").
++ String. Here, when we say "string", it refers to a piece of text that can be
+  translated. In practice, you can think of it as a being defined by a triple:
+  a file path relative to a locale's directory, an ID, and some content. For
+  example `("./tor-browser.ftl", "my-id", "my-id =\\n .label=Content")`.
+  When a string is translated the file path and ID stay the same, whilst the
+  translatable part of the content can vary.
++ Reference files. These are the en-US source Fluent files that contain the
+  *manual* string changes made by a developer. For most migrations, there is
+  only one reference file.
++ Migration recipe. A collection of instructions that take some string inputs
+  and transforms them into new strings. These are meant to mirror the manual
+  changes that were made in the reference files, in a way that can be applied
+  to any locale.
++ Translation repository. This refers to a local copy of the `translation`
+  repository (https://gitlab.torproject.org/tpo/translation). This repository
+  contains a different branch for different collections of strings. For
+  Tor Browser we usually use `tor-browser`, `base-browser` and
+  `fenix-torbrowserstringsxml`. Each branch will contain an `en-US` directory,
+  which contains the "source" files for translators to translate. These source
+  files are taken from the `tor-browser` repository. The branches also contain
+  a directory for each locale that is to be translated, in a file structure that
+  reflects the source `en-US` directory. This is where the migration script will
+  write changes to the translated files.
 
-So we also write a migration recipe in
-`./l10n_migrations/bug-xxxx-my-migration-recipe.py`
-which includes a `migrate(ctx)` method. This method takes the old strings and
-create new Messages or Terms for "updated.ftl" using `ctx.add_transforms`. These
-should match what was already done manually in "updated.ftl".
 
-Then we copy the en-US file to our local translation repository, say at
-`/home/user/translation/en-US/updated.ftl`. The en-US file is needed as a
-reference during migration to know where in the new file the new Messages or
-Terms should be placed. Moreover, the migration can be verified against the
-en-US file to ensure it is working as intended.
+## Usage
 
-Then we run the migration for individual locales:
+You will likely want to run this with `./mach python`, so that it uses the
+`fluent.migrate` and `fluent.syntax` packages provided with the `tor-browser`
+repository.
+
+For example, you might run this as
 
 ```
-    python migrate_l10n.py --translation-git /home/user/translation --locales 'es-ES sr' l10n_migrations.bug-xxxx-my-migration-recipe
+    ./mach python migrate.py --translation-git /home/user/translation --locales 'es-ES sr' ./migrations/bug-xxxx-my-migration-recipe.py
 ```
 
-This will first run a mock migration using the en-US localization files. This is
-to help ensure that the migration will work as intended. I.e. if we ran the
-migration recipe for en-US, using it as both the source of old strings and as a
-reference, then each transformation using these old strings should produce a
-Message or Term that is identical to the one in the reference file.
+Here `/home/user/translation` is a local translation repository with one of its
+branches checked out (see below). This will run the migration recipe given in
+`./migrations/bug-xxxx-my-migration-recipe.py` for the `es-ES` and `sr`
+sub-directories within the `translation/` directory.
 
-Then this will run `migrate(ctx)` for the es-ES and sr locales. Some of the
-transformations will not be completed for a locale if that locale does not
-contain a translated version of the old strings the transformation requires
-(because there is no string to copy).
+### Changing the reference location
 
-If one of the old strings is from a `.dtd` or `.properties` file, this will
-check whether they are marked as translated on weblate using its API. This
-prevents copying "placeholder" en-US values into the locale's fluent files.
+You can optionally run the script with `--reference_directory` to read the
+reference en-US files from somewhere other than the `translation` directory.
+This can be useful  when your manual changes have yet to reach the translation
+repository, so you want to point the script to read the reference from the
+`tor-browser` working directory instead. E.g.
 
-Any warnings or errors will be logged to stderr in the console.
+```
+    --reference-directory /home/user/tor-browser/toolkit/locales/en-US/toolkit/global/
+```
+
+
+## Recipes
+
+Migration recipes are meant to mirror some manual change that was made to the
+en-US source strings, in a way that can be reproduced in another locale.
+
+### Example 1
+
+For this example, a developer wants to remove the string content from
+`old-strings.properties`:
+
+```
+my.old.string=Some string content
+my.old.title=This is the tooltip
+```
+
+And add them to `tor-browser.ftl` instead, as:
+
+```
+my-new-string = Some string content
+    .title = This is the tooltip
+```
+
+For the en-US source strings, the developer simply deletes the two lines in the
+`old-strings.properties` file (or the whole file, if these are the last two).
+And they manually write in the content of `my-new-string` to `tor-browser.ftl`.
+These manual changes will then eventually reach the `translation` repository to
+be translated.
+
+But to save translators making the same manual changes, or re-translating, the
+developer can write a migration recipe that mirror's their manual changes. In
+this case, this migration recipe would contain:
+
+```
+ctx.add_transforms(
+    "tor-browser.ftl", # The path to write to.
+    "tor-browser.ftl", # The path to the reference file.
+    transforms_from(
+        \"\"\"
+my-new-string = { COPY(path, "my.old.string") }
+    .title = { COPY(path, "my.old.title") }
+\"\"\",
+        path="old-strings.properties", # The path to read from.
+    ),
+)
+```
+
+Note, the first argument of `add_transforms` is the target path, which is
+`tor-browser.ftl` in this case. This means that the migration script will try to
+write the resulting `my-new-string` to the locale's `./tor-browser.ftl` file.
+For example, to `translation/es-ES/tor-browser.ftl`.
+
+The second argument refers to the *reference* path. In almost all cases the
+reference file will have the same name and path as the target path, but it has a
+different role. Here the path is relative to the reference directory, which
+contains the en-US source files. In this case, by default this means that
+`translation/en-US/tor-browser.ftl` will act as the reference, but the exact
+path could be changed with the `--reference-directory` argument. The existing
+`my-new-string` will be read from this file to confirm that the migration
+recipe produces the correct result.
+
+The file `old-strings.properties` is used as an input. This means that the
+existing strings in the locale's `old-strings.properties` file will be read to
+construct the new string `my-new-string`. For example, it will be read from
+`translation/es-ES/old-strings.properties`.
+
+The `COPY` acts like a Fluent function, which asks the transformation to copy
+the content from the translated string directly.
+
+### Example 2
+
+For this example, a developer wants to swap a string in `tor-browser.ftl` from:
+
+```
+my-old-string2 = Some string content
+    .title = This is the tooltip
+```
+
+to
+
+```
+my-new-string2 =
+    .label = Some string content
+    .title = This is the tooltip
+```
+
+The developer removes `my-old-string2` from the file and adds `my-new-string2`
+instead. This manual change will then eventually reach the `translation`
+repository for `my-new-string2` to be translated.
+
+The developer also writes a migration recipe to mirror this change:
+
+```
+ctx.add_transforms(
+    "tor-browser.ftl",
+    "tor-browser.ftl",
+    transforms_from(
+        \"\"\"
+my-new-string2 =
+    .label = { COPY_PATTERN(path, "my-old-string2") }
+    .title = { COPY_PATTERN(path, "my-old-string2.title") }
+\"\"\",
+        path="tor-browser.ftl",
+    ),
+)
+```
+
+Note that in this case the locale's `tor-browser.ftl` file is being used as both
+the input and the output.
+
+Note that for a Fluent-to-Fluent migration we use `COPY_PATTERN` rather than
+`COPY`. The second argument provides an ID that either point's to the
+Fluent Messages' value (roughly, the text content) by giving the Message's ID,
+or one of its attributes by adding a corresponding suffix to the ID.
+
+### Other examples
+
+Migration recipes can support a lot more, including more advanced
+transformations like removing or replacing HTML tags from content. There are
+some existing recipes in the `./migrations` directory that can be used as a
+reference.
+
+
+## translation directory
+
+In most cases, you will just need to check out a `translation` branch that
+contains the translated strings used by the migration recipe, as well as the
+Fluent file that will be written to. Usually, this will be a branch based on
+the origin/upstream `tor-browser` or `base-browser` branches.
+
+However, if the migration recipe requires source files that are in a different
+branch to the Fluent file that is being written to, then you will need to
+manually copy those files into the working directory before running the script.
+
+
+## Script procedure
+
+### Test en-US migration
+
+The script will first run a test migration using the en-US strings. It will run
+the migration using the files from `translation/en-US/` as the input. In the
+previous example 1, this will read `my.old.string` and `my.old.title` from
+`translation/en-US/old-strings.properties`. And in example 2, this will read
+`my-old-string2` from `translation/en-US/tor-browser.ftl`.
+
+If any of the input strings are missing, this indicates that there is likely a
+mistake in the recipe or the translation directory and the script will be
+aborted without running the migration for the other locales.
+
+Otherwise, it then compares the result of this migration with the strings found
+in the reference files. In the previous example 1, this will read the entry for
+`my-new-string` from `<reference-dir>/tor-browser.ftl`, where `<reference-dir>`
+is `translation/en-US/` unless `--reference-directory` is given to use a
+different directory. If the reference entry for `my-new-string` differs from the
+entry that the recipe automatically produced, then this indicates that there is
+a mistake in the recipe and the script will be aborted.
+
+### Locale migrations
+
+If the test migration passed, then the recipe will be re-run for each of the
+specified locales. If the locale is missing some strings or files that a single
+transformation requires, then that transformation will be skipped and the
+corresponding entry won't be written to the Fluent file. Otherwise the new
+entries will be appended to the existing Fluent files.
+
+#### Non-Fluent strings and Weblate queries
+
+Some non-Fluent formats, like DTD and properties, will fill untranslated strings
+with the source en-US content. And we don't want these untranslated strings to
+be used for migrations. There is no metadata within the files to determine this,
+and simply being the same as the en-US string is not a reliable indicator.
+
+So for these strings the script will additionally make a remote query to the
+Weblate API to fetch the metadata that indicates whether the string is
+considered translated or not. If a transformation requires a string that is
+marked as untranslated, it will be skipped.
+
+NOTE: The Weblate metadata is not always reliable, so you should still manually
+review the changes.
+
+NOTE: When testing before, the Weblate API was limited to 100 requests per day
+per IP address for unauthorised users. If this becomes an issue you may want to
+run the migrations in limited batches of locales with new IP addresses. Or, you
+can create a Weblate account and change this script to pass an authorisation
+token with the request.
 """
 
 import argparse
