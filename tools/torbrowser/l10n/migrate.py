@@ -63,15 +63,19 @@ import logging
 import os
 import sys
 import urllib.request
+from collections.abc import Iterator
+from typing import Any, NamedTuple, Protocol, cast
 
 from fluent.migrate.context import MigrationContext
 from fluent.migrate.errors import EmptyLocalizationError, UnreadableReferenceError
 from fluent.syntax import ast, parse, serialize
 
 
-def in_red(string):
+def in_red(string: str) -> str:
     """
     Wrap a string so that it is shown as red in the console.
+    :param string: The string to wrap.
+    :returns: The wrapped string.
     """
     return f"\x1b[1;91m{string}\x1b[0m"
 
@@ -359,12 +363,18 @@ class TorBrowserMigrationContext(MigrationContext):
     Extension which adds some extra methods to use for tor-browser.
     """
 
-    def __init__(self, locale, reference_dir, localization_dir):
+    def __init__(self, locale: str, reference_dir: str, localization_dir: str) -> None:
         super().__init__(locale, reference_dir, localization_dir)
 
-    def _fluent_keys(self, resource):
+    def _fluent_keys(self, resource: ast.Resource) -> Iterator[str]:
+        """
+        Generate all the keys within a Fluent resource, where a key is an
+        identifier for a Term, a Message, a Term attribute, or a Message
+        attribute.
+        :yield: The Fluent keys.
+        """
         # ast.Resource, want to extract all Message and Term identifiers, as
-        # well as their
+        # well as their attributes.
         for entry in resource.body:
             if not isinstance(entry, (ast.Term, ast.Message)):
                 continue
@@ -376,12 +386,13 @@ class TorBrowserMigrationContext(MigrationContext):
             for attr in entry.attributes:
                 yield f"{key}.{attr.id.name}"
 
-    def tb_get_available_strings(self):
+    def tb_get_available_strings(self) -> set[tuple[str, str]]:
         """
-        Return all the (path, string_id) pairs for all loaded localization
+        Get all the (path, string_id) pairs for all loaded localization
         resources.
+        :returns: The string pairs.
         """
-        all_strings = set()
+        all_strings: set[tuple[str, str]] = set()
         # ctx.localization_resources is a dict containing all the loaded
         # localization_resources that have been added during add_transforms.
         # { localization_path: resource }
@@ -390,14 +401,13 @@ class TorBrowserMigrationContext(MigrationContext):
                 all_strings.update((path, key) for key in self._fluent_keys(resource))
             else:
                 # dictionary of { identifies: value } in legacy resource.
-                # For tor-browser,
-                # Only include references that differ from the en-US strings.
                 all_strings.update((path, key) for key in resource.keys())
         return all_strings
 
-    def tb_get_missing_resources(self):
+    def tb_get_missing_resources(self) -> set[str]:
         """
-        Return the missing localization resources.
+        Get the missing localization resources.
+        :returns: The set of resource paths.
         """
         return set(
             path
@@ -406,23 +416,49 @@ class TorBrowserMigrationContext(MigrationContext):
             if path not in self.localization_resources
         )
 
-    def tb_get_transform(self, target_path, transform_id):
+    def tb_get_transform(
+        self, target_path: str, transform_id: str
+    ) -> ast.Message | ast.Term | None:
         """
-        Find the transformation node with the given id for the given path.
+        Find a transformation node.
+        :param target_path: The target path of the transformation.
+        :param transform_id: The ID of the transformation, AKA the string ID.
+        :returns: The matching transformation node, or `None` if there is no
+          match.
         """
         for node in self.transforms[target_path]:
             if node.id.name == transform_id:
                 return node
         return None
 
-    def tb_get_reference_entry(self, target_path, entry_id):
+    def tb_get_reference_entry(
+        self, target_path: str, transform_id: str
+    ) -> ast.Message | ast.Term | None:
         """
-        Find the reference node that would be used for the given id and path.
+        Find a reference Message or Term for a given transformation.
+        :param target_path: The target path of the transformation.
+        :param transform_id: The ID of the transformation, AKA the string ID.
+        :returns: The matching reference entry for the transformation, or `None`
+          if there is no match.
         """
         for entry in self.reference_resources[target_path].body:
-            if isinstance(entry, (ast.Term, ast.Message)) and entry.id.name == entry_id:
+            if (
+                isinstance(entry, (ast.Term, ast.Message))
+                and entry.id.name == transform_id
+            ):
                 return entry.clone()
         return None
+
+
+class RecipeModule(Protocol):
+    def migrate(self, context: MigrationContext) -> None: ...
+
+
+class FluentSyntaxError(NamedTuple):
+    path: str
+    message: str
+    line: int
+    sample: str
 
 
 class TorBrowserMigrator:
@@ -432,12 +468,22 @@ class TorBrowserMigrator:
 
     def __init__(
         self,
-        en_US_ref_dir,
-        en_US_target_dir,
-        locale_dirs,
-        recipe_module,
-        weblate_metadata,
-    ):
+        en_US_ref_dir: str,
+        en_US_target_dir: str,
+        locale_dirs: dict[str, str],
+        recipe_module: RecipeModule,
+        weblate_metadata: WeblateMetadata,
+    ) -> None:
+        """
+        :param en_US_ref_dir: The path to the en-US directory where reference
+          Fluent entries for the recipe can be found.
+        :param en_US_target_dir: The path to the en-US directory where existing
+          strings used by the recipe can be found.
+        :param locale_dirs: The collection of locales to run the migrations for.
+        :param recipe_module: The python module that contains the recipe
+          instructions.
+        :param weblate_metadata: The object to fetch Weblate metadata from.
+        """
         self.logger = logging.getLogger("tor-browser-migrator")
         self.logger.setLevel(logging.INFO)
         self.en_US_ref_dir = en_US_ref_dir
@@ -446,14 +492,14 @@ class TorBrowserMigrator:
         self.recipe_module = recipe_module
         self.weblate_metadata = weblate_metadata
 
-    def run(self):
+    def run(self) -> None:
         """
         Run the migration.
         """
         if not self._check_en_US_resources():
             sys.exit(1)
 
-        fluent_errors = []
+        fluent_errors: list[FluentSyntaxError] = []
         for locale, locale_dir in self.locale_dirs.items():
             if locale == "en-US":
                 print("", file=sys.stderr)
@@ -471,12 +517,18 @@ class TorBrowserMigrator:
                 "Migration does not need to be run again, but the following "
                 "syntax errors should be fixed manually.\n"
                 + "\n".join(
-                    f"{in_red(full_path)}: line {line}: {message}: [[{sample}]]"
-                    for full_path, message, line, sample in fluent_errors
+                    f"{in_red(err.path)}: line {err.line}: {err.message}: [[{err.sample}]]"
+                    for err in fluent_errors
                 )
             )
 
-    def _run_locale(self, locale, locale_dir):
+    def _run_locale(self, locale: str, locale_dir: str) -> list[FluentSyntaxError]:
+        """
+        Run a migration for a given locale.
+        :param locale: The name of the locale.
+        :param locale_dir: The path to the locale's directory.
+        :returns: A list of Fluent errors in the written files.
+        """
         print("\n\n", file=sys.stderr)
         self.logger.info(f"Migrating '{in_red(locale)}' locale\n")
 
@@ -513,7 +565,7 @@ class TorBrowserMigrator:
 
         available_strings = ctx.tb_get_available_strings()
         wrote_file = False
-        errors = []
+        errors: list[FluentSyntaxError] = []
 
         for target_path, reference in ctx.reference_resources.items():
             translated_ids = [
@@ -577,7 +629,7 @@ class TorBrowserMigrator:
                         break
                     # Strings in legacy formats might have an entry in the file
                     # that is just a copy of the en-US strings.
-                    # For these we want to check the weblate metadata to ensure
+                    # For these we want to check the Weblate metadata to ensure
                     # it is a translated string.
                     if not path.endswith(
                         ".ftl"
@@ -591,7 +643,7 @@ class TorBrowserMigrator:
                             f"Skipping transform {target_path}:{transform_id} "
                             f"for '{locale}' locale because the string "
                             f"{path}:{string_id} has not been translated on "
-                            "weblate."
+                            "Weblate."
                         )
                         break
                 if not can_transform:
@@ -618,7 +670,9 @@ class TorBrowserMigrator:
             wrote_file = True
             # Collect any fluent parsing errors from the newly written file.
             errors.extend(
-                (full_path, message, line, sample)
+                FluentSyntaxError(
+                    path=full_path, message=message, line=line, sample=sample
+                )
                 for message, line, sample in self._fluent_errors(full_content)
             )
 
@@ -626,22 +680,37 @@ class TorBrowserMigrator:
             self.logger.info(f"No files written for '{locale}' locale.")
         return errors
 
-    def _fluent_errors(self, fluent):
+    def _fluent_errors(self, fluent_content: str) -> Iterator[tuple[str, int, str]]:
         """
-        Verify that the given fluent string can be parsed correctly.
+        Parse the given content as a Fluent file and generate all the syntax
+        errors.
+        :param fluent_content: The file content to parse.
+        :yield: Each encountered Fluent syntax error as a triple of the message,
+        the line number, and a sample.
         """
-        resource = parse(fluent)
+        resource = parse(fluent_content)
         for entry in resource.body:
             if not isinstance(entry, ast.Junk):
                 continue
             for annotation in entry.annotations:
-                line = fluent[0 : annotation.span.start].count("\n") + 1
-                sample_start = max(annotation.span.start - 15, 0)
-                sample = "…" + fluent[sample_start : sample_start + 30] + "…"
-                yield annotation.message, line, sample
+                start = 0
+                if annotation.span:
+                    start = annotation.span.start
+                line = fluent_content[0:start].count("\n") + 1
+                sample_start = max(start - 15, 0)
+                sample = "…" + fluent_content[sample_start : sample_start + 30] + "…"
+                yield annotation.message or "", line, sample
 
-    def _get_migration_context(self, locale, locale_dir):
-        prev_missing_resources = set()
+    def _get_migration_context(
+        self, locale: str, locale_dir: str
+    ) -> TorBrowserMigrationContext:
+        """
+        Create a new migration context.
+        :param locale: The name of the locale.
+        :param locale_dir: The directory path for the locale.
+        :returns: The new context.
+        """
+        prev_missing_resources: set[str] = set()
         while True:
             ctx = TorBrowserMigrationContext(locale, self.en_US_ref_dir, locale_dir)
 
@@ -698,13 +767,21 @@ class TorBrowserMigrator:
             # before localization_resources was fully populated.
             prev_missing_resources = missing_resources
 
-    def _remove_if_empty(self, path):
+    def _remove_if_empty(self, path: str) -> None:
+        """
+        Remove a file if it is empty.
+        :param path: The path to remove.
+        """
         if os.stat(path).st_size:
             self.logger.warning(f"{path} is no longer empty. Not deleting.")
             return
         os.remove(path)
 
-    def _check_en_US_resources(self):
+    def _check_en_US_resources(self) -> bool:
+        """
+        Verify that the migration recipe works as expected using en-US strings.
+        :returns: Whether the recipe worked as expected.
+        """
         ctx = TorBrowserMigrationContext(
             "en-US", self.en_US_ref_dir, self.en_US_target_dir
         )
@@ -783,7 +860,7 @@ class TorBrowserMigrator:
         return not have_error
 
 
-def main(recipe_path, translation_dir, locales, ref_dir):
+def main(recipe_path: str, translation_dir: str, locales: str, ref_dir: str) -> None:
     """
     The main method.
     :param recipe_path: The path to the recipe script.
@@ -796,10 +873,12 @@ def main(recipe_path, translation_dir, locales, ref_dir):
         sys.exit(1)
 
     recipe_module_spec = importlib.util.spec_from_file_location("_recipe", recipe_path)
-    recipe_module = importlib.util.module_from_spec(recipe_module_spec)
+    recipe_module = cast(
+        RecipeModule, importlib.util.module_from_spec(recipe_module_spec)
+    )
     recipe_module_spec.loader.exec_module(recipe_module)
 
-    def check_dir(path):
+    def check_dir(path: str) -> str:
         if not os.path.isdir(path):
             print(f"{in_red(path)} is not a directory.", file=sys.stderr)
             sys.exit(1)
@@ -824,7 +903,7 @@ def main(recipe_path, translation_dir, locales, ref_dir):
 
 parser = argparse.ArgumentParser(
     description="Run a tor-browser localization migration. "
-    "See documentation within migrate_l10n.py."
+    "See documentation within migrate.py."
 )
 parser.add_argument(
     "--translation-git",
@@ -835,8 +914,8 @@ parser.add_argument(
 parser.add_argument(
     "--locales",
     required=True,
-    metavar="<locale1> <locale2> ...",
-    help="Set of locales to restrict the migration to, separated by space.",
+    metavar="'<locale1> <locale2> ...'",
+    help="Set of locales to run the migration for, separated by space.",
 )
 parser.add_argument(
     "--reference-directory",
