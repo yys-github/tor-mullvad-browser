@@ -709,6 +709,7 @@ let JSWINDOWACTORS = {
       },
     },
     messageManagerGroups: ["browsers"],
+    safeForUntrustedWebProcess: true,
   },
 
   PageAssist: {
