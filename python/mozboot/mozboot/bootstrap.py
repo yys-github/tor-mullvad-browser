@@ -53,10 +53,6 @@ Tor Browser for Android frontends, or the GeckoView Java API. They are unsuitabl
 for those working on C++ code. For more information see:
 https://firefox-source-docs.mozilla.org/contributing/build/artifact_builds.html.
 
-# Note to Tor Browser developers
-
-This is still highly experimental. Expect bugs!
-
 Please choose the version of Tor Browser you want to build (see note above):
 %s
 Your choice: """
