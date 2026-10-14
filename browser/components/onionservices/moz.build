@@ -4,5 +4,6 @@ MOZ_SRC_FILES += [
     "OnionAliasStore.sys.mjs",
     "OnionLocationChild.sys.mjs",
     "OnionLocationParent.sys.mjs",
+    "OnionLocationWatch.sys.mjs",
     "TorRequestWatch.sys.mjs",
 ]
