@@ -60,6 +60,7 @@ from mozpack.files import FileFinder, JarFinder, TarFinder
 from mozpack.mozjar import JarReader, JarWriter
 from mozpack.packager.unpack import UnpackFinder
 
+from mozbuild import tbbutils
 from mozbuild.artifact_builds import JOB_CHOICES
 from mozbuild.artifact_cache import ArtifactCache
 from mozbuild.dirutils import ensureParentDir, mkdir
@@ -1795,6 +1796,23 @@ https://firefox-source-docs.mozilla.org/contributing/vcs/mercurial_bundles.html
         )
         return 1
 
+    def install_from_tor_project_artifacts(self, distdir):
+        version = self._substs["MOZ_APP_VERSION"]
+        urls = tbbutils.find_artifact_urls(self._job, version, self._artifact_job)
+        if not urls:
+            raise ValueError(f"Unable to fetch list of artifacts for job {self._job}")
+        for url in urls:
+            self.log(
+                logging.INFO,
+                "artifact",
+                {"url": url},
+                "Installing Tor Project artifact from {url}",
+            )
+            if self.install_from_url(url, distdir):
+                return 1
+
+        return 0
+
     def install_from_recent(self, distdir):
         hg_pushheads = self._find_pushheads()
         return self._install_from_hg_pushheads(hg_pushheads, distdir)
@@ -1905,7 +1923,7 @@ https://firefox-source-docs.mozilla.org/contributing/vcs/mercurial_bundles.html
             if var in os.environ:
                 return self.install_from_task(os.environ[var], distdir)
 
-        return self.install_from_recent(distdir)
+        return self.install_from_tor_project_artifacts(distdir)
 
     def clear_cache(self):
         self.log(logging.INFO, "artifact", {}, "Deleting cached artifacts and caches.")

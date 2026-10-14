@@ -4,9 +4,14 @@ from unittest.mock import MagicMock, patch
 
 import mozunit
 
+from mozbuild.artifacts import LinuxArtifactJob
 from mozbuild.tbbutils import (
+    TOR_PROJECT_BROWSER_PREFIX,
+    TOR_PROJECT_TOOLCHAINS_URL,
+    find_artifact_urls,
     get_artifact_index,
     get_artifact_path,
+    get_artifacts_dir_url,
     list_files_http,
 )
 
@@ -140,6 +145,8 @@ class TestListFilesHttp(unittest.TestCase):
         html = b"""
         <html><body>
         <a href="../">Parent</a>
+        <a href="?C=N;O=D">Name</a>
+        <a href="/nightly-builds/toolchains/">Up</a>
         <a href="file1.zip">file1</a>
         <a href="file2.zip">file2</a>
         </body></html>
@@ -171,6 +178,59 @@ class TestListFilesHttp(unittest.TestCase):
                 "tor-expert-bundle-aar/tor-expert-bundle.aar",
             ],
         )
+
+
+class TestTorProjectArtifacts(unittest.TestCase):
+    def test_get_artifacts_dir_url_for_each_job(self):
+        expected_targets = {
+            "android-arm-opt": "android-armeabi-v7a",
+            "android-aarch64-opt": "android-arm64-v8a",
+            "android-x86_64-debug": "android-x86_64",
+            "linux64-opt": "linux-x86_64",
+            "linux64-aarch64-opt": "linux-aarch64",
+            "macosx64-opt": "macos-x86_64",
+            "macosx64-aarch64-debug": "macos-aarch64",
+            "win32-opt": "windows-i686",
+            "win64-debug": "windows-x86_64",
+        }
+        for job, target in expected_targets.items():
+            with self.subTest(job=job):
+                self.assertEqual(
+                    get_artifacts_dir_url(job, "140.0"),
+                    f"{TOR_PROJECT_TOOLCHAINS_URL}/{TOR_PROJECT_BROWSER_PREFIX}-140.0/{target}",
+                )
+
+    def test_get_artifacts_dir_url_unknown_job(self):
+        with self.assertRaises(ValueError):
+            get_artifacts_dir_url("freebsd64-opt", "140.0")
+
+    @patch("mozbuild.tbbutils.list_files_http")
+    def test_find_artifact_urls(self, mock_list_files_http):
+        mock_list_files_http.return_value = [
+            "mozharness.zip",
+            "target.common.tests.tar.zst",
+            "target.mochitest.tests.tar.zst",
+            "target.tar.xz",
+            "target.xpt_artifacts.zip",
+        ]
+
+        urls = find_artifact_urls("linux64-opt", "140.0", LinuxArtifactJob())
+
+        base = f"{TOR_PROJECT_TOOLCHAINS_URL}/{TOR_PROJECT_BROWSER_PREFIX}-140.0/linux-x86_64"
+        mock_list_files_http.assert_called_once_with(f"{base}/")
+        self.assertEqual(
+            urls,
+            [
+                f"{base}/target.common.tests.tar.zst",
+                f"{base}/target.tar.xz",
+                f"{base}/target.xpt_artifacts.zip",
+            ],
+        )
+
+    @patch("mozbuild.tbbutils.list_files_http", return_value=["target.tar.xz"])
+    def test_find_artifact_urls_missing_tests(self, _):
+        with self.assertRaises(ValueError):
+            find_artifact_urls("linux64-opt", "140.0", LinuxArtifactJob())
 
 
 if __name__ == "__main__":
