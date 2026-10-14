@@ -18,7 +18,7 @@ def list_files_http(url):
 
     links = []
     for href in re.findall(r'<a href="([^"]+)"', html):
-        if href == "../":
+        if href == "../" or href.startswith(("?", "/")):
             continue
 
         if "tor-expert-bundle-aar" in href:
@@ -129,3 +129,45 @@ def get_artifact_path(url, artifact, target, prefix="", log=lambda *args, **kwar
     matches = filter_files(files_per_os, target.cpu)
 
     return f"{url}/{artifact}/{matches[0]}" if matches else None
+
+
+TOR_PROJECT_TOOLCHAINS_URL = (
+    "https://nightlies.tbb.torproject.org/nightly-builds/toolchains"
+)
+TOR_PROJECT_BROWSER_PREFIX = "tb"
+
+# Mozilla job name prefix -> Tor Project toolchain target. Order matters: more
+# specific prefixes must come before the prefixes they start with.
+TOR_PROJECT_TOOLCHAIN_TARGETS = (
+    ("android-arm", "android-armeabi-v7a"),
+    ("android-aarch64", "android-arm64-v8a"),
+    ("android-x86_64", "android-x86_64"),
+    ("linux64-aarch64", "linux-aarch64"),
+    ("linux64", "linux-x86_64"),
+    ("macosx64-aarch64", "macos-aarch64"),
+    ("macosx64", "macos-x86_64"),
+    ("win32", "windows-i686"),
+    ("win64", "windows-x86_64"),
+)
+
+
+def get_artifacts_dir_url(job, version):
+    for prefix, target in TOR_PROJECT_TOOLCHAIN_TARGETS:
+        if job.startswith(prefix):
+            return f"{TOR_PROJECT_TOOLCHAINS_URL}/{TOR_PROJECT_BROWSER_PREFIX}-{version}/{target}"
+    raise ValueError(f"No Tor Project toolchain artifacts for {version}, {job}")
+
+
+def find_artifact_urls(job, version, artifact_job):
+    """
+    Return the URLs of the artifacts available for ``job`` that
+    ``artifact_job`` (a mozbuild.artifacts.ArtifactJob) wants to install.
+    """
+    url = get_artifacts_dir_url(job, version)
+    artifacts = [
+        {"name": f"public/build/{name}"} for name in list_files_http(f"{url}/")
+    ]
+    return [
+        f"{url}/{artifact.rsplit('/', 1)[-1]}"
+        for artifact in artifact_job.find_candidate_artifacts(artifacts)
+    ]
