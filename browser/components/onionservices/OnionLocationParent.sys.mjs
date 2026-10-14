@@ -2,6 +2,8 @@
 
 import { TorStrings } from "moz-src:///toolkit/modules/TorStrings.sys.mjs";
 
+import { BrowserUtils } from "resource://gre/modules/BrowserUtils.sys.mjs";
+
 // Prefs
 
 // We keep the "prioritizeonions" name, even if obsolete, in order to
@@ -36,36 +38,71 @@ export class OnionLocationParent extends JSWindowActorParent {
     switch (aMsg.name) {
       case "OnionLocation:Set": {
         let browser = this.browsingContext.embedderElement;
-        OnionLocationParent.setOnionLocation(browser);
+        OnionLocationParent.setOnionLocationFallback(browser, aMsg);
+
+        // tor-browser #40100
+        // Wait for the page to fully load before showing the notification.
+        // This prevents redirects that occur before onPageShow from causing it to disappear.
+        // This could be handled more elegantly by changing the notification's "appear once and never again behaviour".
+        // Sites that redirect after the onPageShow event are not affected and will therefore cause the notification to disappear.
+        // https://gitlab.torproject.org/tpo/applications/tor-browser/-/merge_requests/2176#note_3459271
+        OnionLocationParent.showNotification(browser);
         break;
       }
+    }
+  }
+
+  // Maintains compatibility with <meta http-equiv="onion-location">
+  static setOnionLocationFallback(browser, aMsg) {
+    let onionLocation;
+    try {
+      onionLocation = new URL(aMsg.data.uri);
+    } catch (e) {
+      return;
+    }
+
+    if (
+      browser &&
+      !browser._onionLocation &&
+      OnionLocationParent.validateOnionV3(onionLocation)
+    ) {
+      OnionLocationParent.setOnionLocation(browser, onionLocation);
     }
   }
 
   static init(document) {
     document
       .getElementById(ONIONLOCATION_BOX_ID)
-      .addEventListener("click", event => this.buttonClick(event));
+      .addEventListener("click", event => this.openOnionLink(event));
   }
 
-  static buttonClick(event) {
-    if (event.button !== 0) {
+  static openOnionLink(event) {
+    const win = event.target.documentGlobal;
+    const browser = win.gBrowser?.selectedBrowser;
+
+    if (!browser?._onionLocation || event.button > 1) {
       return;
     }
-    const win = event.target.documentGlobal;
-    if (win.gBrowser) {
-      const browser = win.gBrowser.selectedBrowser;
-      OnionLocationParent.redirect(browser);
-    }
-  }
 
-  static redirect(browser) {
-    let windowGlobal = browser.browsingContext.currentWindowGlobal;
-    let actor = windowGlobal.getActor("OnionLocation");
-    if (actor) {
-      actor.sendAsyncMessage("OnionLocation:Refresh", {});
+    const where = BrowserUtils.whereToOpenLink(event);
+    const triggeringPrincipal =
+      Services.scriptSecurityManager.getSystemPrincipal();
+
+    if (where == "current") {
+      browser.webNavigation.stop(Ci.nsIWebNavigation.STOP_ALL);
       OnionLocationParent.setDisabled(browser);
     }
+
+    const onionUrl = browser._onionLocation;
+    const docUrl = new URL(browser.browsingContext.currentURI.asciiSpec);
+
+    if (docUrl.hash && docUrl.hash != onionUrl.hash) {
+      onionUrl.hash = docUrl.hash;
+    }
+
+    win.openLinkIn(onionUrl.href, where, {
+      triggeringPrincipal,
+    });
   }
 
   static onStateChange(browser) {
@@ -73,8 +110,8 @@ export class OnionLocationParent extends JSWindowActorParent {
     OnionLocationParent.hideNotification(browser);
   }
 
-  static setOnionLocation(browser) {
-    browser._onionLocation = true;
+  static setOnionLocation(browser, onionLocation) {
+    browser._onionLocation = onionLocation;
     let tabBrowser = browser.getTabBrowser();
     if (tabBrowser && browser === tabBrowser.selectedBrowser) {
       OnionLocationParent.updateOnionLocationBadge(browser);
@@ -90,7 +127,7 @@ export class OnionLocationParent extends JSWindowActorParent {
 
   static showNotification(browser) {
     const mustShow = Services.prefs.getBoolPref(NOTIFICATION_PREF, true);
-    if (!mustShow) {
+    if (!mustShow || !browser._onionLocation) {
       return;
     }
 
@@ -100,8 +137,8 @@ export class OnionLocationParent extends JSWindowActorParent {
     const mainAction = {
       label: NOTIFICATION_OK_LABEL,
       accessKey: NOTIFICATION_OK_ACCESSKEY,
-      callback() {
-        OnionLocationParent.redirect(browser);
+      callback(obj) {
+        OnionLocationParent.openOnionLink(obj.event);
       },
     };
 
@@ -164,9 +201,15 @@ export class OnionLocationParent extends JSWindowActorParent {
   static updateOnionLocationBadge(browser) {
     if (browser._onionLocation) {
       OnionLocationParent.setEnabled(browser);
-      OnionLocationParent.showNotification(browser);
     } else {
       OnionLocationParent.setDisabled(browser);
     }
+  }
+
+  static validateOnionV3(url) {
+    if (!["http:", "https:"].includes(url.protocol)) {
+      return false;
+    }
+    return /(^|\.)[a-z2-7]{56}\.onion$/i.test(url.hostname);
   }
 }
