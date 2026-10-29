@@ -125,6 +125,7 @@ body:not(.show-tor-check) #tor-check {
   border-color: var(--border-color);
 }
 
+/* FIXME: Maybe replace :has (tor-browser#45420) */
 /* stylelint-disable-next-line stylelint-plugin-mozilla/no-has-selector */
 #search-form:has(#search-input:focus-visible) {
   outline: var(--focus-outline);
@@ -276,6 +277,7 @@ body:not(.show-survey) #survey {
     border-color: transparent;
   }
 
+  /* FIXME: Maybe replace :has (tor-browser#45420) */
   /* stylelint-disable-next-line stylelint-plugin-mozilla/no-has-selector */
   #search-form:has(#search-input:focus-visible) {
     /* Use a light-themed inner-border to contrast with the dark-themed
@@ -283,6 +285,7 @@ body:not(.show-survey) #survey {
     border-color: var(--focus-outline-color-tor-light);
   }
 
+  /* FIXME: Maybe replace :has (tor-browser#45420) */
   /* stylelint-disable-next-line stylelint-plugin-mozilla/no-has-selector */
   #search-form.onionized-search:has(#search-input:not(:focus-visible)) {
     box-shadow:
