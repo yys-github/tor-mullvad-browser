@@ -32,10 +32,7 @@ pub fn parse_client_transport_plugin(line: &[u8]) -> Result<PluggableTransport, 
 }
 
 fn get_transports(c: &Captures) -> Result<Vec<String>, ControllerError> {
-    let transports = c
-        .name("transport")
-        .ok_or(ControllerError::KeyNotFound(String::from("transport")))?
-        .as_bytes()
+    let transports = c["transport"]
         .split(|b| *b == b',')
         .map(|t| String::from_utf8_lossy(t).into_owned())
         .collect::<Vec<_>>();
@@ -48,20 +45,11 @@ fn get_transports(c: &Captures) -> Result<Vec<String>, ControllerError> {
 }
 
 fn parse_socks(socks_line: &Captures) -> Result<PluggableTransport, ControllerError> {
-    let address = str::from_utf8(
-        socks_line
-            .name("address")
-            .ok_or(ControllerError::KeyNotFound(String::from("address")))?
-            .as_bytes(),
-    )
-    .expect("The regex matches only ASCII characters (hence valid UTF-8)")
-    .parse()
-    .map_err(|e| ControllerError::MalformedReply(format!("{}", e)))?;
-    let plugin = match socks_line
-        .name("protocol")
-        .ok_or(ControllerError::KeyNotFound(String::from("protocol")))?
-        .as_bytes()
-    {
+    let address = str::from_utf8(&socks_line["address"])
+        .expect("The regex matches only ASCII characters (hence valid UTF-8)")
+        .parse()
+        .map_err(|e| ControllerError::MalformedReply(format!("{}", e)))?;
+    let plugin = match &socks_line["protocol"] {
         b"socks4" => ClientTransportPlugin::Socks4(address),
         b"socks5" => ClientTransportPlugin::Socks5(address),
         _ => unreachable!("We validated this with the regex"),
@@ -77,14 +65,9 @@ fn parse_exec(exec_line: &Captures) -> Result<PluggableTransport, ControllerErro
         .name("options")
         .map(|o| o.as_bytes())
         .and_then(|s| if s.is_empty() { None } else { Some(s.into()) });
-    let path = tor_unescape(
-        exec_line
-            .name("path")
-            .ok_or(ControllerError::KeyNotFound(String::from("path")))?
-            .as_bytes(),
-    )
-    .map_err(|e| ControllerError::MalformedReply(e.to_string()))?
-    .into_owned();
+    let path = tor_unescape(&exec_line["path"])
+        .map_err(|e| ControllerError::MalformedReply(e.to_string()))?
+        .into_owned();
     if path.is_empty() {
         return Err(ControllerError::MalformedReply(String::from("empty path")));
     }
