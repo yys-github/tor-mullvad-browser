@@ -1035,6 +1035,9 @@ def base_browser_version_quoted(value):
     return f'"{value[0]}"'
 
 
+set_config(
+    "BASE_BROWSER", depends(base_browser_version)(lambda v: True if v else False)
+)
 set_define("BASE_BROWSER_VERSION", base_browser_version)
 set_define("BASE_BROWSER_VERSION_QUOTED", base_browser_version_quoted)
 
