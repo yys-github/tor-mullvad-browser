@@ -547,9 +547,9 @@ var gTorCircuitPanel = {
     // bridge, or otherwise a guard.
     document.l10n.setAttributes(
       this._panelElements.newCircuitDescription,
-      nodes[0].bridgeType === null
-        ? "tor-circuit-panel-new-button-description-guard"
-        : "tor-circuit-panel-new-button-description-bridge"
+      nodes[0].isBridge
+        ? "tor-circuit-panel-new-button-description-bridge"
+        : "tor-circuit-panel-new-button-description-guard"
     );
   },
 
@@ -565,7 +565,7 @@ var gTorCircuitPanel = {
     const nameEl = nodeItem.querySelector(".tor-circuit-node-name");
     let flagSrc = null;
 
-    if (node.bridgeType === null) {
+    if (!node.isBridge) {
       const regionCode = node.regionCode;
       flagSrc = this._regionFlagSrc(regionCode);
 
