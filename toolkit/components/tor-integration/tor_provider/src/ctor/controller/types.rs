@@ -6,6 +6,7 @@
 use serde::Serialize;
 use std::net::SocketAddr;
 
+/// Information extracted from a bridge line.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Bridge {
     pub transport: Option<String>,
@@ -14,6 +15,9 @@ pub struct Bridge {
     pub args: Option<Vec<u8>>,
 }
 
+/// The definition of a handler for a pluggable transport.
+/// The conversion between 8-bit characters and 16-bit characters on Windows is
+/// not well defined.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub enum ClientTransportPlugin {
     Executable {
@@ -24,6 +28,10 @@ pub enum ClientTransportPlugin {
     Socks5(SocketAddr),
 }
 
+/// A configuration value to be used with the SETCONF command.
+/// Boolean will be converted to 1 and 0.
+/// Null can be used to reset a certain value. When building the SETCONF
+/// command, we will add `<key>`, rather than `<key>=<value>` or `<key>=`.
 #[derive(Debug, Clone)]
 pub enum ConfValue<'a> {
     Bool(bool),
@@ -33,6 +41,7 @@ pub enum ConfValue<'a> {
     Null,
 }
 
+/// A pluggable transport, with its handler and the transport it can manages.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct PluggableTransport {
     pub transports: Vec<String>,

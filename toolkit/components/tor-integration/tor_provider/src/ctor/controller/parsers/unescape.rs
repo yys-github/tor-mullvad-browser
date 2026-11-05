@@ -21,7 +21,8 @@ pub enum UnescapeError {
 }
 
 /// Adaptation of tor's unescape_string (src/lib/encoding/cstring.c).
-/// The main difference is that we allow unquoted strings.
+/// The main difference is that we allow unquoted strings, as long as they do
+/// not contain spaces.
 pub fn tor_unescape<'a>(buf: &'a [u8]) -> Result<Cow<'a, [u8]>, UnescapeError> {
     match buf.first() {
         Some(b'"') => {
