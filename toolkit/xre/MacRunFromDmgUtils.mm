@@ -32,8 +32,10 @@
 #  include "nsUpdateDriver.h"
 #endif
 
+#ifndef BASE_BROWSER_VERSION
 // Exported from toolkit/mozapps/dmgInstallHelper
-#import "dmgInstallProtocol.h"
+#  import "dmgInstallProtocol.h"
+#endif
 
 #ifndef MOZ_RUNINIT
 #  define MOZ_RUNINIT __attribute__((annotate("moz_global_var")))
