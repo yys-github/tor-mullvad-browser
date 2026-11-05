@@ -19,6 +19,20 @@ lazy_static! {
         .expect("The regex is hardcoded, it should be good.");
 }
 
+/// Parse the definition of a pluggable transport.
+/// We handle these formats (from tor's man page):
+/// - <transports> socks4 <ip:port>
+/// - <transports> socks5 <ip:port>
+/// - <transports> exec <path> [<options>]
+///
+/// Note:
+/// - each line can handle multiple transports (they are comma separated)
+/// - IPv4 and IPv6 addresses are supported. Hostnames and Unix sockets are not
+/// - we accept path with encoded strings, but tor might now. Also, the
+///   conversion between bytes and Windows paths (UTF-16ish) is not well defined
+/// - options can have spaces
+/// - tor allows to configure multiple transport plugins. This function must be
+///   called with one defition at the time
 pub fn parse_client_transport_plugin(line: &[u8]) -> Result<PluggableTransport, ControllerError> {
     if let Some(socks_line) = SOCKS_REGEX.captures(line) {
         parse_socks(&socks_line)
@@ -31,6 +45,7 @@ pub fn parse_client_transport_plugin(line: &[u8]) -> Result<PluggableTransport, 
     }
 }
 
+/// Check and split the transports
 fn get_transports(c: &Captures) -> Result<Vec<String>, ControllerError> {
     let transports = c["transport"]
         .split(|b| *b == b',')
@@ -44,6 +59,7 @@ fn get_transports(c: &Captures) -> Result<Vec<String>, ControllerError> {
     Ok(transports)
 }
 
+/// Parse the socks4/socks5 cases
 fn parse_socks(socks_line: &Captures) -> Result<PluggableTransport, ControllerError> {
     let address = str::from_utf8(&socks_line["address"])
         .expect("The regex matches only ASCII characters (hence valid UTF-8)")
@@ -60,6 +76,7 @@ fn parse_socks(socks_line: &Captures) -> Result<PluggableTransport, ControllerEr
     })
 }
 
+/// Parse the exec cases
 fn parse_exec(exec_line: &Captures) -> Result<PluggableTransport, ControllerError> {
     let options = exec_line
         .name("options")
