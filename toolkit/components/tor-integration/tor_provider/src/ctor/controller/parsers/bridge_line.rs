@@ -33,6 +33,9 @@ lazy_static! {
         .expect("The regex is hardcoded, it should be good.");
 }
 
+/// Errors we might encounter when parsing the bridge line.
+/// We have a specific type in case we want to re-use this parser for other
+/// purposes.
 #[derive(Error, Debug, Clone, PartialEq, Eq)]
 pub enum BridgeParseError {
     #[error("the bridge line has a wrong format and could not be parsed")]
@@ -47,6 +50,19 @@ pub enum BridgeParseError {
     ArgsWithoutTransport,
 }
 
+/// Parse a bridge line.
+///
+/// Supported lines are:
+/// - <address> [<fingerprint>]
+/// - transport <address> [<fingerprint>] [<optional-arguments>]
+///
+/// There is not a spec for bridge lines.
+/// The closest one is on the man page, but checking src/app/config/config.c of
+/// c-tor reveals more information such as:
+/// - "vanilla" bridges cannot have optional arguments (as they do not have a
+///   pluggable transport)
+/// - transports must be C identifiers (i.e., they can contain letters, digits
+///   and '_', but cannot start with a number).
 pub fn parse_bridge_line(value: &[u8]) -> Result<Bridge, BridgeParseError> {
     let caps = BRIDGE_REGEX
         .captures(value)
