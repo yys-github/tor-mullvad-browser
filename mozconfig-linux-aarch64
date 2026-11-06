@@ -1,12 +1,9 @@
-. $topsrcdir/browser/config/mozconfigs/mullvad-browser
+# This file is deprecated and will be removed, see tor-browser#45396.
 
-ac_add_options --target=aarch64-unknown-linux-gnu
-
-# Moz switched to lld for all Linux targets in Bug 1839739.
-ac_add_options --enable-linker=lld
-
-ac_add_options --disable-strip
-ac_add_options --disable-install-strip
-
-ac_add_options --enable-default-toolkit=cairo-gtk3
-
+echo "mozconfig-linux-aarch64 has been removed, see tor-browser#45396." >&2
+echo "Your mozconfig no longer needs to source one from this repository." >&2
+echo "Run ./mach bootstrap to generate a mozconfig, or write one with this line:" >&2
+echo "    ac_add_options --with-base-browser-version=dev-build" >&2
+echo "and, for this platform:" >&2
+echo "    ac_add_options --target=aarch64-unknown-linux-gnu" >&2
+exit 1
