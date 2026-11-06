@@ -995,9 +995,11 @@ with only_when(cross_compiling):
 # default. See tor-browser#9173.
 @depends(target)
 def relative_data_dir_default(target):
-    if target.os in ("Android", "OSX"):
+    if target.os == "Android":
         return None
-    return "BaseBrowser/Data/Browser"
+    if target.os == "OSX":
+        return "../TorBrowser-Data/Browser"
+    return "TorBrowser/Data/Browser"
 
 
 option(
