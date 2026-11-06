@@ -114,7 +114,10 @@ set_config("MOZ_INCLUDE_SOURCE_INFO", True, when="MOZ_INCLUDE_SOURCE_INFO")
 option(
     "--with-distribution-id",
     nargs=1,
-    default="org.mozilla",
+    # Tor Browser: Use our distribution ID by default on desktop.
+    default=depends(build_project)(
+        lambda p: "org.torproject" if p == "browser" else "org.mozilla"
+    ),
     help="Set distribution-specific id",
 )
 set_config("MOZ_DISTRIBUTION_ID", depends("--with-distribution-id")(lambda v: v[0]))
