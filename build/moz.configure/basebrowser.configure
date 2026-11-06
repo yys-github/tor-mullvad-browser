@@ -1,0 +1,31 @@
+# Options that must not be changed in Base Browser and derived browsers.
+# Note: These options apply to both Android and Desktop.
+# -------------------------------------------------
+
+imply_option("MOZ_TELEMETRY_REPORTING", False)
+imply_option("--enable-crashreporter", False)
+imply_option("--enable-unverified-updates", False)
+imply_option("--enable-proxy-bypass-protection", True)
+
+# tor-browser#45336
+imply_option("--enable-proxy-direct-failover", False)
+
+# See tor-browser#30575 and tor-browser#32418: system policies are harmful either
+# because they could allow proxy bypass, and override a number of other preferences we set
+imply_option("--enable-system-policies", False)
+
+# tor-browser#44394
+imply_option(
+    "--enable-system-preferences",
+    False,
+    when=depends(build_project)(lambda p: p == "browser"),
+)
+
+# tor-browser#13379
+imply_option("--enable-nss-mar", True, when=target_is_windows | target_is_osx)
+
+# tor-browser#41131
+imply_option("--enable-update-agent", False, when=target_is_windows | target_is_osx)
+imply_option("--enable-bits-download", False, when=target_is_windows)
+imply_option("--enable-maintenance-service", False, when=target_is_windows)
+imply_option("--enable-default-browser-agent", False, when=target_is_windows)
