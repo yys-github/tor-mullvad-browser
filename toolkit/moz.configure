@@ -958,11 +958,11 @@ def eme_choices(target, wmf):
         return ("widevine",)
 
 
-# Widevine is enabled by default in desktop browser builds.
+# Base Browser: Disable EME by default, to make sure no preference is
+# enabling either Adobe's or Google's CDM.
 @depends(build_project, eme_choices)
 def eme_default(build_project, choices):
-    if build_project == "browser":
-        return choices
+    return None
 
 
 option(
@@ -1448,9 +1448,11 @@ def webrtc_default(target):
     return os_match and cpu_match and target.endianness == "little"
 
 
+# Base Browser: Disable WebRTC by default.
+# Before enabling, please notice that WebRTC does not work on mingw (Bug 1393901)
 option(
     "--disable-webrtc",
-    default=webrtc_default,
+    default=False,
     help="{Enable|Disable} support for WebRTC",
 )
 
@@ -2130,7 +2132,8 @@ set_config(
 
 @depends(target)
 def bundled_fonts_default(target):
-    return target.os == "WINNT" or target.kernel == "Linux"
+    # Base Browser: Enable bundled fonts on all desktop platforms.
+    return True
 
 
 @depends(build_project)
@@ -3108,9 +3111,12 @@ include("../build/moz.configure/nss.configure")
 # Enable or disable running in background task mode: headless for
 # periodic, short-lived, maintenance tasks.
 # ==============================================================================
+# Base Browser: Disable background tasks by default.
+# See tor-browser#41131.
 option(
     "--disable-backgroundtasks",
-    help="Disable running in background task mode",
+    default=False,
+    help="{Enable|Disable} running in background task mode",
 )
 set_config("MOZ_BACKGROUNDTASKS", True, when="--enable-backgroundtasks")
 set_define("MOZ_BACKGROUNDTASKS", True, when="--enable-backgroundtasks")
@@ -3589,7 +3595,13 @@ set_define("MOZ_AUTH_EXTENSION", True, when="--enable-negotiateauth")
 
 # Parental control
 # ==============================================================
-option("--disable-parental-controls", help="Do not build parental controls")
+# Base Browser: Do not build parental controls by default.
+# See tor-browser#33851.
+option(
+    "--disable-parental-controls",
+    default=False,
+    help="{Build|Do not build} parental controls",
+)
 
 set_config(
     "MOZ_DISABLE_PARENTAL_CONTROLS",
@@ -4359,10 +4371,13 @@ set_define("MOZ_SYSTEM_PREFERENCES", True, when="--enable-system-preferences")
 # Allow disabling the creation a legacy profile
 # ==============================================================
 
+# Base Browser: Do not create a legacy profile by default on desktop.
+# See tor-browser#41542.
 option(
     "--disable-legacy-profile-creation",
-    help="Disable the creation a legacy profile, to be used by old versions "
-    "of Firefox, when no profiles exist",
+    default=depends(build_project)(lambda p: p != "browser"),
+    help="{Enable|Disable} the creation a legacy profile, to be used by old "
+    "versions of Firefox, when no profiles exist",
 )
 
 set_config("MOZ_CREATE_LEGACY_PROFILE", True, when="--enable-legacy-profile-creation")

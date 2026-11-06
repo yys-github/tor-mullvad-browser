@@ -263,6 +263,7 @@ def check_prog(*args, **kwargs):
 
 
 include("build/moz.configure/toolchain.configure", when="--enable-compile-environment")
+include("build/moz.configure/basebrowser.configure")
 include("build/moz.configure/basebrowser-resources.configure")
 
 include("build/moz.configure/pkg.configure")
@@ -1066,9 +1067,7 @@ def base_browser_version_quoted(value):
     return f'"{value[0]}"'
 
 
-set_config(
-    "BASE_BROWSER", depends(base_browser_version)(lambda v: True if v else False)
-)
+set_config("BASE_BROWSER", True)
 set_define("BASE_BROWSER_VERSION", base_browser_version)
 set_define("BASE_BROWSER_VERSION_QUOTED", base_browser_version_quoted)
 
