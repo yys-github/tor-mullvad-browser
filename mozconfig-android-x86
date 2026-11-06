@@ -1,4 +1,10 @@
-. $topsrcdir/browser/config/mozconfigs/tor-browser-android
+# This file is deprecated and will be removed, see tor-browser#45396.
 
-mk_add_options MOZ_OBJDIR=@TOPSRCDIR@/obj-i386-linux-android
-ac_add_options --target=i686-linux-android
+echo "mozconfig-android-x86 has been removed, see tor-browser#45396." >&2
+echo "Your mozconfig no longer needs to source one from this repository." >&2
+echo "Run ./mach bootstrap to generate a mozconfig, or write one with this line:" >&2
+echo "    ac_add_options --with-base-browser-version=dev-build" >&2
+echo "and, for this platform:" >&2
+echo "    ac_add_options --enable-project=mobile/android" >&2
+echo "    ac_add_options --target=i686-linux-android" >&2
+exit 1
