@@ -990,9 +990,20 @@ with only_when(cross_compiling):
     )
     set_config("JS_BINARY", depends_if("JS_BINARY")(lambda value: value[0]))
 
+
+# Base Browser: Make the data directory relative to the application by
+# default. See tor-browser#9173.
+@depends(target)
+def relative_data_dir_default(target):
+    if target.os in ("Android", "OSX"):
+        return None
+    return "BaseBrowser/Data/Browser"
+
+
 option(
     "--with-relative-data-dir",
     nargs=1,
+    default=relative_data_dir_default,
     help="Sets the data directories to be relative to the application directory",
 )
 
