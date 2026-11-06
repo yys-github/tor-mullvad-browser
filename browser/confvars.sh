@@ -9,5 +9,7 @@
 # For mozilla-beta, mozilla-release, or mozilla-central repositories, use
 # "unofficial" branding.
 # For the mozilla-aurora repository, use "aurora".
-MOZ_BRANDING_DIRECTORY=browser/branding/unofficial
+# Mullvad Browser (tor-browser#45396): Use the nightly branding by default.
+# Official builds always pass --with-branding.
+MOZ_BRANDING_DIRECTORY=browser/branding/mb-nightly
 MOZ_OFFICIAL_BRANDING_DIRECTORY=browser/branding/official
