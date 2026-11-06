@@ -1,39 +1,9 @@
-# Changes on this file might need to be synchronized with
-# browser/config/mozconfigs/base-browser-android!
-# See also tor-browser#43151.
+# This file is deprecated and will be removed, see tor-browser#45396.
 
-export MOZILLA_OFFICIAL=1
-
-ac_add_options --enable-application=mobile/android
-
-ac_add_options --disable-compile-environment
-
-ac_add_options --disable-tests
-ac_add_options --disable-debug
-
-ac_add_options --disable-updater
-ac_add_options --disable-crashreporter
-ac_add_options --disable-webrtc
-ac_add_options --disable-parental-controls
-
-ac_add_options --enable-proxy-bypass-protection
-ac_add_options --disable-system-policies
-
-# See tor-browser#41131
-ac_add_options --disable-backgroundtasks
-
-ac_add_options --enable-minify=properties,js
-
-# Disable telemetry
-ac_add_options MOZ_TELEMETRY_REPORTING=
-
-if test -n "$LOCAL_DEV_BUILD"; then
-    # You must use the "default" bogus channel for dev builds
-    ac_add_options --enable-update-channel=default
-    ac_add_options --with-base-browser-version=dev-build
-    ac_add_options --disable-minify
-fi
-
-if test -z "$WASI_SYSROOT"; then
-    ac_add_options --without-wasm-sandboxed-libraries
-fi
+echo "mozconfig-android-all has been removed, see tor-browser#45396." >&2
+echo "Your mozconfig no longer needs to source one from this repository." >&2
+echo "Run ./mach bootstrap to generate a mozconfig, or write one with this line:" >&2
+echo "    ac_add_options --with-base-browser-version=dev-build" >&2
+echo "and, for this platform:" >&2
+echo "    ac_add_options --enable-project=mobile/android" >&2
+exit 1

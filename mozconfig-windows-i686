@@ -1,13 +1,9 @@
-. $topsrcdir/browser/config/mozconfigs/base-browser
+# This file is deprecated and will be removed, see tor-browser#45396.
 
-ac_add_options --target=i686-pc-windows-gnu
-ac_add_options --with-toolchain-prefix=i686-w64-mingw32-
-
-ac_add_options --enable-strip
-
-# Bug 1782837: Not supported because Mozilla (and therefore also us) build
-# libc++ with LIBCXX_ENABLE_FILESYSTEM disabled.
-ac_add_options --disable-notification-server
-
-# tor-browser#44028: Disable zucchini for now, as it needs SEH.
-ac_add_options --disable-zucchini
+echo "mozconfig-windows-i686 has been removed, see tor-browser#45396." >&2
+echo "Your mozconfig no longer needs to source one from this repository." >&2
+echo "Run ./mach bootstrap to generate a mozconfig, or write one with this line:" >&2
+echo "    ac_add_options --with-base-browser-version=dev-build" >&2
+echo "and, for this platform:" >&2
+echo "    ac_add_options --target=i686-pc-windows-gnu" >&2
+exit 1
