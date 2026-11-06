@@ -996,7 +996,7 @@ with only_when(cross_compiling):
 def relative_data_dir_default(target):
     if target.os in ("Android", "OSX"):
         return None
-    return "BaseBrowser/Data/Browser"
+    return "../Data"
 
 
 option(

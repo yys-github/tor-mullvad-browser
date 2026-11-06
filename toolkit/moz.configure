@@ -87,7 +87,8 @@ set_config("MOZ_INCLUDE_SOURCE_INFO", True, when="MOZ_INCLUDE_SOURCE_INFO")
 option(
     "--with-distribution-id",
     nargs=1,
-    default="org.mozilla",
+    # Mullvad Browser (tor-browser#45396): Use our distribution ID by default.
+    default="net.mullvad",
     help="Set distribution-specific id",
 )
 set_config("MOZ_DISTRIBUTION_ID", depends("--with-distribution-id")(lambda v: v[0]))
@@ -1488,11 +1489,9 @@ def webrtc_default(target):
     return os_match and cpu_match and target.endianness == "little"
 
 
-# Base Browser: Disable WebRTC by default.
-# Before enabling, please notice that WebRTC does not work on mingw (Bug 1393901)
 option(
     "--disable-webrtc",
-    default=False,
+    default=webrtc_default,
     help="{Enable|Disable} support for WebRTC",
 )
 
