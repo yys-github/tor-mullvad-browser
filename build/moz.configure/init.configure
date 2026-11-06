@@ -1291,7 +1291,8 @@ def moz_app_basename(value, target_is_android):
         return value[0]
     if target_is_android:
         return "Fennec"
-    return "Firefox"
+    # Mullvad Browser(tor-browser#45396): Use our basename by default.
+    return "MullvadBrowser"
 
 
 set_config(
