@@ -724,6 +724,7 @@ class Bootstrapper:
         self._write_default_mozconfig(expected_raw_mozconfig)
 
     def _output_mozconfig(self, application, mozconfig_builder):
+        mozconfig_builder.append("ac_add_options --with-base-browser-version=dev-build")
         # Like 'generate_browser_mozconfig' or 'generate_mobile_android_mozconfig'.
         additional_mozconfig = getattr(
             self.instance, "generate_%s_mozconfig" % application
