@@ -1119,6 +1119,7 @@ class ContentParent final : public PContentParent,
       CreateAudioIPCConnectionResolver&& aResolver);
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
   // Points mHWInferenceKeepAlive at the live HWInference process, launching it
   // if it is gone. Leaves it null once the restart budget is spent.
   void EnsureHWInferenceConnection();
@@ -1129,6 +1130,7 @@ class ContentParent final : public PContentParent,
       Endpoint<hwinference::PSpeechRecognitionParent>&& aEndpoint);
 
   mozilla::ipc::IPCResult RecvReleaseHWInferenceConnection();
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
   already_AddRefed<extensions::PExtensionsParent> AllocPExtensionsParent();

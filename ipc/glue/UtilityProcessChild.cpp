@@ -308,6 +308,7 @@ mozilla::ipc::IPCResult UtilityProcessChild::RecvStartJSOracleService(
 }
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
 mozilla::ipc::IPCResult UtilityProcessChild::RecvStartHWInferenceService(
     Endpoint<PHWInferenceChild>&& aEndpoint) {
   PROFILER_MARKER_UNTYPED(
@@ -320,6 +321,7 @@ mozilla::ipc::IPCResult UtilityProcessChild::RecvStartHWInferenceService(
   }
   return IPC_OK();
 }
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
 #if defined(XP_WIN)

@@ -7,7 +7,9 @@
 #include "mozilla/dom/ipc/IdType.h"
 #include "mozilla/ipc/UtilityProcessHost.h"
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
 #  include "mozilla/hwinference/HWInferenceParent.h"
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 #include "mozilla/EnumeratedArray.h"
 #include "mozilla/ProcInfo.h"
@@ -66,8 +68,10 @@ class UtilityProcessManager final : public UtilityProcessHost::Listener {
 #endif  // NIGHTLY_BUILD && !MOZ_NO_SMART_CARDS
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
   using HWInferencePromise =
       LaunchPromise<RefPtr<hwinference::HWInferenceParent>>;
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
   static RefPtr<UtilityProcessManager> GetSingleton();
@@ -114,6 +118,7 @@ class UtilityProcessManager final : public UtilityProcessHost::Listener {
 #endif  // NIGHTLY_BUILD && !MOZ_NO_SMART_CARDS
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
   // Starts (or reuses) the HWInference process.
   RefPtr<HWInferencePromise> StartHWInference();
 
@@ -122,6 +127,7 @@ class UtilityProcessManager final : public UtilityProcessHost::Listener {
   // for as long as the returned keep-alive. Returns nullptr past
   // browser.ml.hwinference.max_restarts crashes, rather than looping.
   already_AddRefed<UtilityProcessKeepAlive> AcquireContentHWInferenceProcess();
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
   void OnProcessUnexpectedShutdown(UtilityProcessHost* aHost);

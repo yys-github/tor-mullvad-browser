@@ -152,8 +152,10 @@
 #include "mozilla/glean/PFOGTransport.h"
 #include "mozilla/hal_sandbox/PHalParent.h"
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
 #  include "mozilla/hwinference/HWInferenceParent.h"
 #  include "mozilla/hwinference/PSpeechRecognitionChild.h"
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 #include "mozilla/intl/L10nRegistry.h"
 #include "mozilla/intl/LocaleService.h"
@@ -5177,6 +5179,7 @@ mozilla::ipc::IPCResult ContentParent::RecvCreateAudioIPCConnection(
 }
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
 void ContentParent::EnsureHWInferenceConnection() {
   // Re-acquiring unconditionally: a no-op when the process and its actor are
   // up, and what recovers when either went away under us.
@@ -5221,6 +5224,7 @@ mozilla::ipc::IPCResult ContentParent::RecvReleaseHWInferenceConnection() {
   }
   return IPC_OK();
 }
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
 already_AddRefed<extensions::PExtensionsParent>

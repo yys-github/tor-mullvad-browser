@@ -837,7 +837,9 @@ void SetUtilitySandbox(int aBroker, ipc::SandboxingKind aKind) {
   switch (aKind) {
     case ipc::SandboxingKind::GENERIC_UTILITY:
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
     case ipc::SandboxingKind::HW_INFERENCE:
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
       policy = GetUtilitySandboxPolicy(sBroker);
       break;
