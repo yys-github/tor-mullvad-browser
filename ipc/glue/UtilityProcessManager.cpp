@@ -11,7 +11,9 @@
 #include "mozilla/StaticPrefs_media.h"
 #include "mozilla/SyncRunnable.h"  // for LaunchUtilityProcess
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
 #  include "mozilla/hwinference/PHWInferenceChild.h"
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 #include "mozilla/ipc/UtilityProcessParent.h"
 #include "mozilla/ipc/UtilityMediaServiceChild.h"
@@ -612,6 +614,7 @@ UtilityProcessManager::StartPKCS11Module() {
 #endif  // NIGHTLY_BUILD && !MOZ_NO_SMART_CARDS
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
 RefPtr<UtilityProcessManager::HWInferencePromise>
 UtilityProcessManager::StartHWInference() {
   LOGD("[%p] StartHWInference called", this);
@@ -644,6 +647,7 @@ UtilityProcessManager::StartHWInference() {
             return RetPromise::CreateAndReject(std::move(aError), __func__);
           });
 }
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
 bool UtilityProcessManager::IsProcessLaunching(SandboxingKind aSandbox) {
@@ -808,6 +812,7 @@ RefPtr<MemoryReportingProcess> UtilityProcessManager::GetProcessMemoryReporter(
 }
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
 already_AddRefed<UtilityProcessKeepAlive>
 UtilityProcessManager::StartContentHWInferenceManager(
     Endpoint<hwinference::PHWInferenceManagerParent>&& aEndpoint,
@@ -844,6 +849,7 @@ UtilityProcessManager::StartContentHWInferenceManager(
 
   return keepAlive.forget();
 }
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
 UtilityProcessKeepAlive::UtilityProcessKeepAlive(

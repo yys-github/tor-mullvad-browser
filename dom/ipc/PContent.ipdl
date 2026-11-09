@@ -42,7 +42,9 @@ include protocol PURLClassifierLocalByName;
 include protocol PVRManager;
 include protocol PRemoteMediaManager;
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
 include protocol PHWInferenceManager;
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 include protocol PRemoteWorkerDebuggerManager;
 include protocol PRemoteWorkerService;
@@ -1197,11 +1199,13 @@ parent:
     async CreateAudioIPCConnection() returns (FileDescOrError fd);
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
     async RequestHWInferenceConnection(Endpoint<PHWInferenceManagerParent> endpoint);
 
     // One call per RequestHWInferenceConnection. The process is shut down once
     // nothing holds it anymore.
     async ReleaseHWInferenceConnection();
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
     sync PURLClassifier(nullable nsIPrincipal principal)

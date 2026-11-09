@@ -195,10 +195,12 @@ void UtilityProcessHost::InitAfterConnect(bool aSucceeded) {
         break;
 
 #  ifndef ANDROID
+#  ifndef BASE_BROWSER_VERSION
       case SandboxingKind::HW_INFERENCE:
         policy = SandboxBrokerPolicyFactory::GetHWInferencePolicy(
             GetActor()->OtherPid());
         break;
+#  endif  // !BASE_BROWSER_VERSION
 #  endif  // !ANDROID
 
       default:

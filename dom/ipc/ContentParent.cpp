@@ -152,7 +152,9 @@
 #include "mozilla/glean/PFOGTransport.h"
 #include "mozilla/hal_sandbox/PHalParent.h"
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
 #  include "mozilla/hwinference/PHWInferenceManagerChild.h"
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 #include "mozilla/intl/L10nRegistry.h"
 #include "mozilla/intl/LocaleService.h"
@@ -5263,6 +5265,7 @@ mozilla::ipc::IPCResult ContentParent::RecvCreateAudioIPCConnection(
 }
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
 mozilla::ipc::IPCResult ContentParent::RecvRequestHWInferenceConnection(
     Endpoint<hwinference::PHWInferenceManagerParent>&& aEndpoint) {
   RefPtr<UtilityProcessKeepAlive> keepAlive =
@@ -5288,6 +5291,7 @@ mozilla::ipc::IPCResult ContentParent::RecvReleaseHWInferenceConnection() {
   }
   return IPC_OK();
 }
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
 already_AddRefed<extensions::PExtensionsParent>

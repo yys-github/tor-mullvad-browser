@@ -1118,10 +1118,12 @@ class ContentParent final : public PContentParent,
       CreateAudioIPCConnectionResolver&& aResolver);
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
   mozilla::ipc::IPCResult RecvRequestHWInferenceConnection(
       Endpoint<PHWInferenceManagerParent>&& aEndpoint);
 
   mozilla::ipc::IPCResult RecvReleaseHWInferenceConnection();
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
   already_AddRefed<extensions::PExtensionsParent> AllocPExtensionsParent();
