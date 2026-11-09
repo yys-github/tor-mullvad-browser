@@ -7,7 +7,9 @@
 #include "mozilla/ipc/UtilityProcessSandboxing.h"
 #include "mozilla/ipc/UtilityMediaServiceParent.h"
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
 #  include "mozilla/hwinference/HWInferenceChild.h"
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 #include "ChildProfilerController.h"
 
@@ -93,8 +95,10 @@ class UtilityProcessChild final : public PUtilityProcessChild {
 #endif  // NIGHTLY_BUILD && !MOZ_NO_SMART_CARDS
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
   mozilla::ipc::IPCResult RecvStartHWInferenceService(
       Endpoint<PHWInferenceChild>&& aEndpoint);
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
   void ActorDestroy(ActorDestroyReason aWhy) override;
@@ -109,9 +113,11 @@ class UtilityProcessChild final : public PUtilityProcessChild {
   }
 
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
   hwinference::HWInferenceChild* GetHWInferenceChild() const {
     return mHWInferenceInstance;
   }
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 
  protected:
@@ -124,7 +130,9 @@ class UtilityProcessChild final : public PUtilityProcessChild {
   RefPtr<UtilityMediaServiceParent> mUtilityMediaServiceInstance{};
   RefPtr<dom::JSOracleChild> mJSOracleInstance{};
 #ifndef ANDROID
+#ifndef BASE_BROWSER_VERSION
   RefPtr<hwinference::HWInferenceChild> mHWInferenceInstance{};
+#endif  // !BASE_BROWSER_VERSION
 #endif  // !ANDROID
 #ifdef XP_WIN
   RefPtr<PWindowsUtilsChild> mWindowsUtilsInstance;
