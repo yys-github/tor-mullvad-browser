@@ -162,6 +162,9 @@
     <!-- Connection assist. Here "process" is a noun, referring to the execution of a computer program. "Tor process" specifically refers to the execution of the tor program, which is the program that handles the connection to the "Tor network". -->
     <string name="connection_assist_restarting_connection_button">Restarting Tor process…</string>
 
+    <!-- ProtectionPanel strings -->
+    <string name="protection_panel_tor_connection_settings_title">Connection Settings</string>
+
     <!-- Notification title for closing browser tabs. "%s" will be replaced with the localised application name, such as "Tor Browser". -->
     <string name="notification_close_tor_browser_tabs">Close %s’s tabs?</string>
     <!-- Notification body for closing browser tabs. "%s" will be replaced with the localised application name, such as "Tor Browser". -->

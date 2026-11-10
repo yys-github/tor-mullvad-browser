@@ -84,6 +84,7 @@ internal fun ProtectionPanel(
     onViewQWACClick: () -> Unit,
     onIPProtectionToggle: () -> Unit,
     onIPProtectionNavigate: () -> Unit,
+    onConnectionSettingsClick: () -> Unit,
 ) {
     val isSiteProtectionEnabled = isTrackingProtectionEnabled && isGlobalTrackingProtectionEnabled
     MenuScaffold(
@@ -103,13 +104,6 @@ internal fun ProtectionPanel(
             onTrackerBlockedMenuClick = onTrackerBlockedMenuClick,
         )
 
-        TrackingProtectionMenuGroup(
-            isLocalPdf = isLocalPdf,
-            isGlobalTrackingProtectionEnabled = isGlobalTrackingProtectionEnabled,
-            isSiteProtectionEnabled = isSiteProtectionEnabled,
-            onTrackingProtectionToggleClick = onTrackingProtectionToggleClick,
-        )
-
         IPProtectionMenuGroup(
             visible = showIPProtection,
             ipProtectionMenuState = ipProtectionMenuState,
@@ -124,7 +118,15 @@ internal fun ProtectionPanel(
             onViewQWACClick = onViewQWACClick,
         )
 
-        if (!isLocalPdf && !isPrivate) {
+        MenuGroup {
+            MenuItem(
+                label = stringResource(R.string.protection_panel_tor_connection_settings_title),
+                onClick = onConnectionSettingsClick,
+                beforeIconPainter = painterResource(mozilla.components.ui.icons.R.drawable.mozac_ic_settings_24)
+            )
+        }
+
+        if (!isLocalPdf) {
             MenuGroup {
                 MenuItem(
                     label = stringResource(id = R.string.clear_site_data),
@@ -141,20 +143,6 @@ internal fun ProtectionPanel(
                 onToggleablePermissionClick = onToggleablePermissionClick,
             )
         }
-
-        LinkText(
-            text = stringResource(id = R.string.protection_panel_privacy_and_security_settings_2),
-            linkTextStates =
-                listOf(
-                    LinkTextState(
-                        text = stringResource(id = R.string.protection_panel_privacy_and_security_settings_2),
-                        url = "",
-                        onClick = { onPrivacySecuritySettingsClick() },
-                    )
-                ),
-            linkTextColor = MaterialTheme.colorScheme.tertiary,
-            linkTextDecoration = TextDecoration.Underline,
-        )
     }
 }
 
@@ -484,6 +472,7 @@ private fun ProtectionPanelPreview(
                 onViewQWACClick = {},
                 onIPProtectionToggle = {},
                 onIPProtectionNavigate = {},
+                onConnectionSettingsClick = {},
             )
         }
     }

@@ -142,23 +142,6 @@ internal fun ProtectionPanelBanner(
                     }
                 }
             }
-
-    if (content.isGradient) {
-        ProtectionPanelGradientBanner(
-            title = content.title,
-            description = content.description,
-            imageId = content.imageId,
-            modifier = bannerModifier,
-        )
-    } else {
-        Card(
-            modifier = bannerModifier,
-            colors = CardDefaults.cardColors(containerColor = content.backgroundColor),
-            shape = MaterialTheme.shapes.extraLarge,
-        ) {
-            ProtectionPanelBannerRow(content = content, showChevron = onClick != null)
-        }
-    }
 }
 
 @Composable

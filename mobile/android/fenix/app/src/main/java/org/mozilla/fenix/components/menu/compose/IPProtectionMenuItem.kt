@@ -60,6 +60,7 @@ internal fun IPProtectionMenuItem(
     onToggle: () -> Unit,
     onNavigate: () -> Unit,
 ) {
+    return
     val statusDescription = badgeText(state.status)
     val role =
         if (state.status == IPProtectionMenuStatus.AuthRequired) {

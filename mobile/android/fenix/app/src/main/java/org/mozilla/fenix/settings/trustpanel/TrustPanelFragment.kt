@@ -380,6 +380,13 @@ class TrustPanelFragment : BottomSheetDialogFragment() {
                                     )
                                     store.dispatch(TrustPanelAction.Navigate.IPProtectionSettings)
                                 },
+                                onConnectionSettingsClick = {
+                                    findNavController().navigate(
+                                        TrustPanelFragmentDirections.actionTrustPanelToSettings(
+                                            requireContext().getString(R.string.pref_key_connection)
+                                        ),
+                                    )
+                                }
                             )
                         }
 
