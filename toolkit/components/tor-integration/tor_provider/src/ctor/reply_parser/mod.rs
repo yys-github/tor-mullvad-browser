@@ -15,7 +15,7 @@ mod test_utils;
 
 pub use dispatcher::ReplyDispatcher;
 pub use error::ReplyError;
-pub use line::{DetailReplyLine, EndReplyLine};
+pub use line::DetailReplyLine;
 pub use reply::Reply;
 
 #[cfg(test)]

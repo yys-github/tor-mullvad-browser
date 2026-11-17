@@ -10,10 +10,7 @@ use serde_json::{json, Value as JsonValue};
 use std::rc::Rc;
 use thin_vec::ThinVec;
 use tor_provider::ctor::*;
-use xpcom::interfaces::{
-    nsIFile, torITorControlPortReceiver, torITorMessageHandler, torITorNotificationListener,
-    torITorReplyCallback,
-};
+use xpcom::interfaces::{nsIFile, torITorNotificationListener, torITorReplyCallback};
 use xpcom::RefPtr;
 
 // Actually used, but the compiler does not detect it.
@@ -39,80 +36,6 @@ impl ControlPortXpcom {
     fn new(socket: Box<ControlSocketXpcom>) -> Result<RefPtr<Self>, nsresult> {
         let control_port = TorController::new(ControlPort::new(socket).map_err(Self::map_err)?);
         Ok(Self::allocate(InitControlPortXpcom { control_port }))
-    }
-
-    xpcom_method!(start => Start(receiver: *const torITorControlPortReceiver));
-    pub fn start(&self, receiver: &torITorControlPortReceiver) -> Result<(), nsresult> {
-        let receiver = RefPtr::new(receiver);
-        let receiver2 = receiver.clone();
-        self.control_port
-            .set_async_handler(Some(Box::new(move |reply| {
-                let mut buf = Vec::new();
-                if let Err(e) = reply.write_to(&mut buf) {
-                    log::error!(
-                        "Cannot convert the reply to the raw message: {}.",
-                        e.to_string()
-                    );
-                    return;
-                }
-                if buf.ends_with(b"\r\n") {
-                    buf.truncate(buf.len() - 2);
-                }
-                // These conversions re-use the buffer, Gecko uses the same
-                // allocator for Rust and C++ (see the nsstring crate).
-                let as_str = nsCString::from(buf);
-                // Safety: call to an XPCOM method that we expect to be exposed
-                // on Rust. As per the documentation in nsstring, it is safe to
-                // pass nsCStrings created in Rust to C++.
-                unsafe { receiver.OnAsyncMessage(&*as_str) };
-            })));
-        self.control_port.set_close_handler(Box::new(move || {
-            // Safety: call to an XPCOM method of our interface that we crafted
-            // to make sure it was exposed on Rust bindings.
-            unsafe { receiver2.OnClosed() };
-        }));
-        Ok(())
-    }
-
-    xpcom_method!(send_command => SendCommand(command: *const nsACString, handler: *const torITorMessageHandler));
-    pub fn send_command(
-        &self,
-        command: &nsACString,
-        handler: &torITorMessageHandler,
-    ) -> Result<(), nsresult> {
-        let mut command = command.to_vec();
-        if !command.ends_with(b"\r\n") {
-            command.extend_from_slice(b"\r\n");
-        }
-        let handler = RefPtr::new(handler);
-        self.control_port.send_raw_command(
-            command.into(),
-            Box::new(move |reply| {
-                let mut buf = Vec::new();
-                let reply = match reply {
-                    Ok(r) => r,
-                    Err(e) => {
-                        let as_str = nsCString::from(e.to_string());
-                        // Safety: see the async notification handler.
-                        unsafe { handler.OnError(&*as_str) };
-                        return;
-                    }
-                };
-                if let Err(e) = reply.write_to(&mut buf) {
-                    let as_str = nsCString::from(e.to_string());
-                    // Safety: see the async notification handler.
-                    unsafe { handler.OnError(&*as_str) };
-                    return;
-                }
-                if buf.ends_with(b"\r\n") {
-                    buf.truncate(buf.len() - 2);
-                }
-                let as_str = nsCString::from(buf);
-                // Safety: see the async notification handler.
-                unsafe { handler.OnMessage(&*as_str) };
-            }),
-        );
-        Ok(())
     }
 
     xpcom_method!(close => Close());

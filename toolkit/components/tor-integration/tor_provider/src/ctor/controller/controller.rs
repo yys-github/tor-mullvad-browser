@@ -3,7 +3,6 @@
 // <http://opensource.org/licenses/MIT>, at your option. This file may not be
 // copied, modified, or distributed except according to those terms.
 
-use bytes::Bytes;
 use std::{net::IpAddr, rc::Rc};
 use tinystr::TinyAsciiStr;
 
@@ -211,25 +210,5 @@ impl<CP: ControlPortInterface> TorController<CP> {
 
     pub fn signal_newnym(&self, handler: Box<dyn FnOnce(Result<u16, ControllerError>)>) {
         self.send_command(commands::signal_newnym(), handler);
-    }
-}
-
-// TODO: Remove once we merge all parts of tor-browser#44930.
-impl<CP: ControlPortInterface> TorController<CP> {
-    #[inline]
-    pub fn send_raw_command(
-        &self,
-        command: Bytes,
-        handler: Box<dyn FnOnce(Result<Reply, ControllerError>)>,
-    ) {
-        self.0.send_command(
-            command,
-            Box::new(|res| handler(res.map_err(|e| ControllerError::from(e)))),
-        );
-    }
-
-    #[inline]
-    pub fn set_async_handler(&self, cb: Option<Box<dyn Fn(Reply)>>) {
-        self.0.set_async_handler(cb);
     }
 }
