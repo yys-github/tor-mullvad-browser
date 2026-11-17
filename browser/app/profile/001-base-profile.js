@@ -792,6 +792,9 @@ pref("security.certerrors.mitm.priming.enabled", false);
 // Don't automatically enable enterprise roots, see bug 40166
 pref("security.certerrors.mitm.auto_enable_enterprise_roots", false);
 
+// Hide the Firefox illustration on error pages. tor-browser#44832.
+pref("browser.netError.illustration.enabled", false);
+
 // tor-browser#41117: disable share menus on Mac and Windows.
 // Locked as user might not realize sharing might result in proxy bypasses or
 // general linkability.
