@@ -3978,7 +3978,7 @@ CompatCheckResult CheckCompatibility(nsIFile* aProfileDir,
 
   nsAutoCString forkVersion(BASE_BROWSER_VERSION_QUOTED);
   rv = parser.GetString("Compatibility", "LastBaseBrowserVersion", buf);
-  if (NS_FAILED(rv) || !forkVersion.Equals(buf)) return false;
+  if (NS_FAILED(rv) || !forkVersion.Equals(buf)) return result;
 
   rv = parser.GetString("Compatibility", "LastOSABI", buf);
   if (NS_FAILED(rv) || !aOSABI.Equals(buf)) return result;
