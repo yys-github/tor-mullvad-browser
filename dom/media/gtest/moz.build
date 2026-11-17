@@ -122,7 +122,7 @@ if CONFIG["OS_TARGET"] != "Android":
         "TestGMPCrossOrigin.cpp",
         "TestGMPPluginScan.cpp",
         "TestGMPRemoveAndDelete.cpp",
-        "TestSpeechModelMapping.cpp",
+        # Exclude TestSpeechModelMapping.cpp. tor-browser#44045.
     ]
 
 if CONFIG["MOZ_APPLEMEDIA"]:

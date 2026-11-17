@@ -1192,20 +1192,7 @@ if CONFIG["MOZ_WEBSPEECH"]:
         "SpeechSynthesisVoice.webidl",
     ]
 
-    # The speech recognition backend (mudler/parakeet.cpp, backends/llama)
-    # isn't built on Android; see dom/media/webspeech/moz.build.
-    if CONFIG["MOZ_WIDGET_TOOLKIT"] != "android":
-        WEBIDL_FILES += [
-            "SpeechGrammar.webidl",
-            "SpeechGrammarList.webidl",
-            "SpeechRecognition.webidl",
-            "SpeechRecognitionAlternative.webidl",
-            "SpeechRecognitionErrorEvent.webidl",
-            "SpeechRecognitionEvent.webidl",
-            "SpeechRecognitionPhrase.webidl",
-            "SpeechRecognitionResult.webidl",
-            "SpeechRecognitionResultList.webidl",
-        ]
+    # Exclude speech recognition. tor-browser#44045.
 
 WEBIDL_FILES += [
     "CustomEvent.webidl",
@@ -1328,10 +1315,7 @@ if CONFIG["MOZ_WEBSPEECH"]:
         "SpeechSynthesisEvent.webidl",
     ]
 
-    if CONFIG["MOZ_WIDGET_TOOLKIT"] != "android":
-        GENERATED_EVENTS_WEBIDL_FILES += [
-            "SpeechRecognitionEvent.webidl",
-        ]
+    # Exclude speech recognition. tor-browser#44045.
 
 if CONFIG["ACCESSIBILITY"]:
     WEBIDL_FILES += [
