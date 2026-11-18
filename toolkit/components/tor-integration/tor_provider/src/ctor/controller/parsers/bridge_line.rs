@@ -335,23 +335,18 @@ mod tests {
             BridgeParseError::InvalidFingerprint
         );
         assert_eq!(
-            parse_bridge_line(
-                b"1.2.3.4:443 0123456789012345678901234567890123456789aaaaa"
-            )
-            .unwrap_err(),
+            parse_bridge_line(b"1.2.3.4:443 0123456789012345678901234567890123456789aaaaa")
+                .unwrap_err(),
             BridgeParseError::InvalidFingerprint
         );
 
         assert_eq!(
-            parse_bridge_line(
-                b"1.2.3.4:443 0123456789012345678901234567890123456789 key=value"
-            ).unwrap_err(),
+            parse_bridge_line(b"1.2.3.4:443 0123456789012345678901234567890123456789 key=value")
+                .unwrap_err(),
             BridgeParseError::ArgsWithoutTransport,
         );
         assert_eq!(
-            parse_bridge_line(
-                b"1.2.3.4:443 key=value"
-            ).unwrap_err(),
+            parse_bridge_line(b"1.2.3.4:443 key=value").unwrap_err(),
             BridgeParseError::ArgsWithoutTransport,
         );
     }
