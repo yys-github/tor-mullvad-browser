@@ -12,6 +12,8 @@ will not be found.
 Exits with 0 if no variables are missing. Otherwise exits with 1.
 """
 
+from __future__ import annotations
+
 import re
 import sys
 from pathlib import Path
