@@ -3,49 +3,62 @@
 
 "use strict";
 
-const { OxidationAdapters, PromisifiedCallback } = ChromeUtils.importESModule(
+const { OxidationAdapters, promisifyMethod } = ChromeUtils.importESModule(
   "moz-src:///toolkit/components/tor-integration/OxidationAdapters.sys.mjs"
 );
 
+/**
+ * The object that contains the method we want to promisiefy with
+ * promisifyMethod.
+ */
+class MockObject {
+  #func;
+  constructor(func) {
+    this.#func = func;
+  }
+  testMethod() {
+    this.#func(...arguments);
+  }
+}
+
 add_task(async function test_callback_happy() {
   {
-    const cb = new PromisifiedCallback();
-    cb.onReply("");
-    Assert.strictEqual(await cb.promise, undefined);
+    const obj = new MockObject(cb => cb.onReply(""));
+    Assert.strictEqual(await promisifyMethod(obj, "testMethod"), undefined);
   }
   {
-    const cb = new PromisifiedCallback();
-    cb.onReply("1234");
-    Assert.strictEqual(await cb.promise, 1234);
+    const obj = new MockObject(cb => cb.onReply("1234"));
+    Assert.strictEqual(await promisifyMethod(obj, "testMethod"), 1234);
   }
   {
-    const cb = new PromisifiedCallback();
-    cb.onReply('"1234"');
-    Assert.strictEqual(await cb.promise, "1234");
+    const obj = new MockObject(cb => cb.onReply('"1234"'));
+    Assert.strictEqual(await promisifyMethod(obj, "testMethod"), "1234");
   }
   {
-    const cb = new PromisifiedCallback();
-    cb.onReply('"a string"');
-    Assert.strictEqual(await cb.promise, "a string");
+    const obj = new MockObject(cb => cb.onReply('"a string"'));
+    Assert.strictEqual(await promisifyMethod(obj, "testMethod"), "a string");
   }
   {
-    const cb = new PromisifiedCallback();
-    cb.onReply('["an", "array"]');
-    Assert.deepEqual(await cb.promise, ["an", "array"]);
+    const obj = new MockObject(cb => cb.onReply('"\\"a string\\""'));
+    Assert.strictEqual(await promisifyMethod(obj, "testMethod"), '"a string"');
   }
   {
-    const cb = new PromisifiedCallback();
-    cb.onReply('{"an": "object"}');
-    Assert.deepEqual(await cb.promise, { an: "object" });
+    const obj = new MockObject(cb => cb.onReply('["an", "array"]'));
+    Assert.deepEqual(await promisifyMethod(obj, "testMethod"), ["an", "array"]);
+  }
+  {
+    const obj = new MockObject(cb => cb.onReply('{"an": "object"}'));
+    Assert.deepEqual(await promisifyMethod(obj, "testMethod"), {
+      an: "object",
+    });
   }
 });
 
 add_task(async function test_callback_tor_error() {
   let hadError = false;
   try {
-    const cb = new PromisifiedCallback();
-    cb.onTorError(400, "Some error message");
-    await cb.promise;
+    const obj = new MockObject(cb => cb.onTorError(400, "Some error message"));
+    await promisifyMethod(obj, "testMethod");
   } catch (e) {
     hadError = true;
     Assert.equal(e.code, 400);
@@ -58,14 +71,46 @@ add_task(async function test_callback_generic_error() {
   const message = "A more specific error message, maybe not machine-friendly.";
   let hadError = false;
   try {
-    const cb = new PromisifiedCallback();
-    cb.onGenericError(message);
-    await cb.promise;
+    const obj = new MockObject(cb => cb.onGenericError(message));
+    await promisifyMethod(obj, "testMethod");
   } catch (e) {
     hadError = true;
     Assert.equal(e.message, message);
   }
   Assert.ok(hadError, "We did not get an error, but we expected one.");
+});
+
+add_task(async function test_callback_arguments() {
+  {
+    const obj = new MockObject((arg, cb) => {
+      Assert.equal(arg, 123);
+      cb.onReply("");
+    });
+    await promisifyMethod(obj, "testMethod", 123);
+  }
+  {
+    const obj = new MockObject((arg, cb) => {
+      Assert.equal(arg, "a string");
+      cb.onReply("");
+    });
+    await promisifyMethod(obj, "testMethod", "a string");
+  }
+  {
+    const obj = new MockObject((arg1, arg2, cb) => {
+      Assert.equal(arg1, 123);
+      Assert.equal(arg2, "a string");
+      cb.onReply("");
+    });
+    await promisifyMethod(obj, "testMethod", 123, "a string");
+  }
+  {
+    const bridges = ["bridge", "line", "obfs4 192.168.1.5:443"];
+    const obj = new MockObject((arg, cb) => {
+      Assert.deepEqual(arg, bridges);
+      cb.onReply("");
+    });
+    await promisifyMethod(obj, "testMethod", bridges);
+  }
 });
 
 add_task(function test_adapter_circuit() {
@@ -253,36 +298,36 @@ add_task(function test_adapter_pluggable_transports() {
     OxidationAdapters.convertPluggableTransports([
       {
         transports: ["obfs4", "meek_lite"],
-        type: "exec",
-        pathToBinary: "TorBrowser/Tor/PluggableTransports/lyrebird",
+        pt_type: "exec",
+        path_to_binary: "TorBrowser/Tor/PluggableTransports/lyrebird",
       },
       {
         transports: ["snowflake"],
-        type: "exec",
-        pathToBinary: "TorBrowser/Tor/PluggableTransports/lyrebird",
+        pt_type: "exec",
+        path_to_binary: "TorBrowser/Tor/PluggableTransports/lyrebird",
         options: "some=option",
         ip: null,
         port: null,
       },
       {
         transports: ["conjure"],
-        type: "exec",
-        pathToBinary: "TorBrowser/Tor/PluggableTransports/conjure-client",
+        pt_type: "exec",
+        path_to_binary: "TorBrowser/Tor/PluggableTransports/conjure-client",
         // Ignored even when not null.
         ip: "10.0.2.2",
         port: 80,
       },
       {
         transports: ["proxy1"],
-        type: "socks4",
-        pathToBinary: null,
+        pt_type: "socks4",
+        path_to_binary: null,
         ip: "10.0.2.2",
         port: 80,
       },
       {
         transports: ["proxy2"],
-        type: "socks5",
-        pathToBinary: "an/ignored/binary",
+        pt_type: "socks5",
+        path_to_binary: "an/ignored/binary",
         ip: "[::1]",
         port: 80,
       },
