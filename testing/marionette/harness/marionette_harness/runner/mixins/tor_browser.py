@@ -4,6 +4,7 @@ from marionette_driver.errors import ScriptTimeoutException
 DEFAULT_BOOTSTRAP_TIMEOUT_MS = 60 * 1000
 DEFAULT_BOOTSTRAP_MAX_RETRIES = 3
 
+
 class TorBrowserMixin:
     def bootstrap(
         self,
@@ -67,7 +68,11 @@ class TorBrowserMixin:
                 # there is native and the initial state of the browser
                 # doesn't even have an open tab to check against.
                 # So we skip this check for that platform.
-                if did_bootstrap and self.marionette.session_capabilities.get("browserName") != "fennec":
+                if (
+                    did_bootstrap
+                    and self.marionette.session_capabilities.get("browserName")
+                    != "fennec"
+                ):
                     Wait(self.marionette).until(
                         lambda mn: mn.get_url() == "about:blank",
                         message="Still not in about:blank",
@@ -86,6 +91,5 @@ class TorBrowserMixin:
                         TorConnect._makeStageRequest(TorConnectStage.Start, true);
                         """
                     )
-
 
         raise RuntimeError("Unable to connect to Tor Network")
