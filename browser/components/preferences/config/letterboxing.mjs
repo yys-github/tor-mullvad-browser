@@ -99,9 +99,7 @@ SettingGroupManager.registerGroups({
         id: "letterboxingWindowSize",
         l10nId: "letterboxing-window-size-group",
         control: "moz-fieldset",
-        controlAttrs: {
-          headinglevel: 3,
-        },
+        headingLevel: 3,
         items: [
           {
             id: "letterboxingRememberSize",
@@ -114,9 +112,7 @@ SettingGroupManager.registerGroups({
         id: "letterboxingContentAlignment",
         l10nId: "letterboxing-alignment-group",
         control: "moz-fieldset",
-        controlAttrs: {
-          headinglevel: 3,
-        },
+        headingLevel: 3,
         items: [
           {
             id: "letterboxingContentAlignmentOptions",
