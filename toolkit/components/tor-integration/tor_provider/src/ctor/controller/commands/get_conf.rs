@@ -206,12 +206,7 @@ mod tests {
     #[test]
     fn no_250() {
         assert_matches!(
-            parse_get_conf(
-                b"test",
-                &converter,
-                make_reply(b"251 test=value\r\n")
-            )
-            .unwrap_err(),
+            parse_get_conf(b"test", &converter, make_reply(b"251 test=value\r\n")).unwrap_err(),
             ControllerError::MalformedReply(_)
         );
         assert_matches!(
