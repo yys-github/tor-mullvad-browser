@@ -39,6 +39,7 @@
 
 #tor-clientauth-warning::before {
   background: var(--button-background-color-destructive);
+  color: var(--button-text-color-destructive);
   inset-block-end: calc(-1 * var(--space-small));
   inset-block-start: calc(-1 * var(--space-small));
   content: ".";
