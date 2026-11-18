@@ -1,5 +1,6 @@
 [DEFAULT]
 head = "head.js"
+tags = "tor"
 
 ["test_adapters.js"]
 
