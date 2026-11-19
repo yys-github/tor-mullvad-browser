@@ -19,6 +19,13 @@ ChromeUtils.defineESModuleGetters(lazy, {
     "moz-src:///toolkit/components/securitylevel/SecurityLevel.sys.mjs",
 });
 
+/**
+ * The topic on which circuit changes are broadcast.
+ *
+ * @type {string}
+ */
+const TOR_CIRCUIT_TOPIC = "TorCircuitChange";
+
 const Prefs = Object.freeze({
   logLevel: "browser.tor_android.log_level",
 });
@@ -31,6 +38,7 @@ const logger = console.createInstance({
 const EmittedEvents = Object.freeze({
   settingsReady: "GeckoView:Tor:SettingsReady",
   settingsChanged: "GeckoView:Tor:SettingsChanged",
+  torCircuitChange: "GeckoView:Tor:TorCircuitChange",
   connectStageChanged: "GeckoView:Tor:ConnectStageChanged",
   bootstrapProgress: "GeckoView:Tor:BootstrapProgress",
   bootstrapComplete: "GeckoView:Tor:BootstrapComplete",
@@ -88,6 +96,8 @@ class TorAndroidIntegrationImpl {
     for (const topic in lazy.TorSettingsTopics) {
       Services.obs.addObserver(this, lazy.TorSettingsTopics[topic]);
     }
+
+    Services.obs.addObserver(this, TOR_CIRCUIT_TOPIC);
 
     // Match the initialisation order from desktop's TorStartupService.
     lazy.TorSettings.init().catch(error => {
@@ -157,6 +167,12 @@ class TorAndroidIntegrationImpl {
             changes: subj.wrappedJSObject.changes ?? [],
             settings: lazy.TorSettings.getSettings(),
           }
+        );
+        break;
+      case TOR_CIRCUIT_TOPIC:
+        lazy.EventDispatcher.instance.sendRequest(
+          EmittedEvents.torCircuitChange,
+          {}
         );
         break;
     }

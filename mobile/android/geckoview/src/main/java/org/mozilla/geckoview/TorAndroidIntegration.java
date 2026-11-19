@@ -47,6 +47,7 @@ public class TorAndroidIntegration implements BundleEventListener {
   private static final String EVENT_SETTINGS_READY = "GeckoView:Tor:SettingsReady";
   private static final String EVENT_SETTINGS_CHANGED = "GeckoView:Tor:SettingsChanged";
   private static final String EVENT_SECURITY_LEVEL_CUSTOM = "GeckoView:Tor:SecurityLevelCustom";
+  private static final String EVENT_TOR_CIRCUIT_CHANGE = "GeckoView:Tor:TorCircuitChange";
 
   // Events we emit
   private static final String EVENT_SECURITY_LEVEL_GET = "GeckoView:Tor:SecurityLevelGet";
@@ -132,6 +133,7 @@ public class TorAndroidIntegration implements BundleEventListener {
             EVENT_SETTINGS_READY,
             EVENT_SETTINGS_CHANGED,
             EVENT_SECURITY_LEVEL_CUSTOM,
+            EVENT_TOR_CIRCUIT_CHANGE,
             EVENT_CONNECT_STAGE_CHANGED,
             EVENT_BOOTSTRAP_PROGRESS,
             EVENT_TOR_LOGS);
@@ -175,6 +177,10 @@ public class TorAndroidIntegration implements BundleEventListener {
         _isTorSecurityLevelCustom.setValue(new CustomSecurityLevelNotificationObject(true, callback));
       } else {
         _isTorSecurityLevelCustom.setValue(new CustomSecurityLevelNotificationObject(false, null));
+      }
+    } else if (EVENT_TOR_CIRCUIT_CHANGE.equals(event)) {
+      for (TorCircuitChangeListener listener : new HashSet<TorCircuitChangeListener>(mTorCircuitChangeListeners)) {
+        listener.onTorCircuitChange();
       }
     } else if (EVENT_CONNECT_STAGE_CHANGED.equals(event)) {
       TorConnectStage stage = new TorConnectStage(message.getBundle("stage"));
@@ -651,6 +657,10 @@ public class TorAndroidIntegration implements BundleEventListener {
     }
   }
 
+  public interface TorCircuitChangeListener {
+    void onTorCircuitChange();
+  }
+
   public interface BootstrapStateChangeListener {
     void onBootstrapStageChange(@NonNull TorConnectStage stage); // new upgrade
 
@@ -780,6 +790,16 @@ public class TorAndroidIntegration implements BundleEventListener {
   public @NonNull GeckoResult<Void> cancelBootstrap() {
     return EventDispatcher.getInstance().queryVoid(EVENT_BOOTSTRAP_CANCEL);
   }
+
+  public synchronized void registerTorCircuitChangeListener(TorCircuitChangeListener listener) {
+    mTorCircuitChangeListeners.add(listener);
+  }
+
+  public synchronized void unregisterTorCircuitChangeListener(TorCircuitChangeListener listener) {
+    mTorCircuitChangeListeners.remove(listener);
+  }
+
+  private final HashSet<TorCircuitChangeListener> mTorCircuitChangeListeners = new HashSet<>();
 
   public synchronized void registerBootstrapStateChangeListener(BootstrapStateChangeListener listener) {
     mBootstrapStateListeners.add(listener);

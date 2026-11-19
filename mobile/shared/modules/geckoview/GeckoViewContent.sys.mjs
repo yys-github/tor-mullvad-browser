@@ -32,7 +32,7 @@ export class GeckoViewContent extends GeckoViewModule {
       "GeckoView:GetWebCompatInfo",
       "GeckoView:SendGleanBrokenSiteReport",
       "GeckoView:SendMoreWebCompatInfo",
-      "GeckoView:GetTorCircuit",
+      "GeckoView:GetTorCircuits",
       "GeckoView:NewTorCircuit",
     ]);
   }
@@ -509,7 +509,7 @@ export class GeckoViewContent extends GeckoViewModule {
         domain,
         this.browser.contentPrincipal.originAttributes.userContextId
       );
-      aCallback?.onSuccess({ domain, circuits });
+      aCallback?.onSuccess(JSON.stringify({ domain, circuits }));
     } else {
       aCallback?.onSuccess(null);
     }
