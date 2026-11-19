@@ -1191,7 +1191,7 @@ static constexpr nsLiteralCString kRfpPrefs[] = {
     "privacy.baselineFingerprintingProtection.overrides"_ns,
 };
 
-static void RecomputeResistFingerprintingAllDocs(const char*, void*) {
+static void OnResistFingerprintingPrefChanged(const char*, void*) {
   AutoTArray<RefPtr<Document>, 64> allDocuments;
   Document::GetAllInProcessDocuments(allDocuments);
   for (auto& doc : allDocuments) {
@@ -1203,6 +1203,10 @@ static void RecomputeResistFingerprintingAllDocs(const char*, void*) {
           MediaFeatureChangePropagation::JustThisDocument);
     }
   }
+  // Sandboxes are not tied to a document, so the loop above doesn't reach
+  // them. Their realms cache the RTP caller type at creation and must be
+  // refreshed explicitly.
+  xpc::RefreshSandboxesRTPCallerType();
 }
 
 // static
@@ -1290,7 +1294,7 @@ nsresult nsContentUtils::Init() {
   uio.forget(&sUserInteractionObserver);
 
   for (const auto& pref : kRfpPrefs) {
-    Preferences::RegisterCallback(RecomputeResistFingerprintingAllDocs, pref);
+    Preferences::RegisterCallback(OnResistFingerprintingPrefChanged, pref);
   }
 
   mozilla::dom::ReportDeliver::Initialize();
@@ -2452,7 +2456,7 @@ void nsContentUtils::Shutdown() {
   }
 
   for (const auto& pref : kRfpPrefs) {
-    Preferences::UnregisterCallback(RecomputeResistFingerprintingAllDocs, pref);
+    Preferences::UnregisterCallback(OnResistFingerprintingPrefChanged, pref);
   }
 
   TextControlState::Shutdown();
