@@ -1214,6 +1214,8 @@ class HomeFragment : Fragment(), UserInteractionHandler, OnLongPressedListener {
     }
 
     override fun onBackPressed(): Boolean {
+        (requireActivity() as HomeActivity).shutDown()
+
         if (context == null || !requireComponents.settings.enableHomepageAsNewTab) {
             return false
         }
@@ -1222,8 +1224,6 @@ class HomeFragment : Fragment(), UserInteractionHandler, OnLongPressedListener {
             browserStore = store,
             navController = findNavController(),
         )
-
-        (requireActivity() as HomeActivity).shutDown()
     }
 
     override fun onBackLongPressed(): Boolean {
