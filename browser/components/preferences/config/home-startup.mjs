@@ -485,10 +485,6 @@ function setupHomepageGroup(prefWindow) {
         control: "moz-select",
         l10nId: "home-homepage-new-windows",
         options: [
-          {
-            value: "home",
-            l10nId: "home-mode-choice-default-fx",
-          },
           { value: "home", l10nId: "home-mode-choice-tor" },
           { value: "blank", l10nId: "home-mode-choice-blank" },
           { value: "custom", l10nId: "home-mode-choice-custom" },
@@ -506,10 +502,6 @@ function setupHomepageGroup(prefWindow) {
         control: "moz-select",
         l10nId: "home-homepage-new-tabs",
         options: [
-          {
-            value: "home",
-            l10nId: "home-mode-choice-default-fx",
-          },
           { value: "home", l10nId: "home-mode-choice-tor" },
           { value: "blank", l10nId: "home-mode-choice-blank" },
         ],
