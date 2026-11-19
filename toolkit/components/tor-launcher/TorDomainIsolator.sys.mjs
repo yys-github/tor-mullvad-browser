@@ -47,7 +47,7 @@ const NON_TOR_PROXY_PREF = "extensions.torbutton.use_nontor_proxy";
 // The topic of new identity, to observe to cleanup all the nonces.
 const NEW_IDENTITY_TOPIC = "new-identity-requested";
 
-// The topic on which we broacast circuit change notifications.
+// The topic on which we broadcast circuit change notifications.
 const TOR_CIRCUIT_TOPIC = "TorCircuitChange";
 
 // We have an interval to delete circuits that are not reclaimed by any browser.
