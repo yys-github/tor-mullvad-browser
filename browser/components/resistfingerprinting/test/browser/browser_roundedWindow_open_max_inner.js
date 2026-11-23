@@ -4,6 +4,12 @@
  *   maximum values.
  */
 
+add_setup(async () => {
+  await SpecialPowers.pushPrefEnv({
+    set: [["browser.link.open_newwindow.restriction", 2]],
+  });
+});
+
 let targetWidth = Services.prefs.getIntPref("privacy.window.maxInnerWidth");
 let targetHeight = Services.prefs.getIntPref("privacy.window.maxInnerHeight");
 

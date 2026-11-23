@@ -25,20 +25,32 @@ window.addEventListener("message", async function listener(event) {
     result.hardwareConcurrency = navigator.hardwareConcurrency;
     result.userAgentHTTPHeader = "unknown";
 
-    let worker = new SharedWorker("file_navigator_iframe_worker.sjs");
-    let worker_result = await new Promise(resolve => {
-      worker.port.onmessage = function(e) {
-        resolve(e.data);
-      };
-    });
+    let worker = null;
+    try {
+      worker = new SharedWorker("file_navigator_iframe_worker.sjs");
+    } catch (e) {
+      // Base Browser rejects third-party storage, so SharedWorker throws a
+      // SecurityError here.
+      if (e.name != "SecurityError") {
+        throw e;
+      }
+    }
 
-    result.worker_appCodeName = worker_result.appCodeName;
-    result.worker_appName = worker_result.appName;
-    result.worker_appVersion = worker_result.appVersion;
-    result.worker_platform = worker_result.platform;
-    result.worker_userAgent = worker_result.userAgent;
-    result.worker_product = worker_result.product;
-    result.worker_hardwareConcurrency = worker_result.hardwareConcurrency;
+    if (worker) {
+      let worker_result = await new Promise(resolve => {
+        worker.port.onmessage = function(e) {
+          resolve(e.data);
+        };
+      });
+
+      result.worker_appCodeName = worker_result.appCodeName;
+      result.worker_appName = worker_result.appName;
+      result.worker_appVersion = worker_result.appVersion;
+      result.worker_platform = worker_result.platform;
+      result.worker_userAgent = worker_result.userAgent;
+      result.worker_product = worker_result.product;
+      result.worker_hardwareConcurrency = worker_result.hardwareConcurrency;
+    }
 
     var one = fetch("file_navigator_header.sjs?")
     .then((response) => { return response.text(); })

@@ -151,7 +151,6 @@ https_first_disabled = true
 
 ["browser_navigator_iframes.js"]
 https_first_disabled = true
-disabled = "Third-party cookies and storage are rejected (network.cookie.cookieBehavior is 1 in 001-base-profile.js), so the third-party iframe cannot create a SharedWorker and the test hangs"
 
 ["browser_netInfo.js"]
 https_first_disabled = true
@@ -169,13 +168,10 @@ disabled = "Third-party cookies and storage are rejected (network.cookie.cookieB
 ["browser_roundedWindow_newWindow.js"]
 
 ["browser_roundedWindow_open_max_inner.js"]
-disabled = "Popups open in new tabs (browser.link.open_newwindow.restriction is 0 in 001-base-profile.js), so window.open does not create sized windows"
 
 ["browser_roundedWindow_open_mid_inner.js"]
-disabled = "Popups open in new tabs (browser.link.open_newwindow.restriction is 0 in 001-base-profile.js), so window.open does not create sized windows"
 
 ["browser_roundedWindow_open_min_inner.js"]
-disabled = "Popups open in new tabs (browser.link.open_newwindow.restriction is 0 in 001-base-profile.js), so window.open does not create sized windows"
 
 ["browser_spoofing_keyboard_event.js"]
 

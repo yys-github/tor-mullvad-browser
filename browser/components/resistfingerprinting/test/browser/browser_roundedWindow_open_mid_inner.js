@@ -4,6 +4,12 @@
  *   middle values.
  */
 
+add_setup(async () => {
+  await SpecialPowers.pushPrefEnv({
+    set: [["browser.link.open_newwindow.restriction", 2]],
+  });
+});
+
 OpenTest.run([
   {
     settingWidth: 600,

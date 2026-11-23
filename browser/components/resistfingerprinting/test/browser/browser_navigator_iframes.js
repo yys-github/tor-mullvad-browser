@@ -228,6 +228,12 @@ async function testNavigator(result, expectedResults, extraData) {
     "Navigator.vendorSub reports correct constant value."
   );
 
+  // Third-party iframes cannot create a SharedWorker in Base Browser.
+  // Skip all the worker checks.
+  if (AppConstants.BASE_BROWSER_VERSION) {
+    return;
+  }
+
   is(
     result.worker_appVersion,
     expectedResults.appVersion,
