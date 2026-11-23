@@ -11,7 +11,9 @@
 
 #if defined(XP_WIN) && defined(MOZ_SANDBOX)
 #  include "mozilla/CpuInfo.h"
+#  ifndef BASE_BROWSER_VERSION
 #  include "mozilla/llama/LlamaRuntimeLinker.h"
+#  endif !BASE_BROWSER_VERSION
 #  include "mozilla/sandboxTarget.h"
 #  include "WMF.h"
 #  include "WMFDecoderModule.h"
@@ -106,9 +108,11 @@ bool UtilityProcessImpl::Init(int aArgc, char* aArgv[]) {
     UtilityMediaServiceParent::WMFPreloadForSandbox();
   }
 
+# ifndef BASE_BROWSER_VERSION
   if (*sandboxingKind == SandboxingKind::HW_INFERENCE) {
     mozilla::llama::LlamaRuntimeLinker::Init();
   }
+# endif // !BASE_BROWSER_VERSION
 
   // Go for it
   mozilla::SandboxTarget::Instance()->StartSandbox();
