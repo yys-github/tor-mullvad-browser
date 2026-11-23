@@ -210,10 +210,8 @@ export const AIWindow = {
     ChromeUtils.defineLazyGetter(AIWindow, "chatStore", () => lazy.ChatStore);
     Services.obs.addObserver(this, lazy.ONLOGOUT_NOTIFICATION);
     Services.obs.addObserver(this, "tabstrip-orientation-change");
-    Services.obs.addObserver(this, "browser-region-updated");
-    Services.prefs.addObserver(PREF_AGENT_SUPPORTED_REGIONS, this);
-    lazy.SmartWindowTelemetry.init();
     if (this.isAIWindowEnabled()) {
+      lazy.SmartWindowTelemetry.init();
       // Depends on the ml component, which tor-browser#44045 excludes from
       // the build, so only touch it when AI Window is actually enabled.
       lazy.getAllModelsData(); // loads model data into cache for about:preferences
