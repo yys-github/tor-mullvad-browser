@@ -137,9 +137,8 @@ pref("browser.pagethumbnails.capturing_disabled", true);
 // disk leaks, e.g., in system logs.
 // For example, it happened that GNOME shell logged the window name that caused
 // JS errors/unexpected conditions for unrelated issues.
-// TODO: commented out for now because of UX concerns, to be reconsidered in 14.5
-// pref("privacy.exposeContentTitleInWindow", false);
-// pref("privacy.exposeContentTitleInWindow.pbm", false);
+pref("privacy.exposeContentTitleInWindow", false);
+pref("privacy.exposeContentTitleInWindow.pbm", false);
 
 // tor-browser#42630: Disable LaterRun.
 //
