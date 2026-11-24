@@ -109,6 +109,9 @@ subsuite = "mozbuild"
 
 ["test_base.py"]
 
+["test_bb_license.py"]
+subsuite = "base-browser"
+
 ["test_confvars.py"]
 
 ["test_containers.py"]
