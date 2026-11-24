@@ -249,6 +249,8 @@ can create a Weblate account and change this script to pass an authorisation
 token with the request.
 """
 
+from __future__ import annotations
+
 import argparse
 import atexit
 import importlib
