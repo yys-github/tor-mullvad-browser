@@ -9,7 +9,9 @@ import mozunit
 
 # Files we add on top of Firefox that must be credited in about:license.
 # Paths are relative to the top source directory.
-EXPECTED_PATHS = []
+EXPECTED_PATHS = [
+    "browser/components/cryptosafety/Bech32Decode.sys.mjs",
+]
 
 
 class TestAboutLicense(unittest.TestCase):

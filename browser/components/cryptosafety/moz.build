@@ -9,3 +9,6 @@ MOZ_SRC_FILES += [
     "CryptoSafetyChild.sys.mjs",
     "CryptoSafetyParent.sys.mjs",
 ]
+
+LICENSED_UNDER += ["mit"]
+LICENSED_UNDER["mit"].paths = ["Bech32Decode.sys.mjs"]
