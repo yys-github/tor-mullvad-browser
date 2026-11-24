@@ -393,3 +393,6 @@ MOZ_SRC_FILES += [
     "PrefUtils.sys.mjs",
     "WebAuthnPromptHelper.sys.mjs",
 ]
+
+LICENSED_UNDER += ["mit"]
+LICENSED_UNDER["mit"].paths = ["QRCode.sys.mjs"]

@@ -11,6 +11,7 @@ import mozunit
 # Paths are relative to the top source directory.
 EXPECTED_PATHS = [
     "browser/components/cryptosafety/Bech32Decode.sys.mjs",
+    "toolkit/modules/QRCode.sys.mjs",
 ]
 
 
