@@ -25,6 +25,7 @@ INACTIVE_LINTERS = [
     "android-javadoc",
     "android-lint",
     "android-test",
+    "cargo-audit",
     "codespell",
     "condprof-addons",
     "file-perm",
